@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+.courseInfo{
+	margin: 5px 5% auto;
+	padding-top: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+	text-align: center;
+}
+.studentWork{
+	display: none;
+}

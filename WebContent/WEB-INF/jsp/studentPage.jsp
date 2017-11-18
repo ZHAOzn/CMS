@@ -12,10 +12,10 @@
 
 <script type="text/javascript"
 	src="<%=request.getContextPath()%>/js/jquery-3.2.1.min.js"></script>
-
-<link type="text/css" rel="stylesheet"
-	href="<%=request.getContextPath()%>/layui/css/layui.css">
+<link type="text/css" rel="stylesheet" href="<%=request.getContextPath()%>/css/studentPage.css">
+<link type="text/css" rel="stylesheet" href="<%=request.getContextPath()%>/layui/css/layui.css">
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
+
 <title>学生页面</title>
 <script type="text/javascript">
 	 $(document).ready(function () {
@@ -648,20 +648,30 @@
 			<hr class="layui-bg-cyan">
 
 			<!-- 课程信息模块 -->
-			<div id="courseInfo"
-				style="margin: 5px 5% auto; padding-top: 10px; padding-left: 20px; padding-right: 20px;">
-				<table lay-filter="courseInfo">
+			<div id="courseInfo" class="courseInfo">
+				<table class="layui-table" >
+					<colgroup>
+						<col width="150">
+						<col width="120">
+						<col width="150">
+						<col width="150">
+						<col width="120">
+						<col width="120">
+						<col width="120">
+						<col width="150">
+						<col width="120">			
+					</colgroup>
 					<thead>
 						<tr>
-							<th lay-data="{field:'courseName', width:100, sort:true}">课程名称</th>
-							<th lay-data="{field:'courseType', width:100, sort:true}">类型</th>
-							<th lay-data="{field:'startTime', width:130, sort:true}">开课时间</th>
-							<th lay-data="{field:'stopTime', width:130, sort:true}">结课时间</th>
-							<th lay-data="{field:'courseYear', width:100, sort:true}">学年</th>
-							<th lay-data="{field:'courseDate', width:100, sort:true}">学期</th>
-							<th lay-data="{field:'courseTeacher', width:100, sort:true}">老师</th>
-							<th lay-data="{field:'courseTeacherMobile', width:123}">联系方式</th>
-							<th lay-data="{field:'courseOption', width:100}">操作</th>
+							<th style="text-align: center;">课程名称</th>
+							<th style="text-align: center;">类型</th>
+							<th style="text-align: center;">开课时间</th>
+							<th style="text-align: center;">结课时间</th>
+							<th style="text-align: center;">学年</th>
+							<th style="text-align: center;">学期</th>
+							<th style="text-align: center;">老师</th>
+							<th style="text-align: center;">联系方式</th>
+							<th style="text-align: center;">操作</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -774,19 +784,28 @@
 
 
 			<!-- 签到记录 -->
-			<div id="studentWork" style="display: none;">
-				<table lay-filter="signRecord" style="text-align: center;">
+			<div id="studentWork" class="studentWork courseInfo">
+				<table class="layui-table">
+					<colgroup>
+    					<col width="120">
+    					<col width="200">
+    					<col width="150">
+    					<col width="150">
+    					<col width="120">
+    					<col width="120">
+    					<col width="120">
+    					<col width="120">
+ 					</colgroup>
 					<thead>
 						<tr>
-							<th lay-data="{field:'stuCourseID', width:120}">课程编码</th>
-							<th lay-data="{field:'stuCourseName', width:130, sort:true}">课程名称</th>
-							<th lay-data="{field:'stuCourseYear', width:130, sort:true}">学年</th>
-							<th lay-data="{field:'stuCourseDate', width:130, sort:true}">学期</th>
-							<th lay-data="{field:'stuCourseSign', width:120, sort:true}">签到</th>
-							<th lay-data="{field:'stuCourseLate', width:120, sort:true}">迟到</th>
-							<th lay-data="{field:'stuCourseEarly', width:120, sort:true}">早退</th>
-							<th
-								lay-data="{field:'stuCourseAbsenteeism', width:120, sort:true}">旷课</th>
+							<th style="text-align: center;">课程编码</th>
+							<th style="text-align: center;">课程名称</th>
+							<th style="text-align: center;">学年</th>
+							<th style="text-align: center;">学期</th>
+							<th style="text-align: center;">签到</th>
+							<th style="text-align: center;">迟到</th>
+							<th style="text-align: center;">早退</th>
+							<th style="text-align: center;">旷课</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -953,34 +972,45 @@
 				style="display: none; text-align: center; width: 80%; margin-left: 9.5%;">
 			</table>
 
-			<table id="studentLogInfo" border="1"
+			<table class="layui-table"  lay-even lay-size="sm" id="studentLogInfo" 
 				style="text-align: center; width: 80%; margin-left: 9.5%; display: none;">
-				<tr>
-					<th>学号</th>
-					<th>活动</th>
-					<th>Ip</th>
-					<th>时间</th>
-					<th>结果</th>
-				</tr>
-				<c:choose>
-					<c:when test="${! empty logEntity}">
-						<c:forEach items="${logEntity}" var="s">
+				<colgroup>
+    				<col width="150">
+    				<col width="250">
+    				<col width="200">
+    				<col width="250">
+    				<col width="150">
+  				</colgroup>
+				<thead>
+					<tr>
+						<th>学号</th>
+						<th>活动</th>
+						<th>Ip</th>
+						<th>时间</th>
+						<th>结果</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:choose>
+						<c:when test="${! empty logEntity}">
+							<c:forEach items="${logEntity}" var="s">
+								<tr>
+									<td>${s.userId}</td>
+									<td style="text-align: left; padding-left: 10%;">${s.method}</td>
+									<td>${s.ip}</td>
+									<td>${s.date}</td>
+									<td>${s.result}</td>
+									<!--  <td colspan="8"></td>-->
+								</tr>
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
 							<tr>
-								<td>${s.userId}</td>
-								<td style="text-align: left; padding-left: 10%;">${s.method}</td>
-								<td>${s.ip}</td>
-								<td>${s.date}</td>
-								<td>${s.result}</td>
-								<!--  <td colspan="8"></td>-->
+								<td colspan="5">(暂无信息)</td>
 							</tr>
-						</c:forEach>
-					</c:when>
-					<c:otherwise>
-						<tr>
-							<td colspan="5">(暂无信息)</td>
-						</tr>
-					</c:otherwise>
-				</c:choose>
+						</c:otherwise>
+					</c:choose>
+				</tbody>
 			</table>
 
 
