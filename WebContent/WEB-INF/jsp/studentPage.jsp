@@ -62,6 +62,7 @@
 		 //该学生课程信息
 		 $('#checkCourseShow').click(function name1() {
 			 $('#messageList').html("课程信息");
+			 $('#upLoadShow').hide();
 			 $('#doubleHandle').hide();
 			 $('#signal').hide();
 			 $('#studentAddCourse').hide();
@@ -79,6 +80,7 @@
 		 //个人中心
 		 $('#studentInfoCenter').click(function name1() {
 			 $('#messageList').html("个人中心");
+			 $('#upLoadShow').hide();
 			 $('#doubleHandle').hide();
 			 $('#signal').hide();
 			 $('#studentAddCourse').hide();
@@ -96,6 +98,7 @@
 		 //点击修改信息
 		 $('#updateStudentInfoNow').click(function name1() {
 			 $('#messageList').html("修改信息");
+			 $('#upLoadShow').hide();
 			 $('#doubleHandle').hide();
 			 $('#signal').hide();
 			 $('#studentAddCourse').hide();
@@ -114,6 +117,7 @@
 		 //点击操作日志
 		 $('#studentLog').click(function name() {
 			 $('#messageList').html("操作日志");
+			 $('#upLoadShow').hide();
 			 $('#doubleHandle').hide();
 			 $('#signal').hide();
 			 $('#studentAddCourse').hide();
@@ -132,6 +136,7 @@
 		//点击消息
 		  $('#messageButtton').click(function() {
 			 $('#messageList').html("消息列表");
+			 $('#upLoadShow').hide();
 			 $('#doubleHandle').hide();
 			 $('#signal').hide();
 		     $('#studentAddCourse').hide();
@@ -153,6 +158,7 @@
 		 //手动添加课程
 		 $('#addCourse').click(function name1() {
 			 $('#messageList').html("添加课程");
+			 $('#upLoadShow').hide();
 				$('#courseInfo').hide();
 				$('#doubleHandle').hide();
 				$('#signal').hide();
@@ -170,6 +176,7 @@
 		 //安全管理
 			$('#safeManage').click(function name1() {
 				$('#messageList').html("修改密码");
+				 $('#upLoadShow').hide();
 				$('#courseInfo').hide();
 				$('#studentAddCourse').hide();
 				$('#doubleHandle').show();
@@ -188,6 +195,7 @@
 			$('#studentWordRecord').click(function wq() {
 				$('#messageList').html("签到记录");
 				$('#courseInfo').hide();
+				 $('#upLoadShow').hide();
 				$('#studentAddCourse').hide();
 				$('#doubleHandle').hide();
 				 $('#seprateMessage').hide();
@@ -204,6 +212,7 @@
 			//点击完善信息
 			$('#perfectButton').click(function wq() {
 				$('#messageList').html("完善信息");
+				 $('#upLoadShow').hide();
 				$('#collegeTr').hide();
 				$('#reCollegeTr').show();
 				$('#specialTr').hide();
@@ -424,6 +433,7 @@
 		function dontCare() {
 			$('#doubleHandle').hide();
 			$('#signal').hide();
+			 $('#upLoadShow').hide();
 		    $('#studentAddCourse').hide();
 		     $('#courseInfo').hide();
 		     $('#studentInfoShow').hide();
@@ -548,6 +558,37 @@
 				dataType : "json",
 			});
 		}
+	
+		//ajax获取上传的文件列表
+		function getPrivateData(id) {
+			$('#courseInfo').hide();
+			$('#upLoadShow').show();
+			$('#messageList').html("课件资料");
+			 $.ajax({
+		         type: "GET",
+		         data: {
+		        	 "courseId": id
+		         },
+		         contentType: "application/json; charset=utf-8",
+		         async: false,
+		         url: "<%=request.getContextPath()%>/teacher/getPrivateData.do",
+				success : function(data) {
+					var dataObj = data.filePackages;
+					 con = "";
+					 $.each(dataObj, function (index, item) {
+						    con += "<tr>";
+		        	        con += "<td style='text-align:center;'>" + item.fileType + "</td>";
+		        	        con += "<td style='text-align:center;'>" + item.createTime + "</td>";
+		        	        con += "<td style='padding-left:5%;'><a style='color:green;' href=\'<%=request.getContextPath() %>/file/"+item.fileName+"\'>" + item.fileName + "</a></td>";
+		        	        con += "<tr/>";
+		        	    });
+					 $('#privateData').html(con);
+				},
+				error : function(data) {
+				},
+				dataType : "json",
+			});
+		}
 </script>
 
 </head>
@@ -646,6 +687,36 @@
 			<span id="messageList"
 				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;">课程信息</span>
 			<hr class="layui-bg-cyan">
+			
+
+				<!-- 个人资料 -->
+				<div class="layui-form sessiontable" id="upLoadShow"
+					style="width: 100%; margin-left: 0">
+					<table class="layui-table" lay-even>
+						<colgroup>
+							<col width="150">
+							<col width="200">
+							<col width="340">
+						</colgroup>
+						<thead>
+							<tr>
+								<th style="text-align: center;">文件类型</th>
+								<th style="text-align: center;">上传时间</th>
+								<th style="text-align: center;">文件名称</th>
+							</tr>
+						</thead>
+						<tbody id="privateData">
+
+						</tbody>
+					</table>
+
+					<script>
+				layui.use('table', function() {
+					var table = layui.table;
+				});
+			    </script>
+				</div>
+				
 
 			<!-- 课程信息模块 -->
 			<div id="courseInfo" class="courseInfo">
@@ -679,7 +750,8 @@
 							<c:when test="${! empty studentInfos}">
 								<c:forEach items="${studentInfos}" var="s">
 									<tr>
-										<td>${s.course.courseName}</td>
+										<td><a id="${s.course.courseId}" onclick="getPrivateData(this.id)" href="#" style="color: green;">
+										${s.course.courseName}</a></td>
 										<td>${s.course.courseType}</td>
 										<td>${s.course.startTime}</td>
 										<td>${s.course.endTime}</td>

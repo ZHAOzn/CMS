@@ -115,8 +115,8 @@ function showQrImg() {
 	 $.ajax({
          type: "GET",
          data: {
-        	 "courseId": $('#cccourseId').val(),
-        	 "teacherMobile":$('#teacherMobile').val()
+        	 "teacherMobile":${teacher.teacherMobile},
+        	 "courseId": ${course.courseId}
          },
          contentType: "application/json; charset=utf-8",
          dataType: "json",
@@ -143,7 +143,7 @@ function YesConfirm() {
 	 $.ajax({
          type: "GET",
          data: {
-        	 "courseId": $('#cccourseId').val()
+        	 "courseId": ${course.courseId}
          },
          contentType: "application/json; charset=utf-8",
          dataType: "json",
@@ -182,7 +182,7 @@ function submitSignIn() {
 	 $.ajax({
          type: "GET",
          data: {
-        	 "courseId": $('#cccourseId').val(),
+        	 "courseId": ${course.courseId}
          },
          contentType: "application/json; charset=utf-8",
          dataType: "json",
@@ -209,7 +209,7 @@ function getPrivateData() {
 	 $.ajax({
          type: "GET",
          data: {
-        	 "teacherMobile":$('#teacherMobile').val()
+        	 "courseId":${course.courseId}
          },
          contentType: "application/json; charset=utf-8",
          async: false,
@@ -230,6 +230,9 @@ function getPrivateData() {
 		},
 		dataType : "json",
 	});
+}
+function timeoutForFileList() {
+	setTimeout('getPrivateData()',2000);
 }
 //添加班级
 function getAddClass() {
@@ -257,6 +260,7 @@ function teacherAddClazz() {
 		$.ajax({
 	         type: "GET",
 	         data: {
+	        	 "courseId":${course.courseId},
 	        	 "clazzName":$('#clazzName').val(),
 	        	 "currentYear":$('#currentYear').val()
 	         },
@@ -315,7 +319,7 @@ function yourFunction() {
 
 						</dl></li>
 					<li class="layui-nav-item layui-nav-itemed"><a
-						href="javascript:;">点击签到</a>
+						href="javascript:;">签到</a>
 						<dl class="layui-nav-child">
 							<dd>
 								<a id="signShow" href="#">点名签到</a>
@@ -447,7 +451,7 @@ function yourFunction() {
 					});
 					
 					form.verify({
-						idvalidate:[/^[\S]{1,20}$/,'班级名称必须是1到20位字符'],
+						idvalidate:[/(.+){1,20}$/,'班级名称必须是1到20位字符'],
 					});
 				});
 				</script>
@@ -700,9 +704,7 @@ function yourFunction() {
 												,
 												accept : 'file',
 												data : {
-													teacherMobile : $(
-															'#teacherMobile')
-															.val()
+													"courseId": ${course.courseId}
 												},
 												multiple : true,
 												auto : false,
@@ -765,14 +767,8 @@ function yourFunction() {
 												done : function(res, index,
 														upload) {
 													if (res.code == 0) { //上传成功
-														var tr = demoListView
-																.find('tr#upload-'
-																		+ index), tds = tr
-																.children();
-														tds
-																.eq(2)
-																.html(
-																		'<span style="color: #5FB878;">上传成功</span>');
+														var tr = demoListView.find('tr#upload-'+ index), tds = tr.children();
+														tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
 														tds.eq(3).html(''); //清空操作
 														delete files[index]; //删除文件队列已经上传成功的文件
 														getPrivateData();

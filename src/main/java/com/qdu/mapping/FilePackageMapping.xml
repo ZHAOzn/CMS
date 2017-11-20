@@ -4,19 +4,19 @@
 	<cache type="com.qdu.cache.RedisCache" />
 	<resultMap type="com.qdu.pojo.FilePackage" id="FilePackageResult">
 		<id property="fileId" column="FileId" />
-		<result property="userId" column="UserId" />
+		<result property="courseId" column="CourseId" />
 		<result property="fileName" column="FileName" />
 		<result property="fileType" column="FileType" />
 		<result property="createTime" column="CreateTime" />
 	</resultMap>
-     <select id="selectFileByUserId" parameterType="ArrayList" resultMap="FilePackageResult">
-     select * from FilePackage where UserId = #{userId} order by FileId desc
+     <select id="selectFileByCourseId" parameterType="ArrayList" resultMap="FilePackageResult">
+     select * from FilePackage where CourseId = #{courseId} order by FileId desc
      </select>
      
      <insert id="insertFile" parameterType="com.qdu.pojo.FilePackage">
      insert into 
-     FilePackage(UserId,FileName,FileType,CreateTime) 
-     values(#{userId},#{fileName},#{fileType},#{createTime})
+     FilePackage(CourseId,FileName,FileType,CreateTime) 
+     values(#{courseId},#{fileName},#{fileType},#{createTime})
      </insert>
 	
 </mapper>

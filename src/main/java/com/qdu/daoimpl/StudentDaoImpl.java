@@ -102,6 +102,12 @@ public class StudentDaoImpl implements StudentDao{
 		
 	}
 
+	@Override
+	public List<Student> selectStuList() {
+		String statement = "com.qdu.mapping.StudentMapping.selectStuList";
+		return sessionFactory.openSession().selectList(statement);
+	}
+
 
 
 }

@@ -20,10 +20,11 @@ public class FilePackageDaoImpl implements FilePackageDao{
 	}
 
 	@Override
-	public List<FilePackage> selectFileByUserId(String userId) {
-		String statement = "com.qdu.mapping.FilePackageMapping.selectFileByUserId";
-		return sqlSessionFactory.openSession().selectList(statement, userId);
+	public List<FilePackage> selectFileByCourseId(int courseId) {
+		String statement = "com.qdu.mapping.FilePackageMapping.selectFileByCourseId";
+		return sqlSessionFactory.openSession().selectList(statement, courseId);
 	}
+
 	
 	
 

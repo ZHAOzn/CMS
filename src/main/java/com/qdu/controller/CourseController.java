@@ -173,8 +173,6 @@ public class CourseController {
 		Course course = courseServiceImpl.selectCourseById(courseId);
 		Teacher teacher = teacherServiceImpl.selectTeacherByEmail(teacherMobile);
 		String teacherName = teacher.getTeacherName();
-		System.out.println("courseId: "+courseId);
-		System.out.println(teacherName);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
 		String currentTime = sdf.format(date);

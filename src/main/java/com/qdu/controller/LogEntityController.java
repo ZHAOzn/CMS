@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.qdu.aop.SystemLog;
 import com.qdu.pojo.Admin;
 import com.qdu.pojo.LogEntity;
+import com.qdu.pojo.Student;
 import com.qdu.service.LogEntityService;
+import com.qdu.service.StudentService;
 import com.qdu.util.Page;
 //超级管理员+相关操作
 @Controller
@@ -26,6 +28,7 @@ import com.qdu.util.Page;
 public class LogEntityController {
 
 	@Autowired LogEntityService logEntityServiceImpl;
+	@Autowired StudentService studentServiceImpl;
 	//超管准备登录
 	@RequestMapping(value="/forAdminLogin.do")
 	public String forAdminLogin(ModelMap map) {
@@ -48,34 +51,13 @@ public class LogEntityController {
 	}
 	//管理员登录
 	@RequestMapping(value = "/adminLogin.do")
-	public String adminLogin(ModelMap map,String pageNow,HttpServletRequest request){
+	public String adminLogin(ModelMap map,HttpServletRequest request){
 		List<LogEntity> logEntities = new ArrayList<LogEntity>();
-		 Page page = null;
 		 int totalCount = logEntityServiceImpl.selectLogEntityCount();
-		 String repageNow = request.getParameter("repageNow");
-		 if(repageNow != null){
-			 pageNow = repageNow;
-		 }
-			page = new Page(totalCount, 1);
-			logEntities = logEntityServiceImpl.selectLog(page.getStartPos());
-			map.put("page", page);
+		    List<Student> students = studentServiceImpl.selectStuList();
 			map.put("logEntities", logEntities);
+			map.put("students", students);
 		return "superManagerPage";
-		//I want to test git   
 	}
 	
-//	@RequestMapping(value="/selectAllLog.do")
-//	public String selectAllLog(ModelMap map,HttpServletRequest req) {
-//		String adminId = req.getParameter("adminId");
-//		String adminPassword = req.getParameter("adminPassword");
-//		Admin admin = logEntityServiceImpl.selectAdminById(adminId);
-//		if(admin != null && adminPassword.equals(admin.getAdminPassword())){
-//			List<LogEntity> logEntities = logEntityServiceImpl.selectLog();
-//			map.put("logEntitys", logEntities);
-//			return "superManagerPage";
-//		}else {
-//			return "failer";
-//		}
-//		
-//	} 
 }
