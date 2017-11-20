@@ -691,7 +691,7 @@
 
 				<!-- 个人资料 -->
 				<div class="layui-form sessiontable" id="upLoadShow"
-					style="width: 100%; margin-left: 0">
+					style="width: 100%; margin-left: 0; display: none;">
 					<table class="layui-table" lay-even>
 						<colgroup>
 							<col width="150">
