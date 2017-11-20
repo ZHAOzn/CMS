@@ -30,6 +30,7 @@ import com.qdu.aop.SystemLog;
 import com.qdu.pojo.Clazz;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Course;
+import com.qdu.pojo.LeaveRecord;
 import com.qdu.pojo.LogEntity;
 import com.qdu.pojo.Message;
 import com.qdu.pojo.QrTem;
@@ -39,6 +40,7 @@ import com.qdu.pojo.Teacher;
 import com.qdu.service.ClazzService;
 import com.qdu.service.ClazzStuService;
 import com.qdu.service.CourseService;
+import com.qdu.service.LeaveRecordService;
 import com.qdu.service.LogEntityService;
 import com.qdu.service.MessageService;
 import com.qdu.service.QrTemService;
@@ -74,6 +76,8 @@ public class StudentController {
 	private LogEntityService logEntityServiceImpl;
 	@Autowired 
 	private ClazzStuService clazzStuServiceImpl;
+	@Autowired
+	private LeaveRecordService leaveRecordServiceImpl;
 
 	// 学生登录
 	@RequestMapping(value = "/studentLogin.do")
@@ -635,11 +639,50 @@ public class StudentController {
 				}
 			return map;
 		}
-		
-		
-		
-		
-		
+	//学生get请假历史记录	
+	@RequestMapping(value = "/getLeaveRecord.do")	
+	@ResponseBody
+	public Map<String, Object> getLeaveRecord(String studentRono){
+		Map<String, Object> map = new HashMap<>();
+		List<LeaveRecord> leaveRecords = leaveRecordServiceImpl.selectLeaveRecordByStudent(studentRono);
+		map.put("leaveRecords", leaveRecords);
+		return map;
+	}
+	//新建请假
+	@RequestMapping(value = "/studentAddLeave.do")
+	@SystemLog(module = "学生", methods = "日志管理-请假")	
+	@ResponseBody
+	public Map<String, Object> studentAddLeave(int courseId,String student,String reson,
+			@DateTimeFormat(pattern = "yyyy-MM-dd") Date leaveTime,String status,
+			@DateTimeFormat(pattern = "yyyy-MM-dd") Date returnTime){
+		Map<String, Object> map = new HashMap<>();
+		Course course = courseServiceImpl.selectCourseById(courseId);
+		Student student2 = studentServiceImpl.selectStudentByNo(student);
+		ClazzStu clazzStu = clazzStuServiceImpl.selectClazzStuByCourse(student, courseId);
+		LeaveRecord leaveRecord = new LeaveRecord();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		leaveRecord.setCourseId(courseId);
+		leaveRecord.setCourseName(course.getCourseName());
+		leaveRecord.setStudent(student);
+		leaveRecord.setLeaveTime(sdf.format(leaveTime));
+		leaveRecord.setReturnTime(sdf.format(returnTime));
+		leaveRecord.setReason(reson);
+		leaveRecord.setStatus(status);
+		int tem = leaveRecordServiceImpl.insertleaveRecord(leaveRecord);
+		Message message = new Message();
+		message.setMessageSender(student);
+		message.setMessageAccepter(course.getTeacher().getTeacherMobile());
+		message.setMessageTitle(student2.getStudentName() + "同学(" + clazzStu.getClazz().getClazzName() +")请假");
+		message.setSendTime(sdf.format(new Date()));
+		message.setHaveRead("未读");
+		message.setMessageContent(courseId + "c" + clazzStu.getClazz().getClazzId());
+		message.setMessageType("leaveRecord");
+		messageServiceImpl.insertMessage(message);
+		if(tem > 0){
+			map.put("result", true);
+		}
+		return map;
+	}
 		
 		
 }

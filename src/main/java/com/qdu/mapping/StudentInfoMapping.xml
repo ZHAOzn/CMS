@@ -8,6 +8,7 @@
 		<result property="comeLate" column="ComeLate" />
 		<result property="leaveEarlier" column="LeaveEarlier" />
 		<result property="absenteeism" column="Absenteeism" />
+		<result property="leaveRecord" column="LeaveRecord" />
 
 
 		<association property="student" javaType="com.qdu.pojo.Student">

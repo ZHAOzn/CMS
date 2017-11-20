@@ -366,6 +366,16 @@
 					$('#MstudentRoNo').val(data.mmm.messageSender);
 					$('#MCourseId').val(data.mmm.messageContent);
 				}
+				if(data.mmm.messageType == 'leaveRecord'){
+					$('#forMessageContent').hide();
+					$('#messageContent').hide();
+					$('#seprateMessage').hide();
+					$('#courseInfo').hide();
+					$('#studentAskLeaveDiv').show();
+					
+					$('#MstudentRoNo').val(data.mmm.messageSender);
+					$('#MCourseId').val(data.mmm.messageContent);
+				}
 				$('#messageShow').hide();
 				$('#messageTitle').html('标题 <' + data.mmm.messageTitle + '>');
 				$('#messageSnder').html('发送人账号 <' + data.mmm.messageSender +'>');
@@ -552,6 +562,35 @@
 		}else{
 			alert("请至少输入一项吧大侠？");
 		}
+	}
+function agreeLeave() {
+	 $.ajax({
+         type: "GET",
+         data: {
+        	 "teacherMobile":$('#teacherMobile').val(),
+	         "studentRoNo": $('#MstudentRoNo').val(),
+	         "content": $('#MCourseId').val()
+         },
+         contentType: "application/json; charset=utf-8",
+         async: false,
+         //url不加空格！！！！！！！！！！！！！！！！！！！！！！！
+         url: "<%=request.getContextPath()%>/studentInfo/insertStudentInfoByteacher.do",
+		success : function(data) {
+			if(data.result == true){
+				$('#handleMessageShow').show();
+				setTimeout('myFunction()',1500);
+			}else{
+				alert("请勿重复添加");
+			}
+		},
+		error : function(data) {
+			alert("服务器异常");
+		},
+		dataType : "json",
+	});
+	}
+function cantLeave() {
+		
 	}
 </script>
 </head>
@@ -997,6 +1036,14 @@
 						value="同意" /> <input style="margin-left: 10%;" id="dontCare"
 						onclick="dontCare()" class="layui-btn layui-btn-primary"
 						type="button" value="忽略" />
+				</div>
+				<div id="studentAskLeaveDiv" style="display: none;">
+					<input type="text" id="MstudentRoNo" style="display: none;" /> <input
+						type="text" style="display: none;" /> <input
+						id="ImAgreeLeave" class="layui-btn" onclick="agreeLeave()" type="button"
+						value="批准" /> <input style="margin-left: 10%;" id="cantLeave"
+						onclick="cantLeave()" class="layui-btn layui-btn-primary"
+						type="button" value="驳回" />
 				</div>
 			</div>
 

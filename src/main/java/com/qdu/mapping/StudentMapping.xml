@@ -27,6 +27,7 @@
 			<result property="comeLate" column="ComeLate" />
 			<result property="leaveEarlier" column="LeaveEarlier" />
 			<result property="absenteeism" column="Absenteeism" />
+			<result property="leaveRecord" column="LeaveRecord" />
 
 			<association property="course" javaType="com.qdu.pojo.Course">
 				<id property="courseId" column="CourseId" />
@@ -61,6 +62,7 @@
 					<result property="comeLate" column="ComeLate" />
 					<result property="leaveEarlier" column="LeaveEarlier" />
 					<result property="absenteeism" column="Absenteeism" />
+					<result property="leaveRecord" column="LeaveRecord" />
 				</collection>
 
 				<!-- 班级表 -->
