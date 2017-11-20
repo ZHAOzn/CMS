@@ -85,6 +85,10 @@
 		where StudentInfoId = #{studentInfoId});
 	</select>
 	
+	<select id="selectStuList" resultMap="StudentResult">
+	  select * from Student
+	</select>
+	
 	<select id="selectStudentAndClazzByNo" parameterType="HashMap" resultMap="StudentResult">
 	SELECT * from Student s,Clazz c Where 
     c.CourseId = #{courseId}

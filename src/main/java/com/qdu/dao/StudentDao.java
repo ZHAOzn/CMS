@@ -27,5 +27,7 @@ public interface StudentDao {
 	
 	public int updateStudentextra(Student student);
 	
+	public List<Student> selectStuList();
+	
  
 }

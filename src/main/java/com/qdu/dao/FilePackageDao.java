@@ -8,6 +8,6 @@ public interface FilePackageDao {
 	
 	public int insertFile(FilePackage filePackage);
 	
-	public List<FilePackage> selectFileByUserId(String userId);
+	public List<FilePackage> selectFileByCourseId(int courseId);
 
 }

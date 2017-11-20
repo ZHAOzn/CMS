@@ -22,9 +22,9 @@ public class FilePackageServiceImpl implements FilePackageService{
 	}
 
 	@Override
-	public List<FilePackage> selectFileByUserId(String userId) {
-		return filePackageDaoImpl.selectFileByUserId(userId);
+	public List<FilePackage> selectFileByCourseId(int courseId) {
+		return filePackageDaoImpl.selectFileByCourseId(courseId);
 	}
-	
+
 	
 }

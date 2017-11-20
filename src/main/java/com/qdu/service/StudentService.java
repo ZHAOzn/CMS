@@ -27,6 +27,8 @@ public interface StudentService {
 	public int changeStuMail(String studentRoNo, String studentEmail);
 	
 	public int updateStudentextra(Student student);
+	
+	public List<Student> selectStuList();
 		
 
 }
