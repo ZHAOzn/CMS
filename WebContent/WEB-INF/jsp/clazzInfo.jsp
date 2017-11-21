@@ -500,13 +500,13 @@ function yourFunction() {
 						<caption>本学期签到汇总</caption>
 						<thead>
 							<tr>
-								<th lay-data="{field:'userId', width:125}">学号</th>
-								<th lay-data="{field:'userClass', width:70}">班级</th>
-								<th lay-data="{field:'username', width:80}">姓名</th>
-								<th lay-data="{field:'sign', width:70, sort:true}">签到</th>
-								<th lay-data="{field:'late', width:70, sort:true}">迟到</th>
-								<th lay-data="{field:'leaveEarly', width:65, sort:true}">早退</th>
-								<th lay-data="{field:'absenteeism', sort:true, width:70}">旷课</th>
+								<th>学号</th>
+								<th>班级</th>
+								<th>姓名</th>
+								<th>签到</th>
+								<th>迟到</th>
+								<th>早退</th>
+								<th>旷课</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -543,7 +543,7 @@ function yourFunction() {
 
 			<!-- 签到记录模块 -->
 			<div id="otherModel"
-				style="display: none;padding:25px 4%">
+				style="display: none; padding:25px 4%">
                  <table id="getAllInfo" style="width: 99%;" class="layui-table">
 						<thead>
 							<tr>
