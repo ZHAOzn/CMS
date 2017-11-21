@@ -362,29 +362,32 @@
 					$('#seprateMessage').hide();
 					$('#courseInfo').hide();
 					$('#insertCourseDiv').show();
+					$('#studentAskLeaveDiv').hide();
 					
 					$('#MstudentRoNo').val(data.mmm.messageSender);
 					$('#MCourseId').val(data.mmm.messageContent);
 				}
 				if(data.mmm.messageType == 'leaveRecord'){
-					$('#forMessageContent').hide();
-					$('#messageContent').hide();
+					$('#leaveRecordId').val(data.mmm.messageOther);
+					$('#forMessageContent').show();
+					$('#messageContent').show();
 					$('#seprateMessage').hide();
 					$('#courseInfo').hide();
+					$('#insertCourseDiv').hide();
 					$('#studentAskLeaveDiv').show();
-					
+					$('#messageContent').html(data.mmm.messageContent);
 					$('#MstudentRoNo').val(data.mmm.messageSender);
 					$('#MCourseId').val(data.mmm.messageContent);
 				}
 				$('#messageShow').hide();
 				$('#messageTitle').html('标题 <' + data.mmm.messageTitle + '>');
-				$('#messageSnder').html('发送人账号 <' + data.mmm.messageSender +'>');
+				$('#messageSnder').html('发件人账号 <' + data.mmm.messageSender +'>');
 				if(data.student != null){
-				$('#messageSenderName').html('发送人姓名 <' + data.student.studentName +'><br/><br/><br/><br/>');
+				$('#messageSenderName').html('发件人姓名 <' + data.student.studentName +'><br/><br/><br/><br/>');
 				$('#messageSenderName').show();
 				  }
 				$('#sendTime').html('时间 <' + data.mmm.sendTime +'>');
-				$('#messageContent').html(data.mmm.messageContent + '<br/><br/>');
+				$('#messageContent').html(data.mmm.messageContent);
 				$('#fushuMessage').show();
 				
 			},
@@ -563,6 +566,7 @@
 			alert("请至少输入一项吧大侠？");
 		}
 	}
+	//同意学生请假
 function agreeLeave() {
 	 $.ajax({
          type: "GET",
@@ -589,8 +593,42 @@ function agreeLeave() {
 		dataType : "json",
 	});
 	}
+	//驳回学生请假请求
 function cantLeave() {
-		
+		$('#detailInfoOfLeave').toggle();
+	}
+	//确认驳回请假请求
+function confirmCantLeave() {
+		if($('#refuseContent').val().length > 0 && $('#refuseContent').val().length < 51){
+			$('#limitP').hide();
+	$.ajax({
+        type: "GET",
+        data: {
+         "leaveRecordId":$('#leaveRecordId').val(),
+       	 "teacherMobile":$('#teacherMobile').val(),
+	     "studentRoNo": $('#MstudentRoNo').val(),
+	     "content": $('#refuseContent').val()
+        },
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        //url不加空格！！！！！！！！！！！！！！！！！！！！！！！
+        url: "<%=request.getContextPath()%>/teacher/cantLeave.do",
+		success : function(data) {
+			if(data.result == true){
+				$('#handleMessageShow').show();
+				setTimeout('dontCare()',1500);
+			}else{
+				alert("已经处理过");
+			}
+		},
+		error : function(data) {
+			alert("服务器异常");
+		},
+		dataType : "json",
+	});
+		}else{
+			$('#limitP').show();
+		}
 	}
 </script>
 </head>
@@ -1021,25 +1059,55 @@ function cantLeave() {
 			<!-- 附属详细消息 -->
 			<div id="fushuMessage"
 				style="width: 100%; padding-left: 25%; display: none;">
+		   <!-- 拒绝请假信息 -->
+		   <form class="layui-form layui-form-pane" action="" id="detailInfoOfLeave"
+	 	   style="position: fixed; margin-top: 6%; background-color:#d2d2d2;
+	 	   text-align: center; margin-left: 6%; display: none; width: 20%;">
+		   <div class="layui-form-item layui-form-text">
+           <label class="layui-form-label">拒绝说明</label>
+            <div class="layui-input-block">
+           <textarea id="refuseContent" placeholder="请输入内容" required lay-verify="textLength"  
+           class="layui-textarea" style="width: 100%;"></textarea>
+           <P id="limitP" style="color: red;display: none;">限制50字以内,不可为空</P>
+            </div>
+             </div>
+              <div class="layui-form-item">
+               <button class="layui-btn" style="width: 50%;" onclick="confirmCantLeave()" lay-submit="" lay-filter="demo2">确定</button>
+               </div>
+	         </form>
+	         <script>
+                layui.use(['form', 'layedit', 'laydate'], function(){
+                var form = layui.form
+                ,layer = layui.layer
+                 ,layedit = layui.layedit
+                 ,laydate = layui.laydate;
+                
+               /*  form.verify({
+                	textLength: [/^[.*]{1,50}$/, '限制50字以内,不可为空']
+				}); */
+                 });
+               </script>
 				<h3 id="messageTitle"></h3>
 				<hr />
 				<br /> <br /> <span id="messageSnder"></span><br /> <br /> <br />
 				<br /> <span id="messageSenderName" style="display: none;"></span>
 				<span id="sendTime"></span><br /> <br /> <br /> <br /> <span
 					id="forMessageContent">内容<br /></span>
-				<textarea id="messageContent" rows="5" cols="40" readonly="readonly"></textarea>
+				<textarea id="messageContent" rows="5" cols="40" readonly="readonly">
+				
+				</textarea>
 				<br /> <br />
 				<div id="insertCourseDiv" style="display: none;">
 					<input type="text" id="MstudentRoNo" style="display: none;" /> <input
-						type="text" id="MCourseId" style="display: none;" /> <input
-						id="agree" class="layui-btn" onclick="agree()" type="button"
+						type="text" id="MCourseId" style="display: none;" />
+						<input id="leaveRecordId" style="display: none;">
+						 <input id="agree" class="layui-btn" onclick="agree()" type="button"
 						value="同意" /> <input style="margin-left: 10%;" id="dontCare"
 						onclick="dontCare()" class="layui-btn layui-btn-primary"
 						type="button" value="忽略" />
 				</div>
 				<div id="studentAskLeaveDiv" style="display: none;">
-					<input type="text" id="MstudentRoNo" style="display: none;" /> <input
-						type="text" style="display: none;" /> <input
+					<input
 						id="ImAgreeLeave" class="layui-btn" onclick="agreeLeave()" type="button"
 						value="批准" /> <input style="margin-left: 10%;" id="cantLeave"
 						onclick="cantLeave()" class="layui-btn layui-btn-primary"

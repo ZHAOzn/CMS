@@ -17,11 +17,28 @@
   select * from LeaveRecord where Student = #{studentRoNo} order by leaveRecordId desc
 </select>
 
-<insert id="insertleaveRecord" parameterType="com.qdu.pojo.LeaveRecord">
+<select id="selectLeaveRecordByStudentLimit" resultMap="LeaveRecordResult">
+  select * from LeaveRecord where Student = #{studentRoNo} order by leaveRecordId desc limit 1
+</select>
+
+<select id="selectLeaveRecordByleaveRecordId" resultMap="LeaveRecordResult">
+  select * from LeaveRecord where LeaveRecordId = #{leaveRecordId}
+</select>
+
+<insert id="insertleaveRecord" parameterType="com.qdu.pojo.LeaveRecord" useGeneratedKeys="true" keyProperty="leaveRecordId">
+       <selectKey keyProperty="leaveRecordId" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
   insert into 
   LeaveRecord(Student,CourseId,CourseName,Reason,LeaveTime,ReturnTime,Status) 
   values(#{student},#{courseId},#{courseName},#{reason},#{leaveTime},#{returnTime},#{status})
 </insert>
+
+<update id="updateLeaveRecordById" parameterType="HashMap">
+ update LeaveRecord set 
+ Status = #{status} 
+ where LeaveRecordId = #{leaveRecordId}
+</update>
 
 </mapper>
 

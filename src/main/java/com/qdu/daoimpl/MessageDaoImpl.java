@@ -17,9 +17,9 @@ public class MessageDaoImpl implements MessageDao{
 	private SqlSessionFactory sessionFactory;
 
 	@Override 
-	public void insertMessage(Message message) {
+	public int insertMessage(Message message) {
 		String statement = "com.qdu.mapping.MessageMapping.insertMessage";
-		sessionFactory.openSession().insert(statement, message);
+		return sessionFactory.openSession().insert(statement, message);
 	}
 
 	@Override

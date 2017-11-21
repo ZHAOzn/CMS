@@ -70,6 +70,11 @@
 		SELECT * from
 		Teacher where TeacherMobile = #{teacherMobile}
 	</select>
+	
+	<select id="selectTeacherNameByMobile" parameterType="String" resultMap="TeacherResult">
+		SELECT TeacherName from
+		Teacher where TeacherMobile = #{teacherMobile}
+	</select>
 
 	<select id="selecctTeacherByThree" parameterType="HashMap" resultMap="TeacherResult">
         select * from Teacher where TeacherMobile = #{teacherMobile} And TeacherName = #{teacherName} 

@@ -11,10 +11,17 @@ public class Message implements Serializable{
 	private String sendTime;
 	private String haveRead;
 	private String messageContent;
+	private String messageOther;
 	private String messageType;
 	
 	 
 	
+	public String getMessageOther() {
+		return messageOther;
+	}
+	public void setMessageOther(String messageOther) {
+		this.messageOther = messageOther;
+	}
 	public int getMessageId() {
 		return messageId;
 	}

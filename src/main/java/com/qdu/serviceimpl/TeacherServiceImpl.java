@@ -56,4 +56,10 @@ public class TeacherServiceImpl implements TeacherService{
 		return teacherDaoImpl.updateStudentextra(teacher);
 	}
 
+
+	@Override
+	public Teacher selectTeacherNameByMobile(String teacherMobile) {
+		return teacherDaoImpl.selectTeacherNameByMobile(teacherMobile);
+	}
+
 }

@@ -514,13 +514,9 @@ public class StudentController {
 			Map<String, Object> map = new HashMap<>();
 			messageServiceImpl.uodateMesageHaveread(messageId);
 			Message message = messageServiceImpl.selectMessageById(messageId);
-			Course course = courseServiceImpl.selectCourseById(Integer.parseInt(message.getMessageContent()));
-			if(course != null){
-				Teacher teacher2 = course.getTeacher();
-				map.put("teacher", teacher2);
-			}
+			Teacher teacher2 = teacherServiceImpl.selectTeacherNameByMobile(message.getMessageSender());
+			map.put("teacher", teacher2);
 			map.put("mmm", message);
-			System.out.println(map);
 			return map;
 		}
 		//ajax更新学生信息
@@ -669,13 +665,17 @@ public class StudentController {
 		leaveRecord.setReason(reson);
 		leaveRecord.setStatus(status);
 		int tem = leaveRecordServiceImpl.insertleaveRecord(leaveRecord);
+		LeaveRecord leaveRecord2  = leaveRecordServiceImpl.selectLeaveRecordByStudentLimit(student);
+		System.out.println("tem: "+leaveRecord2.getLeaveRecordId());
 		Message message = new Message();
 		message.setMessageSender(student);
 		message.setMessageAccepter(course.getTeacher().getTeacherMobile());
-		message.setMessageTitle(student2.getStudentName() + "同学(" + clazzStu.getClazz().getClazzName() +")请假");
+		message.setMessageTitle(student2.getStudentName() + "同学(" + clazzStu.getClazz().getClazzName() +")请求关于"+course.getCourseName()+"请假:"
+				+ sdf.format(leaveTime) + "——" + sdf.format(returnTime));
 		message.setSendTime(sdf.format(new Date()));
 		message.setHaveRead("未读");
-		message.setMessageContent(courseId + "c" + clazzStu.getClazz().getClazzId());
+		message.setMessageContent(reson);
+		message.setMessageOther(leaveRecord2.getLeaveRecordId()+"");
 		message.setMessageType("leaveRecord");
 		messageServiceImpl.insertMessage(message);
 		if(tem > 0){
