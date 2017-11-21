@@ -366,6 +366,16 @@
 					$('#MstudentRoNo').val(data.mmm.messageSender);
 					$('#MCourseId').val(data.mmm.messageContent);
 				}
+				if(data.mmm.messageType == 'leaveRecord'){
+					$('#forMessageContent').hide();
+					$('#messageContent').hide();
+					$('#seprateMessage').hide();
+					$('#courseInfo').hide();
+					$('#studentAskLeaveDiv').show();
+					
+					$('#MstudentRoNo').val(data.mmm.messageSender);
+					$('#MCourseId').val(data.mmm.messageContent);
+				}
 				$('#messageShow').hide();
 				$('#messageTitle').html('标题 <' + data.mmm.messageTitle + '>');
 				$('#messageSnder').html('发送人账号 <' + data.mmm.messageSender +'>');
@@ -553,6 +563,35 @@
 			alert("请至少输入一项吧大侠？");
 		}
 	}
+function agreeLeave() {
+	 $.ajax({
+         type: "GET",
+         data: {
+        	 "teacherMobile":$('#teacherMobile').val(),
+	         "studentRoNo": $('#MstudentRoNo').val(),
+	         "content": $('#MCourseId').val()
+         },
+         contentType: "application/json; charset=utf-8",
+         async: false,
+         //url不加空格！！！！！！！！！！！！！！！！！！！！！！！
+         url: "<%=request.getContextPath()%>/studentInfo/insertStudentInfoByteacher.do",
+		success : function(data) {
+			if(data.result == true){
+				$('#handleMessageShow').show();
+				setTimeout('myFunction()',1500);
+			}else{
+				alert("请勿重复添加");
+			}
+		},
+		error : function(data) {
+			alert("服务器异常");
+		},
+		dataType : "json",
+	});
+	}
+function cantLeave() {
+		
+	}
 </script>
 </head>
 <body>
@@ -731,145 +770,6 @@
 					</c:otherwise>
 				</c:choose>
 			</table>
-			
-			
-			
-			<!-- 上传文件 -->
-			<div id="upLoadShow" class="site-text site-block"
-				style="display: none; margin-top: 0;">
-				<!-- 单个文件上传不能超过50M -->
-				<span id="MaxUpload" style="color: red;">单个文件不能超过51200k</span><br/>
-				
-				<div class="layui-upload">
-				<form action="">
-					<button type="button" class="layui-btn layui-btn-normal layui-btn-danger"
-						id="testList">选择压缩文件</button>
-					<div class="layui-upload-list">
-						<table class="layui-table">
-							<thead>
-								<tr>
-									<th>文件名</th>
-									<th>大小</th>
-									<th>状态</th>
-									<th>操作</th>
-								</tr>
-							</thead>
-							<tbody id="demoList"></tbody>
-						</table>
-					</div>
-					<button type="button" onclick="timeoutForFileList()" class="layui-btn" id="testListAction">开始上传</button>
-					</form>
-				</div>
-				
-				<!-- 个人资料 -->
-			<div class="layui-form sessiontable"
-				style=" width: 100%; margin-left: 0">
-				<table class="layui-table" lay-even>
-					<colgroup>
-						<col width="150">
-						<col width="200">
-						<col width="340">
-					</colgroup>
-					<thead>
-						<tr>
-							<th style="text-align: center;">文件类型</th>
-							<th style="text-align: center;">上传时间</th>
-							<th style="text-align: center;">文件名称</th>
-						</tr>
-					</thead>
-					<tbody id="privateData">
-						
-					</tbody>
-				</table>
-
-				<script>
-				layui.use('table', function() {
-					var table = layui.table;
-				});
-			    </script>
-			</div>
-			</div>
-
-			<script>
-			var ttem;
-			function giveValue(id) {
-				var a = $('#fileType').val();
-				ttem = a;
-				$('#beGiveValue').val(ttem);
-			}
-            layui.use('upload', function(){
-             var $ = layui.jquery
-             ,upload = layui.upload;
-             //设置上传文件单个大小
-               //设定文件大小限制
-
-             //文件上传列表JS
-             var demoListView = $('#demoList')
-             ,uploadListIns = upload.render({
-               elem: '#testList'
-               ,url: '<%=request.getContextPath()%>/teacher/teacherUpload.do'
-               ,size: 51200 //限制文件大小，单位 KB(50M = 51200)
-               ,accept: 'file'
-               ,data:{teacherMobile: $('#teacherMobile').val()}
-               ,multiple: true
-               ,auto: false
-               ,bindAction: '#testListAction'
-               ,exts:'zip|rar|7z|pdf|xls|doc|ppt|docx'
-               ,choose: function(obj){   
-                 var files = obj.pushFile(); //将每次选择的文件追加到文件队列
-                 //读取本地文件
-                 obj.preview(function(index, file, result){
-                   var tr = $(['<tr id="upload-'+ index +'">'
-                     ,'<td>'+ file.name +'</td>'
-                     ,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
-                     ,'<td>等待上传</td>'
-                     ,'<td>'
-                       ,'<button class="layui-btn layui-btn-mini demo-reload layui-hide">重传</button>'
-                       ,'<button class="layui-btn layui-btn-mini layui-btn-danger demo-delete">删除</button>'
-                     ,'</td>'
-                   ,'</tr>'].join(''));
-                   
-                 
-                 
-                   //单个重传
-                   tr.find('.demo-reload').on('click', function(){
-                     obj.upload(index, file);
-                   });
-                   
-                   //删除
-                   tr.find('.demo-delete').on('click', function(){
-                     delete files[index]; //删除对应的文件
-                     tr.remove();
-                   });
-                   
-                   
-                   demoListView.append(tr);
-                 });
-               }
-               ,done: function(res, index, upload){
-                 if(res.code == 0){ //上传成功
-                   var tr = demoListView.find('tr#upload-'+ index)
-                   ,tds = tr.children();
-                   tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
-                   tds.eq(3).html(''); //清空操作
-                   delete files[index]; //删除文件队列已经上传成功的文件
-                   getPrivateData();
-                   return;
-                 }
-                 this.error(index, upload);
-               }
-               ,error: function(index, upload){
-                 var tr = demoListView.find('tr#upload-'+ index)
-                 ,tds = tr.children();
-                 tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
-                 tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
-               }
-             });
-            });
-             </script>
-
-            
-            
 
 			<!-- 个人中心 -->
 			<div id="teacherInfoShow"
@@ -1136,6 +1036,14 @@
 						value="同意" /> <input style="margin-left: 10%;" id="dontCare"
 						onclick="dontCare()" class="layui-btn layui-btn-primary"
 						type="button" value="忽略" />
+				</div>
+				<div id="studentAskLeaveDiv" style="display: none;">
+					<input type="text" id="MstudentRoNo" style="display: none;" /> <input
+						type="text" style="display: none;" /> <input
+						id="ImAgreeLeave" class="layui-btn" onclick="agreeLeave()" type="button"
+						value="批准" /> <input style="margin-left: 10%;" id="cantLeave"
+						onclick="cantLeave()" class="layui-btn layui-btn-primary"
+						type="button" value="驳回" />
 				</div>
 			</div>
 
@@ -1911,10 +1819,7 @@
 			return world;
 		}
 
-		layui
-				.use(
-						[ 'element', 'layer' ],
-						function() {
+		layui.use([ 'element', 'layer' ],function() {
 							var element = layui.element, $ = layui.jquery, layer = layui.layer;
 							//触发事件
 							var active = {

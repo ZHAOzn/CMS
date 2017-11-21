@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class FilePackage implements Serializable{
 	private int fileId;
-	private String userId;
+	private int courseId;
 	private String fileName;
 	private String fileType;
 	private String createTime;
@@ -14,13 +14,12 @@ public class FilePackage implements Serializable{
 	public void setFileId(int fileId) {
 		this.fileId = fileId;
 	}
-	public String getUserId() {
-		return userId;
+	public int getCourseId() {
+		return courseId;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setCourseId(int courseId) {
+		this.courseId = courseId;
 	}
-	
 	public String getFileName() {
 		return fileName;
 	}
@@ -39,6 +38,10 @@ public class FilePackage implements Serializable{
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
+
+	
+	
+	
 	
 	
 }

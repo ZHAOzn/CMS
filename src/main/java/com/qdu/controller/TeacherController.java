@@ -112,8 +112,6 @@ public class TeacherController {
 					List<LogEntity> logEntities = logEntityServiceImpl.selectStudentLog(id);
 					map.put("logEntity", logEntities);
 					map.put("page", page);
-					List<FilePackage> filePackages = filePackageServiceImpl.selectFileByUserId(teacher.getTeacherMobile());
-					map.put("filePackages", filePackages);
 					// session的id存一下
 					request.getSession().setAttribute("UserId", id);
 					return "teacherPage";
@@ -329,9 +327,10 @@ public class TeacherController {
 	@SystemLog(module = "教师", methods = "日志管理-上传文件")
 	@RequestMapping(value = "/teacherUpload.do")
 	@ResponseBody
-	public Map<String, Object> teacherUpload(@RequestParam("file") MultipartFile file, String teacherMobile,
+	public Map<String, Object> teacherUpload(@RequestParam("file") MultipartFile file, int courseId,
 			String fileType, HttpServletRequest request) throws IOException, Throwable {
 		Map<String, Object> map = new HashMap<>();
+		System.out.println(courseId);
 	        String fileName = file.getOriginalFilename();  
 	        String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);  
 	        if(suffix.equals("zip")){
@@ -351,7 +350,6 @@ public class TeacherController {
 			}else if (suffix.equals("docx")) {
 				fileType = "docx";
 			}
-		Teacher teacher = teacherServiceImpl.selectTeacherByMobile(teacherMobile);
 		// 定义上传路径
 		String path = request.getSession().getServletContext().getRealPath("/") + "file";
 		boolean isFileUpload = ServletFileUpload.isMultipartContent(request);
@@ -368,7 +366,7 @@ public class TeacherController {
 			String time2 = new SimpleDateFormat("YYYY-MM-dd").format(new Date());
 			String newfileName = fileName+"/"+time;
 			FilePackage filePackage = new FilePackage();
-			filePackage.setUserId(teacherMobile);
+			filePackage.setCourseId(courseId);
 			filePackage.setFileName(newfileName);
 			filePackage.setFileType(fileType);
 			filePackage.setCreateTime(time2);
@@ -390,16 +388,15 @@ public class TeacherController {
 				map.put("code", 0);
 			}
 		}
-
 		return map;
 	}
 	//获取文件列表
 	@SystemLog(module = "教师", methods = "日志管理-获取文件列表")
 	@RequestMapping(value = "/getPrivateData.do")
 	@ResponseBody
-	public Map<String, Object> getPrivateData(String teacherMobile){
+	public Map<String, Object> getPrivateData(int courseId){
 		Map<String, Object> map = new HashMap<>();
-		List<FilePackage> filePackages = filePackageServiceImpl.selectFileByUserId(teacherMobile);
+		List<FilePackage> filePackages = filePackageServiceImpl.selectFileByCourseId(courseId);
 		map.put("filePackages", filePackages);
 		return map;
 	}

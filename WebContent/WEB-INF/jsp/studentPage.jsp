@@ -62,6 +62,7 @@
 		 //该学生课程信息
 		 $('#checkCourseShow').click(function name1() {
 			 $('#messageList').html("课程信息");
+			 $('#upLoadShow').hide();
 			 $('#doubleHandle').hide();
 			 $('#signal').hide();
 			 $('#studentAddCourse').hide();
@@ -74,11 +75,14 @@
 			 $('#studentLogInfo').hide();
 			 $("#studentLogOfTime").hide();
 			 $('#studentWork').hide();
+			 $('#beforeLeaveMoudle').hide();
+			 $('#afterLeaveMoudle').hide();
 			 $('#courseInfo').show();
 		});
 		 //个人中心
 		 $('#studentInfoCenter').click(function name1() {
 			 $('#messageList').html("个人中心");
+			 $('#upLoadShow').hide();
 			 $('#doubleHandle').hide();
 			 $('#signal').hide();
 			 $('#studentAddCourse').hide();
@@ -91,11 +95,14 @@
 			 $('#studentLogInfo').hide();
 			 $("#studentLogOfTime").hide();
 			 $('#studentWork').hide();
+			 $('#beforeLeaveMoudle').hide();
+			 $('#afterLeaveMoudle').hide();
 			 $('#studentInfoShow').show();
 		 });
 		 //点击修改信息
 		 $('#updateStudentInfoNow').click(function name1() {
 			 $('#messageList').html("修改信息");
+			 $('#upLoadShow').hide();
 			 $('#doubleHandle').hide();
 			 $('#signal').hide();
 			 $('#studentAddCourse').hide();
@@ -109,11 +116,14 @@
 			 $('#studentLogInfo').hide();
 			 $("#studentLogOfTime").hide();
 			 $('#studentWork').hide();
+			 $('#beforeLeaveMoudle').hide();
+			 $('#afterLeaveMoudle').hide();
 			 $('#studentInfoShow').show();
 		 });
 		 //点击操作日志
 		 $('#studentLog').click(function name() {
 			 $('#messageList').html("操作日志");
+			 $('#upLoadShow').hide();
 			 $('#doubleHandle').hide();
 			 $('#signal').hide();
 			 $('#studentAddCourse').hide();
@@ -125,6 +135,8 @@
 			 $('#studentInfoShow').hide();
 			 $("#studentLogOfTime").hide();
 			 $('#studentWork').hide();
+			 $('#beforeLeaveMoudle').hide();
+			 $('#afterLeaveMoudle').hide();
 			 $('#forStudentLogInfo').show();
 			 $('#studentLogInfo').show();
 		});
@@ -132,6 +144,7 @@
 		//点击消息
 		  $('#messageButtton').click(function() {
 			 $('#messageList').html("消息列表");
+			 $('#upLoadShow').hide();
 			 $('#doubleHandle').hide();
 			 $('#signal').hide();
 		     $('#studentAddCourse').hide();
@@ -144,6 +157,8 @@
 			 $('#studentLogInfo').hide();
 			 $("#studentLogOfTime").hide();
 			 $('#studentWork').hide();
+			 $('#beforeLeaveMoudle').hide();
+			 $('#afterLeaveMoudle').hide();
 			 $('#messageShow').show();
 			 layui.use('table', function(){
 				  var table = layui.table;
@@ -153,6 +168,7 @@
 		 //手动添加课程
 		 $('#addCourse').click(function name1() {
 			 $('#messageList').html("添加课程");
+			 $('#upLoadShow').hide();
 				$('#courseInfo').hide();
 				$('#doubleHandle').hide();
 				$('#signal').hide();
@@ -165,11 +181,14 @@
 				 $('#studentLogInfo').hide();
 				 $("#studentLogOfTime").hide();
 				 $('#studentWork').hide();
+				 $('#beforeLeaveMoudle').hide();
+				 $('#afterLeaveMoudle').hide();
 				$('#studentAddCourse').show();
 			});
 		 //安全管理
 			$('#safeManage').click(function name1() {
 				$('#messageList').html("修改密码");
+				 $('#upLoadShow').hide();
 				$('#courseInfo').hide();
 				$('#studentAddCourse').hide();
 				$('#doubleHandle').show();
@@ -182,12 +201,15 @@
 				 $('#forStudentLogInfo').hide();
 				 $('#studentLogInfo').hide();
 				 $('#studentWork').hide();
+				 $('#beforeLeaveMoudle').hide();
+				 $('#afterLeaveMoudle').hide();
 				$('#signal').show();
 			});
 		 //点击签到记录
 			$('#studentWordRecord').click(function wq() {
 				$('#messageList').html("签到记录");
 				$('#courseInfo').hide();
+				 $('#upLoadShow').hide();
 				$('#studentAddCourse').hide();
 				$('#doubleHandle').hide();
 				 $('#seprateMessage').hide();
@@ -199,14 +221,19 @@
 				 $('#forStudentLogInfo').hide();
 				 $('#studentLogInfo').hide();
 				$('#signal').hide();
+				$('#beforeLeaveMoudle').hide();
+				 $('#afterLeaveMoudle').hide();
 				$('#studentWork').show();
 			});
 			//点击完善信息
 			$('#perfectButton').click(function wq() {
 				$('#messageList').html("完善信息");
+				 $('#upLoadShow').hide();
 				$('#collegeTr').hide();
 				$('#reCollegeTr').show();
 				$('#specialTr').hide();
+				$('#beforeLeaveMoudle').hide();
+				 $('#afterLeaveMoudle').hide();
 				$('#reSpecialTr').show();
 				$('#intoSchoolYearTr').hide();
 				$('#reIntoSchoolYearTr').show();
@@ -220,6 +247,28 @@
 				$('#reFreeStyleTr').show();
 				$('#perfectButton').hide();
 				$('#savefectButton').show();
+			});
+			
+			//点击请假
+			$('#leaveRecord').click(function wq() {
+				getLeaveRecord();
+				$('#messageList').html("请假记录");
+				$('#courseInfo').hide();
+				$('#upLoadShow').hide();
+				$('#studentAddCourse').hide();
+				$('#doubleHandle').hide();
+				$('#seprateMessage').hide();
+				$('#fushuMessage').hide();
+				$('#messageShow').hide();
+				$('#studentInfoShow').hide();
+				$('#insertCourseDiv').hide();
+				$("#studentLogOfTime").hide();
+				$('#forStudentLogInfo').hide();
+			    $('#studentLogInfo').hide();
+				$('#signal').hide();
+				$('#studentWork').hide();
+				$('#beforeLeaveMoudle').show();
+				 $('#afterLeaveMoudle').show();
 			});
 	 
 	//获取学生密码，进行后台比对
@@ -424,6 +473,7 @@
 		function dontCare() {
 			$('#doubleHandle').hide();
 			$('#signal').hide();
+			 $('#upLoadShow').hide();
 		    $('#studentAddCourse').hide();
 		     $('#courseInfo').hide();
 		     $('#studentInfoShow').hide();
@@ -548,6 +598,115 @@
 				dataType : "json",
 			});
 		}
+	
+		//ajax获取上传的文件列表
+		function getPrivateData(id) {
+			$('#courseInfo').hide();
+			$('#upLoadShow').show();
+			$('#messageList').html("课件资料");
+			 $.ajax({
+		         type: "GET",
+		         data: {
+		        	 "courseId": id
+		         },
+		         contentType: "application/json; charset=utf-8",
+		         async: false,
+		         url: "<%=request.getContextPath()%>/teacher/getPrivateData.do",
+				success : function(data) {
+					var dataObj = data.filePackages;
+					 con = "";
+					 $.each(dataObj, function (index, item) {
+						    con += "<tr>";
+		        	        con += "<td style='text-align:center;'>" + item.fileType + "</td>";
+		        	        con += "<td style='text-align:center;'>" + item.createTime + "</td>";
+		        	        con += "<td style='padding-left:5%;'><a style='color:green;' href=\'<%=request.getContextPath() %>/file/"+item.fileName+"\'>" + item.fileName + "</a></td>";
+		        	        con += "<tr/>";
+		        	    });
+					 $('#privateData').html(con);
+				},
+				error : function(data) {
+				},
+				dataType : "json",
+			});
+		}
+//获取请假记录		
+function getLeaveRecord() {
+	 $.ajax({
+         type: "GET",
+         data: {
+        	 "studentRono":$('#studentRoNo').val()
+         },
+         contentType: "application/json; charset=utf-8",
+         async: false,
+         url: "<%=request.getContextPath()%>/student/getLeaveRecord.do",
+		success : function(data) {
+			var dataObj = data.leaveRecords;
+			con =  '\
+				<tr>\
+					<th>课程编码</th>\
+					<th>课程名称</th>\
+					<th>请假事由</th>\
+					<th>请假时间</th>\
+					<th>返回时间</th>\
+					<th>状态</th>\
+				</tr>\
+				';
+	    $.each(dataObj, function (index, item) {
+	        con += "<tr>";
+	        con += "<td>" + item.courseId + "</td>";
+	        con += "<td>" + item.courseName + "</td>";
+	        con += "<td>" + item.reason + "</td>";
+	        con += "<td>" + item.leaveTime + "</td>";
+	        con += "<td>" + item.returnTime + "</td>";
+	        con += "<td>" + item.status + "</td>";
+	        con += "<tr/>";
+	    });
+	        //可以在控制台打印一下看看，这是拼起来的标签和数据
+	        //把内容入到这个div中即完成
+	    $("#leaveRecordTable").html(con);
+	    $("#leaveRecordTable").show();
+		},
+		error : function(data) {
+			//alert("?");
+		},
+		dataType : "json",
+	});
+}	
+//学生请假处理请求
+function studentAddLeave() {
+	if($('#leaveCourseId').val() != "" && $('#reson').val() != "" && $('#leaveTime').val() != "" && 
+			$('#returnTime').val() != ""){
+		 $.ajax({
+	         type: "GET",
+	         data: {
+	        	 "student":$('#studentRoNo').val(),
+	        	 "courseId": $('#leaveCourseId').val(),
+	        	 "reson": $('#reson').val(),
+	        	 "leaveTime": $('#leaveTime').val(),
+	        	 "returnTime": $('#returnTime').val(),
+	        	 "status":"待审"
+	         },
+	         contentType: "application/json; charset=utf-8",
+	         async: false,
+	         url: "<%=request.getContextPath()%>/student/studentAddLeave.do",
+			success : function(data) {
+				if(data.result == true){
+					$('#afterLeaveSuccess').show();
+					 setTimeout('fuckFunction()',2000); 
+				}else {
+					alert("创建假条失败...");
+				}
+			},
+			error : function(data) {
+			},
+			dataType : "json",
+		});
+	}
+}
+function fuckFunction() {
+	$('#afterLeaveSuccess').hide();
+	getLeaveRecord();
+}
 </script>
 
 </head>
@@ -628,10 +787,10 @@
 								<a id="studentWordRecord" href="#">签到记录</a>
 							</dd>
 							<dd>
-								<a id="studentLog" href="#">操作日志</a>
+								<a id="leaveRecord" href="#">请假记录</a>
 							</dd>
 							<dd>
-								<a href="#">待定</a>
+								<a id="studentLog" href="#">操作日志</a>
 							</dd>
 						</dl></li>
 					<li class="layui-nav-item"><a href="#">博客中心</a></li>
@@ -644,8 +803,184 @@
 		<div class="layui-body site-demo"
 			style="padding-top: 4%; overflow: auto;">
 			<span id="messageList"
-				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;">课程信息</span>
+				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;"></span>
 			<hr class="layui-bg-cyan">
+			
+			<!-- 请假模块 -->
+			
+			<div id="beforeLeaveMoudle"  class="site-text site-block"
+				style="display: none; margin-top: 0;">
+				<!-- 请求发送显示 -->
+				<div id="afterLeaveSuccess"
+		          style="background-color: #393D49; height: 20%; width: 20%; z-index: 20; position: fixed; 
+		          margin-top: 4%; text-align: center; margin-left:5%; display: none;">
+		            <h3 style="color: white; margin-top: 19%">请求已发送..</h3>
+	           </div>
+				<form>
+				<div id="createLeaveRecord" style="width: 100%;">
+					<div id="courseDivShow">
+						<label class="layui-form-label">选择课程</label> 
+						<select id="leaveCourseId" required
+						lay-verify="idvalidate"
+						style="height: 2em; width: 15%;">
+						<c:choose>
+							<c:when test="${! empty studentInfos}">
+								<c:forEach items="${studentInfos}" var="s">
+									<option value="${s.course.courseId}">${s.course.courseName}</option>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<option selected="selected">暂无</option>
+							</c:otherwise>
+						</c:choose>
+					</select>
+					</div>
+					
+					<div class="layui-form-item">
+						<label class="layui-form-label">请假原因</label>
+						<div class="layui-input-block">
+							<input id="reson" type="text" name="reson" required
+								lay-verify="required" placeholder="请输入请假原因" autocomplete="off"
+								class="layui-input">
+					</div>
+					</div>
+					
+					<div class="layui-form-item">
+						<label class="layui-form-label">请假时间</label>
+						<div class="layui-input-block">
+							<input id="leaveTime" type="text" required
+								lay-verify="required" placeholder="请输入离开时间" autocomplete="off"
+								class="layui-input">
+						</div>
+					</div>
+					
+					<div class="layui-form-item">
+						<label class="layui-form-label">返回时间</label>
+						<div class="layui-input-block">
+							<input id="returnTime" type="text" required
+								lay-verify="required" placeholder="请输入返回时间" autocomplete="off"
+								class="layui-input">
+						</div>
+					</div>
+					
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<input id="AddCourseButton" class="layui-btn"
+								onclick="studentAddLeave()" type="button" value="提交申请" />
+							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						</div>
+					</div>
+				</div>
+				</form>
+			</div>
+			<script>
+			//Demo
+			layui.use([ 'form', 'laydate' ], function() {
+				var form = layui.form, laydate = layui.laydate;
+
+				//监听提交
+				form.on('submit(formDemo)', function(data) {
+					layer.msg(JSON.stringify(data.field));
+					return false;
+				});
+				laydate.render({
+					elem : '#leaveTime',
+				});
+				laydate.render({
+					elem : '#returnTime',
+				});
+				form.verify({
+					idvalidate:[/^[\d]{1,20}$/,'请选择课程']
+				});
+
+			});
+				</script>
+			
+			
+			<div id="afterLeaveMoudle"  class="site-text site-block"
+				style="display: none; margin-top: 0;">
+				<table class="layui-table" id="leaveRecordTable">
+					<colgroup>
+						<col width="130">
+						<col width="110">
+						<col width="130">
+						<col width="130">
+						<col width="120">
+						<col width="90">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;">课程编码</th>
+							<th style="text-align: center;">课程名称</th>
+							<th style="text-align: center;">请假事由</th>
+							<th style="text-align: center;">请假时间</th>
+							<th style="text-align: center;">返回时间</th>
+							<th style="text-align: center;">状态</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:choose>
+							<c:when test="${! empty leaveRecords}">
+								<c:forEach items="${leaveRecords}" var="l">
+									<tr>
+										<td>${l.courseId}</td>
+										<td>${l.courseName}</td>
+										<td>${l.reason}</td>
+										<td>${l.leaveTime}</td>
+										<td>${l.returnTime}</td>
+										<td>${l.status}</td>
+									</tr>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								
+							</c:otherwise>
+						</c:choose>
+					</tbody>
+				</table>
+				<script>
+			layui.use([ 'element', 'layer' ,'table'], function() {
+				var element = layui.element, $ = layui.jquery,table = layui.table;
+				//转换静态表格
+				table.init('courseInfo', {
+				  //设置高度
+				  //支持所有基础参数
+				});
+				table.init('signRecord',{
+					
+				});
+			});
+			</script>
+			</div>
+
+				<!-- 个人资料 -->
+				<div class="layui-form sessiontable" id="upLoadShow"
+					style="width: 100%; margin-left: 0; display: none;">
+					<table class="layui-table" lay-even>
+						<colgroup>
+							<col width="150">
+							<col width="200">
+							<col width="340">
+						</colgroup>
+						<thead>
+							<tr>
+								<th style="text-align: center;">文件类型</th>
+								<th style="text-align: center;">上传时间</th>
+								<th style="text-align: center;">文件名称</th>
+							</tr>
+						</thead>
+						<tbody id="privateData">
+
+						</tbody>
+					</table>
+
+					<script>
+				layui.use('table', function() {
+					var table = layui.table;
+				});
+			    </script>
+				</div>
+				
 
 			<!-- 课程信息模块 -->
 			<div id="courseInfo" class="courseInfo">
@@ -679,7 +1014,8 @@
 							<c:when test="${! empty studentInfos}">
 								<c:forEach items="${studentInfos}" var="s">
 									<tr>
-										<td>${s.course.courseName}</td>
+										<td><a id="${s.course.courseId}" onclick="getPrivateData(this.id)" href="#" style="color: green;">
+										${s.course.courseName}</a></td>
 										<td>${s.course.courseType}</td>
 										<td>${s.course.startTime}</td>
 										<td>${s.course.endTime}</td>

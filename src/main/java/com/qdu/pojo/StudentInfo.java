@@ -13,6 +13,16 @@ public class StudentInfo implements Serializable{
 	private int comeLate;
 	private int leaveEarlier;
 	private int absenteeism;
+	private int leaveRecord;
+	
+	
+	
+	public int getLeaveRecord() {
+		return leaveRecord;
+	}
+	public void setLeaveRecord(int leaveRecord) {
+		this.leaveRecord = leaveRecord;
+	}
 	public int getStudentInfoId() {
 		return studentInfoId;
 	}

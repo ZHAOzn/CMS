@@ -1,10 +1,13 @@
 package com.qdu.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,10 +19,12 @@ import com.qdu.aop.SystemLog;
 import com.qdu.pojo.Clazz;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Course;
+import com.qdu.pojo.StudentInfo;
 import com.qdu.pojo.Teacher;
 import com.qdu.service.ClazzService;
 import com.qdu.service.ClazzStuService;
 import com.qdu.service.CourseService;
+import com.qdu.service.StudentInfoService;
 
 @Controller
 @RequestMapping(value = "/clazz") 
@@ -28,6 +33,7 @@ public class ClazzController {
 	@Autowired private ClazzService clazzServiceImpl;
 	@Autowired private CourseService courseServiceImpl;
 	@Autowired private ClazzStuService clazzStuServiceImpl;
+	@Autowired private StudentInfoService studentInfoServiceImpl;
 	//添加班级准备
 	@RequestMapping(value = "/forInsertClazz.do")
 	public String forInsertClazz(int courseId,ModelMap map){
@@ -49,13 +55,25 @@ public class ClazzController {
 	}
 	//添加课程
 	@SystemLog(module="教师",methods="日志管理-添加课程")
-	@RequestMapping(value = "/addClazz.do",method = RequestMethod.POST)
-	public String addClazz(Clazz clazz,ModelMap map,HttpServletRequest request){
-		clazzServiceImpl.insertClazz(clazz);
-		int courseId = Integer.parseInt(request.getParameter("course.courseId"));
-		Course course = courseServiceImpl.selectCourseById(courseId);
-		map.put("course", course);
-		return "clazzInfo";
+	@RequestMapping(value = "/addClazz.do")
+	@ResponseBody
+	public Map<String, Object> addClazz(String clazzName,int courseId,
+			@DateTimeFormat(pattern = "yyyy") Date currentYear,HttpServletRequest request){
+		Map<String, Object> map = new HashMap<>();
+		System.out.println(courseId);
+		Clazz clazz = new Clazz();
+		clazz.setClazzName(clazzName);
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy");   
+		clazz.setCurrentYear(Integer.parseInt(sdf.format(currentYear)));
+		clazz.setCourse(courseServiceImpl.selectCourseById(courseId));
+		int tem = clazzServiceImpl.insertClazz(clazz);
+		if(tem > 0){
+			map.put("result", true);
+		}else {
+			map.put("result", false);
+		}
+		
+		return map;
 	}
 	//修改班级信息
 	@SystemLog(module="教师",methods="日志管理-修改班级")
@@ -81,6 +99,8 @@ public class ClazzController {
 	@RequestMapping(value = "/deleteClazzById.do")
 	public @ResponseBody Map<String, Object> deleteClazzById(int clazzId){
 		int tem = clazzStuServiceImpl.deleteClazzStuByClazzId(clazzId);
+		Clazz clazz = clazzServiceImpl.selectClazzById(clazzId);
+		studentInfoServiceImpl.deleteStudentInfoByCourse(clazz.getCourse().getCourseId());
 		int tem2 = clazzServiceImpl.deleteClazzById(clazzId);
 		Map<String, Object> map = new HashMap<>();
 		map.put("message", "删除成功");

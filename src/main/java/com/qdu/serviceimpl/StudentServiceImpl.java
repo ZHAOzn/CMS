@@ -67,6 +67,11 @@ public class StudentServiceImpl implements StudentService{
 		return studentDaoImpl.updateStudentextra(student);
 	}
 
+	@Override
+	public List<Student> selectStuList() {
+		return studentDaoImpl.selectStuList();
+	}
+
 	
 
 
