@@ -41,6 +41,11 @@ public class LeaveRecordServiceImpl implements LeaveRecordService{
 	public LeaveRecord selectLeaveRecordByStudentLimit(String studentRoNo) {
 		return leaveRecordDaoImpl.selectLeaveRecordByStudentLimit(studentRoNo);
 	}
+
+	@Override
+	public List<LeaveRecord> selectLeaveRecordByStudentAndCourse(String studentRoNo, int courseId, String status) {
+		return leaveRecordDaoImpl.selectLeaveRecordByStudentAndCourse(studentRoNo, courseId, status);
+	}
 	
 	
 

@@ -61,6 +61,11 @@ public class StudentInfoServiceImpl implements StudentInfoService{
 	public List<StudentInfo> selectStudentInfoList(String studentRoNo) {
 		return studentInfoDaoImpl.selectStudentInfoList(studentRoNo);
 	}
+
+	@Override
+	public int updateStudentInfoAboutLeave(int studentInfoId, int askForLeave) {
+		return studentInfoDaoImpl.updateStudentInfoAboutLeave(studentInfoId, askForLeave);
+	}
 	
 
 }

@@ -49,4 +49,14 @@ public class LeaveRecordDaoImpl implements LeaveRecordDao{
 		return sqlsessionFactory.openSession().selectOne(statement, studentRoNo);
 	}
 
+	@Override
+	public List<LeaveRecord> selectLeaveRecordByStudentAndCourse(String studentRoNo, int courseId, String status) {
+		String statement = "com.qdu.mapping.LeaveRecordMapping.selectLeaveRecordByStudentAndCourse";
+		Map<String, Object> map = new HashMap<>();
+		map.put("studentRoNo", studentRoNo);
+		map.put("courseId", courseId);
+		map.put("status", status);
+		return sqlsessionFactory.openSession().selectList(statement, map);
+	}
+
 }

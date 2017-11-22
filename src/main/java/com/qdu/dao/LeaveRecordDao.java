@@ -15,5 +15,7 @@ public interface LeaveRecordDao {
 	public LeaveRecord selectLeaveRecordByleaveRecordId(int leaveRecordId);
 	
 	public LeaveRecord selectLeaveRecordByStudentLimit(String studentRoNo);
+	
+	public List<LeaveRecord> selectLeaveRecordByStudentAndCourse(String studentRoNo,int courseId,String status);
 
 }

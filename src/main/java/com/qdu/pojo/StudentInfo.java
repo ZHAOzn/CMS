@@ -14,9 +14,16 @@ public class StudentInfo implements Serializable{
 	private int leaveEarlier;
 	private int absenteeism;
 	private int leaveRecord;
+	private int askForLeave;
 	
 	
 	
+	public int getAskForLeave() {
+		return askForLeave;
+	}
+	public void setAskForLeave(int askForLeave) {
+		this.askForLeave = askForLeave;
+	}
 	public int getLeaveRecord() {
 		return leaveRecord;
 	}

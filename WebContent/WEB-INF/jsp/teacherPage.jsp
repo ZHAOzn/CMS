@@ -356,7 +356,9 @@
             //url不加空格！！！！！！！！！！！！！！！！！！！！！！！
             url: "<%=request.getContextPath()%>/teacher/getMessageByAjax.do",
 			success : function(data) {
+				$('#handleMessageShow').hide();
 				if(data.mmm.messageType == 'insertCourse'){
+					$('#handleMessageShow').hide();
 					$('#forMessageContent').hide();
 					$('#messageContent').hide();
 					$('#seprateMessage').hide();
@@ -435,6 +437,7 @@
 		});
 	} 
 	function dontCare() {
+		     $('#handleMessageShow').hide();
 			 $('#changeCourseinfo').hide();
 			 $('#doubleHandle').hide();
 			 $('#signal').hide();
@@ -571,20 +574,21 @@ function agreeLeave() {
 	 $.ajax({
          type: "GET",
          data: {
-        	 "teacherMobile":$('#teacherMobile').val(),
-	         "studentRoNo": $('#MstudentRoNo').val(),
-	         "content": $('#MCourseId').val()
+        	 "leaveRecordId":$('#leaveRecordId').val(),
+           	 "teacherMobile":$('#teacherMobile').val(),
+    	     "studentRoNo": $('#MstudentRoNo').val(),
+    	     "content": $('#refuseContent').val()
          },
          contentType: "application/json; charset=utf-8",
          async: false,
          //url不加空格！！！！！！！！！！！！！！！！！！！！！！！
-         url: "<%=request.getContextPath()%>/studentInfo/insertStudentInfoByteacher.do",
+         url: "<%=request.getContextPath()%>/teacher/agreeLeave.do",
 		success : function(data) {
 			if(data.result == true){
 				$('#handleMessageShow').show();
-				setTimeout('myFunction()',1500);
+				setTimeout('dontCare()',1500);
 			}else{
-				alert("请勿重复添加");
+				alert("已经处理过");
 			}
 		},
 		error : function(data) {

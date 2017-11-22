@@ -1104,7 +1104,7 @@ function fuckFunction() {
 						style="color: red; display: none; margin-left: 13%;">*班级不可为空*</p>
 
 					<p id="listenClssExit"
-						style="color: red; display: none; margin-left: 13%;">*您已在该班级*</p>
+						style="color: red; display: none; margin-left: 13%;">*您已在该课程*</p>
 					<div class="layui-form-item">
 						<div class="layui-input-block">
 							<input id="AddCourseButton" class="layui-btn"

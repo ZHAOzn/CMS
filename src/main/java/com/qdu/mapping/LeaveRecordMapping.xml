@@ -13,32 +13,43 @@
 		<result property="status" column="Status" />
 	</resultMap>
 
-<select id="selectLeaveRecordByStudent" resultMap="LeaveRecordResult">
-  select * from LeaveRecord where Student = #{studentRoNo} order by leaveRecordId desc
-</select>
+	<select id="selectLeaveRecordByStudent" resultMap="LeaveRecordResult">
+		select * from LeaveRecord where Student = #{studentRoNo} order by
+		leaveRecordId desc
+	</select>
+	
+	<select id="selectLeaveRecordByStudentAndCourse" resultMap="LeaveRecordResult" parameterType="HashMap">
+		select * from LeaveRecord where Student = #{studentRoNo} 
+		And CourseId = #{courseId}
+		And Status = #{status}
+		order by leaveRecordId desc
+	</select>
 
-<select id="selectLeaveRecordByStudentLimit" resultMap="LeaveRecordResult">
-  select * from LeaveRecord where Student = #{studentRoNo} order by leaveRecordId desc limit 1
-</select>
+	<select id="selectLeaveRecordByStudentLimit" resultMap="LeaveRecordResult">
+		select * from LeaveRecord where Student = #{studentRoNo} order by
+		leaveRecordId desc limit 1
+	</select>
 
-<select id="selectLeaveRecordByleaveRecordId" resultMap="LeaveRecordResult">
-  select * from LeaveRecord where LeaveRecordId = #{leaveRecordId}
-</select>
+	<select id="selectLeaveRecordByleaveRecordId" resultMap="LeaveRecordResult">
+		select * from LeaveRecord where LeaveRecordId = #{leaveRecordId}
+	</select>
 
-<insert id="insertleaveRecord" parameterType="com.qdu.pojo.LeaveRecord" useGeneratedKeys="true" keyProperty="leaveRecordId">
-       <selectKey keyProperty="leaveRecordId" order="AFTER" resultType="java.lang.Integer">
-            select LAST_INSERT_ID()
-        </selectKey>
-  insert into 
-  LeaveRecord(Student,CourseId,CourseName,Reason,LeaveTime,ReturnTime,Status) 
-  values(#{student},#{courseId},#{courseName},#{reason},#{leaveTime},#{returnTime},#{status})
-</insert>
+	<insert id="insertleaveRecord" parameterType="com.qdu.pojo.LeaveRecord"
+		useGeneratedKeys="true" keyProperty="leaveRecordId">
+		<selectKey keyProperty="leaveRecordId" order="AFTER"
+			resultType="java.lang.Integer">
+			select LAST_INSERT_ID()
+		</selectKey>
+		insert into
+		LeaveRecord(Student,CourseId,CourseName,Reason,LeaveTime,ReturnTime,Status)
+		values(#{student},#{courseId},#{courseName},#{reason},#{leaveTime},#{returnTime},#{status})
+	</insert>
 
-<update id="updateLeaveRecordById" parameterType="HashMap">
- update LeaveRecord set 
- Status = #{status} 
- where LeaveRecordId = #{leaveRecordId}
-</update>
+	<update id="updateLeaveRecordById" parameterType="HashMap">
+		update LeaveRecord set
+		Status = #{status}
+		where LeaveRecordId = #{leaveRecordId}
+	</update>
 
 </mapper>
 

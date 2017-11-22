@@ -38,6 +38,7 @@ import com.qdu.pojo.LeaveRecord;
 import com.qdu.pojo.LogEntity;
 import com.qdu.pojo.Message;
 import com.qdu.pojo.Student;
+import com.qdu.pojo.StudentInfo;
 import com.qdu.pojo.Teacher;
 import com.qdu.service.ClazzService;
 import com.qdu.service.CourseService;
@@ -45,6 +46,7 @@ import com.qdu.service.FilePackageService;
 import com.qdu.service.LeaveRecordService;
 import com.qdu.service.LogEntityService;
 import com.qdu.service.MessageService;
+import com.qdu.service.StudentInfoService;
 import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
 import com.qdu.serviceimpl.StudentServiceImpl;
@@ -73,6 +75,8 @@ public class TeacherController {
 	private LogEntityService logEntityServiceImpl;
 	@Autowired
 	private LeaveRecordService leaveRecordServiceImpl;
+	@Autowired
+	private StudentInfoService studentInfoServiceImpl;
 
 	// 教师登录准备
 	@RequestMapping(value = "/forTeacherLogin.do")
@@ -452,4 +456,38 @@ public class TeacherController {
 		}		
 		return map;
 	}
+	//同意学生请假
+	@RequestMapping(value = "/agreeLeave.do")
+	@ResponseBody
+	public Map<String, Object> agreeLeave(int leaveRecordId,String teacherMobile,String studentRoNo,String content) {
+		Map<String, Object> map = new HashMap<>();
+		LeaveRecord leaveRecord = leaveRecordServiceImpl.selectLeaveRecordByleaveRecordId(leaveRecordId);
+		
+		if(leaveRecord.getStatus().equals("同意") || leaveRecord.getStatus().equals("未通过")){
+			map.put("result", false);
+		}else {
+			String status = "同意";
+			int tem = leaveRecordServiceImpl.updateLeaveRecordByStudent(leaveRecordId, status);
+			Message message = new Message();
+			Teacher teacher = teacherServiceImpl.selectTeacherByMobile(teacherMobile);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			message.setMessageSender(teacherMobile);
+			message.setMessageAccepter(studentRoNo);
+			message.setMessageTitle(teacher.getTeacherName() + "老师同意了你的请假请求");
+			message.setSendTime(sdf.format(new Date()));
+			message.setHaveRead("未读");
+			message.setMessageContent(content);
+			message.setMessageType("leaveRecord");
+			int tem2 = messageServiceImpl.insertMessage(message);
+			if(tem > 0 && tem2 > 0){
+				map.put("result", true);
+			}
+		}
+		
+		return map;
+	}
+	
+	
+	
+	
 }

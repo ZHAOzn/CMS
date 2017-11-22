@@ -21,9 +21,6 @@
 
 
 <script type="text/javascript">
-function aClick(clazzId) {
-	  document.getElementById("asd"+clazzId).submit()
-}
 //修改班级信息
 function changeWhenClick(clazzId) {
 	 var clazzIdpre = clazzId.substring(3);
@@ -205,6 +202,7 @@ function getPrivateData() {
 	 $('#otherModel').hide();
 	 $('#addClassShow').hide();
 	 $('#clazzInfoShow').hide();
+	 $('#inClazzStudentInfoDiv').hide();
 	 $('#upLoadShow').show();
 	 $.ajax({
          type: "GET",
@@ -241,6 +239,7 @@ function getAddClass() {
 	 $('#otherModel').hide();
 	 $('#upLoadShow').hide();
 	 $('#clazzInfoShow').hide();
+	 $('#inClazzStudentInfoDiv').hide();
 	 $('#addClassShow').show();
 }
 //班级信息
@@ -251,6 +250,7 @@ function classInfo() {
 	 $('#upLoadShow').hide();
 	 $('#addClassShow').hide();
 	 $('#addClassShow').hide();
+	 $('#inClazzStudentInfoDiv').hide();
 	 $('#clazzInfoShow').show();
 	 
 }
@@ -284,6 +284,40 @@ function teacherAddClazz() {
 function yourFunction() {
  window.location.reload();
 }
+//查看班级里的学生信息
+function aClick(clazzId) {
+	$.ajax({
+        type: "GET",
+        data: {
+       	 "clazzId":clazzId
+        },
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        url: "<%=request.getContextPath()%>/student/selectStudentByClazzId.do",
+		success : function(data) {
+			$('#clazzInfoShow').hide();
+			$('#studentCount').html(data.count);
+			$('#getHeadLine').html("班级  " + data.clazzName + "学生信息");
+			var dataObj = data.students;
+			 con = "";
+			 $.each(dataObj, function (index, item) {
+				    con += "<tr>";
+       	        con += "<td style='text-align:center;'>" + item.studentRoNo + "</td>";
+       	        con += "<td style='text-align:center;'>" + item.studentName + "</td>";
+       	        con += "<td style='text-align:center;'>" + item.studentGender + "</td>";
+       	        con += "<td style='text-align:center;'>" + item.studentMobile + "</td>";
+       	        con += "<td><img src=\'/ClassManageSys/studentPhoto/"+item.studentPhoto+"\'/></td>";
+       	        con += "<tr/>";
+       	    });
+			 $('#inClazzStudentInfoTable').html(con);
+			 $('#inClazzStudentInfoDiv').show();
+		},
+		error : function(data) {
+			alert("??");
+		},
+		dataType : "json",
+	});
+}
 </script>
 </head>
 <body>
@@ -315,6 +349,9 @@ function yourFunction() {
 							</dd>
 							<dd>
 								<a id="dataUpload" onclick="getPrivateData()" href="#">课件上传</a>
+							</dd>
+							<dd>
+								<a id="afterClass" onclick="afterClassHomeWork()" href="#">课后作业</a>
 							</dd>
 
 						</dl></li>
@@ -374,13 +411,9 @@ function yourFunction() {
 										<td>${c.clazzName}</td>
 										<td>${c.currentYear}</td>
 										<td>
-											<form id="asd${c.clazzId}"
-												action="<%=request.getContextPath()%>/student/selectStudentByClazzId.do"
-												method="post">
-												<input name="clazzId" style="display: none;"
-													value="${c.clazzId}" /> <a id="${c.clazzId}"
+										<input name="clazzId" style="display: none;"
+											value="${c.clazzId}" /> <a id="${c.clazzId}"
 													onclick="aClick(this.id)" href="#">查看</a>
-											</form>
 										</td>
 										<td><a id="zxc${c.clazzId}"
 											onclick="changeWhenClick(this.id)" href="#">修改</a></td>
@@ -403,6 +436,34 @@ function yourFunction() {
 				});
 			    </script>
 			</div>
+			
+			<!-- 班级内部具体信息 -->
+			<div class="site-text site-block" id="inClazzStudentInfoDiv"
+				style="display: none;">
+				<br/>
+				班级人数：<span id="studentCount"></span>
+				<table  class="layui-table" lay-even>
+						<colgroup>
+							<col width="200">
+							<col width="100">
+							<col width="80">
+							<col width="200">
+							<col width="240">
+						</colgroup>
+						<thead>
+							<tr>
+								<th style="text-align: center;">学号</th>
+								<th style="text-align: center;">姓名</th>
+								<th style="text-align: center;">性别</th>
+								<th style="text-align: center;">手机</th>
+								<th style="text-align: center;">照片</th>
+							</tr>
+						</thead>
+						<tbody id="inClazzStudentInfoTable">
+
+						</tbody>
+					</table>
+				</div>
 
 			<!-- 添加班级 -->
 			<div class="site-text site-block" id="addClassShow"
@@ -507,6 +568,7 @@ function yourFunction() {
 								<th>迟到</th>
 								<th>早退</th>
 								<th>旷课</th>
+								<th>请假</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -521,6 +583,7 @@ function yourFunction() {
 											<td>${c.student.studentInfo.comeLate}</td>
 											<td>${c.student.studentInfo.leaveEarlier}</td>
 											<td>${c.student.studentInfo.absenteeism}</td>
+											<td>${c.student.studentInfo.askForLeave}</td>
 										</tr>
 									</c:forEach>
 								</c:when>
@@ -537,6 +600,7 @@ function yourFunction() {
 					$('#addClassShow').hide();
 					$('#otherModel').hide();
 					$('#clazzInfoShow').hide();
+					$('#inClazzStudentInfoDiv').hide();
 					$('#signModel').show();
 				});
 			</script>
@@ -554,6 +618,7 @@ function yourFunction() {
 								<th>迟到</th>
 								<th>早退</th>
 								<th>旷课</th>
+								<th>请假</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -568,6 +633,7 @@ function yourFunction() {
 											<td>${c.student.studentInfo.comeLate}</td>
 											<td>${c.student.studentInfo.leaveEarlier}</td>
 											<td>${c.student.studentInfo.absenteeism}</td>
+											<td>${c.student.studentInfo.askForLeave}</td>
 										</tr>
 									</c:forEach>
 								</c:when>
@@ -584,6 +650,7 @@ function yourFunction() {
 					$('#upLoadShow').hide();
 					$('#addClassShow').hide();
 					$('#signModel').hide();
+					$('#inClazzStudentInfoDiv').hide();
 					$('#clazzInfoShow').hide();
 					$('#otherModel').show();
 				})
