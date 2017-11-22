@@ -34,15 +34,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.qdu.aop.SystemLog;
 import com.qdu.pojo.Course;
 import com.qdu.pojo.FilePackage;
+import com.qdu.pojo.LeaveRecord;
 import com.qdu.pojo.LogEntity;
 import com.qdu.pojo.Message;
 import com.qdu.pojo.Student;
+import com.qdu.pojo.StudentInfo;
 import com.qdu.pojo.Teacher;
 import com.qdu.service.ClazzService;
 import com.qdu.service.CourseService;
 import com.qdu.service.FilePackageService;
+import com.qdu.service.LeaveRecordService;
 import com.qdu.service.LogEntityService;
 import com.qdu.service.MessageService;
+import com.qdu.service.StudentInfoService;
 import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
 import com.qdu.serviceimpl.StudentServiceImpl;
@@ -69,6 +73,10 @@ public class TeacherController {
 	private FilePackageService filePackageServiceImpl;
 	@Autowired
 	private LogEntityService logEntityServiceImpl;
+	@Autowired
+	private LeaveRecordService leaveRecordServiceImpl;
+	@Autowired
+	private StudentInfoService studentInfoServiceImpl;
 
 	// 教师登录准备
 	@RequestMapping(value = "/forTeacherLogin.do")
@@ -153,8 +161,10 @@ public class TeacherController {
 		map.addAttribute("courses", courses);
 		int messageCount = messageServiceImpl.selectMessageCount(teacherMobile);
 		map.put("messageCount", messageCount);
-//		List<Message> messages = messageServiceImpl.selectUnreadMessage(teacherMobile, page.getStartPos());
-//		map.put("message", messages);
+		// List<Message> messages =
+		// messageServiceImpl.selectUnreadMessage(teacherMobile,
+		// page.getStartPos());
+		// map.put("message", messages);
 		return "teacherPage";
 	}
 
@@ -327,29 +337,27 @@ public class TeacherController {
 	@SystemLog(module = "教师", methods = "日志管理-上传文件")
 	@RequestMapping(value = "/teacherUpload.do")
 	@ResponseBody
-	public Map<String, Object> teacherUpload(@RequestParam("file") MultipartFile file, int courseId,
-			String fileType, HttpServletRequest request) throws IOException, Throwable {
+	public Map<String, Object> teacherUpload(@RequestParam("file") MultipartFile file, int courseId, String fileType,
+			HttpServletRequest request) throws IOException, Throwable {
 		Map<String, Object> map = new HashMap<>();
 		System.out.println(courseId);
-	        String fileName = file.getOriginalFilename();  
-	        String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);  
-	        if(suffix.equals("zip")){
-	        	fileType = "zip";
-	        }else if(suffix.equals("rar")){
-	        	fileType = "rar";
-	        } else if (suffix.equals("7z")) {
-	        	fileType = "7z";
-			}else if(suffix.equals("pdf")){
-				fileType = "pdf";
-			}else if (suffix.equals("xls")) {
-				fileType = "xls";
-			}else if (suffix.equals("doc")) {
-				fileType = "doc";
-			}else if (suffix.equals("ppt")) {
-				fileType = "ppt";
-			}else if (suffix.equals("docx")) {
-				fileType = "docx";
-			}
+		String fileName = file.getOriginalFilename();
+		String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+		if (suffix.equals("zip") || suffix.equals("rar") || suffix.equals("7z")) {
+			fileType = "压缩包";
+		} else if (suffix.equals("pdf") || suffix.equals("xls") || suffix.equals("doc") || suffix.equals("ppt") || suffix.equals("docx")) {
+			fileType = "文档";
+		} else if (suffix.equals("gif") || suffix.equals("bmp") || suffix.equals("jpeg") || suffix.equals("png") || 
+				suffix.equals("swf") || suffix.equals("svg") ||suffix.equals("jpg") || suffix.equals("tiff")) {
+			fileType = "图片";
+		} else if (suffix.equals("avi") || suffix.equals("mp4") || suffix.equals("rm") || suffix.equals("mov") || 
+				suffix.equals("asf") || suffix.equals("wmv") ||suffix.equals("mkv") || suffix.equals("flv")) {
+			fileType = "视频";
+		} else if (suffix.equals("mp3") || suffix.equals("wma") || suffix.equals("wav") || suffix.equals("asf") || 
+				suffix.equals("aac") || suffix.equals("mp3pro") ||suffix.equals("vqf") || suffix.equals("flac")) {
+			fileType = "音频";
+		} 
+		
 		// 定义上传路径
 		String path = request.getSession().getServletContext().getRealPath("/") + "file";
 		boolean isFileUpload = ServletFileUpload.isMultipartContent(request);
@@ -364,7 +372,7 @@ public class TeacherController {
 			// 得到文件名
 			String time = new SimpleDateFormat("YYYY-MM-dd_HH_mm_ss").format(new Date());
 			String time2 = new SimpleDateFormat("YYYY-MM-dd").format(new Date());
-			String newfileName = fileName+"/"+time;
+			String newfileName = fileName + "/" + time;
 			FilePackage filePackage = new FilePackage();
 			filePackage.setCourseId(courseId);
 			filePackage.setFileName(newfileName);
@@ -390,30 +398,94 @@ public class TeacherController {
 		}
 		return map;
 	}
-	//获取文件列表
+
+	// 获取文件列表
 	@SystemLog(module = "教师", methods = "日志管理-获取文件列表")
 	@RequestMapping(value = "/getPrivateData.do")
 	@ResponseBody
-	public Map<String, Object> getPrivateData(int courseId){
+	public Map<String, Object> getPrivateData(int courseId) {
 		Map<String, Object> map = new HashMap<>();
 		List<FilePackage> filePackages = filePackageServiceImpl.selectFileByCourseId(courseId);
 		map.put("filePackages", filePackages);
 		return map;
 	}
-	//删除message
-			@SystemLog(module = "教师", methods = "日志管理-删除消息")
-			@RequestMapping(value = "/deleteMessage.do")
-			@ResponseBody
-			public Map<String, Object> deleteMessage(int messageId){
-				Map<String, Object> map = new HashMap<>();
-				int tem = messageServiceImpl.deleteMessage(messageId);
-				if(tem > 0){
-					map.put("result", true);
-				}else{
-					map.put("result", false);
-				}
-				return map;
-			}
-	
 
+	// 删除message
+	@SystemLog(module = "教师", methods = "日志管理-删除消息")
+	@RequestMapping(value = "/deleteMessage.do")
+	@ResponseBody
+	public Map<String, Object> deleteMessage(int messageId) {
+		Map<String, Object> map = new HashMap<>();
+		int tem = messageServiceImpl.deleteMessage(messageId);
+		if (tem > 0) {
+			map.put("result", true);
+		} else {
+			map.put("result", false);
+		}
+		return map;
+	}
+	// 拒绝学生请假
+	@SystemLog(module = "教师", methods = "日志管理-拒绝请假")
+	@RequestMapping(value = "/cantLeave.do")
+	@ResponseBody
+	public Map<String, Object> cantLeave(int leaveRecordId,String teacherMobile,String studentRoNo,String content) {
+		Map<String, Object> map = new HashMap<>();
+		System.out.println(teacherMobile + studentRoNo + content+": " +leaveRecordId);
+		Message message = new Message();
+		Teacher teacher = teacherServiceImpl.selectTeacherByMobile(teacherMobile);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		message.setMessageSender(teacherMobile);
+		message.setMessageAccepter(studentRoNo);
+		message.setMessageTitle(teacher.getTeacherName() + "老师拒绝了你的请假请求");
+		message.setSendTime(sdf.format(new Date()));
+		message.setHaveRead("未读");
+		message.setMessageContent(content);
+		message.setMessageType("leaveRecord");
+		int tem = messageServiceImpl.insertMessage(message);
+		String status = "未通过";
+		LeaveRecord leaveRecord = leaveRecordServiceImpl.selectLeaveRecordByleaveRecordId(leaveRecordId);
+		if(leaveRecord.getStatus().equals("待批")){
+			int tem2 = leaveRecordServiceImpl.updateLeaveRecordByStudent(leaveRecordId,status);
+			if(tem > 0 && tem2 >0){
+				map.put("result", true);
+			}
+		}else{
+			map.put("result", false);
+		}		
+		return map;
+	}
+	//同意学生请假
+	@RequestMapping(value = "/agreeLeave.do")
+	@ResponseBody
+	public Map<String, Object> agreeLeave(int leaveRecordId,String teacherMobile,String studentRoNo,String content) {
+		Map<String, Object> map = new HashMap<>();
+		LeaveRecord leaveRecord = leaveRecordServiceImpl.selectLeaveRecordByleaveRecordId(leaveRecordId);
+		
+		if(leaveRecord.getStatus().equals("同意") || leaveRecord.getStatus().equals("未通过")){
+			map.put("result", false);
+		}else {
+			String status = "同意";
+			int tem = leaveRecordServiceImpl.updateLeaveRecordByStudent(leaveRecordId, status);
+			Message message = new Message();
+			Teacher teacher = teacherServiceImpl.selectTeacherByMobile(teacherMobile);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			message.setMessageSender(teacherMobile);
+			message.setMessageAccepter(studentRoNo);
+			message.setMessageTitle(teacher.getTeacherName() + "老师同意了你的请假请求");
+			message.setSendTime(sdf.format(new Date()));
+			message.setHaveRead("未读");
+			message.setMessageContent(content);
+			message.setMessageType("leaveRecord");
+			int tem2 = messageServiceImpl.insertMessage(message);
+			if(tem > 0 && tem2 > 0){
+				map.put("result", true);
+			}
+		}
+		
+		return map;
+	}
+	
+	
+	
+	
 }

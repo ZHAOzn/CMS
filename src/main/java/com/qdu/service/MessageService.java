@@ -6,7 +6,7 @@ import com.qdu.pojo.Message;
 
 public interface MessageService { 
 
-	public void insertMessage(Message message);
+	public int insertMessage(Message message);
 	
 	public int selectMessageCount(String messageAccepter);
 	

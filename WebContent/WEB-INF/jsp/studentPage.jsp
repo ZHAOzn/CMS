@@ -452,15 +452,25 @@
 						$('#MteacherMobile').val(data.mmm.messageSender);
 						$('#MCourseId').val(data.mmm.messageContent);
 					}
+					if(data.mmm.messageType == 'leaveRecord'){
+						$('#messageContent').html(data.mmm.messageContent);
+						$('#forMessageContent').show();
+						$('#messageContent').show();
+						$('#seprateMessage').hide();
+						$('#insertCourseDiv').show();
+						$('#MteacherMobile').val(data.mmm.messageSender);
+						$('#MCourseId').val(data.mmm.messageContent);
+					}
+					
 					$('#messageShow').hide();
 					$('#messageTitle').html('标题 <' + data.mmm.messageTitle + '>');
-					$('#messageSnder').html('发送人账号 <' + data.mmm.messageSender +'>');
+					$('#messageSnder').html('发件人账号 <' + data.mmm.messageSender +'>');
 					if(data.teacher != null){
-					$('#messageSenderName').html('发送人姓名 <' + data.teacher.teacherName +'><br/><br/><br/><br/>');
+					$('#messageSenderName').html('发件人姓名 <' + data.teacher.teacherName +'><br/><br/><br/><br/>');
 					$('#messageSenderName').show();
 					  }
 					$('#sendTime').html('时间 <' + data.mmm.sendTime +'>');
-					$('#messageContent').html(data.mmm.messageContent + '<br/><br/>');
+					$('#messageContent').html(data.mmm.messageContent);
 					$('#fushuMessage').show();
 				},
 				error : function(data) {
@@ -684,7 +694,7 @@ function studentAddLeave() {
 	        	 "reson": $('#reson').val(),
 	        	 "leaveTime": $('#leaveTime').val(),
 	        	 "returnTime": $('#returnTime').val(),
-	        	 "status":"待审"
+	        	 "status":"待批"
 	         },
 	         contentType: "application/json; charset=utf-8",
 	         async: false,
@@ -816,13 +826,12 @@ function fuckFunction() {
 		          margin-top: 4%; text-align: center; margin-left:5%; display: none;">
 		            <h3 style="color: white; margin-top: 19%">请求已发送..</h3>
 	           </div>
-				<form>
-				<div id="createLeaveRecord" style="width: 100%;">
-					<div id="courseDivShow">
+				<form class="layui-form layui-form-pane">
+				<div id="createLeaveRecord" style="width: 100%;" >
+					<div id="courseDivShow" class="layui-form-item">
 						<label class="layui-form-label">选择课程</label> 
-						<select id="leaveCourseId" required
-						lay-verify="idvalidate"
-						style="height: 2em; width: 15%;">
+						 <div class="layui-input-inline">
+						<select  id="leaveCourseId" lay-verify="required" lay-search="">
 						<c:choose>
 							<c:when test="${! empty studentInfos}">
 								<c:forEach items="${studentInfos}" var="s">
@@ -835,8 +844,9 @@ function fuckFunction() {
 						</c:choose>
 					</select>
 					</div>
-					
-					<div class="layui-form-item">
+					</div>
+					<br/>
+					<div class="layui-form-item" >
 						<label class="layui-form-label">请假原因</label>
 						<div class="layui-input-block">
 							<input id="reson" type="text" name="reson" required
@@ -847,7 +857,7 @@ function fuckFunction() {
 					
 					<div class="layui-form-item">
 						<label class="layui-form-label">请假时间</label>
-						<div class="layui-input-block">
+						<div class="layui-input-inline">
 							<input id="leaveTime" type="text" required
 								lay-verify="required" placeholder="请输入离开时间" autocomplete="off"
 								class="layui-input">
@@ -856,7 +866,7 @@ function fuckFunction() {
 					
 					<div class="layui-form-item">
 						<label class="layui-form-label">返回时间</label>
-						<div class="layui-input-block">
+						<div class="layui-input-inline">
 							<input id="returnTime" type="text" required
 								lay-verify="required" placeholder="请输入返回时间" autocomplete="off"
 								class="layui-input">
@@ -865,7 +875,7 @@ function fuckFunction() {
 					
 					<div class="layui-form-item">
 						<div class="layui-input-block">
-							<input id="AddCourseButton" class="layui-btn"
+							<input id="AddCourseButton" class="layui-btn" lay-submit
 								onclick="studentAddLeave()" type="button" value="提交申请" />
 							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
 						</div>
@@ -874,21 +884,17 @@ function fuckFunction() {
 				</form>
 			</div>
 			<script>
-			//Demo
+			//时间控制
 			layui.use([ 'form', 'laydate' ], function() {
-				var form = layui.form, laydate = layui.laydate;
+			 var form = layui.form, laydate = layui.laydate;
 
-				//监听提交
-				form.on('submit(formDemo)', function(data) {
-					layer.msg(JSON.stringify(data.field));
-					return false;
-				});
 				laydate.render({
 					elem : '#leaveTime',
 				});
 				laydate.render({
 					elem : '#returnTime',
 				});
+				//lay-submit是重点
 				form.verify({
 					idvalidate:[/^[\d]{1,20}$/,'请选择课程']
 				});
@@ -986,7 +992,8 @@ function fuckFunction() {
 			<div id="courseInfo" class="courseInfo">
 				<table class="layui-table" >
 					<colgroup>
-						<col width="150">
+						<col width="125">
+						<col width="125">
 						<col width="120">
 						<col width="150">
 						<col width="150">
@@ -998,6 +1005,7 @@ function fuckFunction() {
 					</colgroup>
 					<thead>
 						<tr>
+							<th style="text-align: center;">课程编码</th>
 							<th style="text-align: center;">课程名称</th>
 							<th style="text-align: center;">类型</th>
 							<th style="text-align: center;">开课时间</th>
@@ -1014,6 +1022,7 @@ function fuckFunction() {
 							<c:when test="${! empty studentInfos}">
 								<c:forEach items="${studentInfos}" var="s">
 									<tr>
+									   <td>${s.course.courseId}</td>
 										<td><a id="${s.course.courseId}" onclick="getPrivateData(this.id)" href="#" style="color: green;">
 										${s.course.courseName}</a></td>
 										<td>${s.course.courseType}</td>
@@ -1095,7 +1104,7 @@ function fuckFunction() {
 						style="color: red; display: none; margin-left: 13%;">*班级不可为空*</p>
 
 					<p id="listenClssExit"
-						style="color: red; display: none; margin-left: 13%;">*您已在该班级*</p>
+						style="color: red; display: none; margin-left: 13%;">*您已在该课程*</p>
 					<div class="layui-form-item">
 						<div class="layui-input-block">
 							<input id="AddCourseButton" class="layui-btn"

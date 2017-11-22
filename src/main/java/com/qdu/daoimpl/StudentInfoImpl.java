@@ -84,4 +84,13 @@ public class StudentInfoImpl implements StudentInfoDao{
 		return sessionFactory.openSession().selectList(statement,studentRoNo);
 	}
 
+	@Override
+	public int updateStudentInfoAboutLeave(int studentInfoId, int askForLeave) {
+		String statement = "com.qdu.mapping.StudentInfoMapping.updateStudentInfoAboutLeave";
+		Map<String, Object> map = new HashMap<>();
+		map.put("studentInfoId", studentInfoId);
+		map.put("askForLeave", askForLeave);
+		return sessionFactory.openSession().update(statement, map);
+	}
+
 }

@@ -76,5 +76,12 @@ public class TeacherDaoImpl implements TeacherDao{
 	}
 
 
+	@Override
+	public Teacher selectTeacherNameByMobile(String teacherMobile) {
+		String statement = "com.qdu.mapping.TeacherMapping.selectTeacherNameByMobile";
+		return sessionFactory.openSession().selectOne(statement, teacherMobile);
+	}
+
+
 
 }

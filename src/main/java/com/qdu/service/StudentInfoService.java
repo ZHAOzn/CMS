@@ -25,4 +25,6 @@ public interface StudentInfoService {
 	
 	public List<StudentInfo> selectStudentInfoList(String studentRoNo);
 	
+	public int updateStudentInfoAboutLeave(int studentInfoId, int askForLeave);
+	
 }

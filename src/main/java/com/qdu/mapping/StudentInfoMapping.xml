@@ -9,7 +9,7 @@
 		<result property="leaveEarlier" column="LeaveEarlier" />
 		<result property="absenteeism" column="Absenteeism" />
 		<result property="leaveRecord" column="LeaveRecord" />
-
+        <result property="askForLeave" column="AskForLeave" />
 
 		<association property="student" javaType="com.qdu.pojo.Student">
 			<id property="studentRoNo" column="StudentRoNo" />
@@ -166,6 +166,14 @@
 		update
 		StudentInfo set
 		Absenteeism = #{absenteeism}
+		where StudentInfoId =
+		#{studentInfoId}
+	</update>
+	
+	<update id="updateStudentInfoAboutLeave" parameterType="HashMap">
+		update
+		StudentInfo set
+		AskForLeave = #{askForLeave}
 		where StudentInfoId =
 		#{studentInfoId}
 	</update>

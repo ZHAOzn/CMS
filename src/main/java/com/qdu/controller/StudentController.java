@@ -164,8 +164,10 @@ public class StudentController {
 
 	// 通过clazz找student
 	@SystemLog(module = "教师", methods = "日志管理-获取学生列表")
-	@RequestMapping(value = "/selectStudentByClazzId.do", method = RequestMethod.POST)
-	public String selectStudentByClazzId(int clazzId, ModelMap map) {
+	@RequestMapping(value = "/selectStudentByClazzId.do")
+	@ResponseBody
+	public Map<String, Object> selectStudentByClazzId(int clazzId) {
+		Map<String, Object> map = new HashMap<>();
 		List<Student> students = new ArrayList<>();
 		List<ClazzStu> clazzStus = clazzStuServiceImpl.selectClazzStuById(clazzId);
 		for(ClazzStu clazzStu: clazzStus){
@@ -174,10 +176,10 @@ public class StudentController {
 		}
 		int count = clazzServiceImpl.selectCountOfStudentByClazz(clazzId);
 		Clazz clazz = clazzServiceImpl.selectClazzById(clazzId);
-		map.put("clazz", clazz);
+		map.put("clazzName", clazz.getClazzName());
 		map.put("count", count);
-		map.put("student", students);
-		return "studentInfo";
+		map.put("students", students);
+		return map;
 	}
 
 	// 查找临时表学生信息
@@ -377,6 +379,8 @@ public class StudentController {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
 		String currentTime = sdf.format(date);
+		int time = Integer.parseInt(currentTime.replaceAll("-", ""));
+		System.out.println(time);
 		Map<String, Object> map = new HashMap<>();
 		List<StudentInfo> studentInfos = studentInfoServiceImpl.selectInfoList(courseId);
 		Map<String, Integer> map2 = new HashMap<>();
@@ -390,6 +394,7 @@ public class StudentController {
 			for (QrTem qrTem : qrTems) {
 				StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoByMany(qrTem.getStudentRoNo(),
 						courseId);
+				//更改map记录
 				map2.put(qrTem.getStudentRoNo(), 1);
 				int tem = studentInfo.getSignIn();
 				int x = tem + 1;
@@ -398,6 +403,31 @@ public class StudentController {
 				// 删除在QrTem表中的记录，等待下次签到
 				qrTemServiceImpl.deleteTemQrById(qrTem.getQrTemId());
 				System.out.println("id: " + qrTem.getQrTemId());
+			}
+			//请假的+1
+			for(String string : map2.keySet()){
+				if(map2.get(string) == 0){
+					List<LeaveRecord> leaveRecords = leaveRecordServiceImpl.selectLeaveRecordByStudentAndCourse(string, courseId, "同意");
+				    //如果有 有效请假记录
+					if(leaveRecords.size() > 0){
+						//遍历有效请假记录
+				    	for(int i = 0; i < leaveRecords.size(); i++){
+				    		//得到Integer类型的请假时间，和当前时间比对
+				    		int time1 = Integer.parseInt(leaveRecords.get(i).getLeaveTime().replaceAll("-", ""));
+				    		int time2 = Integer.parseInt(leaveRecords.get(i).getReturnTime().replaceAll("-", ""));
+				    		if(time1 <= time && time <= time2){
+				    			StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoByMany(string, courseId);
+				    			//请假 +1
+				    			int tem = studentInfo.getAskForLeave();
+								int x = tem + 1;
+								studentInfoServiceImpl.updateStudentInfoAboutLeave(studentInfo.getStudentInfoId(), x);
+								//更改map记录
+				    		    map2.put(string, 2);
+								break;
+				    		}
+				    	}
+				    }
+				}
 			}
 			// 旷课不来的自动将旷课字段+1
 			for (String string : map2.keySet()) {
@@ -474,13 +504,14 @@ public class StudentController {
 		Teacher teacher = course.getTeacher();
 		Clazz clazz = clazzServiceImpl.selectClazzById(clazzId);
 		Student student = studentServiceImpl.selectStudentByNo(studentRono);
+		StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoByMany(studentRono, courseId);
 		boolean tem = false;
 			if(clazzStuServiceImpl.selectClazzStuByDouble(clazzId, studentRono) == null){
 				tem = true;
 		}else {
 			tem = false;
 		}
-		if(tem == true){
+		if(tem == true && studentInfo == null){
 		Message message = new Message();
 		message.setMessageSender(studentRono);
 		message.setMessageAccepter(teacher.getTeacherMobile());
@@ -514,13 +545,9 @@ public class StudentController {
 			Map<String, Object> map = new HashMap<>();
 			messageServiceImpl.uodateMesageHaveread(messageId);
 			Message message = messageServiceImpl.selectMessageById(messageId);
-			Course course = courseServiceImpl.selectCourseById(Integer.parseInt(message.getMessageContent()));
-			if(course != null){
-				Teacher teacher2 = course.getTeacher();
-				map.put("teacher", teacher2);
-			}
+			Teacher teacher2 = teacherServiceImpl.selectTeacherNameByMobile(message.getMessageSender());
+			map.put("teacher", teacher2);
 			map.put("mmm", message);
-			System.out.println(map);
 			return map;
 		}
 		//ajax更新学生信息
@@ -656,9 +683,13 @@ public class StudentController {
 			@DateTimeFormat(pattern = "yyyy-MM-dd") Date leaveTime,String status,
 			@DateTimeFormat(pattern = "yyyy-MM-dd") Date returnTime){
 		Map<String, Object> map = new HashMap<>();
+		System.out.println(courseId + student + reson);
 		Course course = courseServiceImpl.selectCourseById(courseId);
+		System.out.println("6666666666");
 		Student student2 = studentServiceImpl.selectStudentByNo(student);
+		System.out.println("7777777777");
 		ClazzStu clazzStu = clazzStuServiceImpl.selectClazzStuByCourse(student, courseId);
+		System.out.println("555555555555");
 		LeaveRecord leaveRecord = new LeaveRecord();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		leaveRecord.setCourseId(courseId);
@@ -668,14 +699,21 @@ public class StudentController {
 		leaveRecord.setReturnTime(sdf.format(returnTime));
 		leaveRecord.setReason(reson);
 		leaveRecord.setStatus(status);
+		System.out.println("1111111111");
 		int tem = leaveRecordServiceImpl.insertleaveRecord(leaveRecord);
+		System.out.println("2222222222");
+		LeaveRecord leaveRecord2  = leaveRecordServiceImpl.selectLeaveRecordByStudentLimit(student);
+		System.out.println("3333333");
+		System.out.println("tem: "+leaveRecord2.getLeaveRecordId());
 		Message message = new Message();
 		message.setMessageSender(student);
 		message.setMessageAccepter(course.getTeacher().getTeacherMobile());
-		message.setMessageTitle(student2.getStudentName() + "同学(" + clazzStu.getClazz().getClazzName() +")请假");
+		message.setMessageTitle(student2.getStudentName() + "同学(" + clazzStu.getClazz().getClazzName() +")请求关于"+course.getCourseName()+"请假:"
+				+ sdf.format(leaveTime) + "——" + sdf.format(returnTime));
 		message.setSendTime(sdf.format(new Date()));
 		message.setHaveRead("未读");
-		message.setMessageContent(courseId + "c" + clazzStu.getClazz().getClazzId());
+		message.setMessageContent(reson);
+		message.setMessageOther(leaveRecord2.getLeaveRecordId()+"");
 		message.setMessageType("leaveRecord");
 		messageServiceImpl.insertMessage(message);
 		if(tem > 0){

@@ -10,13 +10,14 @@
 		<result property="sendTime" column="SendTime" />
 		<result property="haveRead" column="HaveRead" />
 		<result property="messageContent" column="MessageContent" />
+		<result property="messageOther" column="MessageOther" />
 		<result property="messageType" column="MessageType" />
 	</resultMap>
   
 	<insert id="insertMessage" parameterType="com.qdu.pojo.Message">
 	insert into 
-	Message(MessageSender,MessageAccepter,MessageTitle,SendTime,HaveRead,MessageContent,MessageType) 
-	values(#{messageSender},#{messageAccepter},#{messageTitle},#{sendTime},#{haveRead},#{messageContent},#{messageType})
+	Message(MessageSender,MessageAccepter,MessageTitle,SendTime,HaveRead,MessageContent,MessageOther,MessageType) 
+	values(#{messageSender},#{messageAccepter},#{messageTitle},#{sendTime},#{haveRead},#{messageContent},#{messageOther},#{messageType})
 	</insert>
 	
 	<select id="selectMessageCount" parameterType="String" resultType="int">

@@ -38,6 +38,7 @@
 				<result property="leaveEarlier" column="LeaveEarlier" />
 				<result property="absenteeism" column="Absenteeism" />
 				<result property="leaveRecord" column="LeaveRecord" />
+				<result property="askForLeave" column="AskForLeave" />
 				<collection property="students" ofType="com.qdu.pojo.Student"
 					javaType="ArrayList" column="StudentInfoId"
 					select="com.qdu.mapping.StudentMapping.selectStudentByStudentInfoId">
@@ -68,6 +69,11 @@
 	
 	<select id="selectTeacherByMobile" parameterType="String" resultMap="TeacherResult">
 		SELECT * from
+		Teacher where TeacherMobile = #{teacherMobile}
+	</select>
+	
+	<select id="selectTeacherNameByMobile" parameterType="String" resultMap="TeacherResult">
+		SELECT TeacherName from
 		Teacher where TeacherMobile = #{teacherMobile}
 	</select>
 

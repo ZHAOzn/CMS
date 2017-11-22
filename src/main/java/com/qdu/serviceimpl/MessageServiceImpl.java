@@ -17,8 +17,8 @@ public class MessageServiceImpl implements MessageService{
 	@Autowired private MessageDao messageDaoImpl;
 	 
 	@Override
-	public void insertMessage(Message message) {
-		messageDaoImpl.insertMessage(message);
+	public int insertMessage(Message message) {
+		return messageDaoImpl.insertMessage(message);
 	}
 
 	@Override

@@ -26,6 +26,7 @@
 			<result property="comeLate" column="ComeLate" />
 			<result property="leaveEarlier" column="LeaveEarlier" />
 			<result property="absenteeism" column="Absenteeism" />
+			<result property="askForLeave" column="AskForLeave" />
 		</association>
 		</association>
 

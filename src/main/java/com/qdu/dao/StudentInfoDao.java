@@ -25,5 +25,7 @@ public interface StudentInfoDao {
     
     public List<StudentInfo> selectStudentInfoList(String studentRoNo);
     
+    public int updateStudentInfoAboutLeave(int studentInfoId,int askForLeave);
+    
 
 }

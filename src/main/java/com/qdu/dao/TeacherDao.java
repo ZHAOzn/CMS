@@ -17,5 +17,7 @@ public interface TeacherDao {
 	public Teacher selectTeacherByMobile(String teacherMobile);
 	
 	public int updateStudentextra(Teacher teacher);
+	
+	public Teacher selectTeacherNameByMobile(String teacherMobile);
  
 }
