@@ -343,23 +343,21 @@ public class TeacherController {
 		System.out.println(courseId);
 		String fileName = file.getOriginalFilename();
 		String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
-		if (suffix.equals("zip")) {
-			fileType = "zip";
-		} else if (suffix.equals("rar")) {
-			fileType = "rar";
-		} else if (suffix.equals("7z")) {
-			fileType = "7z";
-		} else if (suffix.equals("pdf")) {
-			fileType = "pdf";
-		} else if (suffix.equals("xls")) {
-			fileType = "xls";
-		} else if (suffix.equals("doc")) {
-			fileType = "doc";
-		} else if (suffix.equals("ppt")) {
-			fileType = "ppt";
-		} else if (suffix.equals("docx")) {
-			fileType = "docx";
-		}
+		if (suffix.equals("zip") || suffix.equals("rar") || suffix.equals("7z")) {
+			fileType = "压缩包";
+		} else if (suffix.equals("pdf") || suffix.equals("xls") || suffix.equals("doc") || suffix.equals("ppt") || suffix.equals("docx")) {
+			fileType = "文档";
+		} else if (suffix.equals("gif") || suffix.equals("bmp") || suffix.equals("jpeg") || suffix.equals("png") || 
+				suffix.equals("swf") || suffix.equals("svg") ||suffix.equals("jpg") || suffix.equals("tiff")) {
+			fileType = "图片";
+		} else if (suffix.equals("avi") || suffix.equals("mp4") || suffix.equals("rm") || suffix.equals("mov") || 
+				suffix.equals("asf") || suffix.equals("wmv") ||suffix.equals("mkv") || suffix.equals("flv")) {
+			fileType = "视频";
+		} else if (suffix.equals("mp3") || suffix.equals("wma") || suffix.equals("wav") || suffix.equals("asf") || 
+				suffix.equals("aac") || suffix.equals("mp3pro") ||suffix.equals("vqf") || suffix.equals("flac")) {
+			fileType = "音频";
+		} 
+		
 		// 定义上传路径
 		String path = request.getSession().getServletContext().getRealPath("/") + "file";
 		boolean isFileUpload = ServletFileUpload.isMultipartContent(request);

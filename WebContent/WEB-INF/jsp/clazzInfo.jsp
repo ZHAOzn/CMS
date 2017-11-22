@@ -668,7 +668,7 @@ function aClick(clazzId) {
 				<div class="layui-upload">
 					<form action="">
 						<button type="button"
-							class="layui-btn layui-btn-normal layui-btn-danger" id="testList">选择压缩文件</button>
+							class="layui-btn layui-btn-normal layui-btn-danger" id="testList">选择文件</button>
 						<div class="layui-upload-list">
 							<table class="layui-table">
 								<thead>
@@ -743,7 +743,7 @@ function aClick(clazzId) {
 												multiple : true,
 												auto : false,
 												bindAction : '#testListAction',
-												exts : 'zip|rar|7z|pdf|xls|doc|ppt|docx',
+												exts : 'zip|rar|7z|pdf|xls|doc|ppt|docx|gif|bmp|jpeg|png|swf|svg|jpg|tiff|avi|mp4|rm|mov|asf|wmv|mkv|flv|mp3|wma|wav|asf|aac|mp3pro|vqf|flac',
 												choose : function(obj) {
 													var files = obj.pushFile(); //将每次选择的文件追加到文件队列
 													//读取本地文件
