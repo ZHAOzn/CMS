@@ -456,7 +456,7 @@ function yourFunction() {
 				});
 				</script>
 			</div>
-
+ 
 			<!-- 签到content -->
 			<div id="signModel"
 				style="width: 100%; overflow: hidden; height: 100%;">
@@ -496,17 +496,17 @@ function yourFunction() {
 					<table class="layui-table" width="99%" border="1" id="showStudents"
 						style="margin-top: 10%; margin-left: 15px; display: none;">
 					</table>
-					<table id="getAllInfo" style="width: 99%;" class="layui-table">
+					<table id="getAllInfo" style="width: 99%;margin-left: 3%" class="layui-table">
 						<caption>本学期签到汇总</caption>
 						<thead>
 							<tr>
-								<th lay-data="{field:'userId', width:125}">学号</th>
-								<th lay-data="{field:'userClass', width:70}">班级</th>
-								<th lay-data="{field:'username', width:80}">姓名</th>
-								<th lay-data="{field:'sign', width:70, sort:true}">签到</th>
-								<th lay-data="{field:'late', width:70, sort:true}">迟到</th>
-								<th lay-data="{field:'leaveEarly', width:65, sort:true}">早退</th>
-								<th lay-data="{field:'absenteeism', sort:true, width:70}">旷课</th>
+								<th>学号</th>
+								<th>班级</th>
+								<th>姓名</th>
+								<th>签到</th>
+								<th>迟到</th>
+								<th>早退</th>
+								<th>旷课</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -541,19 +541,19 @@ function yourFunction() {
 				});
 			</script>
 
-			<!-- 其他模块 -->
+			<!-- 签到记录模块 -->
 			<div id="otherModel"
-				style="display: none;">
+				style="display: none; padding:25px 4%">
                  <table id="getAllInfo" style="width: 99%;" class="layui-table">
 						<thead>
 							<tr>
-								<th lay-data="{field:'userId', width:125}">学号</th>
-								<th lay-data="{field:'userClass', width:70}">班级</th>
-								<th lay-data="{field:'username', width:80}">姓名</th>
-								<th lay-data="{field:'sign', width:70, sort:true}">签到</th>
-								<th lay-data="{field:'late', width:70, sort:true}">迟到</th>
-								<th lay-data="{field:'leaveEarly', width:65, sort:true}">早退</th>
-								<th lay-data="{field:'absenteeism', sort:true, width:70}">旷课</th>
+								<th>学号</th>
+								<th>班级</th>
+								<th>姓名</th>
+								<th>签到</th>
+								<th>迟到</th>
+								<th>早退</th>
+								<th>旷课</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -589,41 +589,8 @@ function yourFunction() {
 				})
 			</script>
 
-			<!-- 签到记录表 -->
-			<div
-				style="border: solid; border-color: yellow; padding: 30px 100px; display: none;">
-				<table lay-filter="recordTable">
-					<caption>本学期签到汇总</caption>
-					<thead>
-						<tr>
-							<th lay-data="{field:'userId', width:200}">学号</th>
-							<th lay-data="{field:'userClass', width:200}">班级</th>
-							<th lay-data="{field:'username', width:200}">姓名</th>
-							<th lay-data="{field:'sign', width:150, sort:true}">签到</th>
-							<th lay-data="{field:'late', width:150, sort:true}">迟到</th>
-							<th lay-data="{field:'leaveEarly', width:150, sort:true}">早退</th>
-							<th lay-data="{field:'absenteeism', sort:true, width:200}">旷课</th>
-						</tr>
-					</thead>
-					<tbody>
-						<c:choose>
-							<c:when test="${! empty studentInfo}">
-								<c:forEach items="${studentInfo}" var="s">
-									<tr>
-										<td>${s.student.studentRoNo}</td>
-										<td>${s.student.clazzStu.clazz.clazzName}</td>
-										<td>${s.student.studentName}</td>
-										<td>${s.signIn}</td>
-										<td>${s.comeLate}</td>
-										<td>${s.leaveEarlier}</td>
-										<td>${s.absenteeism}</td>
-									</tr>
-								</c:forEach>
-							</c:when>
-						</c:choose>
-					</tbody>
-				</table>
-			</div>
+			
+			
 
 			<!-- 上传文件 -->
 			<div id="upLoadShow" class="site-text site-block"
