@@ -428,26 +428,28 @@ public class TeacherController {
 	@SystemLog(module = "教师", methods = "日志管理-拒绝请假")
 	@RequestMapping(value = "/cantLeave.do")
 	@ResponseBody
-	public Map<String, Object> cantLeave(int leaveRecordId,String teacherMobile,String studentRoNo,String content) {
+	public Map<String, Object> cantLeave(int leaveRecordId,String teacherMobile,String teacherName,
+			String studentRoNo,String content,HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
+		System.out.println("11111111111111111111");
 		System.out.println(teacherMobile + studentRoNo + content+": " +leaveRecordId);
-		Message message = new Message();
-		Teacher teacher = teacherServiceImpl.selectTeacherByMobile(teacherMobile);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		message.setMessageSender(teacherMobile);
-		message.setMessageAccepter(studentRoNo);
-		message.setMessageTitle(teacher.getTeacherName() + "老师拒绝了你的请假请求");
-		message.setSendTime(sdf.format(new Date()));
-		message.setHaveRead("未读");
-		message.setMessageContent(content);
-		message.setMessageType("leaveRecord");
-		int tem = messageServiceImpl.insertMessage(message);
-		String status = "未通过";
 		LeaveRecord leaveRecord = leaveRecordServiceImpl.selectLeaveRecordByleaveRecordId(leaveRecordId);
 		if(leaveRecord.getStatus().equals("待批")){
+			Message message = new Message();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			message.setMessageSender(teacherMobile);
+			message.setMessageAccepter(studentRoNo);
+			message.setMessageTitle(teacherName + "老师拒绝了你的请假请求");
+			message.setSendTime(sdf.format(new Date()));
+			message.setHaveRead("未读");
+			message.setMessageContent(content);
+			message.setMessageType("leaveRecord");
+			int tem = messageServiceImpl.insertMessage(message);
+			String status = "未通过";
 			int tem2 = leaveRecordServiceImpl.updateLeaveRecordByStudent(leaveRecordId,status);
 			if(tem > 0 && tem2 >0){
 				map.put("result", true);
+				System.out.println("true");
 			}
 		}else{
 			map.put("result", false);
@@ -460,7 +462,6 @@ public class TeacherController {
 	public Map<String, Object> agreeLeave(int leaveRecordId,String teacherMobile,String studentRoNo,String content) {
 		Map<String, Object> map = new HashMap<>();
 		LeaveRecord leaveRecord = leaveRecordServiceImpl.selectLeaveRecordByleaveRecordId(leaveRecordId);
-		
 		if(leaveRecord.getStatus().equals("同意") || leaveRecord.getStatus().equals("未通过")){
 			map.put("result", false);
 		}else {
@@ -485,7 +486,38 @@ public class TeacherController {
 		return map;
 	}
 	
-	
-	
+	//验证是否有必要弹出拒绝请假理由框
+	@RequestMapping(value = "/confirmCantLeaveExist.do")
+	@ResponseBody
+	public Map<String, Object> confirmCantLeaveExist(int leaveRecordId,String teacherMobile,String studentRoNo) {
+		Map<String, Object> map = new HashMap<>();
+		Teacher teacher = teacherServiceImpl.selectTeacherByMobile(teacherMobile);
+		System.out.println(leaveRecordId);
+		System.out.println(teacher.getTeacherName());
+		System.out.println(teacherMobile);
+		System.out.println(studentRoNo);
+		
+		LeaveRecord leaveRecord = leaveRecordServiceImpl.selectLeaveRecordByleaveRecordId(leaveRecordId);
+		if(leaveRecord.getStatus().equals("待批")){
+			Message message = new Message();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			message.setMessageSender(teacherMobile);
+			message.setMessageAccepter(studentRoNo);
+			message.setMessageTitle(teacher.getTeacherName() + "老师拒绝了你的请假请求");
+			message.setSendTime(sdf.format(new Date()));
+			message.setHaveRead("未读");
+			message.setMessageContent("系统消息：很遗憾，您的请假请求未被通过，若事情紧急请当面请假！");
+			message.setMessageType("leaveRecord");
+			int tem = messageServiceImpl.insertMessage(message);
+			String status = "未通过";
+			int tem2 = leaveRecordServiceImpl.updateLeaveRecordByStudent(leaveRecordId,status);
+			if(tem > 0 && tem2 > 0){
+				map.put("result", true);
+			}
+		}else {
+			map.put("result", false);
+		}
+		return map;
+	}
 	
 }

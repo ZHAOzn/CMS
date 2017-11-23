@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.qdu.aop.SystemLog;
+import com.qdu.cache.RedisCache;
 import com.qdu.pojo.Admin;
 import com.qdu.pojo.LogEntity;
 import com.qdu.pojo.Student;
@@ -59,5 +60,30 @@ public class LogEntityController {
 			map.put("students", students);
 		return "superManagerPage";
 	}
+	//超级管理员登录准备
+		@RequestMapping(value = "/clearRedis.do")
+		@ResponseBody
+		public Map<String, Object> clearRedis(){
+			Map<String, Object> map = new HashMap<>();
+			 new RedisCache("com.qdu.mapping.AdminMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.ClazzMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.ClazzStuMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.CourseMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.ExaminationMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.FilePackageMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.LeaveRecordMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.LogEntityMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.MessageMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.PackMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.QrTemMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.ShortAnswerMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.SingleSelectionMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.StudentInfoMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.StudentMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.TeacherMapping").clear();
+	    	 new RedisCache("com.qdu.mapping.TestMapping").clear();
+			map.put("result", true);
+			return map;
+		}
 	
 }

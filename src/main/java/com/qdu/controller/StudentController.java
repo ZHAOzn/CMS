@@ -683,13 +683,9 @@ public class StudentController {
 			@DateTimeFormat(pattern = "yyyy-MM-dd") Date leaveTime,String status,
 			@DateTimeFormat(pattern = "yyyy-MM-dd") Date returnTime){
 		Map<String, Object> map = new HashMap<>();
-		System.out.println(courseId + student + reson);
 		Course course = courseServiceImpl.selectCourseById(courseId);
-		System.out.println("6666666666");
 		Student student2 = studentServiceImpl.selectStudentByNo(student);
-		System.out.println("7777777777");
 		ClazzStu clazzStu = clazzStuServiceImpl.selectClazzStuByCourse(student, courseId);
-		System.out.println("555555555555");
 		LeaveRecord leaveRecord = new LeaveRecord();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		leaveRecord.setCourseId(courseId);
@@ -699,12 +695,8 @@ public class StudentController {
 		leaveRecord.setReturnTime(sdf.format(returnTime));
 		leaveRecord.setReason(reson);
 		leaveRecord.setStatus(status);
-		System.out.println("1111111111");
 		int tem = leaveRecordServiceImpl.insertleaveRecord(leaveRecord);
-		System.out.println("2222222222");
 		LeaveRecord leaveRecord2  = leaveRecordServiceImpl.selectLeaveRecordByStudentLimit(student);
-		System.out.println("3333333");
-		System.out.println("tem: "+leaveRecord2.getLeaveRecordId());
 		Message message = new Message();
 		message.setMessageSender(student);
 		message.setMessageAccepter(course.getTeacher().getTeacherMobile());

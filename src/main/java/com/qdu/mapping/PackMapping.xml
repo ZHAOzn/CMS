@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.mapping.PackMapping">
+	<cache type="com.qdu.cache.RedisCache" />
+	<resultMap type="com.qdu.pojo.Pack" id="PackResult">
+		<id property="packId" column="PackId" />
+		<result property="questionNumber" column="QuestionNumber" />
+		<result property="packContent" column="PackContent" />
+		<result property="questionsType" column="QuestionsType" />
+		<result property="studentAnswer" column="StudentAnswer" />
+		<result property="answer" column="Answer" />
+		<result property="value" column="Value" />
+		<result property="note" column="Note" />
+
+		<association property="examination" javaType="com.qdu.pojo.Examination">
+			<id property="examinationID" column="ExaminationID" />
+			<result property="examinationName" column="ExaminationName" />
+			<result property="onlyCode" column="OnlyCode" />
+			<result property="totalValue" column="TotalValue" />
+			<result property="startTime" column="StartTime" />
+			<result property="duration" column="Duration" />
+			<result property="examinationStatus" column="ExaminationStatus" />
+			<result property="courseID" column="CourseID" />
+		</association>
+	</resultMap>
+	
+	<select id="selectPackByExaminationID" resultMap="PackResult">
+	  select * from Pack p,Examination e where p.ExaminationID = e.ExaminationID
+	  And e.ExaminationID = #{examinationID}
+	</select>
+	
+	<select id="selectPackMaxQuestionNumber" resultMap="PackResult">
+	  select Max(QuestionNumber) from Pack where ExaminationID = #{examinationID}
+	</select>
+	
+	<insert id="insertPack">
+	  insert into 
+	  Pack(QuestionNumber,PackContent,QuestionsType,
+	  StudentAnswer,Answer,Value,Note) 
+	  values(#{questionNumber},#{packContent},#{questionsType},
+	  #{studentAnswer},#{answer},#{value},#{Note})
+	</insert>
+
+</mapper>
+

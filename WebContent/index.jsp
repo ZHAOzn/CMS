@@ -11,6 +11,9 @@
 <link type="text/css" rel="stylesheet" href="css/mycss.css">
 <script src="js/jquery-3.2.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<link type="text/css" rel="stylesheet"
+	href="<%=request.getContextPath()%>/layui/css/layui.css">
+<script src="<%=request.getContextPath()%>/layui/layui.js "></script>
 
 <script type="text/javascript">
 function   fresh(){  
@@ -21,6 +24,7 @@ if(location.href.indexOf("?reload=true")<0){
 setTimeout("fresh()",1)
 	$(document).ready(function() {
 		$('#lll').click(function() {
+			$('#examInner').toggle();
 			$('#loginForm').toggle();
 		});
 		$('#sss').click(function() {
@@ -253,6 +257,27 @@ setTimeout("fresh()",1)
 			</div>
 		</div>
 		</nav>
+        
+        <!-- 考试入口 -->
+			<div id="examInner" class="site-text site-block" 
+				style="text-align: center; width: 50%;; 
+				top: 300px; position: fixed; margin-left: 26%;">
+				<form class="layui-form layui-form-pane">
+					<div class="layui-form-item" style="width: 100%;">
+						<div style="width: 100%; float: left;">
+							<label class="layui-form-label" style="width: 20%; background-color: #e2e2e2;">输入考试码：</label>
+							<div class="layui-input-block">
+								<input id="onlyCode" type="text" lay-verify="CoreKey"
+									placeholder="请输入考试码" autocomplete="off" class="layui-input"
+									style="width: 50%; float: left;"> 
+									<input class="layui-btn" lay-submit type="button"
+									 value="现在考试" style="float: left;" />
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+
 
 
 		<div
@@ -264,8 +289,7 @@ setTimeout("fresh()",1)
          
          <div style="background-color: #222; height: 100px;">
             <div class="navbar-header" style="text-align: center;width: 100%;margin-top:2%;">
-				
-				<a style="margin-left: 40%;" class="navbar-brand" href="#">copyright by CMS team</a>
+				<a style="margin-left: 40%; color: white;" class="navbar-brand" href="#">copyright by CMS team</a>
         	</div>
 		</div>
 	

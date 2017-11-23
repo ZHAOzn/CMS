@@ -26,7 +26,7 @@ public class RedisCache implements Cache{
              throw new IllegalArgumentException("Cache instances require an ID");
          }
          this.id = id;
-         System.out.println("redis构造函数");
+         System.out.println("redis构造函数" + id);
      }
 
      @Override
@@ -158,5 +158,5 @@ public class RedisCache implements Cache{
      public static void setJedisConnectionFactory(JedisConnectionFactory jedisConnectionFactory) {
          RedisCache.jedisConnectionFactory = jedisConnectionFactory;
      }
-
+     
  }

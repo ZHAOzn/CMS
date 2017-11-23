@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.mapping.JudgeMapping">
+	<cache type="com.qdu.cache.RedisCache" />
+	<resultMap type="com.qdu.pojo.Judge" id="JudgeResult">
+		<id property="judgeId" column="JudgeId" />
+		<result property="questionNumber" column="QuestionNumber" />
+		<result property="judgeContent" column="JudgeContent" />
+		<result property="questionsType" column="QuestionsType" />
+		<result property="studentAnswer" column="StudentAnswer" />
+		<result property="answer" column="Answer" />
+		<result property="value" column="Value" />
+		<result property="note" column="Note" />
+
+		<association property="examination" javaType="com.qdu.pojo.Examination">
+			<id property="examinationID" column="ExaminationID" />
+			<result property="examinationName" column="ExaminationName" />
+			<result property="onlyCode" column="OnlyCode" />
+			<result property="totalValue" column="TotalValue" />
+			<result property="startTime" column="StartTime" />
+			<result property="duration" column="Duration" />
+			<result property="examinationStatus" column="ExaminationStatus" />
+			<result property="courseID" column="CourseID" />
+		</association>
+	</resultMap>
+	
+	<select id="selectJudgeByExaminationID" resultMap="JudgeResult">
+	  select * from Judge j,Examination e where j.ExaminationID = e.ExaminationID
+	  And e.ExaminationID = #{examinationID}
+	</select>
+	
+	<select id="selectJudgeMaxQuestionNumber" resultMap="JudgeResult">
+	  select Max(QuestionNumber) from Judge where ExaminationID = #{examinationID}
+	</select>
+	
+	<insert id="insertJudge">
+	  insert into 
+	  Judge(QuestionNumber,JudgeContent,QuestionsType,
+	  StudentAnswer,Answer,Value,Note) 
+	  values(#{questionNumber},#{judgeContent},#{questionsType},
+	  #{studentAnswer},#{answer},#{value},#{Note})
+	</insert>
+
+</mapper>
+

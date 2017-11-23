@@ -40,7 +40,28 @@
 		});
 		 
 	 });
-
+function clearRedis() {
+	alert("....");
+	 $.ajax({
+         type: "GET",
+         data: {
+         },
+         contentType: "application/json; charset=utf-8",
+         dataType: "json",
+         async: false,
+         url: "<%=request.getContextPath()%>/admin/clearRedis.do",
+         success: function (data) {
+        	if(data.result == true){
+        		alert("清理成功");
+        	}else {
+				alert("清理出现问题");
+			}    
+         },
+         error: function (data) {
+             alert("服务器异常！");
+         },
+     });
+}
 </script>
 </head>
 <body>
@@ -115,6 +136,9 @@
 						<dl class="layui-nav-child">
 							<dd>
 								<a id="crud" href="#">CRUD</a>
+							</dd>
+							<dd>
+								<a onclick="clearRedis()" href="#">清理redis</a>
 							</dd>
 							<dd>
 								<a id="quxianmanage" href="#">权限管理</a>

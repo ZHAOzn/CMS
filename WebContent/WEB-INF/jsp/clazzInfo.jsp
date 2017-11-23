@@ -1,6 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%if(session.getAttribute("UserId")==null){
+response.sendRedirect(request.getContextPath() + "/index.jsp");
+}%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -200,8 +203,10 @@ function getPrivateData() {
 	 $('#signModel').hide();
 	 $('#getHeadLine').html("上传文件");
 	 $('#otherModel').hide();
+	 $('#addExaminationDiv').hide();
 	 $('#addClassShow').hide();
 	 $('#clazzInfoShow').hide();
+	 $('#addQuestionsDiv').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#upLoadShow').show();
 	 $.ajax({
@@ -239,6 +244,8 @@ function getAddClass() {
 	 $('#otherModel').hide();
 	 $('#upLoadShow').hide();
 	 $('#clazzInfoShow').hide();
+	 $('#addExaminationDiv').hide();
+	 $('#addQuestionsDiv').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#addClassShow').show();
 }
@@ -249,6 +256,8 @@ function classInfo() {
 	 $('#otherModel').hide();
 	 $('#upLoadShow').hide();
 	 $('#addClassShow').hide();
+	 $('#addExaminationDiv').hide();
+	 $('#addQuestionsDiv').hide();
 	 $('#addClassShow').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#clazzInfoShow').show();
@@ -318,6 +327,115 @@ function aClick(clazzId) {
 		dataType : "json",
 	});
 }
+//点击添加试卷
+function addExamination() {
+	 $('#getHeadLine').html("添加试卷");
+	 $('#addQuestionsDiv').hide();
+	 $('#signModel').hide();
+	 $('#otherModel').hide();
+	 $('#upLoadShow').hide();
+	 $('#clazzInfoShow').hide();
+	 $('#inClazzStudentInfoDiv').hide();
+	 $('#addClassShow').hide();
+	 
+	$.ajax({
+	        type: "GET",
+	        data: {
+	        	"courseId":${course.courseId}
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/selectExaminationByCourseId.do",
+			success : function(data) {
+				var dataObj = data.examinations;
+				 con = "";
+				 $.each(dataObj, function (index, item) {
+					    con += "<tr>";
+	       	        con += "<td style='text-align:center;'>" + item.examinationID + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.examinationName + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.onlyCode + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.totalValue + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.startTime + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.duration + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.examinationStatus + "</td>";
+	       	        con += "<td style='text-align:center;'><a href=\'#\'>" + "删除" + "</a></td>";
+	       	        con += "<td style='text-align:center;'><a href=\'#\'>" + "修改" + "</a></td>";
+	       	        con += "<td style='text-align:center;'><a id="+item.examinationID+" onclick='createQuestion(this.id)' href=\'#\'>" + "出题" + "</a></td>";
+	       	        con += "<tr/>";
+	       	    });
+				 $('#examinationShowTable').html(con);
+				 $('#addExaminationDiv').show();
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+	 $('#addExaminationDiv').show();
+}
+function FirstFunction() {
+	 $('#afterAddExamination').hide();
+	 addExamination();
+	 window.location.hash = "#title";   
+}
+//教师添加试卷
+function teacherAddExamination() {
+	if($('#examinationName').val() != "" && $('#totalValue').val() != "" && 
+			$('#startTime').val() != "" && $('#duration').val() != ""){
+		$.ajax({
+	        type: "GET",
+	        data: {
+	         "courseId":${course.courseId},
+	       	 "examinationName":$('#examinationName').val(),
+	       	 "totalValue":$('#totalValue').val(),
+	       	 "startTime":$('#startTime').val(),
+	         "duration":$('#duration').val()
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/addExamination.do",
+			success : function(data) {
+				if(data.result == true){
+					$('#afterAddExamination').show();
+	                setTimeout('FirstFunction()',2000);
+				}else {
+					$('#afterAddExamination').html("添加失败");
+					$('#afterAddExamination').show();
+	                setTimeout('FirstFunction()',2000);
+				}
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+	}
+}
+//教师出题
+function createQuestion(id) {
+	$.ajax({
+        type: "GET",
+        data: {
+       	 "examinationId":id
+        },
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        url: "<%=request.getContextPath()%>/exam/selectExaminationByMyId.do",
+		success : function(data) {
+			$('#examinationTitle').html(data.examination.examinationName);
+			$('#examinationTotalValue').html("总分：" + data.examination.totalValue);
+			$('#examinationTime').html("考试时长：" + data.examination.duration + "分钟");
+		},
+		error : function(data) {
+			alert("??");
+		},
+		dataType : "json",
+	});
+	$('#addExaminationDiv').hide();
+	//$('#addExaminationForm').hide();
+	//$('#ExaminationList').hide();
+	$('#addQuestionsDiv').show();
+}
 </script>
 </head>
 <body>
@@ -356,19 +474,31 @@ function aClick(clazzId) {
 							<dd>
 								<a id="" href="#">发布公告（待定）</a>
 							</dd>
-							<dd>
-								<a id="" href="#">上传资料（待定）</a>
-							</dd>
-
 						</dl></li>
 					<li class="layui-nav-item layui-nav-itemed"><a
-						href="javascript:;">签到</a>
+						href="javascript:;">签到系统</a>
 						<dl class="layui-nav-child">
 							<dd>
 								<a id="signShow" href="#">点名签到</a>
 							</dd>
 							<dd>
 								<a id="otherShow" href="#">签到记录</a>
+							</dd>
+							<!-- <dd>
+								<a href="#">待定</a>
+							</dd> -->
+						</dl></li>
+		     	<li class="layui-nav-item"><a
+						href="javascript:;">考试系统</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a onclick="FirstFunction()" id="addExamination" href="#">添加试卷</a>
+							</dd>
+							<dd>
+								<a id="correctExamination" href="#">批改试卷</a>
+							</dd>
+							<dd>
+								<a id="lookatScore" href="#">查看成绩</a>
 							</dd>
 							<!-- <dd>
 								<a href="#">待定</a>
@@ -605,6 +735,8 @@ function aClick(clazzId) {
 					$('#otherModel').hide();
 					$('#clazzInfoShow').hide();
 					$('#inClazzStudentInfoDiv').hide();
+					$('#addQuestionsDiv').hide();
+					$('#addExaminationDiv').hide();
 					$('#signModel').show();
 				});
 			</script>
@@ -654,14 +786,194 @@ function aClick(clazzId) {
 					$('#upLoadShow').hide();
 					$('#addClassShow').hide();
 					$('#signModel').hide();
+					$('#addExaminationDiv').hide();
 					$('#inClazzStudentInfoDiv').hide();
+					$('#addQuestionsDiv').hide();
 					$('#clazzInfoShow').hide();
 					$('#otherModel').show();
 				})
 			</script>
 
 			
-			
+		<!-- 添加试卷 -->
+        <div id="addExaminationDiv" class="site-text site-block"
+				style="display: none; margin-top: 0;">
+				
+            	<!-- 添加试卷成功提示信息 -->
+				<div id="afterAddExamination"
+					style="background-color: #393D49; height: 20%; width: 20%; z-index: 20; position: fixed; text-align: center; margin-left: 10%; display: none;">
+					<h3 style="color: white; margin-top: 19%">添加试卷成功..</h3>
+				</div>
+				
+				<!-- 填写表单 -->
+				<form action="" class="layui-form layui-form-pane" id="addExaminationForm">
+				<div class="layui-form-item">
+						<label class="layui-form-label">课程名称</label>
+						<div class="layui-input-block">
+							<input type="text" value="${course.courseName}"
+								class="layui-input" readonly="readonly">
+						</div>
+
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">试卷名称</label>
+						<div class="layui-input-block">
+							<input id="examinationName" type="text" name="examinationName" required
+								lay-verify="required|idvalidate"
+								onchange="searchIfExistExamination()" placeholder="请输入试卷名称"
+								autocomplete="off" class="layui-input">
+						</div>
+
+					</div>
+					
+					<div class="layui-form-item">
+						<label class="layui-form-label">总分值</label>
+						<div class="layui-input-block">
+							<input id="totalValue" type="text" name="totalValue" required
+								lay-verify="required"
+							    placeholder="请输入数字"
+								autocomplete="off" class="layui-input">
+						</div>
+
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">开始时间</label>
+						<div class="layui-input-inline">
+							<input id="startTime" type="text" name="startTime" required
+								lay-verify="required" placeholder="如'2017-01-01 13:30:00'" autocomplete="off"
+								class="layui-input">
+						</div>
+					</div>
+					
+					<div class="layui-form-item">
+						<label class="layui-form-label">考试时长</label>
+						<div class="layui-input-inline">
+							<input id="duration" type="text" name="duration" required
+								lay-verify="required" placeholder="如'120分钟'" autocomplete="off"
+								class="layui-input">
+						</div>
+					</div>
+					
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<input id="AddExaminationButton" class="layui-btn"
+								onclick="teacherAddExamination()" lay-submit lay-filter="formDemo"
+								type="button" value="添加试卷" />
+							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						</div>
+					</div>
+				</form>
+
+				<script>
+				layui.use([ 'form', 'laydate' ], function() {
+					var form = layui.form, laydate = layui.laydate;
+					laydate.render({
+						elem : '#startTime',
+						type : 'datetime'
+					});
+					
+					form.verify({
+						idvalidate:[/(.+){1,20}$/,'试卷名称必须是1到20位字符'],
+					});
+				});
+				</script>
+				
+				
+			<!-- 试卷列表 -->
+			<table id="ExaminationList" class="layui-table" lay-even style="text-align: center;">
+					<colgroup>
+						<col width="90">
+						<col width="140">
+						<col width="80">
+						<col width="80">
+						<col width="140">
+						<col width="140">
+						<col width="80">
+						<col width="200">
+					</colgroup>
+					<thead>
+						<tr id="title">
+							<th style="text-align: center;">试卷编码</th>
+							<th style="text-align: center;">试卷名称</th>
+							<th style="text-align: center;">考试码</th>
+							<th style="text-align: center;">总分</th>
+							<th style="text-align: center;">开始时间</th>
+							<th style="text-align: center;">考试时长</th>
+							<th style="text-align: center;">状态</th>
+							<th style="text-align: center;" colspan="3">操作</th>
+						</tr>
+					</thead>
+					<tbody id="examinationShowTable">
+						
+					</tbody>
+				</table>
+				<script>
+				layui.use('table', function() {
+					var table = layui.table;
+				});
+			    </script>			   
+        </div>	
+        
+         <!-- 添加试题 -->
+			    <div class="site-text site-block" id="addQuestionsDiv" 
+			    style="display: none; margin-top: 0;">
+				<form action="examinationTitle" class="layui-form layui-form-pane" id="addExaminationForm">
+				<!-- 试卷名称 -->
+				<h2 id="examinationTitle" style="width: 100%;text-align: center;"></h2>
+				<!-- 总分 -->
+				<h3 id="examinationTotalValue" style="width: 100%;padding-left: 70%;"></h3>
+				<!-- 考试时长 -->
+				<h3 id="examinationTime" style="width: 100%;padding-left: 70%;"></h3>
+				<!-- 单选 -->
+				<div class="layui-form-item">
+						<label class="layui-form-label">单选</label>
+						<a id="SingleSelectionA" onclick="SingleSelectionA()" href="#" style="margin-left: 5%;">
+						<i id="SingleSelectionI" class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
+						<i id="SingleSelectionII" class="layui-icon" style="font-size: 30px; color: #1E9FFF; display: none;">&#xe625;</i>
+						</a>
+				</div>
+				
+				<!-- 多选 -->
+				<div class="layui-form-item">
+						<label class="layui-form-label">多选</label>
+						<a href="#" style="margin-left: 5%;">
+						<i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
+						</a>
+				</div>
+				
+				<!-- 判断 -->
+				<div class="layui-form-item">
+						<label class="layui-form-label">判断</label>
+						<a href="#" style="margin-left: 5%;">
+						<i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
+						</a>
+				</div>
+				
+				<!-- 填空 -->
+				<div class="layui-form-item">
+						<label class="layui-form-label">填空</label>
+						<a href="#" style="margin-left: 5%;">
+						<i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
+						</a>
+				</div>
+				
+				<!-- 简答 -->
+				<div class="layui-form-item">
+						<label class="layui-form-label">简答</label>
+						<a href="#" style="margin-left: 5%;">
+						<i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
+						</a>
+				</div>
+					
+					</form>
+			    </div>
+			    <script type="text/javascript">
+			      function SingleSelectionA() {
+					$('#SingleSelectionI').toggle();
+					$('#SingleSelectionII').toggle();
+				}
+			    </script>
 
 			<!-- 上传文件 -->
 			<div id="upLoadShow" class="site-text site-block"
@@ -692,7 +1004,7 @@ function aClick(clazzId) {
 				</div>
 
 				<!-- 个人资料 -->
-				<div class="layui-form sessiontable"
+				<div class="layui-form sessiontable "
 					style="width: 100%; margin-left: 0">
 					<table class="layui-table" lay-even>
 						<colgroup>
@@ -712,13 +1024,14 @@ function aClick(clazzId) {
 						</tbody>
 					</table>
 
-					<script>
-				layui.use('table', function() {
-					var table = layui.table;
-				});
-			    </script>
-				</div>
-			</div>
+<script>
+	layui.use('table', function() {
+	var table = layui.table;
+		});
+</script>
+</div>
+								
+</div>
 
 			<script>
 			var ttem;
@@ -834,9 +1147,8 @@ function aClick(clazzId) {
 								});
 			</script>
 
-
-
 		</div>
+		      
 	</div>
 	<script>
 		layui.use([ 'element', 'layer', 'table' ], function() {

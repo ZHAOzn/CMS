@@ -1,3 +1,4 @@
+<%@page import="com.mysql.fabric.xmlrpc.base.Data"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -61,6 +62,7 @@
 				dataType : "json",
 			});
 		}
+		
 		 //添加课程
 		 $('#createCourse').click(function() {
 			 $('#messageList').html("添加课程");
@@ -594,26 +596,18 @@ function agreeLeave() {
 		dataType : "json",
 	});
 	}
-	//驳回学生请假请求
+//驳回学生请假请求
 function cantLeave() {
-		$('#detailInfoOfLeave').toggle();
-	}
-	//确认驳回请假请求
-function confirmCantLeave() {
-		if($('#refuseContent').val().length > 0 && $('#refuseContent').val().length < 51){
-			$('#limitP').hide();
 	$.ajax({
         type: "GET",
         data: {
          "leaveRecordId":$('#leaveRecordId').val(),
-       	 "teacherMobile":$('#teacherMobile').val(),
-	     "studentRoNo": $('#MstudentRoNo').val(),
-	     "content": $('#refuseContent').val()
+         "teacherMobile":$('#teacherMobile').val(),
+	     "studentRoNo": $('#MstudentRoNo').val()
         },
         contentType: "application/json; charset=utf-8",
         async: false,
-        //url不加空格！！！！！！！！！！！！！！！！！！！！！！！
-        url: "<%=request.getContextPath()%>/teacher/cantLeave.do",
+        url: "<%=request.getContextPath()%>/teacher/confirmCantLeaveExist.do",
 		success : function(data) {
 			if(data.result == true){
 				$('#handleMessageShow').show();
@@ -627,10 +621,8 @@ function confirmCantLeave() {
 		},
 		dataType : "json",
 	});
-		}else{
-			$('#limitP').show();
-		}
-	}
+}
+
 </script>
 </head>
 <body>
@@ -1005,7 +997,7 @@ function confirmCantLeave() {
 							<th
 								lay-data="{field:'messageTitle', width:500,templet: '#titleTpl'}">标题</th>
 							<th
-								lay-data="{field:'haveRead', width:200, sort: true,templet: '#NowtitleTpl'}">状态</th>
+								lay-data="{field:'haveRead', width:200, sort: true, align:'center', templet: '#status'}">状态</th>
 							<th
 								lay-data="{fixed: 'right', width:160, align:'center', toolbar: '#barDemo'}"></th>
 						</tr>
@@ -1013,8 +1005,15 @@ function confirmCantLeave() {
 				</table>
 			</div>
 			<script type="text/html" id="titleTpl">
-     <a href="#" class="layui-table-link">{{d.messageTitle}}</a>
-   </script>
+        <a href="#" class="layui-table-link">{{d.messageTitle}}</a>
+        </script>
+        <script type="text/html" id="status">
+                  {{#  if(d.haveRead == '已读'){ }}
+                    <i class="layui-icon" style="font-size: 30px; color: #5FB878;">&#xe618;</i>
+                     {{#  } else { }}
+                       <i class="layui-icon" style="font-size: 30px; color: #FF5722;">&#xe607;</i>
+                         {{#  } }}
+            </script>
 			<script type="text/html" id="barDemo">
      <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail">查看</a>
       <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
@@ -1069,35 +1068,23 @@ function confirmCantLeave() {
 			<div id="fushuMessage"
 				style="width: 100%; padding-left: 25%; display: none;">
 				<!-- 拒绝请假信息 -->
-				<form class="layui-form layui-form-pane" action=""
+				<!-- <form class="layui-form-pane" 
 					id="detailInfoOfLeave"
-					style="position: fixed; margin-top: 6%; background-color: #d2d2d2; text-align: center; margin-left: 6%; display: none; width: 20%;">
+						 	   style="position: fixed; margin-top: 6%; background-color: #d2d2d2; text-align: center; margin-left: 6%; display: none; width: 20%;">
 					<div class="layui-form-item layui-form-text">
-						<label class="layui-form-label">拒绝说明</label>
+						 <label class="layui-form-label">拒绝说明</label> 
 						<div class="layui-input-block">
-							<textarea id="refuseContent" placeholder="请输入内容"
-								 class="layui-textarea"
+							<textarea id="refuseContent" placeholder="请输入内容" required
+								lay-verify="textLength" class="layui-textarea"
 								style="width: 100%;"></textarea>
 							<P id="limitP" style="color: red; display: none;">限制50字以内,不可为空</P>
 						</div>
 					</div>
-					<div class="layui-form-item">
+					
 						<button class="layui-btn" style="width: 50%;"
-							onclick="confirmCantLeave()" lay-submit>确定</button>
-					</div>
-				</form>
-				<script>
-                layui.use(['form', 'layedit', 'laydate'], function(){
-                	var form = layui.form
-                	,layer = layui.layer
-                 	,layedit = layui.layedit
-                 	,laydate = layui.laydate;
-                
-               /*  form.verify({
-                	textLength: [/^[.*]{1,50}$/, '限制50字以内,不可为空']
-				}); */
-                 });
-               </script>
+							onclick="myConfirmCantLeave()">确定</button>
+				</form> -->
+
 				<h3 id="messageTitle"></h3>
 				<hr />
 				<br /> <br /> <span id="messageSnder"></span><br /> <br /> <br />
@@ -1119,7 +1106,8 @@ function confirmCantLeave() {
 				</div>
 				<div id="studentAskLeaveDiv" style="display: none;">
 					<input id="ImAgreeLeave" class="layui-btn" onclick="agreeLeave()"
-						type="button" value="批准" /> <input style="margin-left: 10%;"
+						type="button" value="批准" /> 
+						<input style="margin-left: 10%;"
 						id="cantLeave" onclick="cantLeave()"
 						class="layui-btn layui-btn-primary" type="button" value="驳回" />
 				</div>
@@ -1202,7 +1190,7 @@ function confirmCantLeave() {
 					<div class="layui-form-item">
 						<div class="layui-input-block">
 							<input id="subButton" class="layui-btn" onclick="addCourse()"
-								style="margin-left: 5%;" type="button"  value="提交" lay-submit />
+								style="margin-left: 5%;" type="button" value="提交" lay-submit />
 							<button type="reset" style="margin-left: 5%;"
 								class="layui-btn layui-btn-primary">重置</button>
 						</div>

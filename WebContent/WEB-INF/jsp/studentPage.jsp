@@ -1192,7 +1192,7 @@ function fuckFunction() {
 							<th
 								lay-data="{field:'messageTitle', width:500,templet: '#titleTpl'}">标题</th>
 							<th
-								lay-data="{field:'haveRead', width:200, sort: true,templet: '#status'}">状态</th>
+								lay-data="{field:'haveRead', width:200, sort: true, align:'center', templet: '#status'}">状态</th>
 							<th
 								lay-data="{fixed: 'right', width:160, align:'center', toolbar: '#barDemo'}"></th>
 						</tr>
@@ -1203,6 +1203,13 @@ function fuckFunction() {
   			<a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail">查看</a>
   			<a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 			</script>
+			<script type="text/html" id="status">
+                  {{#  if(d.haveRead == '已读'){ }}
+                    <i class="layui-icon" style="font-size: 30px; color: #5FB878;">&#xe618;</i>
+                     {{#  } else { }}
+                       <i class="layui-icon" style="font-size: 30px; color: #FF5722;">&#xe607;</i>
+                         {{#  } }}
+            </script>
 			<script type="text/html" id="titleTpl">
      		<a href="#" class="layui-table-link">{{d.messageTitle}}</a>
    			</script>
