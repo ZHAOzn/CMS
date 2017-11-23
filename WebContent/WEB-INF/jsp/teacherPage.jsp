@@ -667,13 +667,19 @@ function confirmCantLeave() {
 
 				<ul class="layui-nav">
 					<li class="layui-nav-item"><a id="checkCourseShow2" href="#">
-					<i class="layui-icon bbbbb" style="font-size: 20px; color: #d2d2d2">&#xe68e;</i></a></li>
+							<i class="layui-icon bbbbb"
+							style="font-size: 20px; color: #d2d2d2">&#xe68e;</i>
+					</a></li>
 					<li class="layui-nav-item"><a id="messageButtton" href="#">
-					<i class="layui-icon bbbbb" style="font-size: 20px; color: #d2d2d2">&#xe63a;</i><span
-							id="TmessageCount" class="layui-badge">${messageCount}</span></a></li>
+							<i class="layui-icon bbbbb"
+							style="font-size: 20px; color: #d2d2d2">&#xe63a;</i><span
+							id="TmessageCount" class="layui-badge">${messageCount}</span>
+					</a></li>
 					<li class="layui-nav-item"><a id="teacherInfoCenter" href="#">
-					<i class="layui-icon bbbbb" style="font-size: 20px; color: #d2d2d2">&#xe612;</i><span
-							id="redSignal" style="display: none;" class="layui-badge-dot"></span></a></li>
+							<i class="layui-icon bbbbb"
+							style="font-size: 20px; color: #d2d2d2">&#xe612;</i><span
+							id="redSignal" style="display: none;" class="layui-badge-dot"></span>
+					</a></li>
 					<li class="layui-nav-item"><a href="#">${teacher.teacherName}老师</a>
 						<dl class="layui-nav-child">
 							<dd>
@@ -729,12 +735,10 @@ function confirmCantLeave() {
 
 		<!-- 内容显示 -->
 		<div class="layui-body site-demo"
-		style="padding-top: 3%; overflow: auto;">
-			<br />
-			
-			<span id="messageList" style="margin-left: 5%;">课程信息</span>
+			style="padding-top: 3%; overflow: auto;">
+			<br /> <span id="messageList" style="margin-left: 5%;">课程信息</span>
 			<hr class="layui-bg-cyan">
-			
+
 			<!-- 教师操作日志表 -->
 			<div id="forTeacherLogInfo" class="site-text site-block"
 				style="text-align: center; height: 3em; margin-top: 0.1%; display: none;">
@@ -775,7 +779,7 @@ function confirmCantLeave() {
 						});
 					});
 			</script>
-			
+
 			<table id="teacherLogOfTime" border="1"
 				style="display: none; text-align: center; width: 80%; margin-left: 9.5%;">
 			</table>
@@ -988,30 +992,34 @@ function confirmCantLeave() {
 					});
 				</script>
 
-					<!-- 显示消息 -->
-		<div id="messageShow" style="margin-left: 5%; margin-right: 5%; display: none;" >
-		<table  class="layui-table"
-			lay-data="{page:true,height:485,width:1070, url:'<%=request.getContextPath() %>/student/getSeperratePage.do',
+			<!-- 显示消息 -->
+			<div id="messageShow"
+				style="margin-left: 5%; margin-right: 5%; display: none;">
+				<table class="layui-table"
+					lay-data="{page:true,height:485,width:1070, url:'<%=request.getContextPath() %>/student/getSeperratePage.do',
 			 id:'test', where:{messageAcpter:'${teacher.teacherMobile}'}, limit:10}"
-			lay-filter="test">
-			<thead>
-				<tr>
-					<th lay-data="{field:'messageSender', width:200, sort: true}">发送方</th>
-					<th lay-data="{field:'messageTitle', width:500,templet: '#titleTpl'}">标题</th>
-					<th lay-data="{field:'haveRead', width:200, sort: true,templet: '#NowtitleTpl'}">状态</th>
-					<th lay-data="{fixed: 'right', width:160, align:'center', toolbar: '#barDemo'}"></th>
-				</tr>
-			</thead>
-		</table>
-     </div>
-     <script type="text/html" id="titleTpl">
+					lay-filter="test">
+					<thead>
+						<tr>
+							<th lay-data="{field:'messageSender', width:200, sort: true}">发送方</th>
+							<th
+								lay-data="{field:'messageTitle', width:500,templet: '#titleTpl'}">标题</th>
+							<th
+								lay-data="{field:'haveRead', width:200, sort: true,templet: '#NowtitleTpl'}">状态</th>
+							<th
+								lay-data="{fixed: 'right', width:160, align:'center', toolbar: '#barDemo'}"></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<script type="text/html" id="titleTpl">
      <a href="#" class="layui-table-link">{{d.messageTitle}}</a>
    </script>
-     <script type="text/html" id="barDemo">
+			<script type="text/html" id="barDemo">
      <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail">查看</a>
       <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
  </script>
-	  <script>
+			<script>
         layui.use('table', function(){
         var table = layui.table;  
         //监听工具条
@@ -1056,32 +1064,34 @@ function confirmCantLeave() {
       });
         });
       </script>
-      
+
 			<!-- 附属详细消息 -->
 			<div id="fushuMessage"
 				style="width: 100%; padding-left: 25%; display: none;">
-		   <!-- 拒绝请假信息 -->
-		   <form class="layui-form layui-form-pane" action="" id="detailInfoOfLeave"
-	 	   style="position: fixed; margin-top: 6%; background-color:#d2d2d2;
-	 	   text-align: center; margin-left: 6%; display: none; width: 20%;">
-		   <div class="layui-form-item layui-form-text">
-           <label class="layui-form-label">拒绝说明</label>
-            <div class="layui-input-block">
-           <textarea id="refuseContent" placeholder="请输入内容" required lay-verify="textLength"  
-           class="layui-textarea" style="width: 100%;"></textarea>
-           <P id="limitP" style="color: red;display: none;">限制50字以内,不可为空</P>
-            </div>
-             </div>
-              <div class="layui-form-item">
-               <button class="layui-btn" style="width: 50%;" onclick="confirmCantLeave()" lay-submit="" lay-filter="demo2">确定</button>
-               </div>
-	         </form>
-	         <script>
+				<!-- 拒绝请假信息 -->
+				<form class="layui-form layui-form-pane" action=""
+					id="detailInfoOfLeave"
+					style="position: fixed; margin-top: 6%; background-color: #d2d2d2; text-align: center; margin-left: 6%; display: none; width: 20%;">
+					<div class="layui-form-item layui-form-text">
+						<label class="layui-form-label">拒绝说明</label>
+						<div class="layui-input-block">
+							<textarea id="refuseContent" placeholder="请输入内容"
+								 class="layui-textarea"
+								style="width: 100%;"></textarea>
+							<P id="limitP" style="color: red; display: none;">限制50字以内,不可为空</P>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<button class="layui-btn" style="width: 50%;"
+							onclick="confirmCantLeave()" lay-submit>确定</button>
+					</div>
+				</form>
+				<script>
                 layui.use(['form', 'layedit', 'laydate'], function(){
-                var form = layui.form
-                ,layer = layui.layer
-                 ,layedit = layui.layedit
-                 ,laydate = layui.laydate;
+                	var form = layui.form
+                	,layer = layui.layer
+                 	,layedit = layui.layedit
+                 	,laydate = layui.laydate;
                 
                /*  form.verify({
                 	textLength: [/^[.*]{1,50}$/, '限制50字以内,不可为空']
@@ -1100,19 +1110,18 @@ function confirmCantLeave() {
 				<br /> <br />
 				<div id="insertCourseDiv" style="display: none;">
 					<input type="text" id="MstudentRoNo" style="display: none;" /> <input
-						type="text" id="MCourseId" style="display: none;" />
-						<input id="leaveRecordId" style="display: none;">
-						 <input id="agree" class="layui-btn" onclick="agree()" type="button"
+						type="text" id="MCourseId" style="display: none;" /> <input
+						id="leaveRecordId" style="display: none;"> <input
+						id="agree" class="layui-btn" onclick="agree()" type="button"
 						value="同意" /> <input style="margin-left: 10%;" id="dontCare"
 						onclick="dontCare()" class="layui-btn layui-btn-primary"
 						type="button" value="忽略" />
 				</div>
 				<div id="studentAskLeaveDiv" style="display: none;">
-					<input
-						id="ImAgreeLeave" class="layui-btn" onclick="agreeLeave()" type="button"
-						value="批准" /> <input style="margin-left: 10%;" id="cantLeave"
-						onclick="cantLeave()" class="layui-btn layui-btn-primary"
-						type="button" value="驳回" />
+					<input id="ImAgreeLeave" class="layui-btn" onclick="agreeLeave()"
+						type="button" value="批准" /> <input style="margin-left: 10%;"
+						id="cantLeave" onclick="cantLeave()"
+						class="layui-btn layui-btn-primary" type="button" value="驳回" />
 				</div>
 			</div>
 
@@ -1132,14 +1141,15 @@ function confirmCantLeave() {
 						value="${teacher.teacherMobile}" style="display: none;" />
 					<div class="layui-form-item">
 						<label class="layui-form-label">课程类型</label>
-						<div class="layui-input-block">				
-							<input id="courseType" type="radio" name="courseType" value="必修" title="必修" checked>
-      						<input id="courseType" type="radio" name="courseType" value="选修" title="选修">						
-<!-- 							&nbsp;&nbsp; -->
-<!-- 							必修&nbsp;<input id="courseType" type="radio" name="courseType" value="必修" -->
-<!-- 								title="必修" checked> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-<!-- 							选修&nbsp;<input id="courseType" type="radio" -->
-<!-- 								name="courseType" value="选修" title="选修"> -->
+						<div class="layui-input-block">
+							<input id="courseType" type="radio" name="courseType" value="必修"
+								title="必修" checked> <input id="courseType" type="radio"
+								name="courseType" value="选修" title="选修">
+							<!-- 							&nbsp;&nbsp; -->
+							<!-- 							必修&nbsp;<input id="courseType" type="radio" name="courseType" value="必修" -->
+							<!-- 								title="必修" checked> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+							<!-- 							选修&nbsp;<input id="courseType" type="radio" -->
+							<!-- 								name="courseType" value="选修" title="选修"> -->
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -1154,8 +1164,8 @@ function confirmCantLeave() {
 						<div class="layui-inline">
 							<label class="layui-form-label">开始时间</label>
 							<div class="layui-input-inline">
-								<input class="layui-input" id="startTime" lay-verify="required" type="text"
-									name="startTime" placeholder="yyyy-MM-dd">
+								<input class="layui-input" id="startTime" lay-verify="required"
+									type="text" name="startTime" placeholder="yyyy-MM-dd">
 							</div>
 						</div>
 					</div>
@@ -1163,8 +1173,8 @@ function confirmCantLeave() {
 						<div class="layui-inline">
 							<label class="layui-form-label">结束时间</label>
 							<div class="layui-input-inline">
-								<input class="layui-input" id="endTime" lay-verify="required" type="text"
-									name="endTime" placeholder="yyyy-MM-dd">
+								<input class="layui-input" id="endTime" lay-verify="required"
+									type="text" name="endTime" placeholder="yyyy-MM-dd">
 							</div>
 						</div>
 					</div>
@@ -1172,8 +1182,9 @@ function confirmCantLeave() {
 						<div class="layui-inline">
 							<label class="layui-form-label">当前学年</label>
 							<div class="layui-input-inline">
-								<input class="layui-input" lay-verify="required" id="currentYear" type="text"
-									name="currentYear" placeholder="yyyy">
+								<input class="layui-input" lay-verify="required"
+									id="currentYear" type="text" name="currentYear"
+									placeholder="yyyy">
 							</div>
 						</div>
 					</div>
@@ -1181,18 +1192,19 @@ function confirmCantLeave() {
 						<label class="layui-form-label">当前学期</label>
 						<div class="layui-input-block">
 							<select id="schoolTem" name="schoolTem" lay-verify="required">
-        						<option value="0">春季学期</option>
-       							<option value="1">夏季学期</option>
-        						<option value="2" selected>秋季学期</option>
-        						<option value="3">冬季学期</option>
+								<option value="0">春季学期</option>
+								<option value="1">夏季学期</option>
+								<option value="2" selected>秋季学期</option>
+								<option value="3">冬季学期</option>
 							</select>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<div class="layui-input-block">
-							<input id="subButton" class="layui-btn" onclick="addCourse()" style="margin-left: 5%;"
-								type="button" value="提交" lay-submit/>						
-							<button type="reset" style="margin-left: 5%;" class="layui-btn layui-btn-primary">重置</button>
+							<input id="subButton" class="layui-btn" onclick="addCourse()"
+								style="margin-left: 5%;" type="button"  value="提交" lay-submit />
+							<button type="reset" style="margin-left: 5%;"
+								class="layui-btn layui-btn-primary">重置</button>
 						</div>
 					</div>
 				</form>
@@ -1224,8 +1236,7 @@ function confirmCantLeave() {
 			</div>
 
 			<!-- 课程信息 -->
-			<div class="layui-form sessiontable" id="courseInfo"
-				style="">
+			<div class="layui-form sessiontable" id="courseInfo" style="">
 				<table class="layui-table" lay-even style="text-align: center;">
 					<colgroup>
 						<col width="150">
@@ -1267,8 +1278,8 @@ function confirmCantLeave() {
 															action="<%=request.getContextPath()%>/student/selectStudentByClazzId.do"
 															method="post">
 															<input name="clazzId" style="display: none;"
-																value="${c.clazzId}" /> <a class="aSign" id="${c.clazzId}"
-																onclick="aClick(this.id)" href="#">${c.clazzName}</a>
+																value="${c.clazzId}" /> <a class="aSign"
+																id="${c.clazzId}" onclick="aClick(this.id)" href="#">${c.clazzName}</a>
 														</form>
 														<br />
 													</c:forEach>
