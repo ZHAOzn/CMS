@@ -324,9 +324,6 @@
 				$('#addCourseShow').show();
 				setTimeout('yourFunction()',2000); 
 			},
-			error : function(data) {
-				alert("服务器异常");
-			},
 			dataType : "json",
 		});
 	}
@@ -1122,7 +1119,7 @@ function confirmCantLeave() {
 			<!-- 新建课程 -->
 			<div class="site-text site-block" id="courseShow"
 				style="display: none; margin-top: 0;">
-				<form action="">
+				<form class="layui-form" action="">
 					<div class="layui-form-item">
 						<label class="layui-form-label">课程名称</label>
 						<div class="layui-input-block">
@@ -1135,19 +1132,21 @@ function confirmCantLeave() {
 						value="${teacher.teacherMobile}" style="display: none;" />
 					<div class="layui-form-item">
 						<label class="layui-form-label">课程类型</label>
-						<div style="padding-top: 10px;">
-							&nbsp;&nbsp;
-							必修&nbsp;<input id="courseType" type="radio" name="courseType" value="必修"
-								title="必修" checked> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							选修&nbsp;<input id="courseType" type="radio"
-								name="courseType" value="选修" title="选修">
+						<div class="layui-input-block">				
+							<input id="courseType" type="radio" name="courseType" value="必修" title="必修" checked>
+      						<input id="courseType" type="radio" name="courseType" value="选修" title="选修">						
+<!-- 							&nbsp;&nbsp; -->
+<!-- 							必修&nbsp;<input id="courseType" type="radio" name="courseType" value="必修" -->
+<!-- 								title="必修" checked> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+<!-- 							选修&nbsp;<input id="courseType" type="radio" -->
+<!-- 								name="courseType" value="选修" title="选修"> -->
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">班级容量</label>
 						<div class="layui-input-block">
 							<input id="classCapacity" type="text" name="classCapacity"
-								required lay-verify="required" placeholder="请输入班级容量"
+								lay-verify="required|number" placeholder="请输入班级容量"
 								autocomplete="off" class="layui-input">
 						</div>
 					</div>
@@ -1155,7 +1154,7 @@ function confirmCantLeave() {
 						<div class="layui-inline">
 							<label class="layui-form-label">开始时间</label>
 							<div class="layui-input-inline">
-								<input class="layui-input" id="startTime" type="text"
+								<input class="layui-input" id="startTime" lay-verify="required" type="text"
 									name="startTime" placeholder="yyyy-MM-dd">
 							</div>
 						</div>
@@ -1164,7 +1163,7 @@ function confirmCantLeave() {
 						<div class="layui-inline">
 							<label class="layui-form-label">结束时间</label>
 							<div class="layui-input-inline">
-								<input class="layui-input" id="endTime" type="text"
+								<input class="layui-input" id="endTime" lay-verify="required" type="text"
 									name="endTime" placeholder="yyyy-MM-dd">
 							</div>
 						</div>
@@ -1173,27 +1172,28 @@ function confirmCantLeave() {
 						<div class="layui-inline">
 							<label class="layui-form-label">当前学年</label>
 							<div class="layui-input-inline">
-								<input class="layui-input" id="currentYear" type="text"
+								<input class="layui-input" lay-verify="required" id="currentYear" type="text"
 									name="currentYear" placeholder="yyyy">
 							</div>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">当前学期</label>
-						<div style="padding-top: 6px;">
-							<select id="schoolTem" name="schoolTem" lay-verify="required" style="height: 2em;">
-								<option value=""></option>
-								<option value="春季">春季学期</option>
-								<option value="夏季">夏季学期</option>
-								<option value="秋季" selected="selected">秋季学期</option>
-								<option value="冬季">冬季学期</option>
+						<div class="layui-input-block">
+							<select id="schoolTem" name="schoolTem" lay-verify="required">
+        						<option value="0">春季学期</option>
+       							<option value="1">夏季学期</option>
+        						<option value="2" selected>秋季学期</option>
+        						<option value="3">冬季学期</option>
 							</select>
 						</div>
 					</div>
 					<div class="layui-form-item">
+						<div class="layui-input-block">
 							<input id="subButton" class="layui-btn" onclick="addCourse()" style="margin-left: 5%;"
-								type="button" value="提交" />
+								type="button" value="提交" lay-submit/>						
 							<button type="reset" style="margin-left: 5%;" class="layui-btn layui-btn-primary">重置</button>
+						</div>
 					</div>
 				</form>
 
@@ -1203,8 +1203,7 @@ function confirmCantLeave() {
 						var form = layui.form, laydate = layui.laydate;
 
 						//监听提交
-						form.on('submit(formDemo)', function(data) {
-							layer.msg(JSON.stringify(data.field));
+						form.on('submit(demo())', function(data) {
 							return false;
 						});
 						laydate.render({
@@ -1219,6 +1218,8 @@ function confirmCantLeave() {
 						});
 
 					});
+
+					
 				</script>
 			</div>
 
@@ -1250,8 +1251,7 @@ function confirmCantLeave() {
 								<c:forEach items="${courses}" var="r">
 									<tr id="abs${r.courseId}">
 										<td>${r.courseId}</td>
-										<td><a
-											href="<%=request.getContextPath()%>/course/forsearchClazz.do?courseId=${r.courseId}">${r.courseName}</a></td>
+										<td>${r.courseName}</td>
 										<td style="text-align: center;">
 											<div class="site-demo-button" id="layerDemo">
 												<button id="${r.qrImg}" onclick="showQrImg(this.id)"
@@ -1267,7 +1267,7 @@ function confirmCantLeave() {
 															action="<%=request.getContextPath()%>/student/selectStudentByClazzId.do"
 															method="post">
 															<input name="clazzId" style="display: none;"
-																value="${c.clazzId}" /> <a id="${c.clazzId}"
+																value="${c.clazzId}" /> <a class="aSign" id="${c.clazzId}"
 																onclick="aClick(this.id)" href="#">${c.clazzName}</a>
 														</form>
 														<br />
@@ -1277,7 +1277,7 @@ function confirmCantLeave() {
 													<a style="color: red;">（空）</a>
 												</c:otherwise>
 											</c:choose></td>
-										<td style="text-align: center;"><a
+										<td style="text-align: center;"><a class="aSign"
 											href="<%=request.getContextPath()%>/course/forsearchClazz.do?courseId=${r.courseId}&teacherMobile=${teacher.teacherMobile}">查看/签到</a></td>
 										<td>
 											<!-- <a href="/course/forChangeCousrInfo.do?courseId=${r.courseId}">修改</a> -->

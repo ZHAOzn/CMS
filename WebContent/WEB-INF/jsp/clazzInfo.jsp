@@ -306,7 +306,7 @@ function aClick(clazzId) {
        	        con += "<td style='text-align:center;'>" + item.studentName + "</td>";
        	        con += "<td style='text-align:center;'>" + item.studentGender + "</td>";
        	        con += "<td style='text-align:center;'>" + item.studentMobile + "</td>";
-       	        con += "<td><img src=\'/ClassManageSys/studentPhoto/"+item.studentPhoto+"\'/></td>";
+       	        con += "<td style='text-align:center;'><img src=\'/ClassManageSys/studentPhoto/"+item.studentPhoto+"\'/></td>";
        	        con += "<tr/>";
        	    });
 			 $('#inClazzStudentInfoTable').html(con);
@@ -353,6 +353,12 @@ function aClick(clazzId) {
 							<dd>
 								<a id="afterClass" onclick="afterClassHomeWork()" href="#">课后作业</a>
 							</dd>
+							<dd>
+								<a id="" href="#">发布公告（待定）</a>
+							</dd>
+							<dd>
+								<a id="" href="#">上传资料（待定）</a>
+							</dd>
 
 						</dl></li>
 					<li class="layui-nav-item layui-nav-itemed"><a
@@ -378,9 +384,7 @@ function aClick(clazzId) {
 		<!-- 内容 -->
 		<div class="layui-body site-demo">
 
-			<span class="layui-breadcrumb" lay-separator="|"> <a href="#">发布公告</a>
-				<a href="#">上传资料</a>
-			</span> <br> <br> <br> <br> <span
+			<br> <br> <br> <br> <br> <span
 				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;">${course.courseName}：<span
 				id="getHeadLine">考勤签到</span></span>
 			<hr class="layui-bg-cyan">
@@ -412,12 +416,12 @@ function aClick(clazzId) {
 										<td>${c.currentYear}</td>
 										<td>
 										<input name="clazzId" style="display: none;"
-											value="${c.clazzId}" /> <a id="${c.clazzId}"
+											value="${c.clazzId}" /> <a class="aSign" id="${c.clazzId}"
 													onclick="aClick(this.id)" href="#">查看</a>
 										</td>
-										<td><a id="zxc${c.clazzId}"
+										<td><a class="aSign" id="zxc${c.clazzId}"
 											onclick="changeWhenClick(this.id)" href="#">修改</a></td>
-										<td><a id="del${c.clazzId}"
+										<td><a class="aSign" id="del${c.clazzId}"
 											onclick="deleteClazzByAjax(this.id)" href="#">删除</a></td>
 									</tr>
 									<br />
@@ -445,10 +449,10 @@ function aClick(clazzId) {
 				<table  class="layui-table" lay-even>
 						<colgroup>
 							<col width="200">
+							<col width="120">
 							<col width="100">
-							<col width="80">
 							<col width="200">
-							<col width="240">
+							<col width="210">
 						</colgroup>
 						<thead>
 							<tr>
@@ -607,7 +611,7 @@ function aClick(clazzId) {
 
 			<!-- 签到记录模块 -->
 			<div id="otherModel"
-				style="display: none; padding:25px 4%">
+				style="display: none; padding:25px 4%;">
                  <table id="getAllInfo" style="width: 99%;" class="layui-table">
 						<thead>
 							<tr>

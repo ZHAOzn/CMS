@@ -62,3 +62,23 @@ a:active {
 }
 
 
+/*表格内链接颜色 */
+.aSign{
+	text-decoration: none;
+}
+
+.aSign:link{
+	text-decoration: none;
+}
+.aSign:visited{
+	text-decoration: none;
+}
+.aSign:hover{
+	text-decoration: none;
+	color: #5FB878;
+}
+.aSign:active {
+	text-decoration: none;
+}
+
+
