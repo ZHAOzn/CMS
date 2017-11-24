@@ -38,8 +38,8 @@
 	
 	<insert id="insertShortAnswer">
 	  insert into 
-	  ShortAnswer(QuestionNumber,ShortAnswerContent,QuestionsType,StudentAnswer,Value,Note) 
-	  values(#{questionNumber},#{shortAnswerContent},#{questionsType},#{studentAnswer},#{value},#{Note})
+	  ShortAnswer(QuestionNumber,ShortAnswerContent,QuestionsType,Value,Note,ExaminationID) 
+	  values(#{questionNumber},#{shortAnswerContent},#{questionsType},#{value},#{note},#{examination.examinationID})
 	</insert>
 
 </mapper>

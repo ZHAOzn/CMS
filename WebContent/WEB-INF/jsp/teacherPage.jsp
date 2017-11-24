@@ -733,15 +733,15 @@ function cantLeave() {
 
 			<!-- 教师操作日志表 -->
 			<div id="forTeacherLogInfo" class="site-text site-block"
-				style="text-align: center; height: 3em; margin-top: 0.1%; display: none;">
+				style=" height: 3em; margin-top: 0.1%; display: none;">
 				<form class="layui-form" action="">
-					<div class="layui-form-item" style="width: 80%; margin-left: 7%;">
+					<div class="layui-form-item" style="width: 100%; margin-left: 1%;">
 						<div style="height: 100%; float: left;">
 							<label class="layui-form-label" style="">输入日期</label>
 							<div class="layui-input-block" style="">
 								<input id="logDate" type="text" lay-verify="logDate"
 									placeholder="yyyy-MM-dd" autocomplete="on" class="layui-input"
-									style="width: 60%; float: left;">
+									style="width: 80%; float: left;">
 							</div>
 						</div>
 						<div style="height: 100%; width: 49%; float: left;">
@@ -749,7 +749,7 @@ function cantLeave() {
 							<div class="layui-input-block" style="">
 								<input id="CoreKey" type="text" lay-verify="CoreKey"
 									placeholder="如  '登录'" autocomplete="off" class="layui-input"
-									style="width: 60%; float: left;"> <input
+									style="width: 40%; float: left;"> <input
 									class="layui-btn" lay-submit type="button"
 									onclick="searchTeacherLogByTime()" value="查询"
 									style="float: left;" />

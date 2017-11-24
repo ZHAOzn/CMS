@@ -1283,13 +1283,13 @@ function fuckFunction() {
 			<div id="forStudentLogInfo" class="site-text site-block"
 				style="text-align: center; height: 3em; margin-top: 0.1%; display: none;">
 				<form class="layui-form" action="">
-					<div class="layui-form-item" style="width: 80%; margin-left: 7%;">
+					<div class="layui-form-item" style="width: 100%; margin-left: 1%;">
 						<div style="height: 100%; float: left;">
 							<label class="layui-form-label" style="">输入日期</label>
 							<div class="layui-input-block" style="">
 								<input id="logDate" type="text" lay-verify="logDate"
 									placeholder="yyyy-MM-dd" autocomplete="on" class="layui-input"
-									style="width: 60%; float: left;">
+									style="width: 80%; float: left;">
 							</div>
 						</div>
 						<div style="height: 100%; width: 49%; float: left;">

@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.qdu.dao.ExaminationDao;
 import com.qdu.pojo.Examination;
+import com.qdu.pojo.MoreSelection;
+import com.qdu.pojo.SingleSelection;
 import com.qdu.service.ExaminationService;
 
 @Transactional
@@ -39,6 +41,41 @@ public class ExaminationServiceImpl implements ExaminationService{
 	@Override
 	public Examination selectExaminationByExaminationId(int examinationID) {
 		return examinationDaoImpl.selectExaminationByExaminationId(examinationID);
+	}
+
+	@Override
+	public int selectSingleSelectionCount(int examinationID) {
+		return examinationDaoImpl.selectSingleSelectionCount(examinationID);
+	}
+
+	@Override
+	public int insertSingleSelection(SingleSelection selection) {
+		return examinationDaoImpl.insertSingleSelection(selection);
+	}
+
+	@Override
+	public List<SingleSelection> selectSingleByExaminationID(int examinationID) {
+		return examinationDaoImpl.selectSingleByExaminationID(examinationID);
+	}
+
+	@Override
+	public int selectMoreSelectionCount(int examinationID) {
+		return examinationDaoImpl.selectMoreSelectionCount(examinationID);
+	}
+
+	@Override
+	public List<MoreSelection> selectMoreByExaminationID(int examinationID) {
+		return examinationDaoImpl.selectMoreByExaminationID(examinationID);
+	}
+
+	@Override
+	public int insertMoreSelection(MoreSelection moreSelection) {
+		return examinationDaoImpl.insertMoreSelection(moreSelection);
+	}
+
+	@Override
+	public int updateMoreSelectionById(int moreSelectionId,int questionNumber) {
+		return examinationDaoImpl.updateMoreSelectionById(moreSelectionId,questionNumber);
 	}
 	
 	

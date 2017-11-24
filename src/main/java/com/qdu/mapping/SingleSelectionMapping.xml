@@ -33,16 +33,24 @@
 	  And e.ExaminationID = #{examinationID}
 	</select>
 	
+	<select id="selectSingleByExaminationID" resultMap="SingleSelectionResult">
+	  select * from SingleSelection where ExaminationID = #{examinationID}
+	</select>
+	
 	<select id="selectSingleSelectionMaxQuestionNumber" resultMap="SingleSelectionResult">
 	  select Max(QuestionNumber) from SingleSelection where ExaminationID = #{examinationID}
 	</select>
 	
-	<insert id="insertSingleSelection">
+	<select id="selectSingleSelectionCount" resultType="int">
+	  select Count(*) from SingleSelection where ExaminationID = #{examinationID}
+	</select>
+	
+	<insert id="insertSingleSelection" parameterType="com.qdu.pojo.SingleSelection">
 	  insert into 
 	  SingleSelection(QuestionNumber,QuestionContent,QuestionsType,OptionA,OptionB,OptionC,OptionD,
-	  StudentAnswer,Answer,Value,Note) 
+	  Answer,Value,Note,ExaminationID) 
 	  values(#{questionNumber},#{questionContent},#{questionsType},#{optionA},#{optionB},#{optionC},#{optionD},
-	  #{studentAnswer},#{answer},#{value},#{Note})
+	  #{answer},#{value},#{note},#{examination.examinationID})
 	</insert>
 
 </mapper>

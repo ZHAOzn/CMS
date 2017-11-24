@@ -8,10 +8,6 @@ public class Pack implements Serializable{
 	private int questionNumber; //题号
 	private String packContent; //问题
 	private String questionsType; //问题类型
-	private String optionA; //选项A
-	private String optionB;
-	private String optionC;
-	private String optionD;
 	private String studentAnswer; //学生答案
 	private String answer;//正确答案
 	private int value; //分值
@@ -40,30 +36,6 @@ public class Pack implements Serializable{
 	}
 	public void setQuestionsType(String questionsType) {
 		this.questionsType = questionsType;
-	}
-	public String getOptionA() {
-		return optionA;
-	}
-	public void setOptionA(String optionA) {
-		this.optionA = optionA;
-	}
-	public String getOptionB() {
-		return optionB;
-	}
-	public void setOptionB(String optionB) {
-		this.optionB = optionB;
-	}
-	public String getOptionC() {
-		return optionC;
-	}
-	public void setOptionC(String optionC) {
-		this.optionC = optionC;
-	}
-	public String getOptionD() {
-		return optionD;
-	}
-	public void setOptionD(String optionD) {
-		this.optionD = optionD;
 	}
 	public String getStudentAnswer() {
 		return studentAnswer;

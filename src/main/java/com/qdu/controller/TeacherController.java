@@ -93,7 +93,7 @@ public class TeacherController {
 	// 教师登录
 	@SystemLog(module = "教师", methods = "日志管理-登录/刷新")
 	@RequestMapping(value = "/teacherLogin.do")
-	public String teacherLogin(HttpServletRequest request, String pageNow, String id, String password, ModelMap map) {
+	public String teacherLogin(HttpServletRequest request,String id, String password, ModelMap map) {
 		if (id == null) {
 			id = request.getParameter("teacherId");
 		}
@@ -105,13 +105,6 @@ public class TeacherController {
 			if (id.equals(teacher.getTeacherMobile())) {
 				if (MD5Util.md5(password, "teacher").equals(teacher.getTeacherPassword())
 						|| password.equals(teacher.getTeacherPassword())) {
-					Page page = null;
-					int totalCount = messageServiceImpl.selectMessageTotalCount(teacher.getTeacherMobile());
-					String repageNow = request.getParameter("repageNow");
-					if (repageNow != null) {
-						pageNow = repageNow;
-					}
-					page = new Page(totalCount, Integer.parseInt(pageNow));
 					map.addAttribute("teacher", teacher);
 					List<Course> courses = courseServiceImpl.selectCourseByTeacher(teacher.getTeacherMobile());
 					map.addAttribute("courses", courses);
@@ -119,7 +112,6 @@ public class TeacherController {
 					map.put("messageCount", messageCount);
 					List<LogEntity> logEntities = logEntityServiceImpl.selectStudentLog(id);
 					map.put("logEntity", logEntities);
-					map.put("page", page);
 					// session的id存一下
 					request.getSession().setAttribute("UserId", id);
 					return "teacherPage";
