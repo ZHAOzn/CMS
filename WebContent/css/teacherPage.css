@@ -61,12 +61,11 @@ a:active {
 	text-align: center;
 }
 
-
-/*表格内链接颜色 */
+/*表格内链接颜色 ,teacherPage和studentPage共用*/
 .aSign{
+	color:#009688;/*绿*/
 	text-decoration: none;
 }
-
 .aSign:link{
 	text-decoration: none;
 }
@@ -75,7 +74,7 @@ a:active {
 }
 .aSign:hover{
 	text-decoration: none;
-	color: #5FB878;
+	color: #1E9FFF;/*蓝*/
 }
 .aSign:active {
 	text-decoration: none;

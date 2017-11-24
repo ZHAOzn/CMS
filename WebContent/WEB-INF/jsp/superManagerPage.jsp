@@ -22,24 +22,80 @@
 	 $(document).ready(function () {
 		 $('#checkStudentShow').click(function name() {
 			 $('#studentInfo').show();
+			 $('#messageList').html("学生信息");
+			 $('#studentLog').hide();
+			 $('#teacherInfo').hide();
+			 $('#teacherLog').hide();
+			 $('#crud').hide();
+			 $('#manageJurisdiction').hide();
 		});
-		 $('#studentLog').click(function name() {
+		 $('#studentLogShow').click(function name() {
+			 $('#messageList').html("操作日志");
 			 $('#studentInfo').hide();
+			 $('#studentLog').show();
+			 $('#teacherInfo').hide();
+			 $('#teacherLog').hide();
+			 $('#crud').hide();
+			 $('#manageJurisdiction').hide();
 		});
-		 $('#teacherInfo').click(function name() {
+		 $('#teacherInfoShow').click(function name() {
+			 $('#messageList').html("教师信息");
+			 $('#teacherInfo').show();
 			 $('#studentInfo').hide();
+			 $('#studentLog').hide();
+			 $('#teacherLog').hide();
+			 $('#crud').hide();
+			 $('#manageJurisdiction').hide();
 		});
-		 $('#teacherLog').click(function name() {
+		 $('#teacherLogShow').click(function name() {
+			 $('#teacherLog').show();
+			 $('#messageList').html("操作日志");
 			 $('#studentInfo').hide();
+			 $('#studentLog').hide();
+			 $('#teacherInfo').hide();
+			 $('#crud').hide();
+			 $('#manageJurisdiction').hide();
 		});
-		 $('#crud').click(function name() {
+		 $('#crudShow').click(function name() {
+			 $('#crud').show();
+			 $('#messageList').html("CRUD管理");
 			 $('#studentInfo').hide();
+			 $('#studentLog').hide();
+			 $('#teacherInfo').hide();
+			 $('#teacherLog').hide();
+			 $('#manageJurisdiction').hide();
 		});
-		 $('#quxianmanage').click(function name() {
+		 $('#manageJurisdictionShow').click(function name() {
+			 $('#manageJurisdiction').show();
+			 $('#messageList').html("权限管理");
 			 $('#studentInfo').hide();
+			 $('#studentLog').hide();
+			 $('#teacherInfo').hide();
+			 $('#teacherLog').hide();
+			 $('#crud').hide();
 		});
-		 
+// 		 $('#manageBlog').click(function name() {
+// 			 $('#messageList').html("管理博客");
+// 			 $('#studentInfo').hide();
+// 		});
+// 		 $('#manageBlog').click(function name() {
+// 			 $('#messageList').html("发布公告");
+// 			 $('#studentInfo').hide();
+// 		});
 	 });
+	 
+// 	 $('#checkStudentShow').click(function name() {
+// 		 $('#messageList').html("学生信息");
+// 		 $('#studentLog').hide();
+// 		 $('#teacherInfo').hide();
+// 		 $('#teacherLog').hide();
+// 		 $('#crud').hide();
+// 		 $('#quxianmanage').hide();
+// 		 $('#manageBlog').hide();
+// 		 $('#manageAnnouncement').hide();
+
+// 		 $('#studentInfo').show();
+// 	});
 function clearRedis() {
 	alert("....");
 	 $.ajax({
@@ -50,32 +106,21 @@ function clearRedis() {
          dataType: "json",
          async: false,
          url: "<%=request.getContextPath()%>/admin/clearRedis.do",
-         success: function (data) {
-        	if(data.result == true){
-        		alert("清理成功");
-        	}else {
-				alert("清理出现问题");
-			}    
-         },
-         error: function (data) {
-             alert("服务器异常！");
-         },
-     });
-}
+			success : function(data) {
+				if (data.result == true) {
+					alert("清理成功");
+				} else {
+					alert("清理出现问题");
+				}
+			},
+			error : function(data) {
+				alert("服务器异常！");
+			},
+		});
+	}
 </script>
 </head>
 <body>
-	<!-- 课程二维码 -->
-	<img id="target"
-		style="width: 390px; height: 390px; display: none; z-index: 9; background-color: rgba(0, 0, 0, 1);"
-		src="" />
-
-	<!-- 新建课程成功提示信息 -->
-	<div id="addCourseShow"
-		style="background-color: #393D49; height: 20%; width: 20%; z-index: 20; position: fixed; margin-top: 23%; text-align: center; margin-left: 50%; display: none;">
-		<h3 style="color: white; margin-top: 19%">添加课程成功..</h3>
-	</div>
-
 	<div class="layui-layout layui-layout-admin">
 		<!-- 头部导航 -->
 		<div class="layui-header header header-demo">
@@ -85,13 +130,19 @@ function clearRedis() {
 
 				<ul class="layui-nav">
 					<li class="layui-nav-item"><a id="checkCourseShow2" href="#">
-					<i class="layui-icon bbbbb" style="font-size: 20px; color: #d2d2d2">&#xe68e;</i></a></li>
+							<i class="layui-icon bbbbb"
+							style="font-size: 20px; color: #d2d2d2">&#xe68e;</i>
+					</a></li>
 					<li class="layui-nav-item"><a id="messageButtton" href="#">
-					<i class="layui-icon bbbbb" style="font-size: 20px; color: #d2d2d2">&#xe63a;</i><span
-							id="TmessageCount" class="layui-badge">2</span></a></li>
+							<i class="layui-icon bbbbb"
+							style="font-size: 20px; color: #d2d2d2">&#xe63a;</i><span
+							id="TmessageCount" class="layui-badge">2</span>
+					</a></li>
 					<li class="layui-nav-item"><a id="teacherInfoCenter" href="#">
-					<i class="layui-icon bbbbb" style="font-size: 20px; color: #d2d2d2">&#xe612;</i><span
-							id="redSignal" style="display: none;" class="layui-badge-dot"></span></a></li>
+							<i class="layui-icon bbbbb"
+							style="font-size: 20px; color: #d2d2d2">&#xe612;</i><span
+							id="redSignal" style="display: none;" class="layui-badge-dot"></span>
+					</a></li>
 					<li class="layui-nav-item"><a href="#">超管</a>
 						<dl class="layui-nav-child">
 							<dd>
@@ -120,46 +171,45 @@ function clearRedis() {
 								<a id="checkStudentShow" href="#">学生信息</a>
 							</dd>
 							<dd>
-								<a id="studentLog" href="#">操作日志</a>
+								<a id="studentLogShow" href="#">操作日志</a>
 							</dd>
 						</dl></li>
 					<li class="layui-nav-item"><a href="#">教师管理</a>
 						<dl class="layui-nav-child">
 							<dd>
-								<a id="teacherInfo" href="#">教师信息</a>
+								<a id="teacherInfoShow" href="#">教师信息</a>
 							</dd>
 							<dd>
-								<a id="teacherLog" href="#">操作日志</a>
+								<a id="teacherLogShow" href="#">操作日志</a>
 							</dd>
 						</dl></li>
-						<li class="layui-nav-item"><a href="#">资料管理</a>
+					<li class="layui-nav-item"><a href="#">资料管理</a>
 						<dl class="layui-nav-child">
 							<dd>
-								<a id="crud" href="#">CRUD</a>
+								<a id="crudShow" href="#">CRUD管理</a>
+							</dd>
+							<dd>
+								<a id="manageJurisdictionShow" href="#">权限管理</a>
 							</dd>
 							<dd>
 								<a onclick="clearRedis()" href="#">清理redis</a>
-							</dd>
-							<dd>
-								<a id="quxianmanage" href="#">权限管理</a>
-							</dd>
+							</dd>	
 						</dl></li>
-					<li class="layui-nav-item"><a href="#">管理博客</a></li>
-					<li class="layui-nav-item"><a id="teacherLog" href="#">公告发布</a></li>
+					<li class="layui-nav-item"><a id="manageBlogShow" href="#">管理博客</a></li>
+					<li class="layui-nav-item"><a id="manageAnnouncementShow" href="#">公告发布</a></li>
 				</ul>
 			</div>
 		</div>
 
 		<!-- 内容显示 -->
 		<div class="layui-body site-demo"
-		style="padding-top: 3%; overflow: auto;">
-			<br />
-			
-			<span id="messageList" style="margin-left: 5%;">学生信息</span>
+			style="padding-top: 3%; overflow: auto;">
+			<span id="messageList"
+				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;">学生信息</span>
 			<hr class="layui-bg-cyan">
-			
+
 			<!-- 学生信息模块 -->
-			<div id="studentInfo">
+			<div id="studentInfo" class="site-text site-block">
 				<table class="layui-table" style="text-align: center;">
 					<colgroup>
 						<col width="150">
@@ -189,8 +239,9 @@ function clearRedis() {
 										<td>${s.studentGender}</td>
 										<td>${s.studentMobile}</td>
 										<td>${s.studentEmail}</td>
-										<td><a id="studentDetail" href="#"><i class="layui-icon" style="font-size: 30px; 
-										color: #1E9FFF;">&#xe65b;</i> </a></td>
+										<td><a id="studentDetail" href="#"><i
+												class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
+										</a></td>
 									</tr>
 								</c:forEach>
 							</c:when>
@@ -203,85 +254,38 @@ function clearRedis() {
 					</tbody>
 				</table>
 			</div>
-			<script>
-			layui.use([ 'element', 'layer' ,'table'], function() {
-				var element = layui.element, $ = layui.jquery,table = layui.table;
-				//转换静态表格
-				table.init('courseInfo', {
-				  //设置高度
-				  //支持所有基础参数
-				});
-				table.init('signRecord',{
-					
-				});
-			});
-			</script>
 			
+			<!-- 学生操作日志模块 -->				
+			<div id="studentLog" class="site-text site-block" style="display: none;">
+			</div>
 			
+			<!-- 教师信息模块 -->				
+			<div id="teacherInfo" class="site-text site-block" style="display: none;">
+			</div>
 			
-		</div>	
+			<!-- 教师操作日志模块 -->				
+			<div id="teacherLog" class="site-text site-block" style="display: none;">
+			</div>
+			
+			<!-- CRUD管理模块 -->				
+			<div id="crud" class="site-text site-block" style="display: none;">
+			</div>
+			
+			<!-- 权限管理模块 -->				
+			<div id="manageAnnouncement" class="site-text site-block" style="display: none;">
+			</div>
+
 		</div>
-		<script type="text/javascript">
-		layui.use([ 'element', 'layer' ],function() {
-			var element = layui.element, $ = layui.jquery, layer = layui.layer;
-			//触发事件
-			var active = {
-				notice : function() {
-					//示范一个公告层
-					layer
-							.open({
-								type : 1,
-								title : false //不显示标题栏
-								,
-								closeBtn : false,
-								area : '300px;',
-								shade : 0.8,
-								id : 'LAY_layuipro' //设定一个id，防止重复弹出
-								,
-								btn : [ '删除', '取消' ],
-								yes : function(index, layero) {
-									deleteThis();
-									layer.closeAll();
-								},
-								btn2 : function(index, layero) {
-									//按钮【按钮二】的回调
-								},
-								btnAlign : 'c',
-								moveType : 1 //拖拽模式，0或者1
-								,
-								content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定删除该课程？</div>'
-							});
-				},
-				page : function() {
-					layer.open({
-						type : 1,
-						title : false,
-						closeBtn : 0,
-						area : '390px',
-						skin : 'layui-layer-lan', //没有背景色
-						shadeClose : true,
-						content : $('#target')
-					});
-				}
+	</div>
+	<script type="text/javascript">
+		layui.use(['element','layer','table' ],function(){
+				var element = layui.element
+				,$ = layui.jquery
+				,layer = layui.layer
+				,table = layui.table;
 
-			};
-
-			$('#layerDemo .layui-btn').on(
-					'click',
-					function() {
-						var othis = $(this), method = othis
-								.data('method');
-						active[method] ? active[method].call(
-								this, othis) : '';
-					});
-
-			//监听导航点击
-			element.on('nav(demo)', function(elem) {
-				//console.log(elem)
-				layer.msg(elem.text());
-			});
 		});
-		</script>
+	</script>
 </body>
 </html>
 

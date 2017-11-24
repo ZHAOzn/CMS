@@ -19,6 +19,25 @@
 	background-color: rgba(0,0,0,0.3);
 }*/
 
+/*首页登录模块忘记密码超链接*/
+.aChangePW{
+	color:#337ab7;
+	text-decoration: none;
+	margin-left: 250px
+}
+.aChangePW:link{
+	text-decoration: none;
+}
+.aChangePW:visited{
+	text-decoration: none;
+}
+.aChangePW:hover{
+	text-decoration: none;
+	color: #FFB800;
+}
+.aChangePW:active {
+	text-decoration: none;
+}
 
 
 

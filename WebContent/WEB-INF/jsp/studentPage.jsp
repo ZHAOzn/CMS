@@ -1022,8 +1022,8 @@ function fuckFunction() {
 							<c:when test="${! empty studentInfos}">
 								<c:forEach items="${studentInfos}" var="s">
 									<tr>
-									   <td>${s.course.courseId}</td>
-										<td><a id="${s.course.courseId}" onclick="getPrivateData(this.id)" href="#" style="color: green;">
+									    <td>${s.course.courseId}</td>
+										<td><a id="${s.course.courseId}" onclick="getPrivateData(this.id)" href="#" class="aSign">
 										${s.course.courseName}</a></td>
 										<td>${s.course.courseType}</td>
 										<td>${s.course.startTime}</td>
@@ -1032,7 +1032,7 @@ function fuckFunction() {
 										<td>${s.course.schoolTem}</td>
 										<td>${s.course.teacher.teacherName}</td>
 										<td>${s.course.teacher.teacherMobile}</td>
-										<td><a href="#">退出</a></td>
+										<td><a href="#" class="aSign">退出</a></td>
 										<!--  <td colspan="8"></td>-->
 									</tr>
 								</c:forEach>
