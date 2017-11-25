@@ -263,12 +263,12 @@ function clearRedis() {
 			<div id="teacherInfo" class="site-text site-block" style="display: none;">
 				<table class="layui-table" style="text-align: center;">
 					<colgroup>
+						<col width="130">
 						<col width="150">
-						<col width="120">
-						<col width="150">
-						<col width="150">
-						<col width="120">
-						<col width="120">
+						<col width="100">
+						<col width="130">
+						<col width="200">
+						<col width="200">
 						<col width="120">
 					</colgroup>
 					<thead>
