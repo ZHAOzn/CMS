@@ -1,5 +1,8 @@
 package com.qdu.dao;
 
+
+import java.util.List;
+
 import com.qdu.pojo.Teacher;
 
 public interface TeacherDao {
@@ -19,5 +22,7 @@ public interface TeacherDao {
 	public int updateStudentextra(Teacher teacher);
 	
 	public Teacher selectTeacherNameByMobile(String teacherMobile);
+	
+	public List<Teacher> selectTeacher();
  
 }

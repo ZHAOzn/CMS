@@ -1,5 +1,7 @@
 package com.qdu.service;
 
+import java.util.List;
+
 import com.qdu.pojo.Teacher;
 
 public interface TeacherService { 
@@ -19,4 +21,6 @@ public void insertTeacher(Teacher teacher);
 	public int updateStudentextra(Teacher teacher);
 	
 	public Teacher selectTeacherNameByMobile(String teacherMobile);
+	
+	public List<Teacher> selectTeacher() ;
 }

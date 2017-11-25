@@ -20,8 +20,10 @@ import com.qdu.cache.RedisCache;
 import com.qdu.pojo.Admin;
 import com.qdu.pojo.LogEntity;
 import com.qdu.pojo.Student;
+import com.qdu.pojo.Teacher;
 import com.qdu.service.LogEntityService;
 import com.qdu.service.StudentService;
+import com.qdu.service.TeacherService;
 import com.qdu.util.Page;
 //超级管理员+相关操作
 @Controller
@@ -30,6 +32,7 @@ public class LogEntityController {
 
 	@Autowired LogEntityService logEntityServiceImpl;
 	@Autowired StudentService studentServiceImpl;
+	@Autowired TeacherService teacherServiceImpl;
 	//超管准备登录
 	@RequestMapping(value="/forAdminLogin.do")
 	public String forAdminLogin(ModelMap map) {
@@ -56,8 +59,10 @@ public class LogEntityController {
 		List<LogEntity> logEntities = new ArrayList<LogEntity>();
 		 int totalCount = logEntityServiceImpl.selectLogEntityCount();
 		    List<Student> students = studentServiceImpl.selectStuList();
+		    List<Teacher> teachers = teacherServiceImpl.selectTeacher();
 			map.put("logEntities", logEntities);
 			map.put("students", students);
+			map.put("teachers", teachers);
 		return "superManagerPage";
 	}
 	//超级管理员登录准备

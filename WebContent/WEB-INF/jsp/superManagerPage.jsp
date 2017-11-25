@@ -221,7 +221,7 @@ function clearRedis() {
 					</colgroup>
 					<thead>
 						<tr>
-							<th style="text-align: center;">学号</th>
+							<th style="text-align: center;">账号</th>
 							<th style="text-align: center;">姓名</th>
 							<th style="text-align: center;">性别</th>
 							<th style="text-align: center;">手机</th>
@@ -247,7 +247,7 @@ function clearRedis() {
 							</c:when>
 							<c:otherwise>
 								<tr>
-									<td colspan="9">(暂无课程)</td>
+									<td colspan="9">(暂无学生)</td>
 								</tr>
 							</c:otherwise>
 						</c:choose>
@@ -261,6 +261,53 @@ function clearRedis() {
 			
 			<!-- 教师信息模块 -->				
 			<div id="teacherInfo" class="site-text site-block" style="display: none;">
+				<table class="layui-table" style="text-align: center;">
+					<colgroup>
+						<col width="150">
+						<col width="120">
+						<col width="150">
+						<col width="150">
+						<col width="120">
+						<col width="120">
+						<col width="120">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;">账号</th>
+							<th style="text-align: center;">姓名</th>
+							<th style="text-align: center;">性别</th>
+							<th style="text-align: center;">手机</th>
+							<th style="text-align: center;">邮箱</th>
+							<th style="text-align: center;">学科</th>
+							<th style="text-align: center;">详细</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:choose>
+							<c:when test="${! empty teachers}">
+								<c:forEach items="${teachers}" var="t">
+									<tr>
+										<td>${t.teacherMobile}</td>
+										<td>${t.teacherName}</td>
+										<td>${t.teacherGender}</td>
+										<td>${t.teacherMobile}</td>
+										<td>${t.teacherEmail}</td>
+										<td>${t.teacherSubject}</td>
+										<td><a id="teacherDetail" href="#"><i
+												class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
+										</a></td>
+									</tr>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<tr>
+									<td colspan="9">(暂无教师)</td>
+								</tr>
+							</c:otherwise>
+						</c:choose>
+					</tbody>
+				</table>
+				
 			</div>
 			
 			<!-- 教师操作日志模块 -->				

@@ -1,5 +1,7 @@
 package com.qdu.serviceimpl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +62,12 @@ public class TeacherServiceImpl implements TeacherService{
 	@Override
 	public Teacher selectTeacherNameByMobile(String teacherMobile) {
 		return teacherDaoImpl.selectTeacherNameByMobile(teacherMobile);
+	}
+
+
+	@Override
+	public List<Teacher> selectTeacher() {
+		return teacherDaoImpl.selectTeacher();
 	}
 
 }
