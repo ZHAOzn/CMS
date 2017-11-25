@@ -422,9 +422,36 @@ function createQuestion(id) {
         async: false,
         url: "<%=request.getContextPath()%>/exam/selectExaminationByMyId.do",
 		success : function(data) {
+			$('#examinationIddd').val(data.examination.examinationID);
 			$('#examinationTitle').html(data.examination.examinationName);
 			$('#examinationTotalValue').html("总分：" + data.examination.totalValue);
+			$('#examinationStartTime').html("考试时间：" + data.examination.startTime);
 			$('#examinationTime').html("考试时长：" + data.examination.duration + "分钟");
+			
+			//单选题
+			var dataObj = data.singleSelections;
+			con = "";
+			 $.each(dataObj, function (index, item) {
+      	        con += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.questionContent +"("+ item.value  + ")</li>";
+      	        con += "<li style='margin-left: 1.5em'>"
+      	       +"A "+ item.optionA +"   B " + item.optionB + "   C "+ item.optionC + "   D "+ item.optionD  + "</li>";
+      	        con += "<li style='margin-left: 1.5em'>答案："+ item.answer + "</li>";
+      	        con += "<li>&nbsp;</li>";
+			 });
+			 $('#SingleSelectionShowUl').html(con);
+			 window.location.hash = "#examinationTotalValue";  
+			 //多选题
+			 var dataObj2 = data.moreSelections;
+			 von = "";
+			 $.each(dataObj2, function (index, item) {
+	      	        von += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.questionContent +"("+ item.value  + ")</li>";
+	      	        von += "<li style='margin-left: 1.5em'>"
+	      	       +"A "+ item.optionA +"   B " + item.optionB + "   C "+ item.optionC + "   D "+ item.optionD  + "</li>";
+	      	        von += "<li style='margin-left: 1.5em'>答案："+ item.answer + "</li>"; 
+                    von += "<li>&nbsp;</li>";
+				 });
+				 $('#MoreSelectionShowUl').html(von);
+				 window.location.hash = "#mark2"; 
 		},
 		error : function(data) {
 			alert("??");
@@ -443,9 +470,9 @@ function createQuestion(id) {
 		<!-- 头部导航 -->
 		<div class="layui-header header header-demo">
 			<div class="layui-main">
-				<a class="CMSlogo" href="/"><span
+				<a class="CMSlogo"
+					href="<%=request.getContextPath()%>/teacher/teacherLogin.do?id=${teacher.teacherMobile}&&password=${teacher.teacherPassword}"><span
 					style="color: white; font-size: 25px;">CMS</span></a>
-
 				<ul class="layui-nav">
 					<li class="layui-nav-item"><a href="">签到Module</a></li>
 				</ul>
@@ -488,8 +515,7 @@ function createQuestion(id) {
 								<a href="#">待定</a>
 							</dd> -->
 						</dl></li>
-		     	<li class="layui-nav-item"><a
-						href="javascript:;">考试系统</a>
+					<li class="layui-nav-item"><a href="javascript:;">考试系统</a>
 						<dl class="layui-nav-child">
 							<dd>
 								<a onclick="FirstFunction()" id="addExamination" href="#">添加试卷</a>
@@ -544,11 +570,9 @@ function createQuestion(id) {
 									<tr>
 										<td>${c.clazzName}</td>
 										<td>${c.currentYear}</td>
-										<td>
-										<input name="clazzId" style="display: none;"
+										<td><input name="clazzId" style="display: none;"
 											value="${c.clazzId}" /> <a class="aSign" id="${c.clazzId}"
-													onclick="aClick(this.id)" href="#">查看</a>
-										</td>
+											onclick="aClick(this.id)" href="#">查看</a></td>
 										<td><a class="aSign" id="zxc${c.clazzId}"
 											onclick="changeWhenClick(this.id)" href="#">修改</a></td>
 										<td><a class="aSign" id="del${c.clazzId}"
@@ -570,34 +594,33 @@ function createQuestion(id) {
 				});
 			    </script>
 			</div>
-			
+
 			<!-- 班级内部具体信息 -->
 			<div class="site-text site-block" id="inClazzStudentInfoDiv"
 				style="display: none;">
-				<br/>
-				班级人数：<span id="studentCount"></span>
-				<table  class="layui-table" lay-even>
-						<colgroup>
-							<col width="200">
-							<col width="120">
-							<col width="100">
-							<col width="200">
-							<col width="210">
-						</colgroup>
-						<thead>
-							<tr>
-								<th style="text-align: center;">学号</th>
-								<th style="text-align: center;">姓名</th>
-								<th style="text-align: center;">性别</th>
-								<th style="text-align: center;">手机</th>
-								<th style="text-align: center;">照片</th>
-							</tr>
-						</thead>
-						<tbody id="inClazzStudentInfoTable">
+				<br /> 班级人数：<span id="studentCount"></span>
+				<table class="layui-table" lay-even>
+					<colgroup>
+						<col width="200">
+						<col width="120">
+						<col width="100">
+						<col width="200">
+						<col width="210">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;">学号</th>
+							<th style="text-align: center;">姓名</th>
+							<th style="text-align: center;">性别</th>
+							<th style="text-align: center;">手机</th>
+							<th style="text-align: center;">照片</th>
+						</tr>
+					</thead>
+					<tbody id="inClazzStudentInfoTable">
 
-						</tbody>
-					</table>
-				</div>
+					</tbody>
+				</table>
+			</div>
 
 			<!-- 添加班级 -->
 			<div class="site-text site-block" id="addClassShow"
@@ -651,7 +674,7 @@ function createQuestion(id) {
 				});
 				</script>
 			</div>
- 
+
 			<!-- 签到content -->
 			<div id="signModel"
 				style="width: 100%; overflow: hidden; height: 100%;">
@@ -691,7 +714,8 @@ function createQuestion(id) {
 					<table class="layui-table" width="99%" border="1" id="showStudents"
 						style="margin-top: 10%; margin-left: 15px; display: none;">
 					</table>
-					<table id="getAllInfo" style="width: 99%;margin-left: 3%" class="layui-table">
+					<table id="getAllInfo" style="width: 99%; margin-left: 3%"
+						class="layui-table">
 						<caption>本学期签到汇总</caption>
 						<thead>
 							<tr>
@@ -742,40 +766,39 @@ function createQuestion(id) {
 			</script>
 
 			<!-- 签到记录模块 -->
-			<div id="otherModel"
-				style="display: none; padding:25px 4%;">
-                 <table id="getAllInfo" style="width: 99%;" class="layui-table">
-						<thead>
-							<tr>
-								<th>学号</th>
-								<th>班级</th>
-								<th>姓名</th>
-								<th>签到</th>
-								<th>迟到</th>
-								<th>早退</th>
-								<th>旷课</th>
-								<th>请假</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:choose>
-								<c:when test="${! empty clazzStus}">
-									<c:forEach items="${clazzStus}" var="c">
-										<tr>
-											<td>${c.student.studentRoNo}</td>
-											<td>${c.clazz.clazzName}</td>
-											<td>${c.student.studentName}</td>
-											<td>${c.student.studentInfo.signIn}</td>
-											<td>${c.student.studentInfo.comeLate}</td>
-											<td>${c.student.studentInfo.leaveEarlier}</td>
-											<td>${c.student.studentInfo.absenteeism}</td>
-											<td>${c.student.studentInfo.askForLeave}</td>
-										</tr>
-									</c:forEach>
-								</c:when>
-							</c:choose>
-						</tbody>
-					</table>
+			<div id="otherModel" style="display: none; padding: 25px 4%;">
+				<table id="getAllInfo" style="width: 99%;" class="layui-table">
+					<thead>
+						<tr>
+							<th>学号</th>
+							<th>班级</th>
+							<th>姓名</th>
+							<th>签到</th>
+							<th>迟到</th>
+							<th>早退</th>
+							<th>旷课</th>
+							<th>请假</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:choose>
+							<c:when test="${! empty clazzStus}">
+								<c:forEach items="${clazzStus}" var="c">
+									<tr>
+										<td>${c.student.studentRoNo}</td>
+										<td>${c.clazz.clazzName}</td>
+										<td>${c.student.studentName}</td>
+										<td>${c.student.studentInfo.signIn}</td>
+										<td>${c.student.studentInfo.comeLate}</td>
+										<td>${c.student.studentInfo.leaveEarlier}</td>
+										<td>${c.student.studentInfo.absenteeism}</td>
+										<td>${c.student.studentInfo.askForLeave}</td>
+									</tr>
+								</c:forEach>
+							</c:when>
+						</c:choose>
+					</tbody>
+				</table>
 
 			</div>
 
@@ -794,20 +817,21 @@ function createQuestion(id) {
 				})
 			</script>
 
-			
-		<!-- 添加试卷 -->
-        <div id="addExaminationDiv" class="site-text site-block"
+
+			<!-- 添加试卷 -->
+			<div id="addExaminationDiv" class="site-text site-block"
 				style="display: none; margin-top: 0;">
-				
-            	<!-- 添加试卷成功提示信息 -->
+
+				<!-- 添加试卷成功提示信息 -->
 				<div id="afterAddExamination"
 					style="background-color: #393D49; height: 20%; width: 20%; z-index: 20; position: fixed; text-align: center; margin-left: 10%; display: none;">
 					<h3 style="color: white; margin-top: 19%">添加试卷成功..</h3>
 				</div>
-				
+
 				<!-- 填写表单 -->
-				<form action="" class="layui-form layui-form-pane" id="addExaminationForm">
-				<div class="layui-form-item">
+				<form action="" class="layui-form layui-form-pane"
+					id="addExaminationForm">
+					<div class="layui-form-item">
 						<label class="layui-form-label">课程名称</label>
 						<div class="layui-input-block">
 							<input type="text" value="${course.courseName}"
@@ -818,21 +842,20 @@ function createQuestion(id) {
 					<div class="layui-form-item">
 						<label class="layui-form-label">试卷名称</label>
 						<div class="layui-input-block">
-							<input id="examinationName" type="text" name="examinationName" required
-								lay-verify="required|idvalidate"
+							<input id="examinationName" type="text" name="examinationName"
+								required lay-verify="required|idvalidate"
 								onchange="searchIfExistExamination()" placeholder="请输入试卷名称"
 								autocomplete="off" class="layui-input">
 						</div>
 
 					</div>
-					
+
 					<div class="layui-form-item">
 						<label class="layui-form-label">总分值</label>
 						<div class="layui-input-block">
 							<input id="totalValue" type="text" name="totalValue" required
-								lay-verify="required"
-							    placeholder="请输入数字"
-								autocomplete="off" class="layui-input">
+								lay-verify="required" placeholder="请输入数字" autocomplete="off"
+								class="layui-input">
 						</div>
 
 					</div>
@@ -841,11 +864,11 @@ function createQuestion(id) {
 						<label class="layui-form-label">开始时间</label>
 						<div class="layui-input-inline">
 							<input id="startTime" type="text" name="startTime" required
-								lay-verify="required" placeholder="如'2017-01-01 13:30:00'" autocomplete="off"
-								class="layui-input">
+								lay-verify="required" placeholder="如'2017-01-01 13:30:00'"
+								autocomplete="off" class="layui-input">
 						</div>
 					</div>
-					
+
 					<div class="layui-form-item">
 						<label class="layui-form-label">考试时长</label>
 						<div class="layui-input-inline">
@@ -854,12 +877,12 @@ function createQuestion(id) {
 								class="layui-input">
 						</div>
 					</div>
-					
+
 					<div class="layui-form-item">
 						<div class="layui-input-block">
 							<input id="AddExaminationButton" class="layui-btn"
-								onclick="teacherAddExamination()" lay-submit lay-filter="formDemo"
-								type="button" value="添加试卷" />
+								onclick="teacherAddExamination()" lay-submit
+								lay-filter="formDemo" type="button" value="添加试卷" />
 							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
 						</div>
 					</div>
@@ -878,10 +901,11 @@ function createQuestion(id) {
 					});
 				});
 				</script>
-				
-				
-			<!-- 试卷列表 -->
-			<table id="ExaminationList" class="layui-table" lay-even style="text-align: center;">
+
+
+				<!-- 试卷列表 -->
+				<table id="ExaminationList" class="layui-table" lay-even
+					style="text-align: center;">
 					<colgroup>
 						<col width="90">
 						<col width="140">
@@ -905,74 +929,427 @@ function createQuestion(id) {
 						</tr>
 					</thead>
 					<tbody id="examinationShowTable">
-						
+
 					</tbody>
 				</table>
 				<script>
 				layui.use('table', function() {
 					var table = layui.table;
 				});
-			    </script>			   
-        </div>	
-        
-         <!-- 添加试题 -->
-			    <div class="site-text site-block" id="addQuestionsDiv" 
-			    style="display: none; margin-top: 0;">
-				<form action="examinationTitle" class="layui-form layui-form-pane" id="addExaminationForm">
+			    </script>
+			</div>
+
+			<!-- 添加试题 -->
+			<div class="site-text site-block" id="addQuestionsDiv"
+				style="display: none; margin-top: 0;">
+				<!-- 试卷Id -->
+				<input id="examinationIddd" type="text" style="display: none;" />
 				<!-- 试卷名称 -->
-				<h2 id="examinationTitle" style="width: 100%;text-align: center;"></h2>
+				<h2 id="examinationTitle" style="width: 100%; text-align: center;"></h2>
 				<!-- 总分 -->
-				<h3 id="examinationTotalValue" style="width: 100%;padding-left: 70%;"></h3>
+				<h3 id="examinationTotalValue"
+					style="width: 100%; padding-left: 70%;"></h3>
+				<!-- 开始时间 -->
+				<h3 id="examinationStartTime"
+					style="width: 100%; padding-left: 70%;"></h3>
 				<!-- 考试时长 -->
-				<h3 id="examinationTime" style="width: 100%;padding-left: 70%;"></h3>
+				<h3 id="examinationTime" style="width: 100%; padding-left: 70%;"></h3>
 				<!-- 单选 -->
-				<div class="layui-form-item">
-						<label class="layui-form-label">单选</label>
-						<a id="SingleSelectionA" onclick="SingleSelectionA()" href="#" style="margin-left: 5%;">
-						<i id="SingleSelectionI" class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
-						<i id="SingleSelectionII" class="layui-icon" style="font-size: 30px; color: #1E9FFF; display: none;">&#xe625;</i>
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label"
+							style="background-color: #009688; text-align: center;">单选</label>
+						<a id="SingleSelectionA" onclick="SingleSelectionA()" href="#"
+							style="margin-left: 5%;"> <i id="SingleSelectionI"
+							class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
+							<i id="SingleSelectionII" class="layui-icon"
+							style="font-size: 30px; color: #009688; display: none;">&#xe625;</i>
 						</a>
+					</div>
+				</form>
+
+				<!-- 单选部分 -->
+				<div id="SingleSelectionDetail" class="layui-form-item"
+					style="display: none; margin-left: 20px;">
+					<form class="layui-form layui-form-pane">
+						<label class="layui-form-label" style="background-color: #009688;">*问题*</label>
+						<div class="layui-input-inline">
+							<input id="SingleSelectionQuestionContent" type="text"
+								name="SingleSelectionQuestionContent" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'1+1=?'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 分值 -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">分值</label>
+						<div class="layui-input-inline">
+							<input id="SingleSelectionValue" type="text"
+								name="SingleSelectionValue" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="本题分值" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 选项A -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">*选项A*</label>
+						<div class="layui-input-inline">
+							<input id="SingleSelectionOptionA" type="text"
+								name="SingleSelectionOptionA" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'0'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 选项B -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">*选项B*</label>
+						<div class="layui-input-inline">
+							<input id="SingleSelectionOptionB" type="text"
+								name="SingleSelectionOptionB" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'1'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 选项C -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">*选项C*</label>
+						<div class="layui-input-inline">
+							<input id="SingleSelectionOptionC" type="text"
+								name="SingleSelectionOptionC" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'2'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 选项D -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">*选项D*</label>
+						<div class="layui-input-inline">
+							<input id="SingleSelectionOptionD" type="text"
+								name="SingleSelectionOptionD" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'3'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 正确答案 -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">答案</label>
+						<div class="layui-input-inline">
+							<select id="SingleSelectioAnswer" lay-verify="required"
+								lay-search="">
+								<option value="A">A</option>
+								<option value="B">B</option>
+								<option value="C">C</option>
+								<option value="D">D</option>
+							</select>
+						</div>
+						<!-- 本题备注 -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">备注</label>
+						<div class="layui-input-inline">
+							<input id="SingleSelectionNote" type="text"
+								name="SingleSelectionNote" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如：考察学生逻辑思维"
+								autocomplete="off" class="layui-input">
+						</div>
+						<br />
+						<br />
+						<br /> <input id="" class="layui-btn" style="width: 8em"
+							lay-submit onclick="saveSingleSelection()" type="button"
+							value="保存" />
+					</form>
 				</div>
-				
+				<script type="text/javascript">
+				//点击保存单选题
+				  function saveSingleSelection() {
+					if($('#SingleSelectionQuestionContent').val != "" && $('#SingleSelectionValue').val != ""&& $('#SingleSelectionOptionA').val != ""
+						&& $('#SingleSelectionOptionB').val != ""&& $('#SingleSelectionOptionC').val != ""&& $('#SingleSelectionOptionD').val != ""&& $('#SingleSelectioAnswer').val != ""
+							&& $('#SingleSelectionNote').val != ""){
+						$.ajax({
+					        type: "GET",
+					        data: {
+					         "examinationId":$('#examinationIddd').val(),
+					       	 "questionContent":$('#SingleSelectionQuestionContent').val(),
+					       	 "singleSelectionValue":$('#SingleSelectionValue').val(),
+					       	 "optionA":$('#SingleSelectionOptionA').val(),
+					         "optionB":$('#SingleSelectionOptionB').val(),
+					       	 "optionC":$('#SingleSelectionOptionC').val(),
+					       	 "optionD":$('#SingleSelectionOptionD').val(),
+					         "answer":$('#SingleSelectioAnswer').val(),
+					         "note":$('#SingleSelectionNote').val()
+					        },
+					        contentType: "application/json; charset=utf-8",
+					        async: false,
+					        url: "<%=request.getContextPath()%>/exam/addSingleSelection.do",
+							success : function(data) {
+								if(data.result == true){
+									createQuestion($('#examinationIddd').val());
+									window.location.hash = "#mark1";   
+								}else {
+									alert("单选题添加失败");
+								}
+							},
+							error : function(data) {
+								alert("??");
+							},
+							dataType : "json",
+						});
+					}
+				}
+				</script>
+
+				<!-- 已出单选 -->
+				<ul id="SingleSelectionShowUl" class="layui-timeline"
+					style="margin-left: 5em">
+
+				</ul>
+
 				<!-- 多选 -->
-				<div class="layui-form-item">
-						<label class="layui-form-label">多选</label>
-						<a href="#" style="margin-left: 5%;">
-						<i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
-						</a>
+				<div id="mark1" class="layui-form-item">
+					<label class="layui-form-label"
+						style="background-color: #009688; text-align: center;">多选</label>
+					<a id="SingleSelectionA" onclick="MoreSelectionA()" href="#"
+						style="margin-left: 5%;"> <i id="MoreSelectionI"
+						class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
+						<i id="MoreSelectionII" class="layui-icon"
+						style="font-size: 30px; color: #009688; display: none;">&#xe625;</i>
+					</a>
 				</div>
-				
+
+				<!-- 多选部分 -->
+				<div id="MoreSelectionADetail" class="layui-form-item"
+					style="display: none; margin-left: 20px;">
+					<form class="layui-form layui-form-pane">
+						<label class="layui-form-label" style="background-color: #009688;">*问题*</label>
+						<div class="layui-input-inline">
+							<input id="MoreSelectionQuestionContent" type="text"
+								name="MoreSelectionQuestionContent" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'1+1=?'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 分值 -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">分值</label>
+						<div class="layui-input-inline">
+							<input id="MoreSelectionValue" type="text"
+								name="MoreSelectionValue" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="本题分值" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 选项A -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">*选项A*</label>
+						<div class="layui-input-inline">
+							<input id="MoreSelectionOptionA" type="text"
+								name="MoreSelectionOptionA" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'0'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 选项B -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">*选项B*</label>
+						<div class="layui-input-inline">
+							<input id="MoreSelectionOptionB" type="text"
+								name="MoreSelectionOptionB" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'1'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 选项C -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">*选项C*</label>
+						<div class="layui-input-inline">
+							<input id="MoreSelectionOptionC" type="text"
+								name="MoreSelectionOptionC" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'2'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 选项D -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">*选项D*</label>
+						<div class="layui-input-inline">
+							<input id="MoreSelectionOptionD" type="text"
+								name="MoreSelectionOptionD" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'3'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 正确答案 -->
+						<br />
+						<br />
+						<br />
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="background-color: #009688;">答案</label>
+							<div class="layui-input-block">
+								<input type="checkbox" name="MoreSelectionAnswer" value="A" title="A"> 
+								<input type="checkbox" name="MoreSelectionAnswer" value="B" title="B" checked> 
+								<input type="checkbox" name="MoreSelectionAnswer" value="C" title="C">
+								<input type="checkbox" name="MoreSelectionAnswer" value="D" title="D">
+							</div>
+						</div>
+
+						<!-- 本题备注 -->
+						<label class="layui-form-label"
+							style="background-color: #009688;">备注</label>
+						<div class="layui-input-inline">
+							<input id="MoreSelectionNote" type="text"
+								name="MoreSelectionNote" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如：考察学生逻辑思维"
+								autocomplete="off" class="layui-input">
+						</div>
+						<br />
+						<br />
+						<br /> <input id="" class="layui-btn" style="width: 8em"
+							lay-submit onclick="saveMoreSelection()" type="button" value="保存" />
+					</form>
+				</div>
+				<script type="text/javascript">
+				//点击保存多选题
+				  function saveMoreSelection() {
+					if($('#MoreSelectionQuestionContent').val != "" && $('#MoreSelectionValue').val != ""&& $('#MoreSelectionOptionA').val != ""
+						&& $('#MoreSelectionOptionB').val != ""&& $('#MoreSelectionOptionC').val != ""&& $('#MoreSelectionOptionD').val != ""&& $('#MoreSelectionAnswer').val != ""
+							&& $('#MoreSelectionNote').val != ""){
+						    var answer = "";
+					        $("input:checkbox[name='MoreSelectionAnswer']:checked").each(function() {
+					        	answer += $(this).val() + " ";
+					        });
+						$.ajax({
+					        type: "GET",
+					        data: {
+					         "examinationId":$('#examinationIddd').val(),
+					       	 "questionContent":$('#MoreSelectionQuestionContent').val(),
+					       	 "singleSelectionValue":$('#MoreSelectionValue').val(),
+					       	 "optionA":$('#MoreSelectionOptionA').val(),
+					         "optionB":$('#MoreSelectionOptionB').val(),
+					       	 "optionC":$('#MoreSelectionOptionC').val(),
+					       	 "optionD":$('#MoreSelectionOptionD').val(),
+					         "note":$('#MoreSelectionNote').val(),
+					         "answer": answer,
+					        },
+					        contentType: "application/json; charset=utf-8",
+					        async: false,
+					        url: "<%=request.getContextPath()%>/exam/addMoreSelection.do",
+							success : function(data) {
+								if(data.result == true){
+									createQuestion($('#examinationIddd').val());
+									window.location.hash = "#mark2";   
+								}else {
+									alert("多选题添加失败");
+								}
+							},
+							error : function(data) {
+								alert("??");
+							},
+							dataType : "json",
+						});
+					}
+				}
+				</script>
+
+				<!-- 已出多选 -->
+				<ul id="MoreSelectionShowUl" class="layui-timeline"
+					style="margin-left: 5em">
+
+				</ul>
+
 				<!-- 判断 -->
-				<div class="layui-form-item">
-						<label class="layui-form-label">判断</label>
-						<a href="#" style="margin-left: 5%;">
-						<i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
-						</a>
+				<div id="mark2" class="layui-form-item">
+					<label class="layui-form-label"
+						style="background-color: #009688; text-align: center;">判断</label>
+					<a id="SingleSelectionA" onclick="JudgeA()" href="#"
+						style="margin-left: 5%;"> <i id="JudgeI" class="layui-icon"
+						style="font-size: 30px; color: #1E9FFF;">&#xe608;</i> <i
+						id="JudgeII" class="layui-icon"
+						style="font-size: 30px; color: #009688; display: none;">&#xe625;</i>
+					</a>
 				</div>
-				
+
 				<!-- 填空 -->
 				<div class="layui-form-item">
-						<label class="layui-form-label">填空</label>
-						<a href="#" style="margin-left: 5%;">
-						<i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
-						</a>
+					<label class="layui-form-label"
+						style="background-color: #009688; text-align: center;">填空</label>
+					<a id="PackA" onclick="PackA()" href="#" style="margin-left: 5%;">
+						<i id="PackI" class="layui-icon"
+						style="font-size: 30px; color: #1E9FFF;">&#xe608;</i> <i
+						id="PackII" class="layui-icon"
+						style="font-size: 30px; color: #009688; display: none;">&#xe625;</i>
+					</a>
 				</div>
-				
+
 				<!-- 简答 -->
 				<div class="layui-form-item">
-						<label class="layui-form-label">简答</label>
-						<a href="#" style="margin-left: 5%;">
-						<i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
-						</a>
+					<label class="layui-form-label"
+						style="background-color: #009688; text-align: center;">简答</label>
+					<a id="SingleSelectionA" onclick="ShortAnswerA()" href="#"
+						style="margin-left: 5%;"> <i id="ShortAnswerI"
+						class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
+						<i id="ShortAnswerII" class="layui-icon"
+						style="font-size: 30px; color: #009688; display: none;">&#xe625;</i>
+					</a>
 				</div>
-					
-					</form>
-			    </div>
-			    <script type="text/javascript">
+				<br />
+				<br />
+				<div class="layui-form-item">
+					<input id="" class="layui-btn" style="width: 8em; margin-left: 5em"
+						onclick="" type="button" value="生成试卷" />
+				</div>
+			</div>
+			<script type="text/javascript">
+			    //点击添加图标触发以下
 			      function SingleSelectionA() {
 					$('#SingleSelectionI').toggle();
 					$('#SingleSelectionII').toggle();
+					$('#SingleSelectionDetail').toggle();
 				}
+			      function MoreSelectionA() {
+			        $('#MoreSelectionI').toggle();
+					$('#MoreSelectionII').toggle();
+				    $('#MoreSelectionADetail').toggle();
+				}
+			      function JudgeA() {
+				        $('#JudgeI').toggle();
+						$('#JudgeII').toggle();
+					    //$('#SingleSelectionDetail').toggle();
+					}
+			      function PackA() {
+				        $('#PackI').toggle();
+						$('#PackII').toggle();
+					    //$('#SingleSelectionDetail').toggle();
+					}
+			      function ShortAnswerA() {
+				        $('#ShortAnswerI').toggle();
+						$('#ShortAnswerII').toggle();
+					    //$('#SingleSelectionDetail').toggle();
+					}
 			    </script>
 
 			<!-- 上传文件 -->
@@ -1024,14 +1401,14 @@ function createQuestion(id) {
 						</tbody>
 					</table>
 
-<script>
+					<script>
 	layui.use('table', function() {
 	var table = layui.table;
 		});
 </script>
-</div>
-								
-</div>
+				</div>
+
+			</div>
 
 			<script>
 			var ttem;
@@ -1148,7 +1525,7 @@ function createQuestion(id) {
 			</script>
 
 		</div>
-		      
+
 	</div>
 	<script>
 		layui.use([ 'element', 'layer', 'table' ], function() {

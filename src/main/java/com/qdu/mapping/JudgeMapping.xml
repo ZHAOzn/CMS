@@ -36,9 +36,9 @@
 	<insert id="insertJudge">
 	  insert into 
 	  Judge(QuestionNumber,JudgeContent,QuestionsType,
-	  StudentAnswer,Answer,Value,Note) 
+	  Answer,Value,Note,ExaminationID) 
 	  values(#{questionNumber},#{judgeContent},#{questionsType},
-	  #{studentAnswer},#{answer},#{value},#{Note})
+	  #{answer},#{value},#{note},,#{examination.examinationID})
 	</insert>
 
 </mapper>

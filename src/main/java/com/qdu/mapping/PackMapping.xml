@@ -36,9 +36,9 @@
 	<insert id="insertPack">
 	  insert into 
 	  Pack(QuestionNumber,PackContent,QuestionsType,
-	  StudentAnswer,Answer,Value,Note) 
+	  Answer,Value,Note,ExaminationID) 
 	  values(#{questionNumber},#{packContent},#{questionsType},
-	  #{studentAnswer},#{answer},#{value},#{Note})
+	  #{answer},#{value},#{note},#{examination.examinationID})
 	</insert>
 
 </mapper>

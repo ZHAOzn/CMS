@@ -33,6 +33,15 @@
 	  And e.ExaminationID = #{examinationID}
 	</select>
 	
+	<select id="selectMoreByExaminationID" resultMap="MoreSelectionResult">
+	  select * from MoreSelection where ExaminationID = #{examinationID} order by QuestionNumber asc
+	</select>
+	
+	<select id="selectMoreSelectionCount" resultType="int">
+	  select Count(*) from MoreSelection where ExaminationID = #{examinationID}
+	</select>
+	
+	
 	<select id="selectMoreSelectionMaxQuestionNumber" resultMap="MoreSelectionResult">
 	  select Max(QuestionNumber) from MoreSelection where ExaminationID = #{examinationID}
 	</select>
@@ -40,11 +49,16 @@
 	<insert id="insertMoreSelection">
 	  insert into 
 	  MoreSelection(QuestionNumber,QuestionContent,QuestionsType,OptionA,OptionB,OptionC,OptionD,
-	  StudentAnswer,Answer,Value,Note) 
+	  Answer,Value,Note,ExaminationID) 
 	  values(#{questionNumber},#{questionContent},#{questionsType},#{optionA},#{optionB},#{optionC},#{optionD},
-	  #{studentAnswer},#{answer},#{value},#{Note})
+	  #{answer},#{value},#{note},#{examination.examinationID})
 	</insert>
 	
+	<update id="updateMoreSelectionById" parameterType="HashMap">
+	  update MoreSelection set
+	  QuestionNumber = #{questionNumber}
+	  where MoreSelectionId = #{moreSelectionId}
+	</update>
 
 </mapper>
 
