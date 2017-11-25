@@ -7,9 +7,11 @@
 		<result property="examinationName" column="ExaminationName" />
 		<result property="onlyCode" column="OnlyCode" />
 		<result property="totalValue" column="TotalValue" />
+		<result property="temValue" column="TemValue" />
 		<result property="startTime" column="StartTime" />
 		<result property="duration" column="Duration" />
 		<result property="examinationStatus" column="ExaminationStatus" />
+		<result property="canEdit" column="CanEdit" />
 		<result property="courseID" column="CourseID" />
 
 		<collection property="singleSelections" ofType="com.qdu.pojo.SingleSelection"
@@ -90,6 +92,10 @@
 	  select * from Examination where ExaminationID = #{examinationID}
 	</select>
 	
+	<select id="selectExamination" resultMap="ExaminationResult">
+	  select * from Examination 
+	</select>
+	
 	<select id="selectExaminationByCourseId" resultMap="ExaminationResult">
 	  select * from Examination where CourseId = #{courseId} order by ExaminationID desc
 	</select>
@@ -100,13 +106,25 @@
 	
 	<insert id="insertExamination" parameterType="com.qdu.pojo.Examination">
 	  insert into 
-	  Examination(ExaminationName,OnlyCode,TotalValue,StartTime,Duration,CourseID) 
-	  values(#{examinationName},#{onlyCode},#{totalValue},#{startTime},#{duration},#{courseID})
+	  Examination(ExaminationName,OnlyCode,TotalValue,StartTime,Duration,CanEdit,CourseID) 
+	  values(#{examinationName},#{onlyCode},#{totalValue},#{startTime},#{duration},#{canEdit},#{courseID})
 	</insert>
 	
 	<delete id="deleteExaminationById">
 	  delete from Examination where ExaminationID = #{examinationID}
 	</delete>
+	
+	<update id="updateExaminationOfEdit" parameterType="HashMap">
+	  update Examination set
+	  CanEdit = #{canEdit}
+	  where ExaminationID = #{examinationID}
+	</update>
+	
+	<update id="updateExaminationTemValue" parameterType="HashMap">
+	  update Examination set
+	  TemValue = #{temValue}
+	  where ExaminationID = #{examinationID}
+	</update>
 
 </mapper>
 

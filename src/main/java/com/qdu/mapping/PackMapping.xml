@@ -17,9 +17,11 @@
 			<result property="examinationName" column="ExaminationName" />
 			<result property="onlyCode" column="OnlyCode" />
 			<result property="totalValue" column="TotalValue" />
+			<result property="temValue" column="TemValue" />
 			<result property="startTime" column="StartTime" />
 			<result property="duration" column="Duration" />
 			<result property="examinationStatus" column="ExaminationStatus" />
+			<result property="canEdit" column="CanEdit" />
 			<result property="courseID" column="CourseID" />
 		</association>
 	</resultMap>
@@ -33,13 +35,29 @@
 	  select Max(QuestionNumber) from Pack where ExaminationID = #{examinationID}
 	</select>
 	
-	<insert id="insertPack">
+	<select id="selectPackCount" resultType="int">
+	  select Count(*) from Pack where ExaminationID = #{examinationID}
+	</select>
+	
+	<select id="selectPackByExaminationIDX" resultMap="PackResult">
+	  select * from Pack where ExaminationID = #{examinationID} order by QuestionNumber asc
+	</select>
+	
+	<insert id="insertPack" parameterType="com.qdu.pojo.Pack">
 	  insert into 
 	  Pack(QuestionNumber,PackContent,QuestionsType,
 	  Answer,Value,Note,ExaminationID) 
 	  values(#{questionNumber},#{packContent},#{questionsType},
 	  #{answer},#{value},#{note},#{examination.examinationID})
 	</insert>
+	
+	<update id="updatePackById" parameterType="HashMap">
+	  update Pack set
+	  QuestionNumber = #{questionNumber}
+	  where PackId = #{packId}
+	</update>
+	
+	
 
 </mapper>
 

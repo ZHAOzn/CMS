@@ -16,9 +16,11 @@
 			<result property="examinationName" column="ExaminationName" />
 			<result property="onlyCode" column="OnlyCode" />
 			<result property="totalValue" column="TotalValue" />
+			<result property="temValue" column="TemValue" />
 			<result property="startTime" column="StartTime" />
 			<result property="duration" column="Duration" />
 			<result property="examinationStatus" column="ExaminationStatus" />
+			<result property="canEdit" column="CanEdit" />
 			<result property="courseID" column="CourseID" />
 		</association>
 	</resultMap>
@@ -36,11 +38,27 @@
 	  select Max(QuestionNumber) from ShortAnswer where ExaminationID = #{examinationID}
 	</select>
 	
-	<insert id="insertShortAnswer">
+	<select id="selectShortAnswerCount" resultType="int">
+	  select Count(*) from ShortAnswer where ExaminationID = #{examinationID}
+	</select>
+	
+	<select id="selectShortAnswerByExaminationIDX" resultMap="ShortAnswerResult">
+	  select * from ShortAnswer where ExaminationID = #{examinationID} order by QuestionNumber asc
+	</select>
+	
+	<insert id="insertShortAnswer" parameterType="com.qdu.pojo.ShortAnswer">
 	  insert into 
 	  ShortAnswer(QuestionNumber,ShortAnswerContent,QuestionsType,Value,Note,ExaminationID) 
 	  values(#{questionNumber},#{shortAnswerContent},#{questionsType},#{value},#{note},#{examination.examinationID})
 	</insert>
+	
+	<update id="updateShortAnswerById" parameterType="HashMap">
+	  update ShortAnswer set
+	  QuestionNumber = #{questionNumber}
+	  where ShortAnswerId = #{shortAnswerId}
+	</update>
+	
+	
 
 </mapper>
 

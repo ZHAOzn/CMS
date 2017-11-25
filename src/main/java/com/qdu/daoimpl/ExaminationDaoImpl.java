@@ -10,13 +10,22 @@ import org.springframework.stereotype.Repository;
 
 import com.qdu.dao.ExaminationDao;
 import com.qdu.pojo.Examination;
+import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
+import com.qdu.pojo.Pack;
+import com.qdu.pojo.ShortAnswer;
 import com.qdu.pojo.SingleSelection;
 
 @Repository
 public class ExaminationDaoImpl implements ExaminationDao{
 	
 	@Autowired private SqlSessionFactory sqlSessionFactory;
+	
+	@Override
+	public List<Examination> selectExamination() {
+		String statement = "com.qdu.mapping.ExaminationMapping.selectExamination";
+		return sqlSessionFactory.openSession().selectList(statement);
+	}
 
 	@Override
 	public int insertExamination(Examination examination) {
@@ -92,6 +101,107 @@ public class ExaminationDaoImpl implements ExaminationDao{
 		map.put("questionNumber", questionNumber);
 		return sqlSessionFactory.openSession().update(statement, map);
 	}
+
+	@Override
+	public int selectJudgeCount(int examinationID) {
+		String statement = "com.qdu.mapping.JudgeMapping.selectJudgeCount";
+		return sqlSessionFactory.openSession().selectOne(statement, examinationID);
+	}
+
+	@Override
+	public int insertJudge(Judge judge) {
+		String statement = "com.qdu.mapping.JudgeMapping.insertJudge";
+		return sqlSessionFactory.openSession().insert(statement, judge);
+	}
+
+	@Override
+	public int updateJudgeById(int judgeId, int questionNumber) {
+		String statement = "com.qdu.mapping.JudgeMapping.updateJudgeById";
+		Map<String, Object> map = new HashMap<>();
+		map.put("judgeId", judgeId);
+		map.put("questionNumber", questionNumber);
+		return sqlSessionFactory.openSession().update(statement, map);
+	}
+
+	@Override
+	public List<Judge> selectJudgeByExaminationID(int examinationID) {
+		String statement = "com.qdu.mapping.JudgeMapping.selectJudgeByExaminationIDX";
+		return sqlSessionFactory.openSession().selectList(statement, examinationID);
+	}
+
+	@Override
+	public List<Pack> selectPackByExaminationIDX(int examinationID) {
+		String statement = "com.qdu.mapping.PackMapping.selectPackByExaminationIDX";
+		return sqlSessionFactory.openSession().selectList(statement, examinationID);
+	}
+
+	@Override
+	public int insertPack(Pack pack) {
+		String statement = "com.qdu.mapping.PackMapping.insertPack";
+		return sqlSessionFactory.openSession().insert(statement, pack);
+	}
+
+	@Override
+	public int updatePackById(int packId, int questionNumber) {
+		String statement = "com.qdu.mapping.PackMapping.updatePackById";
+		Map<String, Object> map = new HashMap<>();
+		map.put("packId", packId);
+		map.put("questionNumber", questionNumber);
+		return sqlSessionFactory.openSession().update(statement, map);
+	}
+
+	@Override
+	public List<ShortAnswer> selectShortAnswerByExaminationIDX(int examinationID) {
+		String statement = "com.qdu.mapping.ShortAnswerMapping.selectShortAnswerByExaminationIDX";
+		return sqlSessionFactory.openSession().selectList(statement, examinationID);
+	}
+
+	@Override
+	public int insertShortAnswer(ShortAnswer shortAnswer) {
+		String statement = "com.qdu.mapping.ShortAnswerMapping.insertShortAnswer";
+		return sqlSessionFactory.openSession().insert(statement, shortAnswer);
+	}
+
+	@Override
+	public int updateShortAnswerById(int shortAnswerId, int questionNumber) {
+		String statement = "com.qdu.mapping.ShortAnswerMapping.updateShortAnswerById";
+		Map<String, Object> map = new HashMap<>();
+		map.put("shortAnswerId", shortAnswerId);
+		map.put("questionNumber", questionNumber);
+		return sqlSessionFactory.openSession().update(statement, map);
+	}
+
+	@Override
+	public int selectPackCount(int examinationID) {
+		String statement = "com.qdu.mapping.PackMapping.selectPackCount";
+		return sqlSessionFactory.openSession().selectOne(statement, examinationID);
+	}
+
+	@Override
+	public int selectShortAnswerCount(int examinationID) {
+		String statement = "com.qdu.mapping.ShortAnswerMapping.selectShortAnswerCount";
+		return sqlSessionFactory.openSession().selectOne(statement, examinationID);
+	}
+
+	@Override
+	public int updateExaminationOfEdit(int examinationID,int canEdit) {
+		Map<String, Object> map = new HashMap<>();
+		String statement = "com.qdu.mapping.ExaminationMapping.updateExaminationOfEdit";
+		map.put("examinationID", examinationID);
+		map.put("canEdit", canEdit);
+		return sqlSessionFactory.openSession().update(statement, map);
+	}
+
+	@Override
+	public int updateExaminationTemValue(int examinationID, int temValue) {
+		Map<String, Object> map = new HashMap<>();
+		String statement = "com.qdu.mapping.ExaminationMapping.updateExaminationTemValue";
+		map.put("examinationID", examinationID);
+		map.put("temValue", temValue);
+		return sqlSessionFactory.openSession().update(statement, map);
+	}
+
+	
 	
 	
 
