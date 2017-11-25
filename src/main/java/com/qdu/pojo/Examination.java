@@ -9,9 +9,11 @@ public class Examination  implements Serializable{
 	private String examinationName; //试卷名称
 	private String onlyCode; //考试码
 	private int totalValue; //总分值
+	private int temValue;
 	private String startTime; //考试开始时间
 	private int duration;//结束时间
-	private String examinationStatus;
+	private String examinationStatus;//试卷状态：待考/考试中/已考
+	private int canEdit; //是否可以进行出题操作
 	private int courseID; //所属的课程Id
 	private List<SingleSelection> singleSelections;
 	public List<MoreSelection> moreSelections;
@@ -44,6 +46,13 @@ public class Examination  implements Serializable{
 	public void setTotalValue(int totalValue) {
 		this.totalValue = totalValue;
 	}
+	
+	public int getTemValue() {
+		return temValue;
+	}
+	public void setTemValue(int temValue) {
+		this.temValue = temValue;
+	}
 	public String getStartTime() {
 		return startTime;
 	}
@@ -61,6 +70,12 @@ public class Examination  implements Serializable{
 	}
 	public void setExaminationStatus(String examinationStatus) {
 		this.examinationStatus = examinationStatus;
+	}
+	public int getCanEdit() {
+		return canEdit;
+	}
+	public void setCanEdit(int canEdit) {
+		this.canEdit = canEdit;
 	}
 	public int getCourseID() {
 		return courseID;

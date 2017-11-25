@@ -24,6 +24,8 @@ response.sendRedirect(request.getContextPath() + "/index.jsp");
 
 
 <script type="text/javascript">
+
+var examinationId;
 //修改班级信息
 function changeWhenClick(clazzId) {
 	 var clazzIdpre = clazzId.substring(3);
@@ -422,46 +424,88 @@ function createQuestion(id) {
         async: false,
         url: "<%=request.getContextPath()%>/exam/selectExaminationByMyId.do",
 		success : function(data) {
-			$('#examinationIddd').val(data.examination.examinationID);
-			$('#examinationTitle').html(data.examination.examinationName);
-			$('#examinationTotalValue').html("总分：" + data.examination.totalValue);
-			$('#examinationStartTime').html("考试时间：" + data.examination.startTime);
-			$('#examinationTime').html("考试时长：" + data.examination.duration + "分钟");
-			
-			//单选题
-			var dataObj = data.singleSelections;
-			con = "";
-			 $.each(dataObj, function (index, item) {
-      	        con += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.questionContent +"("+ item.value  + ")</li>";
-      	        con += "<li style='margin-left: 1.5em'>"
-      	       +"A "+ item.optionA +"   B " + item.optionB + "   C "+ item.optionC + "   D "+ item.optionD  + "</li>";
-      	        con += "<li style='margin-left: 1.5em'>答案："+ item.answer + "</li>";
-      	        con += "<li>&nbsp;</li>";
-			 });
-			 $('#SingleSelectionShowUl').html(con);
-			 window.location.hash = "#examinationTotalValue";  
-			 //多选题
-			 var dataObj2 = data.moreSelections;
-			 von = "";
-			 $.each(dataObj2, function (index, item) {
-	      	        von += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.questionContent +"("+ item.value  + ")</li>";
-	      	        von += "<li style='margin-left: 1.5em'>"
+			if(data.result == true){
+				$('#examinationIddd').val(data.examination.examinationID);
+				$('#examinationTitle').html(data.examination.examinationName);
+				$('#examinationTotalValue').html("总分：" + data.examination.totalValue);
+				$('#examinationStartTime').html("考试时间：" + data.examination.startTime);
+				$('#examinationTime').html("考试时长：" + data.examination.duration + "分钟");
+				
+				//单选题
+				var dataObj = data.singleSelections;
+				con = "";
+				 $.each(dataObj, function (index, item) {
+	      	        con += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.questionContent +"("+ item.value  + "分)</li>";
+	      	        con += "<li style='margin-left: 1.5em'>"
 	      	       +"A "+ item.optionA +"   B " + item.optionB + "   C "+ item.optionC + "   D "+ item.optionD  + "</li>";
-	      	        von += "<li style='margin-left: 1.5em'>答案："+ item.answer + "</li>"; 
-                    von += "<li>&nbsp;</li>";
+	      	        con += "<li style='margin-left: 1.5em'>答案："+ item.answer + "</li>";
+	      	        con += "<li>&nbsp;</li>";
 				 });
-				 $('#MoreSelectionShowUl').html(von);
-				 window.location.hash = "#mark2"; 
+				 $('#SingleSelectionShowUl').html(con);
+				 window.location.hash = "#examinationTotalValue";  
+				 //多选题
+				 var dataObj2 = data.moreSelections;
+				 von = "";
+				 $.each(dataObj2, function (index, item) {
+		      	        von += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.questionContent +"("+ item.value  + "分)</li>";
+		      	        von += "<li style='margin-left: 1.5em'>"
+		      	       +"A "+ item.optionA +"   B " + item.optionB + "   C "+ item.optionC + "   D "+ item.optionD  + "</li>";
+		      	        von += "<li style='margin-left: 1.5em'>答案："+ item.answer + "</li>"; 
+	                    von += "<li>&nbsp;</li>";
+					 });
+					 $('#MoreSelectionShowUl').html(von);
+					 window.location.hash = "#mark2"; 
+					 
+			    //判断题
+					 var dataObj2 = data.judges;
+					 bon = "";
+					 $.each(dataObj2, function (index, item) {
+			      	        bon += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.judgeContent +"("+ item.value  + "分)</li>";
+			      	        bon += "<li style='margin-left: 1.5em'>答案："+ item.answer + "</li>"; 
+		                    bon += "<li>&nbsp;</li>";
+						 });
+						 $('#JudgeShowUl').html(bon);
+						 window.location.hash = "#mark3"; 
+			       //填空
+						 var dataObj3 = data.packs;
+						 non = "";
+						 $.each(dataObj3, function (index, item) {
+				      	        non += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.packContent +"("+ item.value  + "分)</li>";
+				      	        non += "<li style='margin-left: 1.5em'>参考答案："+ item.answer + "</li>"; 
+			                    non += "<li>&nbsp;</li>";
+							 });
+							 $('#PackShowUl').html(non);
+							 window.location.hash = "#mark4"; 
+							 
+							 
+				//简答shortAnswers
+							 var dataObj4 = data.shortAnswers;
+							 mon = "";
+							 $.each(dataObj4, function (index, item) {
+					      	        mon += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.shortAnswerContent +"("+ item.value  + "分)</li>";
+				                    mon += "<li>&nbsp;</li>";
+								 });
+								 $('#ShortAnswerShowUl').html(mon);
+								 window.location.hash = "#mark4";
+								 
+								 $('#addExaminationDiv').hide();
+								 $('#addQuestionsDiv').show();
+			}else{
+				//alert("试卷已被锁定无法进行题目编辑.");
+				$('#confirmAddExamination').show();
+				setTimeout('closeAddExam()',1500);
+			}
+			 
 		},
 		error : function(data) {
 			alert("??");
 		},
 		dataType : "json",
 	});
-	$('#addExaminationDiv').hide();
-	//$('#addExaminationForm').hide();
-	//$('#ExaminationList').hide();
-	$('#addQuestionsDiv').show();
+	
+}
+function closeAddExam() {
+	$('#confirmAddExamination').hide();
 }
 </script>
 </head>
@@ -827,6 +871,12 @@ function createQuestion(id) {
 					style="background-color: #393D49; height: 20%; width: 20%; z-index: 20; position: fixed; text-align: center; margin-left: 10%; display: none;">
 					<h3 style="color: white; margin-top: 19%">添加试卷成功..</h3>
 				</div>
+				
+				<!-- 点击出题提示信息 -->
+				<div id="confirmAddExamination"
+					style="background-color: #393D49; height: 20%; width: 20%; z-index: 20; position: fixed; text-align: center; margin-left: 10%; display: none;">
+					<h3 style="color: white; margin-top: 19%">抱歉，该试题已被锁定无法..</h3>
+				</div>
 
 				<!-- 填写表单 -->
 				<form action="" class="layui-form layui-form-pane"
@@ -942,6 +992,14 @@ function createQuestion(id) {
 			<!-- 添加试题 -->
 			<div class="site-text site-block" id="addQuestionsDiv"
 				style="display: none; margin-top: 0;">
+				
+				<!-- 提交试卷成功提示信息 -->
+				<div id="afterSubmitExamination"
+					style="background-color: #393D49; height: 20%; width: 20%; z-index: 20; position: fixed; text-align: center; margin-left: 10%; display: none;">
+					<h3 style="color: white; margin-top: 19%">提交试卷成功，等待考试..</h3>
+				</div>
+				
+				
 				<!-- 试卷Id -->
 				<input id="examinationIddd" type="text" style="display: none;" />
 				<!-- 试卷名称 -->
@@ -1068,7 +1126,7 @@ function createQuestion(id) {
 						</div>
 						<br />
 						<br />
-						<br /> <input id="" class="layui-btn" style="width: 8em"
+						<br /> <input id="SingleSelectionButton" class="layui-btn" style="width: 8em"
 							lay-submit onclick="saveSingleSelection()" type="button"
 							value="保存" />
 					</form>
@@ -1100,6 +1158,9 @@ function createQuestion(id) {
 									createQuestion($('#examinationIddd').val());
 									window.location.hash = "#mark1";   
 								}else {
+									if(data.result == "no"){
+										alert("分数超出总分，请合理分配分数..");
+									}else
 									alert("单选题添加失败");
 								}
 							},
@@ -1223,12 +1284,12 @@ function createQuestion(id) {
 							<input id="MoreSelectionNote" type="text"
 								name="MoreSelectionNote" required
 								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
-								lay-verify="required" placeholder="如：考察学生逻辑思维"
+								lay-verify="required" placeholder="如：考察学生发散思维"
 								autocomplete="off" class="layui-input">
 						</div>
 						<br />
 						<br />
-						<br /> <input id="" class="layui-btn" style="width: 8em"
+						<br /> <input id="MoreSelectionButton" class="layui-btn" style="width: 8em"
 							lay-submit onclick="saveMoreSelection()" type="button" value="保存" />
 					</form>
 				</div>
@@ -1247,13 +1308,13 @@ function createQuestion(id) {
 					        data: {
 					         "examinationId":$('#examinationIddd').val(),
 					       	 "questionContent":$('#MoreSelectionQuestionContent').val(),
-					       	 "singleSelectionValue":$('#MoreSelectionValue').val(),
+					       	 "MoreSelectionValue":$('#MoreSelectionValue').val(),
 					       	 "optionA":$('#MoreSelectionOptionA').val(),
 					         "optionB":$('#MoreSelectionOptionB').val(),
 					       	 "optionC":$('#MoreSelectionOptionC').val(),
 					       	 "optionD":$('#MoreSelectionOptionD').val(),
 					         "note":$('#MoreSelectionNote').val(),
-					         "answer": answer,
+					         "answer": answer
 					        },
 					        contentType: "application/json; charset=utf-8",
 					        async: false,
@@ -1263,6 +1324,9 @@ function createQuestion(id) {
 									createQuestion($('#examinationIddd').val());
 									window.location.hash = "#mark2";   
 								}else {
+									if(data.result == "no"){
+										alert("分数超出总分，请合理分配分数..");
+									}else
 									alert("多选题添加失败");
 								}
 							},
@@ -1292,9 +1356,108 @@ function createQuestion(id) {
 						style="font-size: 30px; color: #009688; display: none;">&#xe625;</i>
 					</a>
 				</div>
+				
+				<!-- 判断部分 -->
+				<div id="JudgeDetail" class="layui-form-item"
+					style="display: none; margin-left: 20px;">
+					<form class="layui-form layui-form-pane">
+						<label class="layui-form-label" style="background-color: #009688;">*问题*</label>
+						<div class="layui-input-inline">
+							<input id="JudgeQuestionContent" type="text"
+								name="JudgeQuestionContent" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'1+1=0'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 分值 -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">分值</label>
+						<div class="layui-input-inline">
+							<input id="JudgeValue" type="text"
+								name="JudgeValue" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="本题分值" autocomplete="off"
+								class="layui-input">
+						</div>
+												
+						<!-- 正确答案 -->
+						<br />
+						<br />
+						<br />
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="background-color: #009688;">答案</label>
+								<div class="layui-input-block">
+                                  <input type="radio" name="JudgeAnswer" value="true" title="true">
+                                  <input type="radio" name="JudgeAnswer" value="false" title="false" checked>
+                                </div>
+						</div>
+
+						<!-- 本题备注 -->
+						<label class="layui-form-label"
+							style="background-color: #009688;">备注</label>
+						<div class="layui-input-inline">
+							<input id="JudgeNote" type="text"
+								name="JudgeNote" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如：考察学生判断能力"
+								autocomplete="off" class="layui-input">
+						</div>
+						<br />
+						<br />
+						<br /> <input id="JudgeButton" class="layui-btn" style="width: 8em"
+							lay-submit onclick="saveJudge()" type="button" value="保存" />
+					</form>
+				</div>
+				<script type="text/javascript">
+				//点击保存判断题
+				  function saveJudge() {
+					if($('#JudgeQuestionContent').val != "" && $('#JudgeValue').val != ""
+						&& $('#JudgeAnswer').val != ""
+							&& $('#JudgeNote').val != ""){
+						   
+						$.ajax({
+					        type: "GET",
+					        data: {
+					         "examinationId":$('#examinationIddd').val(),
+					       	 "questionContent":$('#JudgeQuestionContent').val(),
+					       	 "JudgeValue":$('#JudgeValue').val(),
+					         "note":$('#JudgeNote').val(),
+					         "answer":$("input[name='JudgeAnswer']").val()
+					        },
+					        contentType: "application/json; charset=utf-8",
+					        async: false,
+					        url: "<%=request.getContextPath()%>/exam/addJudgeAnswer.do",
+							success : function(data) {
+								if(data.result == true){
+									createQuestion($('#examinationIddd').val());
+									window.location.hash = "#mark3";   
+								}else {
+									if(data.result == "no"){
+										alert("分数超出总分，请合理分配分数..");
+									}else
+									alert("判断题添加失败");
+								}
+							},
+							error : function(data) {
+								alert("??");
+							},
+							dataType : "json",
+						});
+					}
+				}
+				</script>
+
+				<!-- 已出判断 -->
+				<ul id="JudgeShowUl" class="layui-timeline"
+					style="margin-left: 5em">
+
+				</ul>
+				
 
 				<!-- 填空 -->
-				<div class="layui-form-item">
+				<div id="mark3" class="layui-form-item">
 					<label class="layui-form-label"
 						style="background-color: #009688; text-align: center;">填空</label>
 					<a id="PackA" onclick="PackA()" href="#" style="margin-left: 5%;">
@@ -1304,24 +1467,214 @@ function createQuestion(id) {
 						style="font-size: 30px; color: #009688; display: none;">&#xe625;</i>
 					</a>
 				</div>
+				
+				<!-- 填空部分 -->
+				<div id="PackDetail" class="layui-form-item"
+					style="display: none; margin-left: 20px;">
+					<form class="layui-form layui-form-pane">
+						<label class="layui-form-label" style="background-color: #009688;">*问题*</label>
+						<div class="layui-input-inline">
+							<input id="PackQuestionContent" type="text"
+								name="PackQuestionContent" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'1+1=?'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 分值 -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">分值</label>
+						<div class="layui-input-inline">
+							<input id="PackValue" type="text"
+								name="PackValue" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="本题分值" autocomplete="off"
+								class="layui-input">
+						</div>
+												
+						<!-- 正确答案 -->
+						<br />
+						<br />
+						<br />
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="background-color: #009688;">参考答案</label>
+							<div class="layui-input-inline">
+							<input id="Packanswer" type="text"
+								name="Packanswer" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'3'" autocomplete="off"
+								class="layui-input">
+						</div>
+						</div>
+
+						<!-- 本题备注 -->
+						<label class="layui-form-label"
+							style="background-color: #009688;">备注</label>
+						<div class="layui-input-inline">
+							<input id="PackNote" type="text"
+								name="PackNote" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如：考察学生计算能力"
+								autocomplete="off" class="layui-input">
+						</div>
+						<br />
+						<br />
+						<br /> <input id="PackButton" class="layui-btn" style="width: 8em"
+							lay-submit onclick="savePack()" type="button" value="保存" />
+					</form>
+				</div>
+				<script type="text/javascript">
+				//点击保存填空题
+				  function savePack() {
+					if($('#PackQuestionContent').val != "" && $('#PackValue').val != ""
+						&& $('#PackAnswer').val != ""
+							&& $('#PackNote').val != ""){
+						   
+						$.ajax({
+					        type: "GET",
+					        data: {
+					         "examinationId":$('#examinationIddd').val(),
+					       	 "questionContent":$('#PackQuestionContent').val(),
+					       	 "PackValue":$('#PackValue').val(),
+					         "note":$('#PackNote').val(),
+					         "answer":$('#Packanswer').val()
+					        },
+					        contentType: "application/json; charset=utf-8",
+					        async: false,
+					        url: "<%=request.getContextPath()%>/exam/addPack.do",
+							success : function(data) {
+								if(data.result == true){
+									createQuestion($('#examinationIddd').val());
+									window.location.hash = "#mark4";   
+								}else {
+									if(data.result == "no"){
+										alert("分数超出总分，请合理分配分数..");
+									}else
+									alert("填空题添加失败");
+								}
+							},
+							error : function(data) {
+								alert("??");
+							},
+							dataType : "json",
+						});
+					}
+				}
+				</script>
+
+				<!-- 已出填空 -->
+				<ul id="PackShowUl" class="layui-timeline"
+					style="margin-left: 5em">
+
+				</ul>
+				
 
 				<!-- 简答 -->
-				<div class="layui-form-item">
+				<div id="mark4" class="layui-form-item">
 					<label class="layui-form-label"
 						style="background-color: #009688; text-align: center;">简答</label>
-					<a id="SingleSelectionA" onclick="ShortAnswerA()" href="#"
+					<a id="ShortAnswerA" onclick="ShortAnswerA()" href="#"
 						style="margin-left: 5%;"> <i id="ShortAnswerI"
 						class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe608;</i>
 						<i id="ShortAnswerII" class="layui-icon"
 						style="font-size: 30px; color: #009688; display: none;">&#xe625;</i>
 					</a>
 				</div>
-				<br />
-				<br />
-				<div class="layui-form-item">
-					<input id="" class="layui-btn" style="width: 8em; margin-left: 5em"
-						onclick="" type="button" value="生成试卷" />
+				
+				<!-- 简答部分 -->
+				<div id="ShortAnswerDetail" class="layui-form-item"
+					style="display: none; margin-left: 20px;">
+					<form class="layui-form layui-form-pane">
+						<label class="layui-form-label" style="background-color: #009688;">*问题*</label>
+						<div class="layui-input-inline">
+							<input id="ShortAnswerQuestionContent" type="text"
+								name="ShortAnswerQuestionContent" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如'1+1=?'" autocomplete="off"
+								class="layui-input">
+						</div>
+						<!-- 分值 -->
+						<br />
+						<br />
+						<br /> <label class="layui-form-label"
+							style="background-color: #009688;">分值</label>
+						<div class="layui-input-inline">
+							<input id="ShortAnswerValue" type="text"
+								name="ShortAnswerValue" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="本题分值" autocomplete="off"
+								class="layui-input">
+						</div>
+						<br />
+						<br />
+						<br />
+						<!-- 本题备注 -->
+						<label class="layui-form-label"
+							style="background-color: #009688;">备注</label>
+						<div class="layui-input-inline">
+							<input id="ShortAnswerNote" type="text"
+								name="ShortAnswerNote" required
+								style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
+								lay-verify="required" placeholder="如：考察学生综合能力"
+								autocomplete="off" class="layui-input">
+						</div>
+						<br />
+						<br />
+						<br /> <input id="ShortAnswerButton" class="layui-btn" style="width: 8em"
+							lay-submit onclick="saveShortAnswer()" type="button" value="保存" />
+					</form>
 				</div>
+				<script type="text/javascript">
+				//点击保存简答题
+				  function saveShortAnswer() {
+					if($('#ShortAnswerQuestionContent').val != "" && $('#ShortAnswerValue').val != ""
+							&& $('#ShortAnswerNote').val != ""){
+						   
+						$.ajax({
+					        type: "GET",
+					        data: {
+					         "examinationId":$('#examinationIddd').val(),
+					       	 "questionContent":$('#ShortAnswerQuestionContent').val(),
+					       	 "ShortAnswerValue":$('#ShortAnswerValue').val(),
+					         "note":$('#ShortAnswerNote').val()
+					        },
+					        contentType: "application/json; charset=utf-8",
+					        async: false,
+					        url: "<%=request.getContextPath()%>/exam/addShortAnswer.do",
+							success : function(data) {
+								if(data.result == true){
+									createQuestion($('#examinationIddd').val());
+									window.location.hash = "#mark4";   
+								}else {
+									if(data.result == "no"){
+										alert("分数超出总分，请合理分配分数..");
+									}else
+									alert("简答题添加失败");
+								}
+							},
+							error : function(data) {
+								alert("??");
+							},
+							dataType : "json",
+						});
+					}
+				}
+				</script>
+
+				<!-- 已出简答 -->
+				<ul id="ShortAnswerShowUl" class="layui-timeline"
+					style="margin-left: 5em">
+
+				</ul>
+				
+				
+				<!-- 提交 -->
+				<div id="mark5" class="layui-form-item">
+					<input id="" class="layui-btn" style="width: 8em;"
+						onclick="updateEditStatus()" type="button" value="生成试卷" />
+				</div>
+				
 			</div>
 			<script type="text/javascript">
 			    //点击添加图标触发以下
@@ -1338,18 +1691,40 @@ function createQuestion(id) {
 			      function JudgeA() {
 				        $('#JudgeI').toggle();
 						$('#JudgeII').toggle();
-					    //$('#SingleSelectionDetail').toggle();
+					    $('#JudgeDetail').toggle();
 					}
 			      function PackA() {
 				        $('#PackI').toggle();
 						$('#PackII').toggle();
-					    //$('#SingleSelectionDetail').toggle();
+					    $('#PackDetail').toggle();
 					}
 			      function ShortAnswerA() {
 				        $('#ShortAnswerI').toggle();
 						$('#ShortAnswerII').toggle();
-					    //$('#SingleSelectionDetail').toggle();
+					    $('#ShortAnswerDetail').toggle();
 					}
+			      function updateEditStatus() {
+			  		$.ajax({
+				        type: "GET",
+				        data: {
+				        	"examinationId":$('#examinationIddd').val()
+				        },
+				        contentType: "application/json; charset=utf-8",
+				        async: false,
+				        url: "<%=request.getContextPath()%>/exam/updateEditStatus.do",
+						success : function(data) {
+							if(data.result == true){
+								$('#afterSubmitExamination').show();
+				                setTimeout('addExamination()',1500);
+							}else {
+							}
+						},
+						error : function(data) {
+							alert("??");
+						},
+						dataType : "json",
+					});
+				}
 			    </script>
 
 			<!-- 上传文件 -->

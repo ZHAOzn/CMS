@@ -8,7 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.qdu.dao.ExaminationDao;
 import com.qdu.pojo.Examination;
+import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
+import com.qdu.pojo.Pack;
+import com.qdu.pojo.ShortAnswer;
 import com.qdu.pojo.SingleSelection;
 import com.qdu.service.ExaminationService;
 
@@ -17,6 +20,11 @@ import com.qdu.service.ExaminationService;
 public class ExaminationServiceImpl implements ExaminationService{
 	
 	@Autowired private ExaminationDao examinationDaoImpl;
+	
+	@Override
+	public List<Examination> selectExamination() {
+		return examinationDaoImpl.selectExamination();
+	}
 
 	@Override
 	public int insertExamination(Examination examination) {
@@ -77,6 +85,78 @@ public class ExaminationServiceImpl implements ExaminationService{
 	public int updateMoreSelectionById(int moreSelectionId,int questionNumber) {
 		return examinationDaoImpl.updateMoreSelectionById(moreSelectionId,questionNumber);
 	}
+
+	@Override
+	public int selectJudgeCount(int examinationID) {
+		return examinationDaoImpl.selectJudgeCount(examinationID);
+	}
+
+	@Override
+	public int insertJudge(Judge judge) {
+		return examinationDaoImpl.insertJudge(judge);
+	}
+
+	@Override
+	public int updateJudgeById(int judgeId, int questionNumber) {
+		return examinationDaoImpl.updateJudgeById(judgeId, questionNumber);
+	}
+
+	@Override
+	public List<Judge> selectJudgeByExaminationID(int examinationID) {
+		return examinationDaoImpl.selectJudgeByExaminationID(examinationID);
+	}
+
+	@Override
+	public List<Pack> selectPackByExaminationIDX(int examinationID) {
+		return examinationDaoImpl.selectPackByExaminationIDX(examinationID);
+	}
+
+	@Override
+	public int insertPack(Pack pack) {
+		return examinationDaoImpl.insertPack(pack);
+	}
+
+	@Override
+	public int updatePackById(int packId, int questionNumber) {
+		return examinationDaoImpl.updatePackById(packId, questionNumber);
+	}
+
+	@Override
+	public List<ShortAnswer> selectShortAnswerByExaminationIDX(int examinationID) {
+		return examinationDaoImpl.selectShortAnswerByExaminationIDX(examinationID);
+	}
+
+	@Override
+	public int insertShortAnswer(ShortAnswer shortAnswer) {
+		return examinationDaoImpl.insertShortAnswer(shortAnswer);
+	}
+
+	@Override
+	public int updateShortAnswerById(int shortAnswerId, int questionNumber) {
+		return examinationDaoImpl.updateShortAnswerById(shortAnswerId, questionNumber);
+	}
+
+	@Override
+	public int selectPackCount(int examinationID) {
+		return examinationDaoImpl.selectPackCount(examinationID);
+	}
+
+	@Override
+	public int selectShortAnswerCount(int examinationID) {
+		return examinationDaoImpl.selectShortAnswerCount(examinationID);
+	}
+
+	@Override
+	public int updateExaminationOfEdit(int examinationID,int canEdit) {
+		return examinationDaoImpl.updateExaminationOfEdit(examinationID,canEdit);
+	}
+
+	@Override
+	public int updateExaminationTemValue(int examinationID, int temValue) {
+		return examinationDaoImpl.updateExaminationTemValue(examinationID, temValue);
+	}
+
+	
 	
 	
 

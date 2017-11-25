@@ -21,9 +21,11 @@
 			<result property="examinationName" column="ExaminationName" />
 			<result property="onlyCode" column="OnlyCode" />
 			<result property="totalValue" column="TotalValue" />
+			<result property="temValue" column="TemValue" />
 			<result property="startTime" column="StartTime" />
 			<result property="duration" column="Duration" />
 			<result property="examinationStatus" column="ExaminationStatus" />
+			<result property="canEdit" column="CanEdit" />
 			<result property="courseID" column="CourseID" />
 		</association>
 	</resultMap>

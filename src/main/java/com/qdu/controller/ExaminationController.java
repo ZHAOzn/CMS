@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.qdu.aop.SystemLog;
 import com.qdu.pojo.Examination;
+import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
+import com.qdu.pojo.Pack;
+import com.qdu.pojo.ShortAnswer;
 import com.qdu.pojo.SingleSelection;
 import com.qdu.service.ExaminationService;
 import com.qdu.util.MD5Util;
@@ -33,11 +36,22 @@ public class ExaminationController {
 	public Map<String, Object> selectExaminationByMyId(int examinationId) {
 		Map<String, Object> map = new HashMap<>();
 		Examination examination = examinationServiceImpl.selectExaminationByExaminationId(examinationId);
-		List<SingleSelection> singleSelections = examinationServiceImpl.selectSingleByExaminationID(examinationId);
-		List<MoreSelection> moreSelections = examinationServiceImpl.selectMoreByExaminationID(examinationId);
-		map.put("examination", examination);
-		map.put("singleSelections", singleSelections);
-		map.put("moreSelections", moreSelections);
+		if (examination.getCanEdit() == 0) {
+			List<SingleSelection> singleSelections = examinationServiceImpl.selectSingleByExaminationID(examinationId);
+			List<MoreSelection> moreSelections = examinationServiceImpl.selectMoreByExaminationID(examinationId);
+			List<Judge> judges = examinationServiceImpl.selectJudgeByExaminationID(examinationId);
+			List<Pack> packs = examinationServiceImpl.selectPackByExaminationIDX(examinationId);
+			List<ShortAnswer> shortAnswers = examinationServiceImpl.selectShortAnswerByExaminationIDX(examinationId);
+			map.put("result", true);
+			map.put("examination", examination);
+			map.put("singleSelections", singleSelections);
+			map.put("moreSelections", moreSelections);
+			map.put("judges", judges);
+			map.put("packs", packs);
+			map.put("shortAnswers", shortAnswers);
+		} else {
+			map.put("result", false);
+		}
 		return map;
 	}
 
@@ -65,7 +79,13 @@ public class ExaminationController {
 		System.out.println(courseId);
 		System.out.println(examinationName);
 		System.out.println(totalValue);
-		int maxId = examinationServiceImpl.selectMaxExaminationIdByCourseId(courseId).getExaminationID();
+		List<Examination> examinations = examinationServiceImpl.selectExamination();
+		int maxId = 0;
+		if (examinations.size() > 0) {
+			maxId = examinationServiceImpl.selectMaxExaminationIdByCourseId(courseId).getExaminationID();
+		} else {
+			maxId = 0;
+		}
 		String status = "C" + (maxId + 1) + "R" + (new Random().nextInt(90) + 10);
 		System.out.println(status);
 		Examination examination = new Examination();
@@ -75,7 +95,7 @@ public class ExaminationController {
 		examination.setDuration(duration);
 		examination.setCourseID(courseId);
 		examination.setOnlyCode(status);
-		System.out.println("11111");
+		examination.setCanEdit(0);
 		int tem = examinationServiceImpl.insertExamination(examination);
 		System.out.println(tem);
 		if (tem > 0) {
@@ -94,28 +114,299 @@ public class ExaminationController {
 		int count = examinationServiceImpl.selectSingleSelectionCount(Integer.parseInt(examinationId));
 		Examination examination = examinationServiceImpl
 				.selectExaminationByExaminationId(Integer.parseInt(examinationId));
-		SingleSelection singleSelection = new SingleSelection();
-		singleSelection.setQuestionNumber(count + 1);
-		singleSelection.setQuestionContent(questionContent);
-		singleSelection.setOptionA(optionA);
-		singleSelection.setOptionB(optionB);
-		singleSelection.setOptionC(optionC);
-		singleSelection.setOptionD(optionD);
-		singleSelection.setAnswer(answer);
-		singleSelection.setQuestionsType("单选");
-		singleSelection.setValue(Integer.parseInt(singleSelectionValue));
-		singleSelection.setNote(note);
-		singleSelection.setExamination(examination);
-		int tem = examinationServiceImpl.insertSingleSelection(singleSelection);
-		int x = count + 1;
-		List<MoreSelection> moreSelections = examinationServiceImpl
-				.selectMoreByExaminationID(Integer.parseInt(examinationId));
-		if (moreSelections.size() > 0) {
-			for (int i = 0; i < moreSelections.size(); i++) {
-				x++;
-				examinationServiceImpl.updateMoreSelectionById(moreSelections.get(i).getMoreSelectionId(), x);
+		if ((examination.getTemValue() + Integer.parseInt(singleSelectionValue)) <= examination.getTotalValue()) {
+			examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId),
+					examination.getTemValue() + Integer.parseInt(singleSelectionValue));
+			SingleSelection singleSelection = new SingleSelection();
+			singleSelection.setQuestionNumber(count + 1);
+			singleSelection.setQuestionContent(questionContent);
+			singleSelection.setOptionA(optionA);
+			singleSelection.setOptionB(optionB);
+			singleSelection.setOptionC(optionC);
+			singleSelection.setOptionD(optionD);
+			singleSelection.setAnswer(answer);
+			singleSelection.setQuestionsType("单选");
+			singleSelection.setValue(Integer.parseInt(singleSelectionValue));
+			singleSelection.setNote(note);
+			singleSelection.setExamination(examination);
+			int tem = examinationServiceImpl.insertSingleSelection(singleSelection);
+
+			// 多选题号
+			int x = count + 1;
+			List<MoreSelection> moreSelections = examinationServiceImpl
+					.selectMoreByExaminationID(Integer.parseInt(examinationId));
+			if (moreSelections.size() > 0) {
+				for (int i = 0; i < moreSelections.size(); i++) {
+					x++;
+					examinationServiceImpl.updateMoreSelectionById(moreSelections.get(i).getMoreSelectionId(), x);
+				}
 			}
+
+			// 判断题号
+			int count2 = examinationServiceImpl.selectMoreSelectionCount(Integer.parseInt(examinationId));
+			int y = count + count2 + 1;
+			List<Judge> judges = examinationServiceImpl.selectJudgeByExaminationID(Integer.parseInt(examinationId));
+			if (judges.size() > 0) {
+				for (int i = 0; i < judges.size(); i++) {
+					y++;
+					examinationServiceImpl.updateJudgeById(judges.get(i).getJudgeId(), y);
+				}
+			}
+
+			// 填空题号
+			int count3 = examinationServiceImpl.selectJudgeCount(Integer.parseInt(examinationId));
+			int z = count + count2 + count3 + 1;
+			List<Pack> packs = examinationServiceImpl.selectPackByExaminationIDX(Integer.parseInt(examinationId));
+			if (packs.size() > 0) {
+				for (int i = 0; i < packs.size(); i++) {
+					z++;
+					examinationServiceImpl.updatePackById(packs.get(i).getPackId(), z);
+				}
+			}
+			// 简答题号
+			int count4 = examinationServiceImpl.selectPackCount(Integer.parseInt(examinationId));
+			int s = count + count2 + count3 + count4 + 1;
+			List<ShortAnswer> shortAnswers = examinationServiceImpl
+					.selectShortAnswerByExaminationIDX(Integer.parseInt(examinationId));
+			if (shortAnswers.size() > 0) {
+				for (int i = 0; i < shortAnswers.size(); i++) {
+					s++;
+					examinationServiceImpl.updateShortAnswerById(shortAnswers.get(i).getShortAnswerId(), s);
+				}
+			}
+
+			if (tem > 0) {
+				map.put("result", true);
+			} else {
+				map.put("result", false);
+			}
+		} else {
+			map.put("result", "no");
 		}
+
+		return map;
+	}
+
+	// 添加多选题
+	@RequestMapping(value = "/addMoreSelection.do")
+	@ResponseBody
+	public Map<String, Object> addMoreSelection(String examinationId, String questionContent, String MoreSelectionValue,
+			String optionA, String optionB, String optionC, String optionD, String answer, String note) {
+		Map<String, Object> map = new HashMap<>();
+		System.out.println("answer: " + answer);
+		int count1 = examinationServiceImpl.selectSingleSelectionCount(Integer.parseInt(examinationId));
+		int count = examinationServiceImpl.selectMoreSelectionCount(Integer.parseInt(examinationId));
+		Examination examination = examinationServiceImpl
+				.selectExaminationByExaminationId(Integer.parseInt(examinationId));
+		if ((examination.getTemValue() + Integer.parseInt(MoreSelectionValue)) <= examination.getTotalValue()) {
+			examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId),
+					examination.getTemValue() + Integer.parseInt(MoreSelectionValue));
+			MoreSelection moreSelection = new MoreSelection();
+			moreSelection.setQuestionNumber(count1 + count + 1);
+			moreSelection.setQuestionContent(questionContent);
+			moreSelection.setOptionA(optionA);
+			moreSelection.setOptionB(optionB);
+			moreSelection.setOptionC(optionC);
+			moreSelection.setOptionD(optionD);
+			moreSelection.setAnswer(answer);
+			moreSelection.setQuestionsType("多选");
+			moreSelection.setValue(Integer.parseInt(MoreSelectionValue));
+			moreSelection.setNote(note);
+			moreSelection.setExamination(examination);
+			int tem = examinationServiceImpl.insertMoreSelection(moreSelection);
+
+			// 判断题题号
+			int y = count + count1 + 1;
+			List<Judge> judges = examinationServiceImpl.selectJudgeByExaminationID(Integer.parseInt(examinationId));
+			if (judges.size() > 0) {
+				for (int i = 0; i < judges.size(); i++) {
+					y++;
+					examinationServiceImpl.updateJudgeById(judges.get(i).getJudgeId(), y);
+				}
+			}
+			// 填空题题号
+			int count2 = examinationServiceImpl.selectJudgeCount(Integer.parseInt(examinationId));
+			int z = count + count1 + count2 + 1;
+			List<Pack> packs = examinationServiceImpl.selectPackByExaminationIDX(Integer.parseInt(examinationId));
+			if (packs.size() > 0) {
+				for (int i = 0; i < packs.size(); i++) {
+					z++;
+					examinationServiceImpl.updatePackById(packs.get(i).getPackId(), z);
+				}
+			}
+			// 简答题号
+			int count3 = examinationServiceImpl.selectPackCount(Integer.parseInt(examinationId));
+			int s = count + count1 + count2 + count3 + 1;
+			List<ShortAnswer> shortAnswers = examinationServiceImpl
+					.selectShortAnswerByExaminationIDX(Integer.parseInt(examinationId));
+			if (shortAnswers.size() > 0) {
+				for (int i = 0; i < shortAnswers.size(); i++) {
+					s++;
+					examinationServiceImpl.updateShortAnswerById(shortAnswers.get(i).getShortAnswerId(), s);
+				}
+			}
+
+			if (tem > 0) {
+				map.put("result", true);
+			} else {
+				map.put("result", false);
+			}
+		} else {
+			map.put("result", "no");
+		}
+		return map;
+	}
+
+	// 添加判断题
+	@RequestMapping(value = "/addJudgeAnswer.do")
+	@ResponseBody
+	public Map<String, Object> addJudgeAnswer(String examinationId, String questionContent, String JudgeValue,
+			String answer, String note) {
+		Map<String, Object> map = new HashMap<>();
+		System.out.println("answer: " + answer);
+		int count1 = examinationServiceImpl.selectSingleSelectionCount(Integer.parseInt(examinationId));
+		int count2 = examinationServiceImpl.selectMoreSelectionCount(Integer.parseInt(examinationId));
+		int count3 = examinationServiceImpl.selectJudgeCount(Integer.parseInt(examinationId));
+		int count4 = examinationServiceImpl.selectPackCount(Integer.parseInt(examinationId));
+		Examination examination = examinationServiceImpl
+				.selectExaminationByExaminationId(Integer.parseInt(examinationId));
+		if ((examination.getTemValue() + Integer.parseInt(JudgeValue)) <= examination.getTotalValue()) {
+			examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId),
+					examination.getTemValue() + Integer.parseInt(JudgeValue));
+			Judge judge = new Judge();
+			judge.setJudgeContent(questionContent);
+			judge.setQuestionNumber(count1 + count2 + count3 + 1);
+			judge.setValue(Integer.parseInt(JudgeValue));
+			judge.setQuestionsType("判断");
+			judge.setAnswer(answer);
+			judge.setNote(note);
+			judge.setExamination(examination);
+			int tem = examinationServiceImpl.insertJudge(judge);
+
+			// 填空题题号
+			int z = count1 + count2 + count3 + 1;
+			List<Pack> packs = examinationServiceImpl.selectPackByExaminationIDX(Integer.parseInt(examinationId));
+			if (packs.size() > 0) {
+				for (int i = 0; i < packs.size(); i++) {
+					z++;
+					examinationServiceImpl.updatePackById(packs.get(i).getPackId(), z);
+				}
+			}
+
+			// 简答题号
+			int s = count1 + count2 + count3 + count4 + 1;
+			List<ShortAnswer> shortAnswers = examinationServiceImpl
+					.selectShortAnswerByExaminationIDX(Integer.parseInt(examinationId));
+			if (shortAnswers.size() > 0) {
+				for (int i = 0; i < shortAnswers.size(); i++) {
+					s++;
+					examinationServiceImpl.updateShortAnswerById(shortAnswers.get(i).getShortAnswerId(), s);
+				}
+			}
+
+			if (tem > 0) {
+				map.put("result", true);
+			} else {
+				map.put("result", false);
+			}
+		} else {
+			map.put("result", "no");
+		}
+		return map;
+	}
+
+	// 添加填空题
+	@RequestMapping(value = "/addPack.do")
+	@ResponseBody
+	public Map<String, Object> addPack(String examinationId, String questionContent, String PackValue, String answer,
+			String note) {
+		Map<String, Object> map = new HashMap<>();
+		System.out.println("answer: " + answer);
+		int count1 = examinationServiceImpl.selectSingleSelectionCount(Integer.parseInt(examinationId));
+		int count2 = examinationServiceImpl.selectMoreSelectionCount(Integer.parseInt(examinationId));
+		int count3 = examinationServiceImpl.selectJudgeCount(Integer.parseInt(examinationId));
+		int count4 = examinationServiceImpl.selectPackCount(Integer.parseInt(examinationId));
+		Examination examination = examinationServiceImpl
+				.selectExaminationByExaminationId(Integer.parseInt(examinationId));
+		if ((examination.getTemValue() + Integer.parseInt(PackValue)) <= examination.getTotalValue()) {
+			examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId),
+					examination.getTemValue() + Integer.parseInt(PackValue));
+			Pack pack = new Pack();
+			pack.setPackContent(questionContent);
+			pack.setQuestionNumber(count1 + count2 + count3 + count4 + 1);
+			pack.setValue(Integer.parseInt(PackValue));
+			pack.setQuestionsType("填空");
+			pack.setAnswer(answer);
+			pack.setNote(note);
+			pack.setExamination(examination);
+			int tem = examinationServiceImpl.insertPack(pack);
+
+			// 简答题号
+			int s = count1 + count2 + count3 + count4 + 1;
+			List<ShortAnswer> shortAnswers = examinationServiceImpl
+					.selectShortAnswerByExaminationIDX(Integer.parseInt(examinationId));
+			if (shortAnswers.size() > 0) {
+				for (int i = 0; i < shortAnswers.size(); i++) {
+					s++;
+					examinationServiceImpl.updateShortAnswerById(shortAnswers.get(i).getShortAnswerId(), s);
+				}
+			}
+
+			if (tem > 0) {
+				map.put("result", true);
+			} else {
+				map.put("result", false);
+			}
+		} else {
+			map.put("result", "no");
+		}
+		return map;
+	}
+
+	// 添加简答题
+	@RequestMapping(value = "/addShortAnswer.do")
+	@ResponseBody
+	public Map<String, Object> addShortAnswer(String examinationId, String questionContent, String ShortAnswerValue,
+			String note) {
+		Map<String, Object> map = new HashMap<>();
+		int count1 = examinationServiceImpl.selectSingleSelectionCount(Integer.parseInt(examinationId));
+		int count2 = examinationServiceImpl.selectMoreSelectionCount(Integer.parseInt(examinationId));
+		int count3 = examinationServiceImpl.selectJudgeCount(Integer.parseInt(examinationId));
+		int count4 = examinationServiceImpl.selectPackCount(Integer.parseInt(examinationId));
+		int count5 = examinationServiceImpl.selectShortAnswerCount(Integer.parseInt(examinationId));
+		Examination examination = examinationServiceImpl
+				.selectExaminationByExaminationId(Integer.parseInt(examinationId));
+		if ((examination.getTemValue() + Integer.parseInt(ShortAnswerValue)) <= examination.getTotalValue()) {
+			examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId),
+					examination.getTemValue() + Integer.parseInt(ShortAnswerValue));
+			ShortAnswer shortAnswer = new ShortAnswer();
+			shortAnswer.setShortAnswerContent(questionContent);
+			shortAnswer.setQuestionNumber(count1 + count2 + count3 + count4 + +count5 + 1);
+			shortAnswer.setValue(Integer.parseInt(ShortAnswerValue));
+			shortAnswer.setQuestionsType("简答");
+			shortAnswer.setNote(note);
+			shortAnswer.setExamination(examination);
+			int tem = examinationServiceImpl.insertShortAnswer(shortAnswer);
+			if (tem > 0) {
+				map.put("result", true);
+			} else {
+				map.put("result", false);
+			}
+		} else {
+			map.put("result", "no");
+		}
+		return map;
+	}
+
+	@RequestMapping(value = "/updateEditStatus.do")
+	@ResponseBody
+	public Map<String, Object> updateEditStatus(String examinationId) {
+		Map<String, Object> map = new HashMap<>();
+		System.out.println(examinationId);
+		int tem = examinationServiceImpl.updateExaminationOfEdit(Integer.parseInt(examinationId), 1);
+		Examination examination = examinationServiceImpl
+				.selectExaminationByExaminationId(Integer.parseInt(examinationId));
+		System.out.println(examination.getCanEdit());
 		if (tem > 0) {
 			map.put("result", true);
 		} else {
@@ -124,36 +415,4 @@ public class ExaminationController {
 		return map;
 	}
 
-	// 添加多选题
-	@RequestMapping(value = "/addMoreSelection.do")
-	@ResponseBody
-	public Map<String, Object> addMoreSelection(String examinationId, String questionContent,
-			String singleSelectionValue, String optionA, String optionB, String optionC, String optionD, String answer,
-			String note) {
-		Map<String, Object> map = new HashMap<>();
-		System.out.println("answer: " + answer);
-		int count1 = examinationServiceImpl.selectSingleSelectionCount(Integer.parseInt(examinationId));
-		int count = examinationServiceImpl.selectMoreSelectionCount(Integer.parseInt(examinationId));
-		Examination examination = examinationServiceImpl
-				.selectExaminationByExaminationId(Integer.parseInt(examinationId));
-		MoreSelection moreSelection = new MoreSelection();
-		moreSelection.setQuestionNumber(count1 + count + 1);
-		moreSelection.setQuestionContent(questionContent);
-		moreSelection.setOptionA(optionA);
-		moreSelection.setOptionB(optionB);
-		moreSelection.setOptionC(optionC);
-		moreSelection.setOptionD(optionD);
-		moreSelection.setAnswer(answer);
-		moreSelection.setQuestionsType("多选");
-		moreSelection.setValue(Integer.parseInt(singleSelectionValue));
-		moreSelection.setNote(note);
-		moreSelection.setExamination(examination);
-		int tem = examinationServiceImpl.insertMoreSelection(moreSelection);
-		if (tem > 0) {
-			map.put("result", true);
-		} else {
-			map.put("result", false);
-		}
-		return map;
-	}
 }

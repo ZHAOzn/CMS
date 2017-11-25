@@ -17,9 +17,11 @@
 			<result property="examinationName" column="ExaminationName" />
 			<result property="onlyCode" column="OnlyCode" />
 			<result property="totalValue" column="TotalValue" />
+			<result property="temValue" column="TemValue" />
 			<result property="startTime" column="StartTime" />
 			<result property="duration" column="Duration" />
 			<result property="examinationStatus" column="ExaminationStatus" />
+			<result property="canEdit" column="CanEdit" />
 			<result property="courseID" column="CourseID" />
 		</association>
 	</resultMap>
@@ -29,8 +31,16 @@
 	  And e.ExaminationID = #{examinationID}
 	</select>
 	
+	<select id="selectJudgeCount" resultType="int">
+	  select Count(*) from Judge where ExaminationID = #{examinationID}
+	</select>
+	
 	<select id="selectJudgeMaxQuestionNumber" resultMap="JudgeResult">
 	  select Max(QuestionNumber) from Judge where ExaminationID = #{examinationID}
+	</select>
+	
+	<select id="selectJudgeByExaminationIDX" resultMap="JudgeResult">
+	  select * from Judge where ExaminationID = #{examinationID} order by QuestionNumber asc
 	</select>
 	
 	<insert id="insertJudge">
@@ -38,8 +48,14 @@
 	  Judge(QuestionNumber,JudgeContent,QuestionsType,
 	  Answer,Value,Note,ExaminationID) 
 	  values(#{questionNumber},#{judgeContent},#{questionsType},
-	  #{answer},#{value},#{note},,#{examination.examinationID})
+	  #{answer},#{value},#{note},#{examination.examinationID})
 	</insert>
+	
+	<update id="updateJudgeById" parameterType="HashMap">
+	  update Judge set
+	  QuestionNumber = #{questionNumber}
+	  where JudgeId = #{judgeId}
+	</update>
 
 </mapper>
 
