@@ -125,6 +125,18 @@
 	  TemValue = #{temValue}
 	  where ExaminationID = #{examinationID}
 	</update>
+	
+	<delete id="deleteExamination" parameterType="int">
+	  delete from Examination where ExaminationID = #{examinationID}
+	</delete>
+	
+	<update id="updateExamination" parameterType="HashMap">
+	  update Examination set
+	  ExaminationName = #{examinationName},
+	  StartTime = #{startTime},
+	  Duration = #{duration}
+	  where ExaminationID = #{examinationID}
+	</update>
 
 </mapper>
 

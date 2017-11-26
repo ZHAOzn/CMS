@@ -18,6 +18,10 @@ public interface LogEntityService {
 	public List<LogEntity> selectStudentLog(String userId);
 	
 	public List<LogEntity> selectStudentLogByTime(String userId, String dateTime,String coreKey);
+	
+public List<LogEntity> selectTeacherLogEntity();
+	
+	public List<LogEntity> selectStudentLogEntity();
 
 }
   

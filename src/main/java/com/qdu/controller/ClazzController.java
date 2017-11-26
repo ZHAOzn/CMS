@@ -79,21 +79,19 @@ public class ClazzController {
 	@SystemLog(module="教师",methods="日志管理-修改班级")
 	@RequestMapping(value="/changeClazzByAjax.do")
 	public @ResponseBody Map<String, Object>
-	changeClazzByAjax(int clazzId,String clazzName){
-		System.out.println("欢迎");
-		System.out.println(clazzId);
-		System.out.println(clazzName);
+	changeClazzByAjax(int clazzId,String clazzName,@DateTimeFormat(pattern = "yyyy") Date currentYear){
 		Clazz clazz = clazzServiceImpl.selectClazzById(clazzId);
 		Map<String, Object> map = new HashMap<>();
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy");   
 		if(clazz != null){
-//			clazz.setClazzName(clazzName);
-			clazzServiceImpl.updateClazzByClazzId(clazzId, clazzName);
-			map.put("message", "修改成功");
+			clazzServiceImpl.updateClazzByClazzId(clazzId, clazzName,Integer.parseInt(sdf.format(currentYear)));
+			map.put("result", true);
 		}else {
-			map.put("message", "修改失败，可能是学期发生了改变");
+			map.put("result", false);
 		}
 		return map;
 	}
+	
 	//删除Clazz及旗下的student
 	@SystemLog(module="教师",methods="日志管理-删除班级")
 	@RequestMapping(value = "/deleteClazzById.do")

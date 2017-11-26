@@ -276,8 +276,8 @@ function clearRedis() {
 				</thead>
 				<tbody>
 					<c:choose>
-						<c:when test="${! empty logEntities}">
-							<c:forEach items="${logEntities}" var="sl">
+						<c:when test="${! empty studentLogEntitys}">
+							<c:forEach items="${studentLogEntitys}" var="sl">
 								<tr>
 									<td>${sl.userId}</td>
 									<td style="text-align: left; padding-left: 10%;">${sl.method}</td>

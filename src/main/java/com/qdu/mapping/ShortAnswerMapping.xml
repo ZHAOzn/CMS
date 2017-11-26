@@ -58,6 +58,10 @@
 	  where ShortAnswerId = #{shortAnswerId}
 	</update>
 	
+	<delete id="deleteShortAnswer" parameterType="int">
+	  delete from ShortAnswer where ExaminationID = #{examinationID}
+	</delete>
+	
 	
 
 </mapper>

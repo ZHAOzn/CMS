@@ -364,7 +364,7 @@ public class TeacherController {
 			// 得到文件名
 			String time = new SimpleDateFormat("YYYY-MM-dd_HH_mm_ss").format(new Date());
 			String time2 = new SimpleDateFormat("YYYY-MM-dd").format(new Date());
-			String newfileName = fileName + "/" + time;
+			String newfileName = fileName + "/" + time +"."+suffix;
 			FilePackage filePackage = new FilePackage();
 			filePackage.setCourseId(courseId);
 			filePackage.setFileName(newfileName);

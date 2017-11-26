@@ -56,6 +56,10 @@
 	  QuestionNumber = #{questionNumber}
 	  where JudgeId = #{judgeId}
 	</update>
+	
+	<delete id="deleteJudge" parameterType="int">
+	  delete from Judge where ExaminationID = #{examinationID}
+	</delete>
 
 </mapper>
 

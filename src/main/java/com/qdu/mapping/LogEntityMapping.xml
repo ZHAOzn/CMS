@@ -23,6 +23,14 @@
 	  select * from LogEntity order by LogId desc limit #{startPos},10
 	</select>
 	
+	<select id="selectTeacherLogEntity" resultMap="LogEntityResult"> 
+	  select * from LogEntity where Module = '教师' order by LogId desc
+	</select>
+	
+	<select id="selectStudentLogEntity" resultMap="LogEntityResult"> 
+	  select * from LogEntity where Module = '学生' order by LogId desc
+	</select>
+	
 	<select id="selectLogEntityCount" resultType="int"> 
 	select count(*) from LogEntity
 	</select>

@@ -43,8 +43,8 @@ public class ClazzServiceImpl implements ClazzService{
 		clazzDaoImpl.updateClazzByCourseId(clazzId);
 	}
 	@Override
-	public void updateClazzByClazzId(int clazzId,String clazzName) {
-		clazzDaoImpl.updateClazzByClazzId(clazzId, clazzName);
+	public void updateClazzByClazzId(int clazzId,String clazzName,int currentYear) {
+		clazzDaoImpl.updateClazzByClazzId(clazzId, clazzName, currentYear);
 	}
 	@Override
 	public Clazz selectClazzById(int clazzId) {

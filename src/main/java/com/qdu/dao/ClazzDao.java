@@ -18,7 +18,7 @@ public interface ClazzDao {
 	
 	public void updateClazzByCourseId(int clazzId);
 	
-	public void updateClazzByClazzId(int clazzId,String clazzName);
+	public void updateClazzByClazzId(int clazzId,String clazzName,int currentYear);
 	
 	public Clazz selectClazzById(int clazzId);
 	

@@ -135,7 +135,8 @@
 
 	<update id="updateClazzByClazzId" parameterType="HashMap">
 		update Clazz set
-		ClazzName = #{clazzName}
+		ClazzName = #{clazzName},
+		CurrentYear = #{currentYear}
 		where ClazzId = #{clazzId}
 	</update>
 

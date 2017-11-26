@@ -62,10 +62,11 @@ public class ClazzDaoImpl implements ClazzDao{
 	}
 
 	@Override
-	public void updateClazzByClazzId(int clazzId,String clazzName) {
+	public void updateClazzByClazzId(int clazzId,String clazzName,int currentYear) {
 		Map<String, Object> map =new HashMap<String, Object>();
 		map.put("clazzId", clazzId);
 		map.put("clazzName", clazzName);
+		map.put("currentYear", currentYear);
 		String statement = "com.qdu.mapping.ClazzMapping.updateClazzByClazzId";
 		sqlSessionFactory.openSession().update(statement, map);
 	}

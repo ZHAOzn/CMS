@@ -64,6 +64,28 @@ public interface ExaminationDao {
 	public int updateExaminationOfEdit(int examinationID,int canEdit);
 	
 	public int updateExaminationTemValue(int examinationID,int temValue);
+	
+	public int deleteJudge(int examinationID);
+	
+	public int deletePack(int examinationID);
+	
+	public int deleteShortAnswer(int examinationID);
+	
+	public int deleteSingleSelection(int examinationID);
+	
+	public int deleteMoreSelection(int examinationID);
+	
+	public int deleteExamination(int examinationID);
+	
+    public int updateExamination(String examinationName,String startTime,int duration,
+    		int examinationID);
 
+    public SingleSelection selectSingleSelectionBysingleSelectionId(int singleSelectionId);
+    
+    public int updateSingleBysingleSelectionId(SingleSelection singleSelection);
+    
+    public int deleteSingleBySingleSelectionId(int singleSelectionId);
+    
+    public int updateSingleSelectionById(int singleSelectionId,int questionNumber);
 
 }

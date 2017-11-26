@@ -61,6 +61,10 @@
 	  QuestionNumber = #{questionNumber}
 	  where MoreSelectionId = #{moreSelectionId}
 	</update>
+	
+	<delete id="deleteMoreSelection" parameterType="int">
+	  delete from MoreSelection where ExaminationID = #{examinationID}
+	</delete>
 
 </mapper>
 
