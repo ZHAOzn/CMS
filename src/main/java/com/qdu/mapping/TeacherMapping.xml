@@ -67,6 +67,10 @@
 		Teacher where TeacherMobile = #{teacherMobile}
 	</select>
 	
+	<select id="selectTeacher" resultMap="TeacherResult">
+		SELECT * from Teacher 
+	</select>
+	
 	<select id="selectTeacherByMobile" parameterType="String" resultMap="TeacherResult">
 		SELECT * from
 		Teacher where TeacherMobile = #{teacherMobile}

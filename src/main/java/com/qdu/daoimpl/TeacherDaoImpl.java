@@ -1,6 +1,7 @@
 package com.qdu.daoimpl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -80,6 +81,13 @@ public class TeacherDaoImpl implements TeacherDao{
 	public Teacher selectTeacherNameByMobile(String teacherMobile) {
 		String statement = "com.qdu.mapping.TeacherMapping.selectTeacherNameByMobile";
 		return sessionFactory.openSession().selectOne(statement, teacherMobile);
+	}
+
+
+	@Override
+	public List<Teacher> selectTeacher() {
+		String statement = "com.qdu.mapping.TeacherMapping.selectTeacher";
+		return sessionFactory.openSession().selectList(statement);
 	}
 
 
