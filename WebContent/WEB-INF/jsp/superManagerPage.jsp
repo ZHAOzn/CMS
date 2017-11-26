@@ -210,7 +210,7 @@ function clearRedis() {
 
 			<!-- 学生信息模块 -->
 			<div id="studentInfo" class="site-text site-block">
-				<table class="layui-table" style="text-align: center;">
+				<table class="layui-table" lay-even style="text-align: center;">
 					<colgroup>
 						<col width="150">
 						<col width="120">
@@ -256,7 +256,46 @@ function clearRedis() {
 			</div>
 			
 			<!-- 学生操作日志模块 -->				
-			<div id="studentLog" class="site-text site-block" style="display: none;">
+			<div id="studentLog" class="site-text site-block" style="display: none;text-align: center">
+				<table class="layui-table"  lay-even>
+				<colgroup>
+    				<col width="150">
+    				<col width="300">
+    				<col width="200">
+    				<col width="200">
+    				<col width="150">
+  				</colgroup>
+				<thead>
+					<tr>
+						<th style="text-align: center;">学号</th>
+						<th style="text-align: center;">活动</th>
+						<th style="text-align: center;">Ip</th>
+						<th style="text-align: center;">时间</th>
+						<th style="text-align: center;">结果</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:choose>
+						<c:when test="${! empty logEntities}">
+							<c:forEach items="${logEntities}" var="sl">
+								<tr>
+									<td>${sl.userId}</td>
+									<td style="text-align: left; padding-left: 10%;">${sl.method}</td>
+									<td>${sl.ip}</td>
+									<td>${sl.date}</td>
+									<td>${sl.result}</td>
+									<!--  <td colspan="8"></td>-->
+								</tr>
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+							<tr>
+								<td colspan="6">(暂无信息)</td>
+							</tr>
+						</c:otherwise>
+					</c:choose>
+				</tbody>
+			</table>
 			</div>
 			
 			<!-- 教师信息模块 -->				

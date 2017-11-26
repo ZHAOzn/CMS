@@ -1288,7 +1288,7 @@ function fuckFunction() {
 							<label class="layui-form-label" style="">输入日期</label>
 							<div class="layui-input-block" style="">
 								<input id="logDate" type="text" lay-verify="logDate"
-									placeholder="yyyy-MM-dd" autocomplete="on" class="layui-input"
+									placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input"
 									style="width: 80%; float: left;">
 							</div>
 						</div>
