@@ -47,6 +47,35 @@
 	  select Count(*) from SingleSelection where ExaminationID = #{examinationID}
 	</select>
 	
+	<select id="selectSingleSelectionBysingleSelectionId" resultMap="SingleSelectionResult">
+	  select * from SingleSelection where SingleSelectionId = #{singleSelectionId}
+	</select>
+	
+	<update id="updateSingleBysingleSelectionId" parameterType="com.qdu.pojo.SingleSelection">
+	  update SingleSelection set
+	  QuestionNumber = #{questionNumber},
+	  QuestionContent = #{questionContent},
+	  QuestionsType = #{questionsType},
+	  OptionA = #{optionA},
+	  OptionB = #{optionB},
+	  OptionC = #{optionC},
+	  OptionD = #{optionD},
+	  Answer = #{answer},
+	  Value = #{value},
+	  Note = #{note}
+	  where SingleSelectionId = #{singleSelectionId}
+	</update>
+	
+	<update id="updateSingleSelectionById" parameterType="HashMap">
+	  update SingleSelection set
+	  QuestionNumber = #{questionNumber}
+	  where SingleSelectionId = #{singleSelectionId}
+	</update>
+	
+	<delete id="deleteSingleBySingleSelectionId" parameterType="int">
+	  delete from SingleSelection where SingleSelectionId = #{singleSelectionId}
+	</delete>
+	
 	<insert id="insertSingleSelection" parameterType="com.qdu.pojo.SingleSelection">
 	  insert into 
 	  SingleSelection(QuestionNumber,QuestionContent,QuestionsType,OptionA,OptionB,OptionC,OptionD,
@@ -54,6 +83,10 @@
 	  values(#{questionNumber},#{questionContent},#{questionsType},#{optionA},#{optionB},#{optionC},#{optionD},
 	  #{answer},#{value},#{note},#{examination.examinationID})
 	</insert>
+	
+	<delete id="deleteSingleSelection" parameterType="int">
+	  delete from SingleSelection where ExaminationID = #{examinationID}
+	</delete>
 
 </mapper>
 

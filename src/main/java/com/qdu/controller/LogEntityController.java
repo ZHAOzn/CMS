@@ -60,9 +60,13 @@ public class LogEntityController {
 		 int totalCount = logEntityServiceImpl.selectLogEntityCount();
 		    List<Student> students = studentServiceImpl.selectStuList();
 		    List<Teacher> teachers = teacherServiceImpl.selectTeacher();
+		    List<LogEntity> teacherLogEntitys = logEntityServiceImpl.selectTeacherLogEntity();
+		    List<LogEntity> studentLogEntitys = logEntityServiceImpl.selectStudentLogEntity();
 			map.put("logEntities", logEntities);
 			map.put("students", students);
 			map.put("teachers", teachers);
+			map.put("teacherLogEntitys", teacherLogEntitys);
+			map.put("studentLogEntitys", studentLogEntitys);
 		return "superManagerPage";
 	}
 	//超级管理员登录准备

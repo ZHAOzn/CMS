@@ -57,4 +57,16 @@ public class LogEntityDaoImpl implements LogEntityDao{
 		return sessionFactory.openSession().selectList(statement, map);
 	}
 
+	@Override
+	public List<LogEntity> selectTeacherLogEntity() {
+		String statement = "com.qdu.mapping.LogEntityMapping.selectTeacherLogEntity";
+		return sessionFactory.openSession().selectList(statement);
+	}
+
+	@Override
+	public List<LogEntity> selectStudentLogEntity() {
+		String statement = "com.qdu.mapping.LogEntityMapping.selectStudentLogEntity";
+		return sessionFactory.openSession().selectList(statement);
+	}
+
 }

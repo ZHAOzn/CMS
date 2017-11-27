@@ -156,6 +156,63 @@ public class ExaminationServiceImpl implements ExaminationService{
 		return examinationDaoImpl.updateExaminationTemValue(examinationID, temValue);
 	}
 
+	@Override
+	public int deleteJudge(int examinationID) {
+		return examinationDaoImpl.deleteJudge(examinationID);
+	}
+
+	@Override
+	public int deletePack(int examinationID) {
+		return examinationDaoImpl.deletePack(examinationID);
+	}
+
+	@Override
+	public int deleteShortAnswer(int examinationID) {
+		return examinationDaoImpl.deleteShortAnswer(examinationID);
+	}
+
+	@Override
+	public int deleteSingleSelection(int examinationID) {
+		return examinationDaoImpl.deleteSingleSelection(examinationID);
+	}
+
+	@Override
+	public int deleteMoreSelection(int examinationID) {
+		return examinationDaoImpl.deleteMoreSelection(examinationID);
+	}
+
+	@Override
+	public int deleteExamination(int examinationID) {
+		return examinationDaoImpl.deleteExamination(examinationID);
+	}
+
+	@Override
+	public int updateExamination(String examinationName, String startTime, int duration, int examinationID) {
+		return examinationDaoImpl.updateExamination(examinationName, startTime, duration, examinationID);
+	}
+
+	@Override
+	public SingleSelection selectSingleSelectionBysingleSelectionId(int singleSelectionId) {
+		return examinationDaoImpl.selectSingleSelectionBysingleSelectionId(singleSelectionId);
+	}
+
+	@Override
+	public int updateSingleBysingleSelectionId(SingleSelection singleSelection) {
+		return examinationDaoImpl.updateSingleBysingleSelectionId(singleSelection);
+	}
+
+	@Override
+	public int deleteSingleBySingleSelectionId(int singleSelectionId) {
+		return examinationDaoImpl.deleteSingleBySingleSelectionId(singleSelectionId);
+	}
+
+	@Override
+	public int updateSingleSelectionById(int singleSelectionId, int questionNumber) {
+		return examinationDaoImpl.updateSingleSelectionById(singleSelectionId, questionNumber);
+	}
+
+	
+
 	
 	
 	

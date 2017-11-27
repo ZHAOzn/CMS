@@ -57,6 +57,10 @@
 	  where PackId = #{packId}
 	</update>
 	
+	<delete id="deletePack" parameterType="int">
+	  delete from Pack where ExaminationID = #{examinationID}
+	</delete>
+	
 	
 
 </mapper>

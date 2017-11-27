@@ -201,6 +201,81 @@ public class ExaminationDaoImpl implements ExaminationDao{
 		return sqlSessionFactory.openSession().update(statement, map);
 	}
 
+	@Override
+	public int deleteJudge(int examinationID) {
+		String statement = "com.qdu.mapping.JudgeMapping.deleteJudge";
+		return sqlSessionFactory.openSession().delete(statement, examinationID);
+	}
+
+	@Override
+	public int deletePack(int examinationID) {
+		String statement = "com.qdu.mapping.PackMapping.deletePack";
+		return sqlSessionFactory.openSession().delete(statement, examinationID);
+	}
+
+	@Override
+	public int deleteShortAnswer(int examinationID) {
+		String statement = "com.qdu.mapping.ShortAnswerMapping.deleteShortAnswer";
+		return sqlSessionFactory.openSession().delete(statement, examinationID);
+	}
+
+	@Override
+	public int deleteSingleSelection(int examinationID) {
+		String statement = "com.qdu.mapping.SingleSelectionMapping.deleteSingleSelection";
+		return sqlSessionFactory.openSession().delete(statement, examinationID);
+	}
+
+	@Override
+	public int deleteMoreSelection(int examinationID) {
+		String statement = "com.qdu.mapping.MoreSelectionMapping.deleteMoreSelection";
+		return sqlSessionFactory.openSession().delete(statement, examinationID);
+	}
+
+	@Override
+	public int deleteExamination(int examinationID) {
+		String statement = "com.qdu.mapping.ExaminationMapping.deleteExamination";
+		return sqlSessionFactory.openSession().delete(statement, examinationID);
+	}
+
+	@Override
+	public int updateExamination(String examinationName,String startTime, int duration,
+			int examinationID) {
+		String statement = "com.qdu.mapping.ExaminationMapping.updateExamination";
+		Map<String, Object> map = new HashMap<>();
+		map.put("examinationName", examinationName);
+		map.put("startTime", startTime);
+		map.put("duration", duration);
+		map.put("examinationID", examinationID);
+		return sqlSessionFactory.openSession().update(statement, map);
+	}
+
+	@Override
+	public SingleSelection selectSingleSelectionBysingleSelectionId(int singleSelectionId) {
+		String statement = "com.qdu.mapping.SingleSelectionMapping.selectSingleSelectionBysingleSelectionId";
+		return sqlSessionFactory.openSession().selectOne(statement, singleSelectionId);
+	}
+
+	@Override
+	public int updateSingleBysingleSelectionId(SingleSelection singleSelection) {
+		String statement = "com.qdu.mapping.SingleSelectionMapping.updateSingleBysingleSelectionId";
+		return sqlSessionFactory.openSession().update(statement, singleSelection);
+	}
+
+	@Override
+	public int deleteSingleBySingleSelectionId(int singleSelectionId) {
+		String statement = "com.qdu.mapping.SingleSelectionMapping.deleteSingleBySingleSelectionId";
+		return sqlSessionFactory.openSession().delete(statement, singleSelectionId);
+	}
+
+	@Override
+	public int updateSingleSelectionById(int singleSelectionId, int questionNumber) {
+		String statement = "com.qdu.mapping.SingleSelectionMapping.updateSingleSelectionById";
+		Map<String, Object> map = new HashMap<>();
+		map.put("singleSelectionId", singleSelectionId);
+		map.put("questionNumber", questionNumber);
+		return sqlSessionFactory.openSession().update(statement, map);
+	}
+
 	
 	
 	
