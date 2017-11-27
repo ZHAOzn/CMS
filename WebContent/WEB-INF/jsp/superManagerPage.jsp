@@ -193,10 +193,11 @@ function clearRedis() {
 							</dd>
 							<dd>
 								<a onclick="clearRedis()" href="#">清理redis</a>
-							</dd>	
+							</dd>
 						</dl></li>
 					<li class="layui-nav-item"><a id="manageBlogShow" href="#">管理博客</a></li>
-					<li class="layui-nav-item"><a id="manageAnnouncementShow" href="#">公告发布</a></li>
+					<li class="layui-nav-item"><a id="manageAnnouncementShow"
+						href="#">公告发布</a></li>
 				</ul>
 			</div>
 		</div>
@@ -239,8 +240,7 @@ function clearRedis() {
 										<td>${s.studentGender}</td>
 										<td>${s.studentMobile}</td>
 										<td>${s.studentEmail}</td>
-										<td><a id="studentDetail" href="#"><i
-												class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
+										<td><a id="studentDetail" href="#"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
 										</a></td>
 									</tr>
 								</c:forEach>
@@ -254,51 +254,51 @@ function clearRedis() {
 					</tbody>
 				</table>
 			</div>
-			
-			<!-- 学生操作日志模块 -->				
-			<div id="studentLog" class="site-text site-block" style="display: none;text-align: center">
-				<table class="layui-table"  lay-even>
-				<colgroup>
-    				<col width="150">
-    				<col width="300">
-    				<col width="200">
-    				<col width="200">
-    				<col width="150">
-  				</colgroup>
-				<thead>
-					<tr>
-						<th style="text-align: center;">学号</th>
-						<th style="text-align: center;">活动</th>
-						<th style="text-align: center;">Ip</th>
-						<th style="text-align: center;">时间</th>
-						<th style="text-align: center;">结果</th>
-					</tr>
-				</thead>
-				<tbody>
-					<c:choose>
-						<c:when test="${! empty studentLogEntitys}">
-							<c:forEach items="${studentLogEntitys}" var="sl">
+
+			<!-- 学生操作日志模块 -->
+			<div id="studentLog" class="site-text site-block" style="display: none; text-align: center">
+				<table class="layui-table" lay-even>
+					<colgroup>
+						<col width="150">
+						<col width="300">
+						<col width="200">
+						<col width="200">
+						<col width="150">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;">学号</th>
+							<th style="text-align: center;">活动</th>
+							<th style="text-align: center;">Ip</th>
+							<th style="text-align: center;">时间</th>
+							<th style="text-align: center;">结果</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:choose>
+							<c:when test="${! empty studentLogEntitys}">
+								<c:forEach items="${studentLogEntitys}" var="sl">
+									<tr>
+										<td>${sl.userId}</td>
+										<td style="text-align: left; padding-left: 10%;">${sl.method}</td>
+										<td>${sl.ip}</td>
+										<td>${sl.date}</td>
+										<td>${sl.result}</td>
+										<!--  <td colspan="8"></td>-->
+									</tr>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
 								<tr>
-									<td>${sl.userId}</td>
-									<td style="text-align: left; padding-left: 10%;">${sl.method}</td>
-									<td>${sl.ip}</td>
-									<td>${sl.date}</td>
-									<td>${sl.result}</td>
-									<!--  <td colspan="8"></td>-->
+									<td colspan="6">(暂无信息)</td>
 								</tr>
-							</c:forEach>
-						</c:when>
-						<c:otherwise>
-							<tr>
-								<td colspan="6">(暂无信息)</td>
-							</tr>
-						</c:otherwise>
-					</c:choose>
-				</tbody>
-			</table>
+							</c:otherwise>
+						</c:choose>
+					</tbody>
+				</table>
 			</div>
-			
-			<!-- 教师信息模块 -->				
+
+			<!-- 教师信息模块 -->
 			<div id="teacherInfo" class="site-text site-block" style="display: none;">
 				<table class="layui-table" style="text-align: center;">
 					<colgroup>
@@ -332,8 +332,7 @@ function clearRedis() {
 										<td>${t.teacherMobile}</td>
 										<td>${t.teacherEmail}</td>
 										<td>${t.teacherSubject}</td>
-										<td><a id="teacherDetail" href="#"><i
-												class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
+										<td><a id="teacherDetail" href="#"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
 										</a></td>
 									</tr>
 								</c:forEach>
@@ -346,30 +345,71 @@ function clearRedis() {
 						</c:choose>
 					</tbody>
 				</table>
-				
 			</div>
-			
-			<!-- 教师操作日志模块 -->				
+
+			<!-- 教师操作日志模块 -->
 			<div id="teacherLog" class="site-text site-block" style="display: none;">
+				<table class="layui-table" lay-even>
+					<colgroup>
+						<col width="150">
+						<col width="300">
+						<col width="200">
+						<col width="200">
+						<col width="150">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;">学号</th>
+							<th style="text-align: center;">活动</th>
+							<th style="text-align: center;">Ip</th>
+							<th style="text-align: center;">时间</th>
+							<th style="text-align: center;">结果</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:choose>
+							<c:when test="${! empty teacherLogEntitys}">
+								<c:forEach items="${teacherLogEntitys}" var="tl">
+									<tr>
+										<td>${tl.userId}</td>
+										<td style="text-align: left; padding-left: 10%;">${tl.method}</td>
+										<td>${tl.ip}</td>
+										<td>${tl.date}</td>
+										<td>${tl.result}</td>
+										<!--  <td colspan="8"></td>-->
+									</tr>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<tr>
+									<td colspan="6">(暂无信息)</td>
+								</tr>
+							</c:otherwise>
+						</c:choose>
+					</tbody>
+				</table>
 			</div>
-			
-			<!-- CRUD管理模块 -->				
-			<div id="crud" class="site-text site-block" style="display: none;">
+
+			<!-- CRUD管理模块 -->
+			<div id="crud" class="site-text site-block" style="display: none;text-align: center;">
+				<button class="layui-btn">增</button>
+				<button class="layui-btn">删</button> 
+				<button class="layui-btn">查</button>
+				<button class="layui-btn">改</button>
 			</div>
-			
-			<!-- 权限管理模块 -->				
-			<div id="manageAnnouncement" class="site-text site-block" style="display: none;">
-			</div>
+
+			<!-- 权限管理模块 -->
+			<div id="manageAnnouncement" class="site-text site-block"
+				style="display: none;"></div>
 
 		</div>
 	</div>
 	<script type="text/javascript">
-		layui.use(['element','layer','table' ],function(){
-				var element = layui.element
-				,$ = layui.jquery
-				,layer = layui.layer
-				,table = layui.table;
-
+		layui.use([ 'element', 'layer', 'table' ],function() {
+			var element = layui.element
+			,$ = layui.jquery
+			,layer = layui.layer
+			,table = layui.table;
 		});
 	</script>
 </body>
