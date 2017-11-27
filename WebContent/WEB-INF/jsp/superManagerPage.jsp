@@ -393,7 +393,7 @@ function clearRedis() {
 			<!-- CRUD管理模块 -->
 			<div id="crud" class="site-text site-block" style="display: none;text-align: center;">
 				<button class="layui-btn">增</button>
-				<button class="layui-btn">删</button>
+				<button class="layui-btn">删</button> 
 				<button class="layui-btn">查</button>
 				<button class="layui-btn">改</button>
 			</div>
