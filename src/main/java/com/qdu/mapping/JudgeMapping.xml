@@ -60,6 +60,25 @@
 	<delete id="deleteJudge" parameterType="int">
 	  delete from Judge where ExaminationID = #{examinationID}
 	</delete>
+	
+	<select id="selectJudgeByJudgeId" resultMap="JudgeResult">
+	  select * from Judge where JudgeId = #{judgeId}
+	</select>
+	
+	<update id="updatejudgeByJudgeId" parameterType="com.qdu.pojo.Judge">
+	  update Judge set
+	  QuestionNumber = #{questionNumber},
+	  JudgeContent = #{judgeContent},
+	  Answer = #{answer},
+	  Value = #{value},
+	  Note = #{note}
+	  where JudgeId = #{judgeId}
+	</update>
+	
+	<delete id="deleteJudgeId" parameterType="int">
+	  delete from Judge where JudgeId = #{judgeId}
+	</delete>
+	
 
 </mapper>
 

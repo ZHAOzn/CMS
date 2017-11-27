@@ -61,6 +61,23 @@
 	  delete from Pack where ExaminationID = #{examinationID}
 	</delete>
 	
+	<select id="selectPackByPackId" resultMap="PackResult">
+	  select * from Pack where PackId = #{packId}
+	</select>
+	
+	<update id="updatePackByPackId" parameterType="com.qdu.pojo.Pack">
+	  update Pack set
+	  QuestionNumber = #{questionNumber},
+	  PackContent = #{packContent},
+	  Answer = #{answer},
+	  Value = #{value},
+	  Note = #{note}
+	  where PackId = #{packId}
+	</update>
+	
+	<delete id="deletePackId" parameterType="int">
+	  delete from Pack where PackId = #{packId}
+	</delete>
 	
 
 </mapper>

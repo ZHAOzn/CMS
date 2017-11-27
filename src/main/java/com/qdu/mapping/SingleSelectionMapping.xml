@@ -76,6 +76,7 @@
 	  delete from SingleSelection where SingleSelectionId = #{singleSelectionId}
 	</delete>
 	
+	
 	<insert id="insertSingleSelection" parameterType="com.qdu.pojo.SingleSelection">
 	  insert into 
 	  SingleSelection(QuestionNumber,QuestionContent,QuestionsType,OptionA,OptionB,OptionC,OptionD,

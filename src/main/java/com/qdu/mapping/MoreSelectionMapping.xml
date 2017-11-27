@@ -65,6 +65,28 @@
 	<delete id="deleteMoreSelection" parameterType="int">
 	  delete from MoreSelection where ExaminationID = #{examinationID}
 	</delete>
+	
+	<select id="selectMoreSelectionByMoreSelectionId" resultMap="MoreSelectionResult">
+	  select * from MoreSelection where MoreSelectionId = #{moreSelectionId}
+	</select>
+	
+	<update id="updatemoreByMoreSelectionId" parameterType="com.qdu.pojo.MoreSelection">
+	  update MoreSelection set
+	  QuestionNumber = #{questionNumber},
+	  QuestionContent = #{questionContent},
+	  OptionA = #{optionA},
+	  OptionB = #{optionB},
+	  OptionC = #{optionC},
+	  OptionD = #{optionD},
+	  Answer = #{answer},
+	  Value = #{value},
+	  Note = #{note}
+	  where MoreSelectionId = #{moreSelectionId}
+	</update>
+	
+	<delete id="deleteMoreSelectionId" parameterType="int">
+	  delete from MoreSelection where MoreSelectionId = #{moreSelectionId}
+	</delete>
 
 </mapper>
 

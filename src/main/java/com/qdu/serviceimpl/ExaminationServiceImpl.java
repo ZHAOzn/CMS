@@ -211,10 +211,65 @@ public class ExaminationServiceImpl implements ExaminationService{
 		return examinationDaoImpl.updateSingleSelectionById(singleSelectionId, questionNumber);
 	}
 
-	
+	@Override
+	public MoreSelection selectMoreSelectionByMoreSelectionId(int moreSelectionId) {
+		return examinationDaoImpl.selectMoreSelectionByMoreSelectionId(moreSelectionId);
+	}
 
-	
-	
-	
+	@Override
+	public int updatemoreByMoreSelectionId(MoreSelection moreSelection) {
+		return examinationDaoImpl.updatemoreByMoreSelectionId(moreSelection);
+	}
 
+	@Override
+	public int deleteMoreSelectionId(int moreSelectionId) {
+		return examinationDaoImpl.deleteMoreSelectionId(moreSelectionId);
+	}
+
+	@Override
+	public Judge selectJudgeByJudgeId(int judgeId) {
+		return examinationDaoImpl.selectJudgeByJudgeId(judgeId);
+	}
+
+	@Override
+	public int updatejudgeByJudgeId(Judge judge) {
+		return examinationDaoImpl.updatejudgeByJudgeId(judge);
+	}
+
+	@Override
+	public int deleteJudgeId(int judgeId) {
+		return examinationDaoImpl.deleteJudgeId(judgeId);
+	}
+
+	@Override
+	public Pack selectPackByPackId(int packId) {
+		return examinationDaoImpl.selectPackByPackId(packId);
+	}
+
+	@Override
+	public int updatePackByPackId(Pack pack) {
+		return examinationDaoImpl.updatePackByPackId(pack);
+	}
+
+	@Override
+	public int deletePackId(int packId) {
+		return examinationDaoImpl.deletePackId(packId);
+	}
+
+	@Override
+	public ShortAnswer selectShortAnswerByShortAnswerId(int shortAnswerId) {
+		return examinationDaoImpl.selectShortAnswerByShortAnswerId(shortAnswerId);
+	}
+
+	@Override
+	public int updateShortAnswerByShortAnswerId(ShortAnswer shortAnswer) {
+		return examinationDaoImpl.updateShortAnswerByShortAnswerId(shortAnswer);
+	}
+
+	@Override
+	public int deleteShortAnswerId(int shortAnswerId) {
+		return examinationDaoImpl.deleteShortAnswerId(shortAnswerId);
+	}
+	
+	
 }

@@ -276,6 +276,78 @@ public class ExaminationDaoImpl implements ExaminationDao{
 		return sqlSessionFactory.openSession().update(statement, map);
 	}
 
+	@Override
+	public MoreSelection selectMoreSelectionByMoreSelectionId(int moreSelectionId) {
+		String statement = "com.qdu.mapping.MoreSelectionMapping.selectMoreSelectionByMoreSelectionId";
+		return sqlSessionFactory.openSession().selectOne(statement, moreSelectionId);
+	}
+
+	@Override
+	public int updatemoreByMoreSelectionId(MoreSelection moreSelection) {
+		String statement = "com.qdu.mapping.MoreSelectionMapping.updatemoreByMoreSelectionId";
+		return sqlSessionFactory.openSession().update(statement,moreSelection);
+	}
+
+	@Override
+	public int deleteMoreSelectionId(int moreSelectionId) {
+		String statement = "com.qdu.mapping.MoreSelectionMapping.deleteMoreSelectionId";
+		return sqlSessionFactory.openSession().delete(statement, moreSelectionId);
+	}
+
+	@Override
+	public Judge selectJudgeByJudgeId(int judgeId) {
+		String statement = "com.qdu.mapping.JudgeMapping.selectJudgeByJudgeId";
+		return sqlSessionFactory.openSession().selectOne(statement, judgeId);
+	}
+
+	@Override
+	public int updatejudgeByJudgeId(Judge judge) {
+		String statement = "com.qdu.mapping.JudgeMapping.updatejudgeByJudgeId";
+		return sqlSessionFactory.openSession().update(statement,judge);
+	}
+
+	@Override
+	public int deleteJudgeId(int judgeId) {
+		String statement = "com.qdu.mapping.JudgeMapping.deleteJudgeId";
+		return sqlSessionFactory.openSession().delete(statement, judgeId);
+	}
+
+	@Override
+	public Pack selectPackByPackId(int packId) {
+		String statement = "com.qdu.mapping.PackMapping.selectPackByPackId";
+		return sqlSessionFactory.openSession().selectOne(statement, packId);
+	}
+
+	@Override
+	public int updatePackByPackId(Pack pack) {
+		String statement = "com.qdu.mapping.PackMapping.updatePackByPackId";
+		return sqlSessionFactory.openSession().update(statement,pack);
+	}
+
+	@Override
+	public int deletePackId(int packId) {
+		String statement = "com.qdu.mapping.PackMapping.deletePackId";
+		return sqlSessionFactory.openSession().delete(statement, packId);
+	}
+
+	@Override
+	public ShortAnswer selectShortAnswerByShortAnswerId(int shortAnswerId) {
+		String statement = "com.qdu.mapping.ShortAnswerMapping.selectShortAnswerByShortAnswerId";
+		return sqlSessionFactory.openSession().selectOne(statement, shortAnswerId);
+	}
+
+	@Override
+	public int updateShortAnswerByShortAnswerId(ShortAnswer shortAnswer) {
+		String statement = "com.qdu.mapping.ShortAnswerMapping.updateShortAnswerByShortAnswerId";
+		return sqlSessionFactory.openSession().update(statement, shortAnswer);
+	}
+
+	@Override
+	public int deleteShortAnswerId(int shortAnswerId) {
+		String statement = "com.qdu.mapping.ShortAnswerMapping.deleteShortAnswerId";
+		return sqlSessionFactory.openSession().delete(statement, shortAnswerId);
+	}
+
 	
 	
 	
