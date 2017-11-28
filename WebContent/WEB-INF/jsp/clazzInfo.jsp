@@ -596,15 +596,17 @@ function teacherAddExamination() {
 		});
 	}
 }
-//修改单选题
-function changeSingleSelection(singleSelectionId) {
-	var singleSelectionId = singleSelectionId.substring(1);
-	$('#singleSelectionIddd').val(singleSelectionId);
-	$('#singleSelectionIddd').attr("readonly","readonly");
+//修改题
+function changeTiMu(temId) {
+	//temId 为共有Id暂存区，前缀有二，如'CS'是修改单选。'DS'为删除单选，望周知
+	$('#temId').val(temId);
+	$('#temId').attr("readonly","readonly");
+	//修改单选
+	if(temId.substring(0,2) == 'CS'){
 	$.ajax({
         type: "GET",
         data: {
-       	 "singleSelectionId":singleSelectionId
+       	 "singleSelectionId":temId.substring(2)
         },
         contentType: "application/json; charset=utf-8",
         async: false,
@@ -649,9 +651,198 @@ function changeSingleSelection(singleSelectionId) {
 		},
 		dataType : "json",
 	});
+  }else if (temId.substring(0,2) == 'CM') {
+	  //修改多选
+		$.ajax({
+	        type: "GET",
+	        data: {
+	       	 "moreSelectionId":temId.substring(2)
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/changeMoreSelection.do",
+			success : function(data) {
+				if(data.result == true){
+			       	 $('#MoreSelectionQuestionContent').val(data.moreSelection.questionContent),
+			       	 $('#MoreSelectionValue').val(data.moreSelection.value);
+			       	 $('#MoreSelectionOptionA').val(data.moreSelection.optionA);
+			         $('#MoreSelectionOptionB').val(data.moreSelection.optionB);
+			       	 $('#MoreSelectionOptionC').val(data.moreSelection.optionC);
+			       	 $('#MoreSelectionOptionD').val(data.moreSelection.optionD);
+			         $('#MoreSelectionNote').val(data.moreSelection.note);
+					
+			         $('#MoreSelectionButton').hide();
+			         $('#ChangeMoreSelectionButton').show();
+					 $('#MoreSelectionADetail').show();
+					 window.location.hash = "#MoreSelectionADetail"; 
+				}else {
+					layui.use('layer', function(){ 
+		  	               var $ = layui.jquery, layer = layui.layer; 
+		  	             //触发事件
+		    			      layer.open({
+		    			        type: 1
+		    			        ,offset: 'auto'
+		    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+		    			        ,title: '错误'
+		    			        ,content: '<div style="padding: 20px 100px;">'+ "获取该题失败." +'</div>'
+		    			        ,btn: '关闭'
+		    			        ,btnAlign: 'c' //按钮居中
+		    			        ,shade: 0 //不显示遮罩
+		    			        ,yes: function(){
+		    			        	 layer.closeAll();
+		    			        }
+		    			      });
+		  	            });
+				}
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+ }else if (temId.substring(0,2) == 'CJ') {
+	//修改判断题
+	 $.ajax({
+	        type: "GET",
+	        data: {
+	       	 "judgeId":temId.substring(2)
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/changeJudge.do",
+			success : function(data) {
+				if(data.result == true){
+			       	 $('#JudgeQuestionContent').val(data.judge.judgeContent);
+			       	 $('#JudgeValue').val(data.judge.value);
+			         $('#JudgeNote').val(data.judge.note);
+			         $("input[name='JudgeAnswer']").val(data.judge.answer);
+					
+			         $('#JudgeButton').hide();
+			         $('#ChangeJudgeButton').show();
+					 $('#JudgeDetail').show();
+					 window.location.hash = "#JudgeDetail"; 
+				}else {
+					layui.use('layer', function(){ 
+		  	               var $ = layui.jquery, layer = layui.layer; 
+		  	             //触发事件
+		    			      layer.open({
+		    			        type: 1
+		    			        ,offset: 'auto'
+		    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+		    			        ,title: '错误'
+		    			        ,content: '<div style="padding: 20px 100px;">'+ "获取该题失败." +'</div>'
+		    			        ,btn: '关闭'
+		    			        ,btnAlign: 'c' //按钮居中
+		    			        ,shade: 0 //不显示遮罩
+		    			        ,yes: function(){
+		    			        	 layer.closeAll();
+		    			        }
+		    			      });
+		  	            });
+				}
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+ }else if (temId.substring(0,2) == 'CP') {
+	//修改填空题
+	 $.ajax({
+	        type: "GET",
+	        data: {
+	       	 "packId":temId.substring(2)
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/changePack.do",
+			success : function(data) {
+				if(data.result == true){
+			       	 $('#PackQuestionContent').val(data.pack.packContent);
+			       	 $('#PackValue').val(data.pack.value);
+			         $('#PackNote').val(data.pack.note);
+			         $('#Packanswer').val(data.pack.answer);
+
+			         $('#PackButton').hide();
+			         $('#ChangePackButton').show();
+					 $('#PackDetail').show();
+					 window.location.hash = "#PackDetail"; 
+				}else {
+					layui.use('layer', function(){ 
+		  	               var $ = layui.jquery, layer = layui.layer; 
+		  	             //触发事件
+		    			      layer.open({
+		    			        type: 1
+		    			        ,offset: 'auto'
+		    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+		    			        ,title: '错误'
+		    			        ,content: '<div style="padding: 20px 100px;">'+ "获取该题失败." +'</div>'
+		    			        ,btn: '关闭'
+		    			        ,btnAlign: 'c' //按钮居中
+		    			        ,shade: 0 //不显示遮罩
+		    			        ,yes: function(){
+		    			        	 layer.closeAll();
+		    			        }
+		    			      });
+		  	            });
+				}
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+ }else if (temId.substring(0,2) == 'CA') {
+	//修改简答
+	 $.ajax({
+	        type: "GET",
+	        data: {
+	       	 "shortAnswerId":temId.substring(2)
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/changeShortAnswer.do",
+			success : function(data) {
+				if(data.result == true){
+			       	 $('#ShortAnswerQuestionContent').val(data.shortAnswer.shortAnswerContent);
+			       	 $('#ShortAnswerValue').val(data.shortAnswer.value);
+			         $('#ShortAnswerNote').val(data.shortAnswer.note);
+					
+			         $('#ShortAnswerButton').hide();
+			         $('#ChangeShortAnswerButton').show();
+					 $('#ShortAnswerDetail').show();
+					 window.location.hash = "#ShortAnswerDetail"; 
+				}else {
+					layui.use('layer', function(){ 
+		  	               var $ = layui.jquery, layer = layui.layer; 
+		  	             //触发事件
+		    			      layer.open({
+		    			        type: 1
+		    			        ,offset: 'auto'
+		    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+		    			        ,title: '错误'
+		    			        ,content: '<div style="padding: 20px 100px;">'+ "获取该题失败." +'</div>'
+		    			        ,btn: '关闭'
+		    			        ,btnAlign: 'c' //按钮居中
+		    			        ,shade: 0 //不显示遮罩
+		    			        ,yes: function(){
+		    			        	 layer.closeAll();
+		    			        }
+		    			      });
+		  	            });
+				}
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+ }
 }
-//保存单选题的修改
-function saveSingleSelectionChange() {
+//保存题的修改
+function saveTiMuChange() {
+	var temId = $('#temId').val();
+	if(temId.substring(0,2) == 'CS'){
 	if($('#SingleSelectionQuestionContent').val != "" && $('#SingleSelectionValue').val != ""&& $('#SingleSelectionOptionA').val != ""
 		&& $('#SingleSelectionOptionB').val != ""&& $('#SingleSelectionOptionC').val != ""&& $('#SingleSelectionOptionD').val != ""&& $('#SingleSelectioAnswer').val != ""
 			&& $('#SingleSelectionNote').val != ""){
@@ -659,7 +850,7 @@ function saveSingleSelectionChange() {
 	        type: "GET",
 	        data: {
 	         "examinationId":$('#examinationIddd').val(),
-	         "singleSelectionId":$('#singleSelectionIddd').val(),
+	         "singleSelectionId":temId.substring(2),
 	       	 "questionContent":$('#SingleSelectionQuestionContent').val(),
 	       	 "singleSelectionValue":$('#SingleSelectionValue').val(),
 	       	 "optionA":$('#SingleSelectionOptionA').val(),
@@ -671,7 +862,7 @@ function saveSingleSelectionChange() {
 	        },
 	        contentType: "application/json; charset=utf-8",
 	        async: false,
-	        url: "<%=request.getContextPath()%>/exam/saveSingleSelectionChange.do",
+	        url: "<%=request.getContextPath()%>/exam/saveChangeSingleSelection.do",
 			success : function(data) {
 				if(data.result == true){
 					layui.use('layer', function(){ //独立版的layer无需执行这一句
@@ -682,7 +873,7 @@ function saveSingleSelectionChange() {
 		    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
 		    			        ,id: 'layerDemo'+'auto' //防止重复弹出
 		    			        ,title: '成功'
-		    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "修改该单选题成功.." +'</div>'
+		    			        ,content: '<div style="padding: 20px 100px;">'+ "修改该单选题成功.." +'</div>'
 		    			        ,btn: '关闭'
 		    			        ,btnAlign: 'c' //按钮居中
 		    			        ,skin: 'demo-class'
@@ -704,7 +895,7 @@ function saveSingleSelectionChange() {
 			    			        type: 1
 			    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
 			    			        ,id: 'layerDemo'+'auto' //防止重复弹出
-			    			        ,title: '警告'
+			    			        ,title: '提示'
 			    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数超出总分.." +'</div>'
 			    			        ,btn: '关闭'
 			    			        ,btnAlign: 'c' //按钮居中
@@ -743,17 +934,381 @@ function saveSingleSelectionChange() {
 			dataType : "json",
 		});
 	}
+  }else if(temId.substring(0,2) == 'CM') {
+	  //多选保存修改
+		if($('#MoreSelectionQuestionContent').val != "" && $('#MoreSelectionValue').val != ""&& $('#MoreSelectionOptionA').val != ""
+			&& $('#MoreSelectionOptionB').val != ""&& $('#MoreSelectionOptionC').val != ""&& $('#MoreSelectionOptionD').val != ""&& $('#MoreSelectionAnswer').val != ""
+				&& $('#MoreSelectionNote').val != ""){
+			  var answer = "";
+		        $("input:checkbox[name='MoreSelectionAnswer']:checked").each(function() {
+		        	answer += $(this).val() + " ";
+		        });
+			$.ajax({
+		        type: "GET",
+		        data: {
+		        	 "examinationId":$('#examinationIddd').val(),
+			         "moreSelectionId":temId.substring(2),
+			       	 "questionContent":$('#MoreSelectionQuestionContent').val(),
+			       	 "MoreSelectionValue":$('#MoreSelectionValue').val(),
+			       	 "optionA":$('#MoreSelectionOptionA').val(),
+			         "optionB":$('#MoreSelectionOptionB').val(),
+			       	 "optionC":$('#MoreSelectionOptionC').val(),
+			       	 "optionD":$('#MoreSelectionOptionD').val(),
+			         "note":$('#MoreSelectionNote').val(),
+			         "answer": answer
+		        },
+		        contentType: "application/json; charset=utf-8",
+		        async: false,
+		        url: "<%=request.getContextPath()%>/exam/saveChangeMoreSelectionId.do",
+				success : function(data) {
+					if(data.result == true){
+						layui.use('layer', function(){ //独立版的layer无需执行这一句
+			  	               var $ = layui.jquery, layer = layui.layer; 
+			  	             //触发事件
+			    			      layer.open({
+			    			        type: 1
+			    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+			    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+			    			        ,title: '成功'
+			    			        ,content: '<div style="padding: 20px 100px;">'+ "修改该多选题成功.." +'</div>'
+			    			        ,btn: '关闭'
+			    			        ,btnAlign: 'c' //按钮居中
+			    			        ,skin: 'demo-class'
+			    			        ,shade: 0 //不显示遮罩
+			    			        ,yes: function(){
+			    			        	createQuestion($('#examinationIddd').val());
+			    			        	window.location.hash = "#MoreSelectionShowUl";   
+			    			        	layer.closeAll();
+			    			        }
+			    			      });
+			  	            });
+						
+					}else {
+						if(data.result == "no"){
+							layui.use('layer', function(){ //独立版的layer无需执行这一句
+				  	               var $ = layui.jquery, layer = layui.layer; 
+				  	             //触发事件
+				    			      layer.open({
+				    			        type: 1
+				    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+				    			        ,title: '提示'
+				    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数超出总分.." +'</div>'
+				    			        ,btn: '关闭'
+				    			        ,btnAlign: 'c' //按钮居中
+				    			        ,skin: 'demo-class'
+				    			        ,shade: 0 //不显示遮罩
+				    			        ,yes: function(){
+				    			        	 layer.closeAll();
+				    			        }
+				    			      });
+				  	            });
+							//alert("分数超出总分，请合理分配分数..");
+						}else
+							layui.use('layer', function(){ //独立版的layer无需执行这一句
+				  	               var $ = layui.jquery, layer = layui.layer; 
+				  	             //触发事件
+				    			      layer.open({
+				    			        type: 1
+				    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+				    			        ,title: '失败'
+				    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "多选修改失败.." +'</div>'
+				    			        ,btn: '关闭'
+				    			        ,btnAlign: 'c' //按钮居中
+				    			        ,skin: 'demo-class'
+				    			        ,shade: 0 //不显示遮罩
+				    			        ,yes: function(){
+				    			        	 layer.closeAll();
+				    			        }
+				    			      });
+				  	            });
+					}
+				},
+				error : function(data) {
+					alert("??");
+				},
+				dataType : "json",
+			});
+		}
+ }else if(temId.substring(0,2) == 'CJ') {
+	  //判断保存修改
+		if($('#JudgeQuestionContent').val != "" && $('#JudgeValue').val != ""
+						&& $('#JudgeAnswer').val != ""
+							&& $('#JudgeNote').val != ""){
+			$.ajax({
+		        type: "GET",
+		        data: {
+		        	 "examinationId":$('#examinationIddd').val(),
+		        	 "judgeId":temId.substring(2),
+			       	 "questionContent":$('#JudgeQuestionContent').val(),
+			       	 "JudgeValue":$('#JudgeValue').val(),
+			         "note":$('#JudgeNote').val(),
+			         "answer":$("input[name='JudgeAnswer']").val()
+		        },
+		        contentType: "application/json; charset=utf-8",
+		        async: false,
+		        url: "<%=request.getContextPath()%>/exam/saveChangejudgeId.do",
+				success : function(data) {
+					if(data.result == true){
+						layui.use('layer', function(){
+			  	               var $ = layui.jquery, layer = layui.layer; 
+			  	                  //触发事件
+			    			      layer.open({
+			    			        type: 1
+			    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+			    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+			    			        ,title: '成功'
+			    			        ,content: '<div style="padding: 20px 100px;">'+ "修改该判断题成功.." +'</div>'
+			    			        ,btn: '关闭'
+			    			        ,btnAlign: 'c' //按钮居中
+			    			        ,skin: 'demo-class'
+			    			        ,shade: 0 //不显示遮罩
+			    			        ,yes: function(){
+			    			        	createQuestion($('#examinationIddd').val());
+			    			        	window.location.hash = "#JudgeShowUl";   
+			    			        	layer.closeAll();
+			    			        }
+			    			      });
+			  	            });
+						
+					}else {
+						if(data.result == "no"){
+							layui.use('layer', function(){ //独立版的layer无需执行这一句
+				  	               var $ = layui.jquery, layer = layui.layer; 
+				  	             //触发事件
+				    			      layer.open({
+				    			        type: 1
+				    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+				    			        ,title: '提示'
+				    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数超出总分.." +'</div>'
+				    			        ,btn: '关闭'
+				    			        ,btnAlign: 'c' //按钮居中
+				    			        ,skin: 'demo-class'
+				    			        ,shade: 0 //不显示遮罩
+				    			        ,yes: function(){
+				    			        	 layer.closeAll();
+				    			        }
+				    			      });
+				  	            });
+							//alert("分数超出总分，请合理分配分数..");
+						}else
+							layui.use('layer', function(){ //独立版的layer无需执行这一句
+				  	               var $ = layui.jquery, layer = layui.layer; 
+				  	             //触发事件
+				    			      layer.open({
+				    			        type: 1
+				    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+				    			        ,title: '失败'
+				    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "判断题修改失败.." +'</div>'
+				    			        ,btn: '关闭'
+				    			        ,btnAlign: 'c' //按钮居中
+				    			        ,skin: 'demo-class'
+				    			        ,shade: 0 //不显示遮罩
+				    			        ,yes: function(){
+				    			        	 layer.closeAll();
+				    			        }
+				    			      });
+				  	            });
+					}
+				},
+				error : function(data) {
+					alert("??");
+				},
+				dataType : "json",
+			});
+		}
+   }else if(temId.substring(0,2) == 'CP') {
+		  //填空保存修改
+		if($('#PackQuestionContent').val != "" && $('#PackValue').val != ""
+			&& $('#PackAnswer').val != ""
+				&& $('#PackNote').val != ""){
+			$.ajax({
+		        type: "GET",
+		        data: {
+		        	 "packId":temId.substring(2),
+		        	 "examinationId":$('#examinationIddd').val(),
+			       	 "questionContent":$('#PackQuestionContent').val(),
+			       	 "PackValue":$('#PackValue').val(),
+			         "note":$('#PackNote').val(),
+			         "answer":$('#Packanswer').val()
+		        },
+		        contentType: "application/json; charset=utf-8",
+		        async: false,
+		        url: "<%=request.getContextPath()%>/exam/saveChangePack.do",
+				success : function(data) {
+					if(data.result == true){
+						layui.use('layer', function(){ //独立版的layer无需执行这一句
+			  	               var $ = layui.jquery, layer = layui.layer; 
+			  	             //触发事件
+			    			      layer.open({
+			    			        type: 1
+			    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+			    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+			    			        ,title: '成功'
+			    			        ,content: '<div style="padding: 20px 100px;">'+ "修改该填空题成功.." +'</div>'
+			    			        ,btn: '关闭'
+			    			        ,btnAlign: 'c' //按钮居中
+			    			        ,skin: 'demo-class'
+			    			        ,shade: 0 //不显示遮罩
+			    			        ,yes: function(){
+			    			        	createQuestion($('#examinationIddd').val());
+			    			        	window.location.hash = "#PackShowUl";   
+			    			        	layer.closeAll();
+			    			        }
+			    			      });
+			  	            });
+						
+					}else {
+						if(data.result == "no"){
+							layui.use('layer', function(){ //独立版的layer无需执行这一句
+				  	               var $ = layui.jquery, layer = layui.layer; 
+				  	             //触发事件
+				    			      layer.open({
+				    			        type: 1
+				    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+				    			        ,title: '提示'
+				    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数超出总分.." +'</div>'
+				    			        ,btn: '关闭'
+				    			        ,btnAlign: 'c' //按钮居中
+				    			        ,skin: 'demo-class'
+				    			        ,shade: 0 //不显示遮罩
+				    			        ,yes: function(){
+				    			        	 layer.closeAll();
+				    			        }
+				    			      });
+				  	            });
+							//alert("分数超出总分，请合理分配分数..");
+						}else
+							layui.use('layer', function(){ //独立版的layer无需执行这一句
+				  	               var $ = layui.jquery, layer = layui.layer; 
+				  	             //触发事件
+				    			      layer.open({
+				    			        type: 1
+				    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+				    			        ,title: '失败'
+				    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "填空修改失败.." +'</div>'
+				    			        ,btn: '关闭'
+				    			        ,btnAlign: 'c' //按钮居中
+				    			        ,skin: 'demo-class'
+				    			        ,shade: 0 //不显示遮罩
+				    			        ,yes: function(){
+				    			        	 layer.closeAll();
+				    			        }
+				    			      });
+				  	            });
+					}
+				},
+				error : function(data) {
+					alert("??");
+				},
+				dataType : "json",
+			});
+		}
+    }else if(temId.substring(0,2) == 'CA') {
+		  //简答保存修改
+		if($('#ShortAnswerQuestionContent').val != "" && $('#ShortAnswerValue').val != ""
+			&& $('#ShortAnswerNote').val != ""){
+			$.ajax({
+		        type: "GET",
+		        data: {
+		        	 "shortAnswerId":temId.substring(2),
+		        	 "examinationId":$('#examinationIddd').val(),
+			       	 "questionContent":$('#ShortAnswerQuestionContent').val(),
+			       	 "ShortAnswerValue":$('#ShortAnswerValue').val(),
+			         "note":$('#ShortAnswerNote').val()
+		        },
+		        contentType: "application/json; charset=utf-8",
+		        async: false,
+		        url: "<%=request.getContextPath()%>/exam/saveChangeShortAnswer.do",
+				success : function(data) {
+					if(data.result == true){
+						layui.use('layer', function(){ //独立版的layer无需执行这一句
+			  	               var $ = layui.jquery, layer = layui.layer; 
+			  	             //触发事件
+			    			      layer.open({
+			    			        type: 1
+			    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+			    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+			    			        ,title: '成功'
+			    			        ,content: '<div style="padding: 20px 100px;">'+ "修改该简答题成功.." +'</div>'
+			    			        ,btn: '关闭'
+			    			        ,btnAlign: 'c' //按钮居中
+			    			        ,skin: 'demo-class'
+			    			        ,shade: 0 //不显示遮罩
+			    			        ,yes: function(){
+			    			        	createQuestion($('#examinationIddd').val());
+			    			        	window.location.hash = "#ShortAnswerShowUl";   
+			    			        	layer.closeAll();
+			    			        }
+			    			      });
+			  	            });
+						
+					}else {
+						if(data.result == "no"){
+							layui.use('layer', function(){ //独立版的layer无需执行这一句
+				  	               var $ = layui.jquery, layer = layui.layer; 
+				  	             //触发事件
+				    			      layer.open({
+				    			        type: 1
+				    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+				    			        ,title: '提示'
+				    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数超出总分.." +'</div>'
+				    			        ,btn: '关闭'
+				    			        ,btnAlign: 'c' //按钮居中
+				    			        ,skin: 'demo-class'
+				    			        ,shade: 0 //不显示遮罩
+				    			        ,yes: function(){
+				    			        	 layer.closeAll();
+				    			        }
+				    			      });
+				  	            });
+							//alert("分数超出总分，请合理分配分数..");
+						}else
+							layui.use('layer', function(){ //独立版的layer无需执行这一句
+				  	               var $ = layui.jquery, layer = layui.layer; 
+				  	             //触发事件
+				    			      layer.open({
+				    			        type: 1
+				    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+				    			        ,title: '失败'
+				    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "简答修改失败.." +'</div>'
+				    			        ,btn: '关闭'
+				    			        ,btnAlign: 'c' //按钮居中
+				    			        ,skin: 'demo-class'
+				    			        ,shade: 0 //不显示遮罩
+				    			        ,yes: function(){
+				    			        	 layer.closeAll();
+				    			        }
+				    			      });
+				  	            });
+					}
+				},
+				error : function(data) {
+					alert("??");
+				},
+				dataType : "json",
+			});
+		}
 }
-//for删除单选
-function fordeleteSingleSelection(singleSelectionId) {
-	var singleSelectionId = singleSelectionId.substring(1);
-	$('#singleSelectionIddd').val(singleSelectionId);
-	$('#singleSelectionIddd').attr("readonly","readonly");
 }
-//删除单选题
-function deleteSingleSelection(singleSelectionId) {
-	var singleSelectionId = $('#singleSelectionIddd').val();
-	
+//for删除题目
+function forDeleteTiMu(temId) {
+	$('#temId').val(temId);
+	$('#temId').attr("readonly","readonly");
+}
+//删除题
+function deleteTiMu() {
+	var temId = $('#temId').val();
+	//删除单选
+	if(temId.substring(0,2) == 'DS'){
+	var singleSelectionId = temId.substring(2);
 	$.ajax({
         type: "GET",
         data: {
@@ -792,6 +1347,171 @@ function deleteSingleSelection(singleSelectionId) {
 		},
 		dataType : "json",
 	});
+  }else if(temId.substring(0,2) == 'DM') {
+	  //删除多选
+		var moreSelectionId = temId.substring(2);
+		$.ajax({
+	        type: "GET",
+	        data: {
+	         "examinationId":$('#examinationIddd').val(),
+	       	 "moreSelectionId":moreSelectionId
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/deleteMoreSelection.do",
+			success : function(data) {
+				if(data.result == true){
+					createQuestion($('#examinationIddd').val());
+		        	window.location.hash = "#MoreSelectionShowUl"; 
+				}else {
+					layui.use('layer', function(){ 
+		  	               var $ = layui.jquery, layer = layui.layer; 
+		  	             //触发事件
+		    			      layer.open({
+		    			        type: 1
+		    			        ,offset: 'auto'
+		    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+		    			        ,title: '失败'
+		    			        ,content: '<div style="padding: 20px 100px;">'+ "删除多选失败." +'</div>'
+		    			        ,btn: '关闭'
+		    			        ,btnAlign: 'c' //按钮居中
+		    			        ,shade: 0 //不显示遮罩
+		    			        ,yes: function(){
+		    			        	 layer.closeAll();
+		    			        }
+		    			      });
+		  	            });
+				}
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+ }else if(temId.substring(0,2) == 'DJ') {
+	  //删除判断
+		var judgeId = temId.substring(2);
+		$.ajax({
+	        type: "GET",
+	        data: {
+	         "examinationId":$('#examinationIddd').val(),
+	       	 "judgeId":judgeId
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/deletejudge.do",
+			success : function(data) {
+				if(data.result == true){
+					createQuestion($('#examinationIddd').val());
+		        	window.location.hash = "#JudgeShowUl"; 
+				}else {
+					layui.use('layer', function(){ 
+		  	               var $ = layui.jquery, layer = layui.layer; 
+		  	             //触发事件
+		    			      layer.open({
+		    			        type: 1
+		    			        ,offset: 'auto'
+		    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+		    			        ,title: '失败'
+		    			        ,content: '<div style="padding: 20px 100px;">'+ "删除判断失败." +'</div>'
+		    			        ,btn: '关闭'
+		    			        ,btnAlign: 'c' //按钮居中
+		    			        ,shade: 0 //不显示遮罩
+		    			        ,yes: function(){
+		    			        	 layer.closeAll();
+		    			        }
+		    			      });
+		  	            });
+				}
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+    }else if(temId.substring(0,2) == 'DP') {
+	  //删除填空
+		var packId = temId.substring(2);
+		$.ajax({
+	        type: "GET",
+	        data: {
+	         "examinationId":$('#examinationIddd').val(),
+	       	 "packId":packId
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/deletePack.do",
+			success : function(data) {
+				if(data.result == true){
+					createQuestion($('#examinationIddd').val());
+		        	window.location.hash = "#PackShowUl"; 
+				}else {
+					layui.use('layer', function(){ 
+		  	               var $ = layui.jquery, layer = layui.layer; 
+		  	             //触发事件
+		    			      layer.open({
+		    			        type: 1
+		    			        ,offset: 'auto'
+		    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+		    			        ,title: '失败'
+		    			        ,content: '<div style="padding: 20px 100px;">'+ "删除填空失败." +'</div>'
+		    			        ,btn: '关闭'
+		    			        ,btnAlign: 'c' //按钮居中
+		    			        ,shade: 0 //不显示遮罩
+		    			        ,yes: function(){
+		    			        	 layer.closeAll();
+		    			        }
+		    			      });
+		  	            });
+				}
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+  }else if(temId.substring(0,2) == 'DA') {
+	  //删除简答
+		var shortAnswerId = temId.substring(2);
+		$.ajax({
+	        type: "GET",
+	        data: {
+	         "examinationId":$('#examinationIddd').val(),
+	       	 "shortAnswerId":shortAnswerId
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/deleteShortAnswer.do",
+			success : function(data) {
+				if(data.result == true){
+					createQuestion($('#examinationIddd').val());
+		        	window.location.hash = "#ShortAnswerShowUl"; 
+				}else {
+					layui.use('layer', function(){ 
+		  	               var $ = layui.jquery, layer = layui.layer; 
+		  	             //触发事件
+		    			      layer.open({
+		    			        type: 1
+		    			        ,offset: 'auto'
+		    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+		    			        ,title: '失败'
+		    			        ,content: '<div style="padding: 20px 100px;">'+ "简答删除失败." +'</div>'
+		    			        ,btn: '关闭'
+		    			        ,btnAlign: 'c' //按钮居中
+		    			        ,shade: 0 //不显示遮罩
+		    			        ,yes: function(){
+		    			        	 layer.closeAll();
+		    			        }
+		    			      });
+		  	            });
+				}
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+    }
 }
 //教师出题
 function createQuestion(id) {
@@ -817,8 +1537,8 @@ function createQuestion(id) {
 				con = "";
 				 $.each(dataObj, function (index, item) {
 	      	        con += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.questionContent +
-	      	        "("+ item.value  + "分)&nbsp;<div class='layui-btn-group' id='layerDemo'> <button id='C"+item.singleSelectionId+"' onclick='changeSingleSelection(this.id)' class='layui-btn-danger layui-btn' style='width:20px; heigh:20px; text-align:center;'><i class='layui-icon'>&#xe642;</i></button>"+
-	      	        " <button id='D"+item.singleSelectionId+"' data-method='notice' onclick='fordeleteSingleSelection(this.id)'  style='width:1em; heigh:1em; text-align:center;' class='layui-btn  layui-btn-danger'><i class='layui-icon'>&#xe640;</i></button></div></li>";
+	      	        "("+ item.value  + "分)&nbsp;<div class='layui-btn-group' id='layerDemo'> <button id='CS"+item.singleSelectionId+"' onclick='changeTiMu(this.id)' class='layui-btn layui-btn-danger layui-btn-mini' style=''><i class='layui-icon'>&#xe642;</i></button>"+
+	      	        " <button id='DS"+item.singleSelectionId+"' data-method='notice' onclick='forDeleteTiMu(this.id)'  style='' class='layui-btn layui-btn-mini  layui-btn-danger'><i class='layui-icon'>&#xe640;</i></button></div></li>";
 	      	        con += "<li style='margin-left: 1.5em'>"
 	      	       +"A "+ item.optionA +"   B " + item.optionB + "   C "+ item.optionC + "   D "+ item.optionD  + "</li>";
 	      	        con += "<li style='margin-left: 1.5em'>答案："+ item.answer + "</li>";
@@ -830,7 +1550,8 @@ function createQuestion(id) {
 				 var dataObj2 = data.moreSelections;
 				 von = "";
 				 $.each(dataObj2, function (index, item) {
-		      	        von += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.questionContent +"("+ item.value  + "分)</li>";
+		      	        von += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.questionContent +"("+ item.value  + "分)&nbsp;<div class='layui-btn-group' id='layerDemo'> <button id='CM"+item.moreSelectionId+"' onclick='changeTiMu(this.id)' class='layui-btn layui-btn-danger layui-btn-mini' style=''><i class='layui-icon'>&#xe642;</i></button>"+
+		      	        " <button id='DM"+item.moreSelectionId+"' data-method='notice' onclick='forDeleteTiMu(this.id)'  style='' class='layui-btn layui-btn-mini  layui-btn-danger'><i class='layui-icon'>&#xe640;</i></button></div></li>";
 		      	        von += "<li style='margin-left: 1.5em'>"
 		      	       +"A "+ item.optionA +"   B " + item.optionB + "   C "+ item.optionC + "   D "+ item.optionD  + "</li>";
 		      	        von += "<li style='margin-left: 1.5em'>答案："+ item.answer + "</li>"; 
@@ -843,7 +1564,8 @@ function createQuestion(id) {
 					 var dataObj2 = data.judges;
 					 bon = "";
 					 $.each(dataObj2, function (index, item) {
-			      	        bon += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.judgeContent +"("+ item.value  + "分)</li>";
+			      	        bon += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.judgeContent +"("+ item.value  + "分)&nbsp;<div class='layui-btn-group' id='layerDemo'> <button id='CJ"+item.judgeId+"' onclick='changeTiMu(this.id)' class='layui-btn layui-btn-danger layui-btn-mini' style=''><i class='layui-icon'>&#xe642;</i></button>"+
+			      	        " <button id='DJ"+item.judgeId+"' data-method='notice' onclick='forDeleteTiMu(this.id)'  style='' class='layui-btn layui-btn-mini  layui-btn-danger'><i class='layui-icon'>&#xe640;</i></button></div></li>";
 			      	        bon += "<li style='margin-left: 1.5em'>答案："+ item.answer + "</li>"; 
 		                    bon += "<li>&nbsp;</li>";
 						 });
@@ -853,7 +1575,8 @@ function createQuestion(id) {
 						 var dataObj3 = data.packs;
 						 non = "";
 						 $.each(dataObj3, function (index, item) {
-				      	        non += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.packContent +"("+ item.value  + "分)</li>";
+				      	        non += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.packContent +"("+ item.value  + "分)&nbsp;<div class='layui-btn-group' id='layerDemo'> <button id='CP"+item.packId+"' onclick='changeTiMu(this.id)' class='layui-btn layui-btn-danger layui-btn-mini' style=''><i class='layui-icon'>&#xe642;</i></button>"+
+				      	        " <button id='DP"+item.packId+"' data-method='notice' onclick='forDeleteTiMu(this.id)'  style='' class='layui-btn layui-btn-mini  layui-btn-danger'><i class='layui-icon'>&#xe640;</i></button></div></li>";
 				      	        non += "<li style='margin-left: 1.5em'>参考答案："+ item.answer + "</li>"; 
 			                    non += "<li>&nbsp;</li>";
 							 });
@@ -865,7 +1588,8 @@ function createQuestion(id) {
 							 var dataObj4 = data.shortAnswers;
 							 mon = "";
 							 $.each(dataObj4, function (index, item) {
-					      	        mon += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.shortAnswerContent +"("+ item.value  + "分)</li>";
+					      	        mon += "<li style='font-size:1.3em'>(" + item.questionNumber + ")" + item.shortAnswerContent +"("+ item.value  + "分)&nbsp;<div class='layui-btn-group' id='layerDemo'> <button id='CA"+item.shortAnswerId+"' onclick='changeTiMu(this.id)' class='layui-btn layui-btn-danger layui-btn-mini' style=''><i class='layui-icon'>&#xe642;</i></button>"+
+					      	        " <button id='DA"+item.shortAnswerId+"' data-method='notice' onclick='forDeleteTiMu(this.id)'  style='' class='layui-btn layui-btn-mini  layui-btn-danger'><i class='layui-icon'>&#xe640;</i></button></div></li>";
 				                    mon += "<li>&nbsp;</li>";
 								 });
 								 $('#ShortAnswerShowUl').html(mon);
@@ -881,8 +1605,8 @@ function createQuestion(id) {
 	    			        type: 1
 	    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
 	    			        ,id: 'layerDemo'+'auto' //防止重复弹出
-	    			        ,title: '警告'
-	    			        ,content: '<div style="padding: 20px 100px;">'+ "试卷已被锁定无法编辑." +'</div>'
+	    			        ,title: '提示'
+	    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "试卷已被锁定无法编辑." +'</div>'
 	    			        ,btn: '关闭'
 	    			        ,btnAlign: 'c' //按钮居中
 	    			        ,shade: 0 //不显示遮罩
@@ -920,7 +1644,7 @@ function createQuestion(id) {
 							,
 							btn : [ '删除', '取消' ],
 							yes : function(index, layero) {
-								deleteSingleSelection();
+								deleteTiMu();
 								layer.closeAll();
 							},
 							btn2 : function(index, layero) {
@@ -929,7 +1653,7 @@ function createQuestion(id) {
 							btnAlign : 'c',
 							moveType : 1 //拖拽模式，0或者1
 							,
-							content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定删除该试卷？</div>'
+							content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定删除该题？</div>'
 						});
 			}
 
@@ -1119,7 +1843,7 @@ function teacherChangeExamination() {
 		<!-- 内容 -->
 		<div class="layui-body site-demo">
 
-			<br> <br> <br> <br> <br> <span
+			<br><span
 				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;">${course.courseName}：<span
 				id="getHeadLine">考勤签到</span></span>
 			<hr class="layui-bg-cyan">
@@ -1662,7 +2386,7 @@ function teacherChangeExamination() {
 			<!-- 试卷Id -->
 			<input id="examinationIddd" type="text" style="display: none;" />
 			<!-- 单选Id -->
-			<input id="singleSelectionIddd" type="text" style="display: none;" />
+			<input id="temId" type="text" style="display: none;" />
 			<!-- 试卷名称 -->
 			<h2 id="examinationTitle" style="width: 100%; text-align: center;"></h2>
 			<!-- 总分 -->
@@ -1775,7 +2499,7 @@ function teacherChangeExamination() {
 						onclick="saveSingleSelection()" type="button" value="保存" />
 						<input id="ChangeSingleSelectionButton"
 						class="layui-btn" style="width: 8em;display: none;" lay-submit
-						onclick="saveSingleSelectionChange()" type="button" value="保存" />
+						onclick="saveTiMuChange()" type="button" value="保存修改" />
 						<button style=" margin-left: 5%; width: 8em"
 						type="reset" class="layui-btn layui-btn-primary">重置</button>
 				</form>
@@ -1815,7 +2539,7 @@ function teacherChangeExamination() {
 							    			        type: 1
 							    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
 							    			        ,id: 'layerDemo'+'auto' //防止重复弹出
-							    			        ,title: '警告'
+							    			        ,title: '提示'
 							    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数超出总分.." +'</div>'
 							    			        ,btn: '关闭'
 							    			        ,btnAlign: 'c' //按钮居中
@@ -1963,6 +2687,9 @@ function teacherChangeExamination() {
 					<br /> <br /> <br /> <input id="MoreSelectionButton"
 						class="layui-btn" style="width: 8em" lay-submit
 						onclick="saveMoreSelection()" type="button" value="保存" />
+						<input id="ChangeMoreSelectionButton"
+						class="layui-btn" style="width: 8em;display: none;" lay-submit
+						onclick="saveTiMuChange()" type="button" value="保存修改" />
 						<button style=" margin-left: 5%; width: 8em"
 						type="reset" class="layui-btn layui-btn-primary">重置</button>
 				</form>
@@ -2006,7 +2733,7 @@ function teacherChangeExamination() {
 							    			        type: 1
 							    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
 							    			        ,id: 'layerDemo'+'auto' //防止重复弹出
-							    			        ,title: '警告'
+							    			        ,title: '提示'
 							    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数超出总分.." +'</div>'
 							    			        ,btn: '关闭'
 							    			        ,btnAlign: 'c' //按钮居中
@@ -2109,6 +2836,9 @@ function teacherChangeExamination() {
 					<br /> <br /> <br /> <input id="JudgeButton" class="layui-btn"
 						style="width: 8em" lay-submit onclick="saveJudge()" type="button"
 						value="保存" />
+						<input id="ChangeJudgeButton"
+						class="layui-btn" style="width: 8em;display: none;" lay-submit
+						onclick="saveTiMuChange()" type="button" value="保存修改" />
 						<button style=" margin-left: 5%; width: 8em"
 						type="reset" class="layui-btn layui-btn-primary">重置</button>
 				</form>
@@ -2145,7 +2875,7 @@ function teacherChangeExamination() {
 							    			        type: 1
 							    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
 							    			        ,id: 'layerDemo'+'auto' //防止重复弹出
-							    			        ,title: '警告'
+							    			        ,title: '提示'
 							    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数超出总分.." +'</div>'
 							    			        ,btn: '关闭'
 							    			        ,btnAlign: 'c' //按钮居中
@@ -2249,6 +2979,9 @@ function teacherChangeExamination() {
 					<br /> <br /> <br /> <input id="PackButton" class="layui-btn"
 						style="width: 8em" lay-submit onclick="savePack()" type="button"
 						value="保存" />
+						<input id="ChangePackButton"
+						class="layui-btn" style="width: 8em;display: none;" lay-submit
+						onclick="saveTiMuChange()" type="button" value="保存修改" />
 						<button style=" margin-left: 5%; width: 8em"
 						type="reset" class="layui-btn layui-btn-primary">重置</button>
 				</form>
@@ -2285,7 +3018,7 @@ function teacherChangeExamination() {
 							    			        type: 1
 							    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
 							    			        ,id: 'layerDemo'+'auto' //防止重复弹出
-							    			        ,title: '警告'
+							    			        ,title: '提示'
 							    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数超出总分.." +'</div>'
 							    			        ,btn: '关闭'
 							    			        ,btnAlign: 'c' //按钮居中
@@ -2379,6 +3112,9 @@ function teacherChangeExamination() {
 					<br /> <br /> <br /> <input id="ShortAnswerButton"
 						class="layui-btn" style="width: 8em" lay-submit
 						onclick="saveShortAnswer()" type="button" value="保存" />
+						<input id="ChangeShortAnswerButton"
+						class="layui-btn" style="width: 8em;display: none;" lay-submit
+						onclick="saveTiMuChange()" type="button" value="保存修改" />
 						<button style=" margin-left: 5%; width: 8em"
 						type="reset" class="layui-btn layui-btn-primary">重置</button>
 				</form>
@@ -2413,7 +3149,7 @@ function teacherChangeExamination() {
 							    			        type: 1
 							    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
 							    			        ,id: 'layerDemo'+'auto' //防止重复弹出
-							    			        ,title: '警告'
+							    			        ,title: '提示'
 							    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数超出总分.." +'</div>'
 							    			        ,btn: '关闭'
 							    			        ,btnAlign: 'c' //按钮居中
@@ -2537,7 +3273,7 @@ function teacherChangeExamination() {
 		            			        type: 1
 		            			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
 		            			        ,id: 'layerDemo'+'auto' //防止重复弹出
-		            			        ,title: '警告'
+		            			        ,title: '提示'
 		            			        ,content: '<div style="padding: 20px 100px;">'+"您还有" + data.result + "分未分配.."+'</div>'
 		            			        ,btn: '关闭'
 		            			        ,btnAlign: 'c' //按钮居中

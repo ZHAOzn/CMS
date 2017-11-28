@@ -79,7 +79,7 @@ public interface ExaminationDao {
 	
     public int updateExamination(String examinationName,String startTime,int duration,
     		int examinationID);
-
+    //单选四件套
     public SingleSelection selectSingleSelectionBysingleSelectionId(int singleSelectionId);
     
     public int updateSingleBysingleSelectionId(SingleSelection singleSelection);
@@ -87,5 +87,28 @@ public interface ExaminationDao {
     public int deleteSingleBySingleSelectionId(int singleSelectionId);
     
     public int updateSingleSelectionById(int singleSelectionId,int questionNumber);
-
+    //多选三件套
+    public MoreSelection selectMoreSelectionByMoreSelectionId(int moreSelectionId);
+    
+    public int updatemoreByMoreSelectionId(MoreSelection moreSelection);
+    
+    public int deleteMoreSelectionId(int moreSelectionId);
+    //判断三件套
+    public Judge selectJudgeByJudgeId(int judgeId);
+    
+    public int updatejudgeByJudgeId(Judge judge);
+    
+    public int deleteJudgeId(int judgeId);
+    //填空三件套
+    public Pack selectPackByPackId(int packId);
+    
+    public int updatePackByPackId(Pack pack);
+    
+    public int deletePackId(int packId);
+    //简答三件套
+    public ShortAnswer selectShortAnswerByShortAnswerId(int shortAnswerId);
+    
+    public int updateShortAnswerByShortAnswerId(ShortAnswer shortAnswer);
+    
+    public int deleteShortAnswerId(int shortAnswerId);
 }
