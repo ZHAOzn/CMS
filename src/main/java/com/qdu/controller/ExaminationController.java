@@ -1,5 +1,6 @@
 package com.qdu.controller;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,21 +9,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.codehaus.stax2.validation.Validatable;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.qdu.aop.SystemLog;
+import com.qdu.pojo.Course;
 import com.qdu.pojo.Examination;
 import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
 import com.qdu.pojo.Pack;
 import com.qdu.pojo.ShortAnswer;
 import com.qdu.pojo.SingleSelection;
+import com.qdu.pojo.Student;
+import com.qdu.pojo.StudentInfo;
+import com.qdu.service.ClazzService;
+import com.qdu.service.CourseService;
 import com.qdu.service.ExaminationService;
+import com.qdu.service.FilePackageService;
+import com.qdu.service.LeaveRecordService;
+import com.qdu.service.LogEntityService;
+import com.qdu.service.MessageService;
+import com.qdu.service.StudentInfoService;
+import com.qdu.service.StudentService;
+import com.qdu.service.TeacherService;
+import com.qdu.util.BASE64Decoder;
 import com.qdu.util.MD5Util;
 
 @Controller
@@ -31,19 +48,43 @@ public class ExaminationController {
 
 	@Autowired
 	ExaminationService examinationServiceImpl;
+	@Autowired
+	private TeacherService teacherServiceImpl;
+	@Autowired
+	private CourseService courseServiceImpl;
+	@Autowired
+	private ClazzService clazzServiceImpl;
+	@Autowired
+	private MessageService messageServiceImpl;
+	@Autowired
+	private StudentService studentServiceImpl;
+	@Autowired
+	private FilePackageService filePackageServiceImpl;
+	@Autowired
+	private LogEntityService logEntityServiceImpl;
+	@Autowired
+	private LeaveRecordService leaveRecordServiceImpl;
+	@Autowired
+	private StudentInfoService studentInfoServiceImpl;
 
 	// 查询试卷
 	@RequestMapping("/selectExaminationByMyId.do")
 	@ResponseBody
-	public Map<String, Object> selectExaminationByMyId(int examinationId) {
+	public Map<String, Object> selectExaminationByMyId(int examinationId) throws ParseException {
 		Map<String, Object> map = new HashMap<>();
 		Examination examination = examinationServiceImpl.selectExaminationByExaminationId(examinationId);
+		long t1 = System.currentTimeMillis();
+
 		if (examination.getCanEdit() == 0) {
 			List<SingleSelection> singleSelections = examinationServiceImpl.selectSingleByExaminationID(examinationId);
 			List<MoreSelection> moreSelections = examinationServiceImpl.selectMoreByExaminationID(examinationId);
 			List<Judge> judges = examinationServiceImpl.selectJudgeByExaminationID(examinationId);
 			List<Pack> packs = examinationServiceImpl.selectPackByExaminationIDX(examinationId);
 			List<ShortAnswer> shortAnswers = examinationServiceImpl.selectShortAnswerByExaminationIDX(examinationId);
+
+			long t2 = System.currentTimeMillis();
+			System.out.println("时间差" + (t2 - t1) + "ms");
+
 			map.put("result", true);
 			map.put("examination", examination);
 			map.put("singleSelections", singleSelections);
@@ -648,8 +689,8 @@ public class ExaminationController {
 	// 更新填空题
 	@RequestMapping(value = "/saveChangePack.do")
 	@ResponseBody
-	public Map<String, Object> saveChangePack(int packId,String examinationId,String questionContent, String PackValue, String answer,
-			String note) {
+	public Map<String, Object> saveChangePack(int packId, String examinationId, String questionContent,
+			String PackValue, String answer, String note) {
 		Map<String, Object> map = new HashMap<>();
 		Pack pack = examinationServiceImpl.selectPackByPackId(packId);
 		Examination examination = examinationServiceImpl
@@ -679,8 +720,8 @@ public class ExaminationController {
 	// 更新简答题
 	@RequestMapping(value = "/saveChangeShortAnswer.do")
 	@ResponseBody
-	public Map<String, Object> saveChangeShortAnswer(int shortAnswerId,String examinationId, String questionContent, String ShortAnswerValue,
-			String note) {
+	public Map<String, Object> saveChangeShortAnswer(int shortAnswerId, String examinationId, String questionContent,
+			String ShortAnswerValue, String note) {
 		Map<String, Object> map = new HashMap<>();
 		ShortAnswer shortAnswer = examinationServiceImpl.selectShortAnswerByShortAnswerId(shortAnswerId);
 		Examination examination = examinationServiceImpl
@@ -715,7 +756,8 @@ public class ExaminationController {
 				.selectSingleSelectionBysingleSelectionId(singleSelectionId);
 		Examination ex = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationId));
 		int a1 = singleSelection.getQuestionNumber();
-		examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId), ex.getTemValue()-singleSelection.getValue());
+		examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId),
+				ex.getTemValue() - singleSelection.getValue());
 		int tem = examinationServiceImpl.deleteSingleBySingleSelectionId(singleSelectionId);
 
 		// 删除单选以后，后面的题目题号向前缩进，通过update
@@ -789,7 +831,8 @@ public class ExaminationController {
 		Map<String, Object> map = new HashMap<>();
 		Examination ex = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationId));
 		MoreSelection moreSelection = examinationServiceImpl.selectMoreSelectionByMoreSelectionId(moreSelectionId);
-		examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId), ex.getTemValue()-moreSelection.getValue());
+		examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId),
+				ex.getTemValue() - moreSelection.getValue());
 		int a1 = moreSelection.getQuestionNumber();
 		int tem = examinationServiceImpl.deleteMoreSelectionId(moreSelectionId);
 
@@ -847,7 +890,8 @@ public class ExaminationController {
 		Map<String, Object> map = new HashMap<>();
 		Examination ex = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationId));
 		Judge judge = examinationServiceImpl.selectJudgeByJudgeId(judgeId);
-		examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId), ex.getTemValue()-judge.getValue());
+		examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId),
+				ex.getTemValue() - judge.getValue());
 		int a1 = judge.getQuestionNumber();
 		int tem = examinationServiceImpl.deleteJudgeId(judgeId);
 
@@ -887,7 +931,7 @@ public class ExaminationController {
 		}
 		return map;
 	}
-	
+
 	// 删除填空题
 	@RequestMapping(value = "/deletePack.do")
 	@ResponseBody
@@ -895,17 +939,19 @@ public class ExaminationController {
 		Map<String, Object> map = new HashMap<>();
 		Examination ex = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationId));
 		Pack pack = examinationServiceImpl.selectPackByPackId(packId);
-		examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId), ex.getTemValue()-pack.getValue());
+		examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId),
+				ex.getTemValue() - pack.getValue());
 		int a1 = pack.getQuestionNumber();
 		int tem = examinationServiceImpl.deletePackId(packId);
-        System.out.println(packId);
+		System.out.println(packId);
 		// 删除多选以后，后面的题目题号向前缩进，通过update
 		// 填空题号
 		List<Pack> packs = examinationServiceImpl.selectPackByExaminationIDX(Integer.parseInt(examinationId));
 		if (packs.size() > 0) {
 			for (int i = 0; i < packs.size(); i++) {
-				if(packs.get(i).getQuestionNumber() > a1){
-					examinationServiceImpl.updatePackById(packs.get(i).getPackId(), packs.get(i).getQuestionNumber() - 1);
+				if (packs.get(i).getQuestionNumber() > a1) {
+					examinationServiceImpl.updatePackById(packs.get(i).getPackId(),
+							packs.get(i).getQuestionNumber() - 1);
 				}
 			}
 		}
@@ -926,7 +972,7 @@ public class ExaminationController {
 		}
 		return map;
 	}
-	
+
 	// 删除简答
 	@RequestMapping(value = "/deleteShortAnswer.do")
 	@ResponseBody
@@ -934,7 +980,8 @@ public class ExaminationController {
 		Map<String, Object> map = new HashMap<>();
 		Examination ex = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationId));
 		ShortAnswer shortAnswer = examinationServiceImpl.selectShortAnswerByShortAnswerId(shortAnswerId);
-		examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId), ex.getTemValue()-shortAnswer.getValue());
+		examinationServiceImpl.updateExaminationTemValue(Integer.parseInt(examinationId),
+				ex.getTemValue() - shortAnswer.getValue());
 		int a1 = shortAnswer.getQuestionNumber();
 		int tem = examinationServiceImpl.deleteShortAnswerId(shortAnswerId);
 
@@ -944,7 +991,7 @@ public class ExaminationController {
 				.selectShortAnswerByExaminationIDX(Integer.parseInt(examinationId));
 		if (shortAnswers.size() > 0) {
 			for (int i = 0; i < shortAnswers.size(); i++) {
-				if(shortAnswers.get(i).getQuestionNumber() > a1){
+				if (shortAnswers.get(i).getQuestionNumber() > a1) {
 					examinationServiceImpl.updateShortAnswerById(shortAnswers.get(i).getShortAnswerId(),
 							shortAnswers.get(i).getQuestionNumber() - 1);
 				}
@@ -956,6 +1003,144 @@ public class ExaminationController {
 			map.put("result", false);
 		}
 		return map;
+	}
+
+	// 下面是学生考试相关业务
+
+	// 验证考试码是否有效
+	@RequestMapping(value = "/confirmExitsExam.do")
+	@ResponseBody
+	public Map<String, Object> confirmExitsExam(String onlyCode) {
+		Map<String, Object> map = new HashMap<>();
+		Examination examination = examinationServiceImpl.selectExaminationOnlyCode(onlyCode);
+		if (examination != null) {
+			map.put("result", true);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+			String ts1 = examination.getStartTime().substring(0, 10).replace("-", "");
+			String ts2 = examination.getStartTime().substring(11).replace(":", "");
+			String ts3 = ts1 + ts2;
+			long t1 = Long.parseLong(ts3);
+
+			String aString = sdf.format(new Date());
+			String cs1 = aString.substring(0, 10).replace("-", "");
+			String cs2 = aString.substring(11, 19).replace(":", "");
+			String cs3 = cs1 + cs2;
+			long t2 = Long.parseLong(cs3);
+			long endTime = t1 + (examination.getDuration() / 60) * 10000 + (examination.getDuration() % 60) * 100;
+
+			if (t2 < t1) {
+				map.put("message", "wait");
+			} else if (t2 > endTime) {
+				map.put("message", "end");
+			} else {
+				examinationServiceImpl.updateExaminationOfEdit(examination.getExaminationID(), 1);
+				map.put("message", "can");
+			}
+		} else {
+			map.put("result", false);
+		}
+		return map;
+	}
+
+	// 跳转到考试信息验证页面
+	@RequestMapping(value = "/studentToExam.do")
+	public String studentToExam(ModelMap map, HttpServletRequest request) {
+		String onlyCode = request.getParameter("onlyCode");
+		Examination examination = examinationServiceImpl.selectExaminationOnlyCode(onlyCode);
+		map.put("examination", examination);
+		return "forExam";
+	}
+
+	// 验证学生信息
+	@RequestMapping(value = "/confimStudentInfo.do")
+	@ResponseBody
+	public Map<String, Object> confimStudentInfo(String studentRoNo, String studentPassword, int examinationID) {
+		Map<String, Object> map = new HashMap<>();
+		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+		if (student != null) {
+			if (student.getStudentPassword().equals(MD5Util.md5(studentPassword, "juin"))) {
+				Examination examination = examinationServiceImpl.selectExaminationByExaminationId(examinationID);
+				StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoByMany(studentRoNo,
+						examination.getCourseID());
+				if (studentInfo != null) {
+					map.put("result", true);
+				} else {
+					map.put("result", "notInCourse");
+				}
+			} else {
+				map.put("result", "passwordError");
+			}
+		} else {
+			map.put("result", "noStudent");
+		}
+		return map;
+	}
+
+	// 验证完学生信息跳转到拍片页面
+	@RequestMapping(value = "/ToJoinExamNow.do",method = RequestMethod.POST)
+	public String ToJoinExamNow(ModelMap map,HttpServletRequest request){
+		String studentRoNo = request.getParameter("studentRoNo");
+		String studentPassword = request.getParameter("studentPassword");
+		String examinationID = request.getParameter("examinationID");
+		Examination examination = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationID));
+		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+		if(student != null){
+			if(student.getStudentPassword().equals(MD5Util.md5(studentPassword, "juin"))){
+				map.put("examination", examination);
+				map.put("student", student);
+				return "waitForExam";
+			}
+		}
+		map.put("examination", examination);
+		return "forExam"; 
+	}
+	//转到考试页面
+	@RequestMapping(value = "/reallyToJoinExam.do",method = RequestMethod.POST)
+	public String reallyToJoinExam(ModelMap map,HttpServletRequest re){
+		String examinationID = re.getParameter("examinationID");
+		String studentRoNo = re.getParameter("studentRoNo");
+		Examination examination = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationID));
+		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+		String ts1 = examination.getStartTime().substring(0, 10).replace("-", "");
+		String ts2 = examination.getStartTime().substring(11).replace(":", "");
+		String ts3 = ts1 + ts2;
+		long t1 = Long.parseLong(ts3);
+		
+		long t2 = t1;
+	    int tem = examination.getDuration();
+	    for(int i = 0; i < 10000; i ++){
+	    	if(tem/60 > 0){
+	    		t2 += 10000;
+	    		tem = tem-60;
+	    	}else {
+				if(tem + Integer.parseInt(ts3.substring(10, 12)) > 60){
+					t2 += 10000;
+					t2 += tem*100-60*100;
+					tem = (tem + Integer.parseInt(ts3.substring(10, 12))) - 60;
+
+				}else {
+					t2 += tem * 100;
+					break;
+				}
+			}
+	    }
+       
+		String year = (t2+"").substring(0, 4);
+		String month = (t2+"").substring(4, 6);
+		String day = (t2+"").substring(6, 8);
+		String hour = (t2+"").substring(8, 10);
+		String minute = (t2+"").substring(10, 12);
+		String seconds = (t2+"").substring(12, 14);
+        map.put("year", year);
+        map.put("month", month);
+        map.put("day", day);
+        map.put("hour", hour);
+        map.put("minute", minute);
+        map.put("seconds", seconds);
+		map.put("examination", examination);
+		map.put("student", student);
+		return "examPage";
 	}
 
 }

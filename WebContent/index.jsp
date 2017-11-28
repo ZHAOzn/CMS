@@ -262,21 +262,100 @@ setTimeout("fresh()",1)
 			<div id="examInner" class="site-text site-block" 
 				style="text-align: center; width: 50%;; 
 				top: 300px; position: fixed; margin-left: 26%;">
-				<form class="layui-form layui-form-pane">
+				<form id="ExamForm" class="layui-form layui-form-pane" action="<%=request.getContextPath()%>/exam/studentToExam.do">
 					<div class="layui-form-item" style="width: 100%;">
 						<div style="width: 100%; float: left;">
 							<label class="layui-form-label" style="width: 20%; background-color: #e2e2e2;">输入考试码：</label>
 							<div class="layui-input-block">
-								<input id="onlyCode" type="text" lay-verify="CoreKey"
+								<input id="onlyCode" type="text" lay-verify="CoreKey" name="onlyCode"
 									placeholder="请输入考试码" autocomplete="off" class="layui-input"
 									style="width: 50%; float: left;"> 
 									<input class="layui-btn" lay-submit type="button"
-									 value="现在考试" style="float: left;" />
+									 value="现在考试" style="float: left;" onclick="toExam()"/>
 							</div>
 						</div>
 					</div>
 				</form>
 			</div>
+			<script type="text/javascript">
+			//输入考试码考试
+			  function toExam() {
+					$.ajax({
+			              type: "GET",
+			              data: {
+			                  "onlyCode": $('#onlyCode').val()
+			              },
+			              contentType: "application/json; charset=utf-8",
+			              async: false,
+			              dataType: "json",
+			              url: "<%=request.getContextPath() %>/exam/confirmExitsExam.do",
+			              success: function (data) {
+			            	  if(data.result == true){
+			            		  if(data.message == "wait"){
+			            			  layui.use('layer', function(){ 
+					   	  	               var $ = layui.jquery, layer = layui.layer; 
+					   	  	             //触发事件
+					   	    			      layer.open({
+					   	    			        type: 1
+					   	    			        ,offset: 'auto'
+					   	    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+					   	    			        ,title: '提示'
+					   	    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "考试还未开始，请耐心等候" +'</div>'
+					   	    			        ,btn: '关闭'
+					   	    			        ,btnAlign: 'c' //按钮居中
+					   	    			        ,shade: 0 //不显示遮罩
+					   	    			        ,yes: function(){
+					   	    			        	 layer.closeAll();
+					   	    			        }
+					   	    			      });
+					   	  	            });
+			            		  }else if (data.message == "end") {
+			            			  layui.use('layer', function(){ 
+					   	  	               var $ = layui.jquery, layer = layui.layer; 
+					   	  	             //触发事件
+					   	    			      layer.open({
+					   	    			        type: 1
+					   	    			        ,offset: 'auto'
+					   	    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+					   	    			        ,title: '提示'
+					   	    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "考试已经结束.." +'</div>'
+					   	    			        ,btn: '关闭'
+					   	    			        ,btnAlign: 'c' //按钮居中
+					   	    			        ,shade: 0 //不显示遮罩
+					   	    			        ,yes: function(){
+					   	    			        	 layer.closeAll();
+					   	    			        }
+					   	    			      });
+					   	  	            });
+								}else if (data.message == "can") {
+									  $('#ExamForm').submit();
+								}
+			            	  }else if(data.result == false){
+			            		  layui.use('layer', function(){ 
+			   	  	               var $ = layui.jquery, layer = layui.layer; 
+			   	  	             //触发事件
+			   	    			      layer.open({
+			   	    			        type: 1
+			   	    			        ,offset: 'auto'
+			   	    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+			   	    			        ,title: '提示'
+			   	    			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "考试码错误.." +'</div>'
+			   	    			        ,btn: '关闭'
+			   	    			        ,btnAlign: 'c' //按钮居中
+			   	    			        ,shade: 0 //不显示遮罩
+			   	    			        ,yes: function(){
+			   	    			        	 layer.closeAll();
+			   	    			        }
+			   	    			      });
+			   	  	            });
+							}
+			              },
+			              error: function (data) {
+			            	  
+			              }
+			          });
+			}
+			</script>
 
 
 

@@ -111,4 +111,6 @@ public interface ExaminationDao {
     public int updateShortAnswerByShortAnswerId(ShortAnswer shortAnswer);
     
     public int deleteShortAnswerId(int shortAnswerId);
+    
+    public Examination selectExaminationOnlyCode(String onlyCode);
 }

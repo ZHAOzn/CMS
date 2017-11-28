@@ -112,5 +112,9 @@ public interface ExaminationService {
     public int updateShortAnswerByShortAnswerId(ShortAnswer shortAnswer);
     
     public int deleteShortAnswerId(int shortAnswerId);
+    
+    //学生考试相关
+    public Examination selectExaminationOnlyCode(String onlyCode);
+    
 
 }

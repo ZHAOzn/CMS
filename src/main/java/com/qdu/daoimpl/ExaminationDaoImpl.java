@@ -348,6 +348,12 @@ public class ExaminationDaoImpl implements ExaminationDao{
 		return sqlSessionFactory.openSession().delete(statement, shortAnswerId);
 	}
 
+	@Override
+	public Examination selectExaminationOnlyCode(String onlyCode) {
+		String statement = "com.qdu.mapping.ExaminationMapping.selectExaminationOnlyCode";
+		return sqlSessionFactory.openSession().selectOne(statement,onlyCode);
+	}
+
 	
 	
 	

@@ -96,6 +96,10 @@
 	  select * from Examination 
 	</select>
 	
+	<select id="selectExaminationOnlyCode" resultMap="ExaminationResult">
+	  select * from Examination where OnlyCode = #{onlyCode}
+	</select>
+	
 	<select id="selectExaminationByCourseId" resultMap="ExaminationResult">
 	  select * from Examination where CourseId = #{courseId} order by ExaminationID desc
 	</select>

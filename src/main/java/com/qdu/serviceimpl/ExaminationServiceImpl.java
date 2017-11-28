@@ -270,6 +270,11 @@ public class ExaminationServiceImpl implements ExaminationService{
 	public int deleteShortAnswerId(int shortAnswerId) {
 		return examinationDaoImpl.deleteShortAnswerId(shortAnswerId);
 	}
+
+	@Override
+	public Examination selectExaminationOnlyCode(String onlyCode) {
+		return examinationDaoImpl.selectExaminationOnlyCode(onlyCode);
+	}
 	
 	
 }

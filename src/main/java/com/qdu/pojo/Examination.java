@@ -11,7 +11,7 @@ public class Examination  implements Serializable{
 	private int totalValue; //总分值
 	private int temValue;
 	private String startTime; //考试开始时间
-	private int duration;//结束时间
+	private int duration;//考试时长
 	private String examinationStatus;//试卷状态：待考/考试中/已考
 	private int canEdit; //是否可以进行出题操作
 	private int courseID; //所属的课程Id
