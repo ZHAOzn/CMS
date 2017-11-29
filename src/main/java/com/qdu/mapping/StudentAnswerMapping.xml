@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.mapping.StudentAnswerMapping">
+	<cache type="com.qdu.cache.RedisCache" />
+	<resultMap type="com.qdu.pojo.StudentAnswer" id="StudentAnswerResult">
+		<id property="sAId" column="SAId" />
+		<result property="studentRoNo" column="StudentRoNo" />
+		<result property="examinationID" column="ExaminationID" />
+		<result property="questionNumber" column="QuestionNumber" />
+		<result property="questionsType" column="QuestionsType" />
+		<result property="stuAnswer" column="StuAnswer" />
+	</resultMap>
+	
+	<select id="selectStudentAnswerByExIdAndStuRoNo" resultMap="StudentAnswerResult" parameterType="HashMap">
+	   select * from StudentAnswer where ExaminationID = #{examinationID} 
+	   And QuestionNumber = #{questionNumber}
+	   And StudentRoNo = #{studentRoNo}
+	</select>
+
+    <insert id="insertStudentAnswer" parameterType="com.qdu.pojo.StudentAnswer">
+      insert into 
+      StudentAnswer(StudentRoNo,ExaminationID,QuestionNumber,QuestionsType,StuAnswer) 
+      values(#{studentRoNo},#{examinationID},#{questionNumber},#{questionsType},#{stuAnswer})
+    </insert>
+    
+    <update id="updateStudentAnswer" parameterType="HashMap">
+      update StudentAnswer set
+      StuAnswer = #{stuAnswer}
+      where StudentRoNo = #{studentRoNo} And ExaminationID = #{examinationID} And QuestionNumber = #{questionNumber}
+      
+    </update>
+
+</mapper>

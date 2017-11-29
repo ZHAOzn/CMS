@@ -1,6 +1,5 @@
 package com.qdu.controller;
 
-import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,8 +9,7 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import org.apache.tomcat.util.descriptor.web.WebXml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -20,14 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.qdu.aop.SystemLog;
-import com.qdu.pojo.Course;
 import com.qdu.pojo.Examination;
 import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
 import com.qdu.pojo.Pack;
+import com.qdu.pojo.Score;
 import com.qdu.pojo.ShortAnswer;
 import com.qdu.pojo.SingleSelection;
 import com.qdu.pojo.Student;
+import com.qdu.pojo.StudentAnswer;
 import com.qdu.pojo.StudentInfo;
 import com.qdu.service.ClazzService;
 import com.qdu.service.CourseService;
@@ -1132,6 +1131,28 @@ public class ExaminationController {
 		String hour = (t2+"").substring(8, 10);
 		String minute = (t2+"").substring(10, 12);
 		String seconds = (t2+"").substring(12, 14);
+		List<SingleSelection> singleSelections = examinationServiceImpl.selectSingleByExaminationID(Integer.parseInt(examinationID));
+        List<MoreSelection> moreSelections = examinationServiceImpl.selectMoreByExaminationID(Integer.parseInt(examinationID));
+        List<Judge> judges = examinationServiceImpl.selectJudgeByExaminationID(Integer.parseInt(examinationID));
+        List<Pack> packs = examinationServiceImpl.selectPackByExaminationIDX(Integer.parseInt(examinationID));
+        List<ShortAnswer> shortAnswers = examinationServiceImpl.selectShortAnswerByExaminationIDX(Integer.parseInt(examinationID));
+		//新建一个成绩单并初始化
+        Score score1 = examinationServiceImpl.selectScoreByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRoNo);
+        if(score1 == null){
+        	Score score = new Score();
+    		score.setExaminationID(Integer.parseInt(examinationID));
+    		score.setStudentRoNo(studentRoNo);
+    		score.setSingleSelectionValue(0);
+    		score.setMoreSelectionValue(0);
+    		score.setJudgeValue(0);
+    		score.setPackValue(0);
+    		score.setShortAnswerValue(0);
+    		score.setTotalValue(0);
+            examinationServiceImpl.insertScore(score);
+        }else {
+			
+		}
+        
         map.put("year", year);
         map.put("month", month);
         map.put("day", day);
@@ -1140,7 +1161,148 @@ public class ExaminationController {
         map.put("seconds", seconds);
 		map.put("examination", examination);
 		map.put("student", student);
+		if(singleSelections.size() > 0){
+			for(int i = 0; i < singleSelections.size(); i ++){
+				StudentAnswer studentAnswer2 = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRoNo, singleSelections.get(i).getQuestionNumber());
+				if(studentAnswer2 == null){
+					StudentAnswer studentAnswer = new StudentAnswer();
+					studentAnswer.setExaminationID(Integer.parseInt(examinationID));
+					studentAnswer.setStudentRoNo(studentRoNo);
+					studentAnswer.setQuestionNumber(singleSelections.get(i).getQuestionNumber());
+					studentAnswer.setQuestionsType(singleSelections.get(i).getQuestionsType());
+					studentAnswer.setStuAnswer("");
+					examinationServiceImpl.insertStudentAnswer(studentAnswer);
+				}
+			}
+			map.put("singleSelections", singleSelections);
+		}else {
+			map.put("singleSelections", null);
+		}
+		if(moreSelections.size() > 0){
+			for(int i = 0; i < moreSelections.size(); i ++){
+				StudentAnswer studentAnswer2 = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRoNo, moreSelections.get(i).getQuestionNumber());
+				if(studentAnswer2 == null){
+				StudentAnswer studentAnswer = new StudentAnswer();
+				studentAnswer.setExaminationID(Integer.parseInt(examinationID));
+				studentAnswer.setStudentRoNo(studentRoNo);
+				studentAnswer.setQuestionNumber(moreSelections.get(i).getQuestionNumber());
+				studentAnswer.setQuestionsType(moreSelections.get(i).getQuestionsType());
+				studentAnswer.setStuAnswer("");
+				examinationServiceImpl.insertStudentAnswer(studentAnswer);
+				}
+			}
+			map.put("moreSelections", moreSelections);
+		}else {
+			map.put("moreSelections", null);
+		}
+		if(judges.size() > 0){
+			for(int i = 0; i < judges.size(); i ++){
+				StudentAnswer studentAnswer2 = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRoNo, judges.get(i).getQuestionNumber());
+				if(studentAnswer2 == null){
+				StudentAnswer studentAnswer = new StudentAnswer();
+				studentAnswer.setExaminationID(Integer.parseInt(examinationID));
+				studentAnswer.setStudentRoNo(studentRoNo);
+				studentAnswer.setQuestionNumber(judges.get(i).getQuestionNumber());
+				studentAnswer.setQuestionsType(judges.get(i).getQuestionsType());
+				studentAnswer.setStuAnswer("");
+				examinationServiceImpl.insertStudentAnswer(studentAnswer);
+				}
+			}
+			map.put("judges", judges);
+		}else {
+			map.put("judges", null);
+		}
+		if(packs.size() > 0){
+			for(int i = 0; i < packs.size(); i ++){
+				StudentAnswer studentAnswer2 = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRoNo, packs.get(i).getQuestionNumber());
+				if(studentAnswer2 == null){
+				StudentAnswer studentAnswer = new StudentAnswer();
+				studentAnswer.setExaminationID(Integer.parseInt(examinationID));
+				studentAnswer.setStudentRoNo(studentRoNo);
+				studentAnswer.setQuestionNumber(packs.get(i).getQuestionNumber());
+				studentAnswer.setQuestionsType(packs.get(i).getQuestionsType());
+				studentAnswer.setStuAnswer("");
+				examinationServiceImpl.insertStudentAnswer(studentAnswer);
+				}
+			}
+			map.put("packs", packs);
+		}else {
+			map.put("packs", null);
+		}
+		if(shortAnswers.size() > 0){
+			for(int i = 0; i < shortAnswers.size(); i ++){
+				StudentAnswer studentAnswer2 = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRoNo, shortAnswers.get(i).getQuestionNumber());
+				if(studentAnswer2 == null){
+				StudentAnswer studentAnswer = new StudentAnswer();
+				studentAnswer.setExaminationID(Integer.parseInt(examinationID));
+				studentAnswer.setStudentRoNo(studentRoNo);
+				studentAnswer.setQuestionNumber(shortAnswers.get(i).getQuestionNumber());
+				studentAnswer.setQuestionsType(shortAnswers.get(i).getQuestionsType());
+				studentAnswer.setStuAnswer("");
+				examinationServiceImpl.insertStudentAnswer(studentAnswer);
+				}
+			}
+			map.put("shortAnswers", shortAnswers);
+		}else {
+			map.put("shortAnswers", null);
+		}
 		return "examPage";
 	}
+	
+	//更新单选题学生答案及成绩表
+	@RequestMapping(value = "/updateSingleSelection.do")
+	@ResponseBody
+	public Map<String, Object> updateSingleSelection(String studentRoNo,String examinationID,int questionNumber,
+			String stuAnswer){
+		Map<String, Object> map = new HashMap<>();
+		SingleSelection singleSelection = examinationServiceImpl.selectSingleSelectionByExAndQusNum(Integer.parseInt(examinationID), questionNumber);
+		Score score = examinationServiceImpl.selectScoreByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRoNo);
+		
+		StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRoNo, questionNumber);
+		//学生回答过这个单选题目
+		if(studentAnswer != null && !studentAnswer.getStuAnswer().equals("")){
+			//学生上次答错了
+			if(! studentAnswer.getStuAnswer().equals(singleSelection.getAnswer())){
+				//这回答对了
+				if(stuAnswer.equals(singleSelection.getAnswer())){
+					examinationServiceImpl.updateScore(studentRoNo, Integer.parseInt(examinationID), score.getSingleSelectionValue() + singleSelection.getValue(), 
+							score.getMoreSelectionValue(), score.getJudgeValue(), score.getPackValue(), 
+							score.getShortAnswerValue(), score.getTotalValue()+singleSelection.getValue());
+				}
+			}else {
+				//上次答对了，这回答错了
+				if(! stuAnswer.equals(singleSelection.getAnswer())){
+					examinationServiceImpl.updateScore(studentRoNo, Integer.parseInt(examinationID), score.getSingleSelectionValue() - singleSelection.getValue(), 
+							score.getMoreSelectionValue(), score.getJudgeValue(), score.getPackValue(), 
+							score.getShortAnswerValue(), score.getTotalValue()-singleSelection.getValue());
+				}
+			}
+		}else {
+			//学生没回答过这个题目,答对了
+			if(stuAnswer.equals(singleSelection.getAnswer())){
+				examinationServiceImpl.updateScore(studentRoNo, Integer.parseInt(examinationID), score.getSingleSelectionValue() + singleSelection.getValue(), 
+						score.getMoreSelectionValue(), score.getJudgeValue(), score.getPackValue(), 
+						score.getShortAnswerValue(), score.getTotalValue()+singleSelection.getValue());
+			}
+		}
+		 
+		int tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID), 
+				questionNumber, stuAnswer);
+		if(tem > 0){
+			map.put("result", true);
+		}else {
+			map.put("result", false);
+		}
+		return map;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

@@ -11,8 +11,10 @@ import com.qdu.pojo.Examination;
 import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
 import com.qdu.pojo.Pack;
+import com.qdu.pojo.Score;
 import com.qdu.pojo.ShortAnswer;
 import com.qdu.pojo.SingleSelection;
+import com.qdu.pojo.StudentAnswer;
 import com.qdu.service.ExaminationService;
 
 @Transactional
@@ -274,6 +276,43 @@ public class ExaminationServiceImpl implements ExaminationService{
 	@Override
 	public Examination selectExaminationOnlyCode(String onlyCode) {
 		return examinationDaoImpl.selectExaminationOnlyCode(onlyCode);
+	}
+
+	@Override
+	public int insertStudentAnswer(StudentAnswer studentAnswer) {
+		return examinationDaoImpl.insertStudentAnswer(studentAnswer);
+	}
+
+	@Override
+	public int updateStudentAnswer(String studentRoNo, int examinationID, int questionNumber, String stuAnswer) {
+		return examinationDaoImpl.updateStudentAnswer(studentRoNo, examinationID, questionNumber, stuAnswer);
+	}
+
+	@Override
+	public int insertScore(Score score) {
+		return examinationDaoImpl.insertScore(score);
+	}
+
+	@Override
+	public int updateScore(String studentRoNo, int examinationID, int singleSelectionValue, int moreSelectionValue,
+			int judgeValue, int packValue, int shortAnswerValue, int totalValue) {
+		return examinationDaoImpl.updateScore(studentRoNo, examinationID, singleSelectionValue, moreSelectionValue, judgeValue, packValue, shortAnswerValue, totalValue);
+	}
+
+	@Override
+	public SingleSelection selectSingleSelectionByExAndQusNum(int examinationID, int questionNumber) {
+		return examinationDaoImpl.selectSingleSelectionByExAndQusNum(examinationID, questionNumber);
+	}
+
+	@Override
+	public Score selectScoreByExIdAndStuRoNo(int examinationID, String studentRoNo) {
+		return examinationDaoImpl.selectScoreByExIdAndStuRoNo(examinationID, studentRoNo);
+	}
+
+	@Override
+	public StudentAnswer selectStudentAnswerByExIdAndStuRoNo(int examinationID, String studentRoNo,
+			int questionNumber) {
+		return examinationDaoImpl.selectStudentAnswerByExIdAndStuRoNo(examinationID, studentRoNo, questionNumber);
 	}
 	
 	

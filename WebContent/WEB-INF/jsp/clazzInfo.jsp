@@ -2667,10 +2667,12 @@ function teacherChangeExamination() {
 						<label class="layui-form-label" style="background-color: #009688;">答案</label>
 						<div class="layui-input-block">
 							<input type="checkbox" name="MoreSelectionAnswer" value="A"
-								title="A"> <input type="checkbox"
+								title="A">
+							<input type="checkbox"
 								name="MoreSelectionAnswer" value="B" title="B" checked>
 							<input type="checkbox" name="MoreSelectionAnswer" value="C"
-								title="C"> <input type="checkbox"
+								title="C"> 
+							<input type="checkbox"
 								name="MoreSelectionAnswer" value="D" title="D">
 						</div>
 					</div>

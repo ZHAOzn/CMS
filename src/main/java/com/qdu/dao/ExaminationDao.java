@@ -6,8 +6,10 @@ import com.qdu.pojo.Examination;
 import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
 import com.qdu.pojo.Pack;
+import com.qdu.pojo.Score;
 import com.qdu.pojo.ShortAnswer;
 import com.qdu.pojo.SingleSelection;
+import com.qdu.pojo.StudentAnswer;
 
 public interface ExaminationDao {
 	
@@ -113,4 +115,20 @@ public interface ExaminationDao {
     public int deleteShortAnswerId(int shortAnswerId);
     
     public Examination selectExaminationOnlyCode(String onlyCode);
+    
+    //学生答案
+    public int insertStudentAnswer(StudentAnswer studentAnswer);
+    
+    public int updateStudentAnswer(String studentRoNo,int examinationID,int questionNumber,String stuAnswer);
+    //成绩
+    public int insertScore(Score score);
+    
+    public int updateScore(String studentRoNo,int examinationID,int singleSelectionValue,int moreSelectionValue,
+    		int judgeValue,int packValue,int shortAnswerValue,int totalValue);
+    
+    public SingleSelection selectSingleSelectionByExAndQusNum(int examinationID,int questionNumber);
+
+    public Score selectScoreByExIdAndStuRoNo(int examinationID,String studentRoNo);
+    
+    public StudentAnswer selectStudentAnswerByExIdAndStuRoNo(int examinationID,String studentRoNo,int questionNumber);
 }

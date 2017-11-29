@@ -13,8 +13,10 @@ import com.qdu.pojo.Examination;
 import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
 import com.qdu.pojo.Pack;
+import com.qdu.pojo.Score;
 import com.qdu.pojo.ShortAnswer;
 import com.qdu.pojo.SingleSelection;
+import com.qdu.pojo.StudentAnswer;
 
 @Repository
 public class ExaminationDaoImpl implements ExaminationDao{
@@ -352,6 +354,74 @@ public class ExaminationDaoImpl implements ExaminationDao{
 	public Examination selectExaminationOnlyCode(String onlyCode) {
 		String statement = "com.qdu.mapping.ExaminationMapping.selectExaminationOnlyCode";
 		return sqlSessionFactory.openSession().selectOne(statement,onlyCode);
+	}
+
+	@Override
+	public int insertStudentAnswer(StudentAnswer studentAnswer) {
+		String statement = "com.qdu.mapping.StudentAnswerMapping.insertStudentAnswer";
+		return sqlSessionFactory.openSession().insert(statement,studentAnswer);
+	}
+
+	@Override
+	public int updateStudentAnswer(String studentRoNo, int examinationID, int questionNumber, String stuAnswer) {
+		String statement = "com.qdu.mapping.StudentAnswerMapping.updateStudentAnswer";
+		Map<String, Object> map = new HashMap<>();
+	    map.put("studentRoNo", studentRoNo);
+	    map.put("examinationID", examinationID);
+	    map.put("questionNumber", questionNumber);
+	    map.put("stuAnswer", stuAnswer);
+		return sqlSessionFactory.openSession().update(statement,map);
+	}
+
+	@Override
+	public int insertScore(Score score) {
+		String statement = "com.qdu.mapping.ScoreMapping.insertScore";
+		return sqlSessionFactory.openSession().insert(statement,score);
+	}
+
+	@Override
+	public int updateScore(String studentRoNo, int examinationID, int singleSelectionValue, int moreSelectionValue,
+			int judgeValue, int packValue, int shortAnswerValue, int totalValue) {
+		String statement = "com.qdu.mapping.ScoreMapping.updateScore";
+		Map<String, Object> map = new HashMap<>();
+		 map.put("studentRoNo", studentRoNo);
+		 map.put("examinationID", examinationID);
+		 map.put("singleSelectionValue", singleSelectionValue);
+		 map.put("moreSelectionValue", moreSelectionValue);
+		 map.put("judgeValue", judgeValue);
+		 map.put("packValue", packValue);
+		 map.put("shortAnswerValue", shortAnswerValue);
+		 map.put("totalValue", totalValue);
+		return sqlSessionFactory.openSession().update(statement,map);
+	}
+
+	@Override
+	public SingleSelection selectSingleSelectionByExAndQusNum(int examinationID, int questionNumber) {
+		String statement = "com.qdu.mapping.SingleSelectionMapping.selectSingleSelectionByExAndQusNum";
+		Map<String, Object> map = new HashMap<>();
+		 map.put("questionNumber", questionNumber);
+		 map.put("examinationID", examinationID);
+		return sqlSessionFactory.openSession().selectOne(statement, map);
+	}
+
+	@Override
+	public Score selectScoreByExIdAndStuRoNo(int examinationID, String studentRoNo) {
+		String statement = "com.qdu.mapping.ScoreMapping.selectScoreByExIdAndStuRoNo";
+		Map<String, Object> map = new HashMap<>();
+		 map.put("examinationID", examinationID);
+		 map.put("studentRoNo", studentRoNo);
+		return sqlSessionFactory.openSession().selectOne(statement, map);
+	}
+
+	@Override
+	public StudentAnswer selectStudentAnswerByExIdAndStuRoNo(int examinationID, String studentRoNo,
+			int questionNumber) {
+		String statement = "com.qdu.mapping.StudentAnswerMapping.selectStudentAnswerByExIdAndStuRoNo";
+		Map<String, Object> map = new HashMap<>();
+	    map.put("studentRoNo", studentRoNo);
+	    map.put("examinationID", examinationID);
+	    map.put("questionNumber", questionNumber);
+		return sqlSessionFactory.openSession().selectOne(statement,map);
 	}
 
 	
