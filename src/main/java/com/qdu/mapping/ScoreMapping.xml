@@ -12,14 +12,15 @@
 		<result property="packValue" column="PackValue" />
 		<result property="shortAnswerValue" column="ShortAnswerValue" />
 		<result property="totalValue" column="TotalValue" />
+		<result property="examEnd" column="ExamEnd" />
 	</resultMap>
 
    <insert id="insertScore" parameterType="com.qdu.pojo.Score">
       insert into 
       Score(StudentRoNo,ExaminationID,SingleSelectionValue,MoreSelectionValue,
-      JudgeValue,PackValue,ShortAnswerValue,TotalValue) 
+      JudgeValue,PackValue,ShortAnswerValue,TotalValue,ExamEnd) 
       values(#{studentRoNo},#{examinationID},#{singleSelectionValue},#{moreSelectionValue},
-      #{judgeValue},#{packValue},#{shortAnswerValue},#{totalValue})
+      #{judgeValue},#{packValue},#{shortAnswerValue},#{totalValue},#{examEnd})
     </insert>
     
     <select id="selectScoreByExIdAndStuRoNo" resultMap="ScoreResult" parameterType="HashMap">
@@ -34,6 +35,23 @@
          PackValue = #{packValue},
           ShortAnswerValue = #{shortAnswerValue},
            TotalValue = #{totalValue}
+      where StudentRoNo = #{studentRoNo} And ExaminationID = #{examinationID}
+    </update>
+    
+     <update id="updateScorebeforLoad" parameterType="HashMap">
+      update Score set
+      SingleSelectionValue = 0,
+       MoreSelectionValue = 0,
+        JudgeValue = 0,
+         PackValue = 0,
+          ShortAnswerValue = 0,
+           TotalValue = 0
+      where StudentRoNo = #{studentRoNo} And ExaminationID = #{examinationID}
+    </update>
+    
+    <update id="updateExamEnd" parameterType="HashMap">
+      update Score set
+      ExamEnd = 1
       where StudentRoNo = #{studentRoNo} And ExaminationID = #{examinationID}
     </update>
 

@@ -27,7 +27,12 @@
       update StudentAnswer set
       StuAnswer = #{stuAnswer}
       where StudentRoNo = #{studentRoNo} And ExaminationID = #{examinationID} And QuestionNumber = #{questionNumber}
-      
+    </update>
+    
+    <update id="updateStudentAnswerBeforeLoad" parameterType="HashMap">
+      update StudentAnswer set
+      StuAnswer = ''
+      where StudentRoNo = #{studentRoNo} And ExaminationID = #{examinationID}
     </update>
 
 </mapper>

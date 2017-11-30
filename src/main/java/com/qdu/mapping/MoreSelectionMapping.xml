@@ -48,6 +48,10 @@
 	  select Max(QuestionNumber) from MoreSelection where ExaminationID = #{examinationID}
 	</select>
 	
+	<select id="selectMoreSelectionByExAndQusNum" resultMap="MoreSelectionResult">
+	  select * from MoreSelection where ExaminationID = #{examinationID} And QuestionNumber = #{questionNumber}
+	</select>
+	
 	<insert id="insertMoreSelection">
 	  insert into 
 	  MoreSelection(QuestionNumber,QuestionContent,QuestionsType,OptionA,OptionB,OptionC,OptionD,

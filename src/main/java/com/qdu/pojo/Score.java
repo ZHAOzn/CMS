@@ -13,6 +13,7 @@ public class Score implements Serializable{
 	 private int packValue;
 	 private int shortAnswerValue;
 	 private int totalValue;
+	 private int examEnd;
 	public int getScoreId() {
 		return scoreId;
 	}
@@ -67,6 +68,12 @@ public class Score implements Serializable{
 	}
 	public void setTotalValue(int totalValue) {
 		this.totalValue = totalValue;
+	}
+	public int getExamEnd() {
+		return examEnd;
+	}
+	public void setExamEnd(int examEnd) {
+		this.examEnd = examEnd;
 	}
 
 	 

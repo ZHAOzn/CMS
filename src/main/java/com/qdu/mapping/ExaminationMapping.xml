@@ -110,8 +110,8 @@
 	
 	<insert id="insertExamination" parameterType="com.qdu.pojo.Examination">
 	  insert into 
-	  Examination(ExaminationName,OnlyCode,TotalValue,StartTime,Duration,CanEdit,CourseID) 
-	  values(#{examinationName},#{onlyCode},#{totalValue},#{startTime},#{duration},#{canEdit},#{courseID})
+	  Examination(ExaminationName,OnlyCode,TotalValue,StartTime,Duration,ExaminationStatus,CanEdit,CourseID) 
+	  values(#{examinationName},#{onlyCode},#{totalValue},#{startTime},#{duration},#{examinationStatus},#{canEdit},#{courseID})
 	</insert>
 	
 	<delete id="deleteExaminationById">
@@ -122,6 +122,12 @@
 	  update Examination set
 	  CanEdit = #{canEdit}
 	  where ExaminationID = #{examinationID}
+	</update>
+	
+	<update id="UpdateExamExaminationStatus" parameterType="HashMap">
+	   update Examination set
+	   ExaminationStatus = #{examinationStatus}
+	   where ExaminationID = #{examinationID}
 	</update>
 	
 	<update id="updateExaminationTemValue" parameterType="HashMap">

@@ -23,6 +23,7 @@
 	src="<%=request.getContextPath()%>/js/jquery.webcam.min.js"></script>
 <title>考试须知</title>
 </head>
+
 <body style="background-color: #eeeeee">
 	<!-- 头部 -->
 	<nav class="navbar navbar-inverse navbar-fixed-top">
@@ -56,7 +57,7 @@
 			<br> 
 			1.<span class="style4">考试需由考生本人亲自作答，系统随机抓拍，最后由系统比对及送交教师审核，录入诚信档案，
 				一经发现作假问题系统将判考生所有试卷0分及限制考生后续所有科目考试</span><br>
-			2.考试过程中不可跳出页面，系统自动记录跳出次数，超出范围自动判0<br>
+			2.<span style="color: red;">考试过程中跳出或者刷新页面系统不会保存答案</span>，跳出超出一定次数试卷将自动提交<br>
 			3.考试中如有问题可直接在考试页面进行反馈，耐心等待管理员及老师的协调<br> <br>
 		</fieldset>
 		
@@ -67,7 +68,7 @@
 
 		<div style="height: 60px; width: 300px; float: left;">
 			<input type="submit" style="float: left; margin-left: 4%;"
-				class="layui-btn" onclick="nextstep()" value="我已阅读" /> <input
+				class="layui-btn" onclick="nextstep()" value="我已阅读,开始考试" /> <input
 				type="button" style="float: left; margin-left: 24%;"
 				class="layui-btn" onclick="javascript:history.back()" value="返回" />
 			<br /> <br />

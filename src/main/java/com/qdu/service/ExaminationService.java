@@ -135,9 +135,19 @@ public interface ExaminationService {
     public StudentAnswer selectStudentAnswerByExIdAndStuRoNo(int examinationID, String studentRoNo,
 			int questionNumber);
     
+    public int UpdateExamExaminationStatus(int examinationID, String examinationStatus);
     
+    public MoreSelection selectMoreSelectionByExAndQusNum(int examinationID,int questionNumber);
+
+    public Judge selectJudgeByExAndQusNum(int examinationID,int questionNumber);
     
+    public Pack selectPackByExAndQusNum(int examinationID,int questionNumber);
     
+    public ShortAnswer selectShortAnswerByExAndQusNum(int examinationID,int questionNumber);
+    
+    public int updateStudentAnswerBeforeLoad(String studentRoNo,int examinationID);
+
+    public int updateScorebeforLoad(String studentRoNo,int examinationID);
     
 
 }

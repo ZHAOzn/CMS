@@ -43,7 +43,22 @@ setTimeout("fresh()",1)
 		$('#studentRono').change(function whenChange() {
 			var studentRono = $('#studentRono').val();
 			if(trySubmit(studentRono)){
-				alert("学号不存在，请先注册！");
+				layui.use('layer', function(){
+	  	               var $ = layui.jquery, layer = layui.layer; 
+	    			      layer.open({
+	    			        type: 1
+	    			        ,offset: 'auto' 
+	    			        ,id: 'layerDemo'+'auto' 
+	    			        ,title: '失败'
+	    			        ,content: '<div style="padding: 20px 100px;">'+ "学号不存在~" +'</div>'
+	    			        ,btn: '关闭'
+	    			        ,btnAlign: 'c' 
+	    			        ,shade: 0 
+	    			        ,yes: function(){
+	    			        	 layer.closeAll();
+	    			        }
+	    			      });
+	  	            });
 				$('#stpw').attr("disabled","disabled"); 
 				$('#stu').attr("disabled","disabled"); 
 			}else {
@@ -78,7 +93,22 @@ setTimeout("fresh()",1)
 		$('#teacherMobile').change(function whenChange() {
 			var teacherMobile = $('#teacherMobile').val();
 			if(tryLogin(teacherMobile)){
-				alert("账号不存在，请先注册！");
+				layui.use('layer', function(){
+	  	               var $ = layui.jquery, layer = layui.layer; 
+	    			      layer.open({
+	    			        type: 1
+	    			        ,offset: 'auto' 
+	    			        ,id: 'layerDemo'+'auto' 
+	    			        ,title: '失败'
+	    			        ,content: '<div style="padding: 20px 100px;">'+ "账号不存在~" +'</div>'
+	    			        ,btn: '关闭'
+	    			        ,btnAlign: 'c' 
+	    			        ,shade: 0 
+	    			        ,yes: function(){
+	    			        	 layer.closeAll();
+	    			        }
+	    			      });
+	  	            });
 				$('#tcpw').attr("disabled","disabled"); 
 				$('#tea').attr("disabled","disabled"); 
 			}else {
@@ -142,7 +172,22 @@ setTimeout("fresh()",1)
 			if(getAnwser(password,teacherMobile)){
 				$('#teacherForm').submit();
 			}else {
-				alert("密码错误!");
+				layui.use('layer', function(){
+	  	               var $ = layui.jquery, layer = layui.layer; 
+	    			      layer.open({
+	    			        type: 1
+	    			        ,offset: 'auto' 
+	    			        ,id: 'layerDemo'+'auto' 
+	    			        ,title: '失败'
+	    			        ,content: '<div style="padding: 20px 100px;">'+ "密码错误~" +'</div>'
+	    			        ,btn: '关闭'
+	    			        ,btnAlign: 'c' 
+	    			        ,shade: 0 
+	    			        ,yes: function(){
+	    			        	 layer.closeAll();
+	    			        }
+	    			      });
+	  	            });
 			}
 		});
 		
@@ -179,7 +224,22 @@ setTimeout("fresh()",1)
 			if(getStuAnwser(password,studentRono)){
 				$('#studentForm').submit();
 			}else {
-				alert("密码错误!");
+				layui.use('layer', function(){
+	  	               var $ = layui.jquery, layer = layui.layer; 
+	    			      layer.open({
+	    			        type: 1
+	    			        ,offset: 'auto' 
+	    			        ,id: 'layerDemo'+'auto' 
+	    			        ,title: '失败'
+	    			        ,content: '<div style="padding: 20px 100px;">'+ "密码错误~" +'</div>'
+	    			        ,btn: '关闭'
+	    			        ,btnAlign: 'c' 
+	    			        ,shade: 0 
+	    			        ,yes: function(){
+	    			        	 layer.closeAll();
+	    			        }
+	    			      });
+	  	            });
 			}
 		});
 	});

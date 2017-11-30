@@ -314,6 +314,41 @@ public class ExaminationServiceImpl implements ExaminationService{
 			int questionNumber) {
 		return examinationDaoImpl.selectStudentAnswerByExIdAndStuRoNo(examinationID, studentRoNo, questionNumber);
 	}
+
+	@Override
+	public int UpdateExamExaminationStatus(int examinationID, String examinationStatus) {
+		return examinationDaoImpl.UpdateExamExaminationStatus(examinationID, examinationStatus);
+	}
+
+	@Override
+	public MoreSelection selectMoreSelectionByExAndQusNum(int examinationID, int questionNumber) {
+		return examinationDaoImpl.selectMoreSelectionByExAndQusNum(examinationID, questionNumber);
+	}
+
+	@Override
+	public Judge selectJudgeByExAndQusNum(int examinationID, int questionNumber) {
+		return examinationDaoImpl.selectJudgeByExAndQusNum(examinationID, questionNumber);
+	}
+
+	@Override
+	public Pack selectPackByExAndQusNum(int examinationID, int questionNumber) {
+		return examinationDaoImpl.selectPackByExAndQusNum(examinationID, questionNumber);
+	}
+
+	@Override
+	public ShortAnswer selectShortAnswerByExAndQusNum(int examinationID, int questionNumber) {
+		return examinationDaoImpl.selectShortAnswerByExAndQusNum(examinationID, questionNumber);
+	}
+
+	@Override
+	public int updateStudentAnswerBeforeLoad(String studentRoNo, int examinationID) {
+		return examinationDaoImpl.updateStudentAnswerBeforeLoad(studentRoNo, examinationID);
+	}
+
+	@Override
+	public int updateScorebeforLoad(String studentRoNo, int examinationID) {
+		return examinationDaoImpl.updateScorebeforLoad(studentRoNo, examinationID);
+	}
 	
 	
 }

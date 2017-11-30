@@ -5,6 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <link rel="shortcut icon" type="image/x-icon"
 	href="<%=request.getContextPath()%>/icon/cms2.ico" media="screen" />
 <link type="text/css" rel="stylesheet"
@@ -23,8 +24,68 @@
 	src="<%=request.getContextPath()%>/js/jquery.webcam.min.js"></script>
 <title>${examination.examinationName}考试页面</title>
 </head>
+<script type="text/javascript">
+window.onbeforeunload = function(){
+return "您尚未保存！";
+}
+</script>
 <script language="javascript" type="text/javascript"> 
-window.onload=function(){  
+window.onload=function(){ 
+	document.onkeydown=function (e){
+        var currKey=0,evt=e||window.event;
+        currKey=evt.keyCode||evt.which||evt.charCode;
+        if (currKey == 123) {
+            window.event.cancelBubble = true;
+            window.event.returnValue = false;
+        }
+    }
+	// 防止右键刷新
+	 document.onkeydown = function(){
+	        if (event.keyCode == 123) {
+	        	 event.keyCode=0;
+	              event.returnValue = false;
+	        }
+          if(event.keyCode==116) {
+              event.keyCode=0;
+              event.returnValue = false;
+          }
+          if (window.event && window.event.keyCode == 8) {
+              window.event.returnValue = false;
+          }
+    }
+    document.oncontextmenu = function() {
+        event.returnValue = false;
+    }
+  //禁止选中
+    document.onselectstart = function (event){
+        if(window.event){
+            event = window.event;
+        }try{
+            var the = event.srcElement;
+            if (!((the.tagName == "INPUT" && the.type.toLowerCase() == "text") || the.tagName == "TEXTAREA")){
+                return false;
+            }
+            return true;
+        } catch (e) {
+            return false;
+        }
+    };
+    /*禁止复制*/
+    document.oncontextmenu = function (event){
+        if(window.event){
+            event = window.event;
+        }try{
+            var the = event.srcElement;
+            if (!((the.tagName == "INPUT" && the.type.toLowerCase() == "text") || the.tagName == "TEXTAREA")){
+                return false;
+            }
+            return true;
+        }catch (e){
+            return false;
+        }
+    };
+		  
+	 
 	layui.use('layer', function(){
          var $ = layui.jquery, layer = layui.layer; 
 	      layer.open({
@@ -110,11 +171,8 @@ window.onload=function(){
 			 window.location.href = "<%=request.getContextPath()%>/index.jsp";
 		}
 		
-	function getRadio() {
-			alert("222222222");
-		}
 </script>
-<body style="background-color: #eeeeee">
+<body style="background-color: #eeeeee" onbeforeunload="checkLeave()">
 	<!-- 头部 -->
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
@@ -228,7 +286,7 @@ window.onload=function(){
 	         },
 	         contentType: "application/json; charset=utf-8",
 	         dataType: "json",
-	         async: false,
+	         async: true,
 	         url: "<%=request.getContextPath()%>/exam/updateSingleSelection.do",
 	         success: function (data) {
 	        	if(data.result == true){
@@ -254,10 +312,10 @@ window.onload=function(){
 							${s.questionContent}&nbsp;(${s.value}分)</li>
 						<li>&nbsp;</li>
 						<li><form class="layui-form"><div class="layui-form-item"> <div class="layui-input-block">
-						<input type="checkbox" name="studentAnswer" value="A" title="A">${s.optionA}<br/>
-						<input type="checkbox" name="studentAnswer" value="B" title="B">${s.optionB}<br/> 
-						<input type="checkbox" name="studentAnswer" value="C" title="C">${s.optionC}<br/>
-						<input type="checkbox" name="studentAnswer" value="D"title="D">${s.optionD}<br/>
+						<input type="checkbox" name="studentAnswer1" lay-filter="hehe" value="A${s.questionNumber}" title="A">${s.optionA}<br/>
+						<input type="checkbox" name="studentAnswer2" lay-filter="hehe" value="B${s.questionNumber}" title="B">${s.optionB}<br/> 
+						<input type="checkbox" name="studentAnswer3" lay-filter="hehe" value="C${s.questionNumber}" title="C">${s.optionC}<br/>
+						<input type="checkbox" name="studentAnswer4" lay-filter="hehe" value="D${s.questionNumber}" title="D">${s.optionD}<br/>
 							</div></div></form>
 						</li>
 					</c:forEach>
@@ -268,6 +326,60 @@ window.onload=function(){
 			</c:choose>
 		</ul>
 	</div>
+	<script>
+	layui.use('form', function(){
+		  var form = layui.form;
+	form.on('checkbox(hehe)', function(data){
+		var answer = data.value.substring(0,1);
+		var questionNumber = data.value.substring(1);
+		if(data.elem.checked){
+			$.ajax({
+		         type: "GET",
+		         data: {
+		        	 "studentRoNo":${student.studentRoNo},
+		        	 "examinationID":${examination.examinationID},
+		        	 "questionNumber":questionNumber,
+		        	 "stuAnswer":answer
+		         },
+		         contentType: "application/json; charset=utf-8",
+		         dataType: "json",
+		         async: true,
+		         url: "<%=request.getContextPath()%>/exam/updateMoreSelection.do",
+		         success: function (data) {
+		        	if(data.result == true){
+		        		
+		        	}
+		         },
+		         error: function (data) {
+		             //alert("服务器异常！");
+		         },
+		     });
+		}else{
+			$.ajax({
+		         type: "GET",
+		         data: {
+		        	 "studentRoNo":${student.studentRoNo},
+		        	 "examinationID":${examination.examinationID},
+		        	 "questionNumber":questionNumber,
+		        	 "stuAnswer":answer
+		         },
+		         contentType: "application/json; charset=utf-8",
+		         dataType: "json",
+		         async: true,
+		         url: "<%=request.getContextPath()%>/exam/updateMoreSelectionCanel.do",
+		         success: function (data) {
+		        	if(data.result == true){
+		        		
+		        	}
+		         },
+		         error: function (data) {
+		             //alert("服务器异常！");
+		         },
+		     });
+		}
+	});  
+	});
+	</script>
 	
 	
 		<div id="judgeArea"
@@ -283,8 +395,8 @@ window.onload=function(){
 						<li>&nbsp;</li>
 						<li><form class="layui-form"><div class="layui-form-item"> <div class="layui-input-block">
 						
-						<input type="radio" name="" value="true" title="true">
-						<input type="radio" name="" value="false" title="false">
+						<input type="radio" name="n1" lay-filter="panduan" value="T${s.questionNumber}" title="true">
+						<input type="radio" name="n1" lay-filter="panduan" value="F${s.questionNumber}" title="false">
 						
 							</div></div></form>
 						</li>
@@ -296,6 +408,49 @@ window.onload=function(){
 			</c:choose>
 		</ul>
 	</div>
+	
+	<script>
+		layui.use('form', function(){
+			  var form = layui.form;
+			  form.on('radio(panduan)', function(data){
+					 console.log(data.elem); //得到radio原始DOM对象
+					 updateJudge(data.value); //被点击的radio的value值
+					}); 
+			});
+		function updateJudge(id) {
+			var answer = id.substring(0,1);
+			if(answer == 'F'){
+				answer = 'false'
+			}else{
+				answer = 'true'
+			}
+			var questionNumber = id.substring(1);
+			$.ajax({
+		         type: "GET",
+		         data: {
+		        	 "studentRoNo":${student.studentRoNo},
+		        	 "examinationID":${examination.examinationID},
+		        	 "questionNumber":questionNumber,
+		        	 "stuAnswer":answer
+		         },
+		         contentType: "application/json; charset=utf-8",
+		         dataType: "json",
+		         async: true,
+		         url: "<%=request.getContextPath()%>/exam/updateJudge.do",
+		         success: function (data) {
+		        	if(data.result == true){
+		        		
+		        	}
+		         },
+		         error: function (data) {
+		             //alert("服务器异常！");
+		         },
+		     });
+		}
+
+	</script>
+	
+	
 	
 		<div id="packArea"
 		style="heigh: 300px; background-color: white; margin-left: 5%; margin-right: 5%; padding-top: 10px; font-family: 微软雅黑">
@@ -309,8 +464,8 @@ window.onload=function(){
 							${s.packContent}&nbsp;(${s.value}分)</li>
 						<li>&nbsp;</li>
 						<li><form class="layui-form"><div class="layui-form-item"> <div class="layui-input-block">
-						<input id="" type="text"
-							name="" required
+						<input id="${s.questionNumber}" type="text" onchange="setPack(this.id)" 
+							name="nj1" required
 							style="border-top: none; border-left: none; border-right: none; 
 							border-color: #009688; width: 40%;"
 							lay-verify="required" autocomplete="off"
@@ -327,6 +482,33 @@ window.onload=function(){
 		</ul>
 	</div>
 	
+	<script type="text/javascript">
+	  function setPack(id) {
+			$.ajax({
+		         type: "GET",
+		         data: {
+		        	 "studentRoNo":${student.studentRoNo},
+		        	 "examinationID":${examination.examinationID},
+		        	 "questionNumber":id,
+		        	 "stuAnswer":$('#'+id).val()
+		         },
+		         contentType: "application/json; charset=utf-8",
+		         dataType: "json",
+		         async: true,
+		         url: "<%=request.getContextPath()%>/exam/updatePack.do",
+		         success: function (data) {
+		        	if(data.result == true){
+		        		
+		        	}
+		         },
+		         error: function (data) {
+		             //alert("服务器异常！");
+		         },
+		     });
+		}
+	
+	</script>
+	
 		<div id="shortAnswerArea"
 		style="heigh: 300px; background-color: white; margin-left: 5%; margin-right: 5%; padding-top: 10px; font-family: 微软雅黑">
 		<h3 style="font-size: 1.4em"><五>简答<span style="font-size: 0.8em"></span></h3>
@@ -340,7 +522,8 @@ window.onload=function(){
 						<li>&nbsp;</li>
 						<li><form class="layui-form"><div class="layui-form-item">
 						     <div class="layui-input-block">
-                             <textarea placeholder="请输入内容" class="layui-textarea"></textarea>
+                             <textarea placeholder="请输入内容" id="${s.questionNumber}"
+                             onchange="updateShortAnswer(this.id)" class="layui-textarea"></textarea>
                               </div>
 							</div></form>
 						</li>
@@ -359,6 +542,32 @@ window.onload=function(){
 		</div>
 			<br /> <br /> <br /> 			
 	</div>
+	
+	<script type="text/javascript">
+	 function updateShortAnswer(id) {
+		$.ajax({
+	         type: "GET",
+	         data: {
+	        	 "studentRoNo":${student.studentRoNo},
+	        	 "examinationID":${examination.examinationID},
+	        	 "questionNumber":id,
+	        	 "stuAnswer":$('#'+id).val()
+	         },
+	         contentType: "application/json; charset=utf-8",
+	         dataType: "json",
+	         async: true,
+	         url: "<%=request.getContextPath()%>/exam/updateShortAnswer.do",
+	         success: function (data) {
+	        	if(data.result == true){
+	        		
+	        	}
+	         },
+	         error: function (data) {
+	             //alert("服务器异常！");
+	         },
+	     });
+	}
+	</script>
 	
 	
 	<script>
@@ -416,7 +625,7 @@ function click() {
  event.returnValue=false;
 	 alert("当前设置不允许使用右键！");
 }
-document.oncontextmenu=click;
+document.oncontextmenu=click
 </script>
 
 </body>

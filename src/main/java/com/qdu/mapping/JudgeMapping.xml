@@ -43,6 +43,10 @@
 	  select * from Judge where ExaminationID = #{examinationID} order by QuestionNumber asc
 	</select>
 	
+	<select id="selectJudgeByExAndQusNum" resultMap="JudgeResult">
+	  select * from Judge where ExaminationID = #{examinationID} And QuestionNumber = #{questionNumber}
+	</select>
+	
 	<insert id="insertJudge">
 	  insert into 
 	  Judge(QuestionNumber,JudgeContent,QuestionsType,

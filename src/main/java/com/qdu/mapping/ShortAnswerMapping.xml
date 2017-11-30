@@ -46,6 +46,10 @@
 	  select * from ShortAnswer where ExaminationID = #{examinationID} order by QuestionNumber asc
 	</select>
 	
+	<select id="selectShortAnswerByExAndQusNum" resultMap="ShortAnswerResult">
+	  select * from ShortAnswer where ExaminationID = #{examinationID} And QuestionNumber = #{questionNumber}
+	</select>
+	
 	<insert id="insertShortAnswer" parameterType="com.qdu.pojo.ShortAnswer">
 	  insert into 
 	  ShortAnswer(QuestionNumber,ShortAnswerContent,QuestionsType,Value,Note,ExaminationID) 
