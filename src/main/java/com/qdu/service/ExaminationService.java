@@ -6,8 +6,10 @@ import com.qdu.pojo.Examination;
 import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
 import com.qdu.pojo.Pack;
+import com.qdu.pojo.Score;
 import com.qdu.pojo.ShortAnswer;
 import com.qdu.pojo.SingleSelection;
+import com.qdu.pojo.StudentAnswer;
 
 public interface ExaminationService {
 	
@@ -112,5 +114,40 @@ public interface ExaminationService {
     public int updateShortAnswerByShortAnswerId(ShortAnswer shortAnswer);
     
     public int deleteShortAnswerId(int shortAnswerId);
+    
+    //学生考试相关
+    public Examination selectExaminationOnlyCode(String onlyCode);
+    
+    //学生答案
+    public int insertStudentAnswer(StudentAnswer studentAnswer);
+    
+    public int updateStudentAnswer(String studentRoNo,int examinationID,int questionNumber,String stuAnswer);
+    //成绩
+    public int insertScore(Score score);
+    
+    public int updateScore(String studentRoNo,int examinationID,int singleSelectionValue,int moreSelectionValue,
+    		int judgeValue,int packValue,int shortAnswerValue,int totalValue);
+    
+    public SingleSelection selectSingleSelectionByExAndQusNum(int examinationID, int questionNumber);
+    
+    public Score selectScoreByExIdAndStuRoNo(int examinationID, String studentRoNo);
+    
+    public StudentAnswer selectStudentAnswerByExIdAndStuRoNo(int examinationID, String studentRoNo,
+			int questionNumber);
+    
+    public int UpdateExamExaminationStatus(int examinationID, String examinationStatus);
+    
+    public MoreSelection selectMoreSelectionByExAndQusNum(int examinationID,int questionNumber);
+
+    public Judge selectJudgeByExAndQusNum(int examinationID,int questionNumber);
+    
+    public Pack selectPackByExAndQusNum(int examinationID,int questionNumber);
+    
+    public ShortAnswer selectShortAnswerByExAndQusNum(int examinationID,int questionNumber);
+    
+    public int updateStudentAnswerBeforeLoad(String studentRoNo,int examinationID);
+
+    public int updateScorebeforLoad(String studentRoNo,int examinationID);
+    
 
 }

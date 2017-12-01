@@ -39,6 +39,10 @@
 	  select * from SingleSelection where ExaminationID = #{examinationID}
 	</select>
 	
+	<select id="selectSingleSelectionByExAndQusNum" resultMap="SingleSelectionResult">
+	  select * from SingleSelection where ExaminationID = #{examinationID} And QuestionNumber = #{questionNumber}
+	</select>
+	
 	<select id="selectSingleSelectionMaxQuestionNumber" resultMap="SingleSelectionResult">
 	  select Max(QuestionNumber) from SingleSelection where ExaminationID = #{examinationID}
 	</select>

@@ -590,7 +590,23 @@ function teacherAddExamination() {
 				}
 			},
 			error : function(data) {
-				alert("??");
+				layui.use('layer', function(){
+	  	               var $ = layui.jquery, layer = layui.layer; 
+	    			      layer.open({
+	    			        type: 1
+	    			        ,offset: 'auto' 
+	    			        ,id: 'layerDemo'+'auto'
+	    			        ,title: '失败'
+	    			        ,content: '<div style="padding: 20px 100px; color:#FF5722;">'+ "输入格式有误哦~." +'</div>'
+	    			        ,btn: '关闭'
+	    			        ,btnAlign: 'c' 
+	    			        ,shade: 0 
+	    			        ,yes: function(){
+	    			        	setTimeout('FirstFunction()',500);
+	    			        	layer.closeAll();
+	    			        }
+	    			      });
+	  	            });
 			},
 			dataType : "json",
 		});
@@ -2215,7 +2231,7 @@ function teacherChangeExamination() {
 					<label class="layui-form-label">总分值</label>
 					<div class="layui-input-block">
 						<input id="totalValue" type="text" name="totalValue" required
-							lay-verify="required" placeholder="请输入数字" autocomplete="off"
+							lay-verify="required|math" placeholder="请输入数字" autocomplete="off"
 							class="layui-input">
 					</div>
 
@@ -2234,7 +2250,7 @@ function teacherChangeExamination() {
 					<label class="layui-form-label">考试时长</label>
 					<div class="layui-input-inline">
 						<input id="duration" type="text" name="duration" required
-							lay-verify="required" placeholder="如'120分钟'" autocomplete="off"
+							lay-verify="required|math" placeholder="如'120分钟'" autocomplete="off"
 							class="layui-input">
 					</div>
 				</div>
@@ -2259,6 +2275,7 @@ function teacherChangeExamination() {
 					
 					form.verify({
 						idvalidate:[/(.+){1,20}$/,'试卷名称必须是1到20位字符'],
+						math:[/^[1-9]\d*/,'输入为大于零的正整数'],
 					});
 				});
 				</script>
@@ -2304,7 +2321,7 @@ function teacherChangeExamination() {
 					<label class="layui-form-label">考试时长</label>
 					<div class="layui-input-inline">
 						<input id="Reduration" type="text" name="Reduration" required
-							lay-verify="required" placeholder="如'120分钟'" autocomplete="off"
+							lay-verify="required|math" placeholder="如'120分钟'" autocomplete="off"
 							class="layui-input">
 					</div>
 				</div>
@@ -2329,6 +2346,7 @@ function teacherChangeExamination() {
 					
 					form.verify({
 						idvalidate:[/(.+){1,20}$/,'试卷名称必须是1到20位字符'],
+						math:[/^[1-9]\d*/,'输入为大于零的正整数'],
 					});
 				});
 				</script>
@@ -2338,16 +2356,16 @@ function teacherChangeExamination() {
 			<table id="ExaminationList" class="layui-table" lay-even
 				style="text-align: center; width: 100%; margin-left: 0;">
 				<colgroup>
-					<col width="90">
+					<col width="120">
 					<col width="140">
 					<col width="80">
 					<col width="80">
 					<col width="140">
-					<col width="140">
+					<col width="120">
 					<col width="80">
 					<col width="100">
-					<col width="100">
-					<col width="100">
+					<col width="80">
+					<col width="80">
 				</colgroup>
 				<thead>
 					<tr id="title">
@@ -2429,7 +2447,7 @@ function teacherChangeExamination() {
 						<input id="SingleSelectionValue" type="text"
 							name="SingleSelectionValue" required
 							style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
-							lay-verify="required" placeholder="本题分值" autocomplete="off"
+							lay-verify="required|math" placeholder="本题分值" autocomplete="off"
 							class="layui-input">
 					</div>
 					<!-- 选项A -->
@@ -2505,6 +2523,13 @@ function teacherChangeExamination() {
 				</form>
 			</div>
 			<script type="text/javascript">
+			layui.use([ 'form', 'laydate' ], function() {
+				var form = layui.form, laydate = layui.laydate;
+				form.verify({
+					idvalidate:[/(.+){1,20}$/,'试卷名称必须是1到20位字符'],
+					math:[/^[1-9]\d*/,'输入为大于零的正整数'],
+				});
+			});
 				//点击保存单选题
 				  function saveSingleSelection() {
 					if($('#SingleSelectionQuestionContent').val != "" && $('#SingleSelectionValue').val != ""&& $('#SingleSelectionOptionA').val != ""
@@ -2573,7 +2598,7 @@ function teacherChangeExamination() {
 								}
 							},
 							error : function(data) {
-								alert("??");
+								//alert("??");
 							},
 							dataType : "json",
 						});
@@ -2618,7 +2643,7 @@ function teacherChangeExamination() {
 						<input id="MoreSelectionValue" type="text"
 							name="MoreSelectionValue" required
 							style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
-							lay-verify="required" placeholder="本题分值" autocomplete="off"
+							lay-verify="required|math" placeholder="本题分值" autocomplete="off"
 							class="layui-input">
 					</div>
 					<!-- 选项A -->
@@ -2667,10 +2692,12 @@ function teacherChangeExamination() {
 						<label class="layui-form-label" style="background-color: #009688;">答案</label>
 						<div class="layui-input-block">
 							<input type="checkbox" name="MoreSelectionAnswer" value="A"
-								title="A"> <input type="checkbox"
+								title="A">
+							<input type="checkbox"
 								name="MoreSelectionAnswer" value="B" title="B" checked>
 							<input type="checkbox" name="MoreSelectionAnswer" value="C"
-								title="C"> <input type="checkbox"
+								title="C"> 
+							<input type="checkbox"
 								name="MoreSelectionAnswer" value="D" title="D">
 						</div>
 					</div>
@@ -2695,6 +2722,12 @@ function teacherChangeExamination() {
 				</form>
 			</div>
 			<script type="text/javascript">
+			layui.use([ 'form', 'laydate' ], function() {
+				var form = layui.form, laydate = layui.laydate;
+				form.verify({
+					math:[/^[1-9]\d*/,'输入为大于零的正整数'],
+				});
+			});
 				//点击保存多选题
 				  function saveMoreSelection() {
 					if($('#MoreSelectionQuestionContent').val != "" && $('#MoreSelectionValue').val != ""&& $('#MoreSelectionOptionA').val != ""
@@ -2766,7 +2799,7 @@ function teacherChangeExamination() {
 								}
 							},
 							error : function(data) {
-								alert("??");
+								//alert("??");
 							},
 							dataType : "json",
 						});
@@ -2810,7 +2843,7 @@ function teacherChangeExamination() {
 					<div class="layui-input-inline">
 						<input id="JudgeValue" type="text" name="JudgeValue" required
 							style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
-							lay-verify="required" placeholder="本题分值" autocomplete="off"
+							lay-verify="required|math" placeholder="本题分值" autocomplete="off"
 							class="layui-input">
 					</div>
 
@@ -2844,6 +2877,12 @@ function teacherChangeExamination() {
 				</form>
 			</div>
 			<script type="text/javascript">
+			layui.use([ 'form', 'laydate' ], function() {
+				var form = layui.form, laydate = layui.laydate;
+				form.verify({
+					math:[/^[1-9]\d*/,'输入为大于零的正整数'],
+				});
+			});
 				//点击保存判断题
 				  function saveJudge() {
 					if($('#JudgeQuestionContent').val != "" && $('#JudgeValue').val != ""
@@ -2908,7 +2947,7 @@ function teacherChangeExamination() {
 								}
 							},
 							error : function(data) {
-								alert("??");
+								//alert("??");
 							},
 							dataType : "json",
 						});
@@ -2952,7 +2991,7 @@ function teacherChangeExamination() {
 					<div class="layui-input-inline">
 						<input id="PackValue" type="text" name="PackValue" required
 							style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
-							lay-verify="required" placeholder="本题分值" autocomplete="off"
+							lay-verify="required|math" placeholder="本题分值" autocomplete="off"
 							class="layui-input">
 					</div>
 
@@ -2987,6 +3026,12 @@ function teacherChangeExamination() {
 				</form>
 			</div>
 			<script type="text/javascript">
+			layui.use([ 'form', 'laydate' ], function() {
+				var form = layui.form, laydate = layui.laydate;
+				form.verify({
+					math:[/^[1-9]\d*/,'输入为大于零的正整数'],
+				});
+			});
 				//点击保存填空题
 				  function savePack() {
 					if($('#PackQuestionContent').val != "" && $('#PackValue').val != ""
@@ -3051,7 +3096,7 @@ function teacherChangeExamination() {
 								}
 							},
 							error : function(data) {
-								alert("??");
+								//alert("??");
 							},
 							dataType : "json",
 						});
@@ -3096,7 +3141,7 @@ function teacherChangeExamination() {
 						<input id="ShortAnswerValue" type="text" name="ShortAnswerValue"
 							required
 							style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
-							lay-verify="required" placeholder="本题分值" autocomplete="off"
+							lay-verify="required|math" placeholder="本题分值" autocomplete="off"
 							class="layui-input">
 					</div>
 					<br /> <br /> <br />
@@ -3120,6 +3165,12 @@ function teacherChangeExamination() {
 				</form>
 			</div>
 			<script type="text/javascript">
+			layui.use([ 'form', 'laydate' ], function() {
+				var form = layui.form, laydate = layui.laydate;
+				form.verify({
+					math:[/^[1-9]\d*/,'输入为大于零的正整数'],
+				});
+			});
 				//点击保存简答题
 				  function saveShortAnswer() {
 					if($('#ShortAnswerQuestionContent').val != "" && $('#ShortAnswerValue').val != ""
@@ -3182,7 +3233,7 @@ function teacherChangeExamination() {
 								}
 							},
 							error : function(data) {
-								alert("??");
+								//alert("??");
 							},
 							dataType : "json",
 						});

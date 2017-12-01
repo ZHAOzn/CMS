@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.mapping.ScoreMapping">
+	<cache type="com.qdu.cache.RedisCache" />
+	<resultMap type="com.qdu.pojo.Score" id="ScoreResult">
+		<id property="scoreId" column="ScoreId" />
+		<result property="studentRoNo" column="StudentRoNo" />
+		<result property="examinationID" column="ExaminationID" />
+		<result property="singleSelectionValue" column="SingleSelectionValue" />
+		<result property="moreSelectionValue" column="MoreSelectionValue" />
+		<result property="judgeValue" column="JudgeValue" />
+		<result property="packValue" column="PackValue" />
+		<result property="shortAnswerValue" column="ShortAnswerValue" />
+		<result property="totalValue" column="TotalValue" />
+		<result property="examEnd" column="ExamEnd" />
+	</resultMap>
+
+   <insert id="insertScore" parameterType="com.qdu.pojo.Score">
+      insert into 
+      Score(StudentRoNo,ExaminationID,SingleSelectionValue,MoreSelectionValue,
+      JudgeValue,PackValue,ShortAnswerValue,TotalValue,ExamEnd) 
+      values(#{studentRoNo},#{examinationID},#{singleSelectionValue},#{moreSelectionValue},
+      #{judgeValue},#{packValue},#{shortAnswerValue},#{totalValue},#{examEnd})
+    </insert>
+    
+    <select id="selectScoreByExIdAndStuRoNo" resultMap="ScoreResult" parameterType="HashMap">
+      select * from Score where ExaminationID = #{examinationID} And StudentRoNo = #{studentRoNo}
+    </select>
+    
+    <update id="updateScore" parameterType="HashMap">
+      update Score set
+      SingleSelectionValue = #{singleSelectionValue},
+       MoreSelectionValue = #{moreSelectionValue},
+        JudgeValue = #{judgeValue},
+         PackValue = #{packValue},
+          ShortAnswerValue = #{shortAnswerValue},
+           TotalValue = #{totalValue}
+      where StudentRoNo = #{studentRoNo} And ExaminationID = #{examinationID}
+    </update>
+    
+     <update id="updateScorebeforLoad" parameterType="HashMap">
+      update Score set
+      SingleSelectionValue = 0,
+       MoreSelectionValue = 0,
+        JudgeValue = 0,
+         PackValue = 0,
+          ShortAnswerValue = 0,
+           TotalValue = 0
+      where StudentRoNo = #{studentRoNo} And ExaminationID = #{examinationID}
+    </update>
+    
+    <update id="updateExamEnd" parameterType="HashMap">
+      update Score set
+      ExamEnd = 1
+      where StudentRoNo = #{studentRoNo} And ExaminationID = #{examinationID}
+    </update>
+
+</mapper>
