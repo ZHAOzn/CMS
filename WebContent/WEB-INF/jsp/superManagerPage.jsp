@@ -28,6 +28,8 @@
 			 $('#teacherLog').hide();
 			 $('#crud').hide();
 			 $('#manageJurisdiction').hide();
+			 $('#studentDetail').hide();
+			 $('#teacherDetail').hide();
 		});
 		 $('#studentLogShow').click(function name() {
 			 $('#messageList').html("操作日志");
@@ -37,6 +39,8 @@
 			 $('#teacherLog').hide();
 			 $('#crud').hide();
 			 $('#manageJurisdiction').hide();
+			 $('#studentDetail').hide();
+			 $('#teacherDetail').hide();
 		});
 		 $('#teacherInfoShow').click(function name() {
 			 $('#messageList').html("教师信息");
@@ -46,6 +50,8 @@
 			 $('#teacherLog').hide();
 			 $('#crud').hide();
 			 $('#manageJurisdiction').hide();
+			 $('#studentDetail').hide();
+			 $('#teacherDetail').hide();
 		});
 		 $('#teacherLogShow').click(function name() {
 			 $('#teacherLog').show();
@@ -55,6 +61,8 @@
 			 $('#teacherInfo').hide();
 			 $('#crud').hide();
 			 $('#manageJurisdiction').hide();
+			 $('#studentDetail').hide();
+			 $('#teacherDetail').hide();
 		});
 		 $('#crudShow').click(function name() {
 			 $('#crud').show();
@@ -64,6 +72,8 @@
 			 $('#teacherInfo').hide();
 			 $('#teacherLog').hide();
 			 $('#manageJurisdiction').hide();
+			 $('#studentDetail').hide();
+			 $('#teacherDetail').hide();
 		});
 		 $('#manageJurisdictionShow').click(function name() {
 			 $('#manageJurisdiction').show();
@@ -73,7 +83,31 @@
 			 $('#teacherInfo').hide();
 			 $('#teacherLog').hide();
 			 $('#crud').hide();
+			 $('#studentDetail').hide();
+			 $('#teacherDetail').hide();
 		});
+		 $('#studentDetailShow').click(function name(){
+			 $('#studentDetail').show();
+			 $('#messageList').html("学生详细信息");
+			 $('#studentLog').hide();
+			 $('#teacherInfo').hide();
+			 $('#teacherLog').hide();
+			 $('#crud').hide();
+			 $('#manageJurisdiction').hide();
+			 $('#studentInfo').hide();
+			 $('#teacherDetail').hide();
+		 });
+		 $('#teacherDetailShow').click(function name(){
+			 $('#teacherDetail').show();
+			 $('#messageList').html("教师详细信息");
+			 $('#studentLog').hide();
+			 $('#teacherInfo').hide();
+			 $('#teacherLog').hide();
+			 $('#crud').hide();
+			 $('#manageJurisdiction').hide();
+			 $('#studentInfo').hide();
+			 $('#studentDetail').hide();
+		 });
 // 		 $('#manageBlog').click(function name() {
 // 			 $('#messageList').html("管理博客");
 // 			 $('#studentInfo').hide();
@@ -83,41 +117,32 @@
 // 			 $('#studentInfo').hide();
 // 		});
 	 });
-	 
-// 	 $('#checkStudentShow').click(function name() {
-// 		 $('#messageList').html("学生信息");
-// 		 $('#studentLog').hide();
-// 		 $('#teacherInfo').hide();
-// 		 $('#teacherLog').hide();
-// 		 $('#crud').hide();
-// 		 $('#quxianmanage').hide();
-// 		 $('#manageBlog').hide();
-// 		 $('#manageAnnouncement').hide();
 
-// 		 $('#studentInfo').show();
-// 	});
-function clearRedis() {
-	alert("....");
-	 $.ajax({
-         type: "GET",
-         data: {
-         },
-         contentType: "application/json; charset=utf-8",
-         dataType: "json",
-         async: false,
-         url: "<%=request.getContextPath()%>/admin/clearRedis.do",
-			success : function(data) {
-				if (data.result == true) {
-					alert("清理成功");
-				} else {
-					alert("清理出现问题");
-				}
-			},
-			error : function(data) {
-				alert("服务器异常！");
-			},
-		});
-	}
+	//清理redis功能
+	function clearRedis() {
+		alert("....");
+	 	$.ajax({
+         	type: "GET",
+         	data: {
+        	},
+         	contentType: "application/json; charset=utf-8",
+         	dataType: "json",
+         	async: false,
+         	url: "<%=request.getContextPath()%>/admin/clearRedis.do",
+				success : function(data) {
+					if (data.result == true) {
+						alert("清理成功");
+					} else {
+						alert("清理出现问题");
+					}
+				},
+				error : function(data) {
+					alert("服务器异常！");
+				},
+			});
+	};
+	 
+	  
 </script>
 </head>
 <body>
@@ -240,7 +265,7 @@ function clearRedis() {
 										<td>${s.studentGender}</td>
 										<td>${s.studentMobile}</td>
 										<td>${s.studentEmail}</td>
-										<td><a id="studentDetail" href="#"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
+										<td><a id="studentDetailShow" href="#"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
 										</a></td>
 									</tr>
 								</c:forEach>
@@ -252,6 +277,51 @@ function clearRedis() {
 							</c:otherwise>
 						</c:choose>
 					</tbody>
+				</table>
+			</div>
+			
+			<!-- 学生详细信息模块 -->
+			<div id="studentDetail" class="site-text site-block" style="display: none;text-align: center;">
+				<table class="layui-table">
+					<tr>
+						<th style="color: #5FB878;text-align: center;">账号</th>
+						<td>1234</td>
+						<th style="color: #5FB878;text-align: center;">姓名</th>
+						<td colspan="2">4875</td>
+						
+						<td rowspan="4">照片</td>
+					</tr>
+					<tr>
+						<th style="color: #5FB878;text-align: center;">性别</th>
+						<td>男</td>
+						<th style="color: #5FB878;text-align: center;">手机</th>
+						<td colspan="2">12345678565</td>
+					</tr>
+					<tr>
+						<th style="color: #5FB878;text-align: center;">邮箱</th>
+						<td>12345646@qq.com</td>
+						<th style="color: #5FB878;text-align: center;">出生日期</th>
+						<td colspan="2">1995-12-11</td>
+					</tr>
+					<tr>
+						<th style="color: #5FB878;text-align: center;">学历</th>
+						<td>本科</td>
+						<th style="color: #5FB878;text-align: center;">外语</th>
+						<td colspan="2">英语</td>
+							
+					</tr>
+					<tr>
+						<th style="color: #5FB878;text-align: center;">学院</th>
+						<td>师范</td>
+						<th style="color: #5FB878;text-align: center;">专业</th>
+						<td>数学</td>
+						<th style="color: #5FB878;text-align: center;">入学时间</th>
+						<td>2017-09-01</td>
+					</tr>
+					<tr>
+						<th style="color: #5FB878;text-align: center;">freestyle</th>
+						<td colspan="5"></td>
+					</tr>
 				</table>
 			</div>
 
@@ -269,6 +339,7 @@ function clearRedis() {
 						<tr>
 							<th style="text-align: center;">学号</th>
 							<th style="text-align: center;">活动</th>
+							<th style="text-align: center;">响应时间</th>
 							<th style="text-align: center;">Ip</th>
 							<th style="text-align: center;">时间</th>
 							<th style="text-align: center;">结果</th>
@@ -281,6 +352,7 @@ function clearRedis() {
 									<tr>
 										<td>${sl.userId}</td>
 										<td style="text-align: left; padding-left: 10%;">${sl.method}</td>
+										<td>${sl.reponseTime}</td>
 										<td>${sl.ip}</td>
 										<td>${sl.date}</td>
 										<td>${sl.result}</td>
@@ -332,7 +404,7 @@ function clearRedis() {
 										<td>${t.teacherMobile}</td>
 										<td>${t.teacherEmail}</td>
 										<td>${t.teacherSubject}</td>
-										<td><a id="teacherDetail" href="#"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
+										<td><a id="teacherDetailShow" href="#"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
 										</a></td>
 									</tr>
 								</c:forEach>
@@ -344,6 +416,50 @@ function clearRedis() {
 							</c:otherwise>
 						</c:choose>
 					</tbody>
+				</table>
+			</div>
+			<!-- 教师详细信息模块 -->
+			<div id="teacherDetail" class="site-text site-block" style="display: none;">
+				<table class="layui-table">
+					<tr>
+						<th style="color: #5FB878;text-align: center;">账号</th>
+						<td>1234</td>
+						<th style="color: #5FB878;text-align: center;">姓名</th>
+						<td colspan="2">4875</td>
+						
+						<td rowspan="4">照片</td>
+					</tr>
+					<tr>
+						<th style="color: #5FB878;text-align: center;">性别</th>
+						<td>男</td>
+						<th style="color: #5FB878;text-align: center;">手机</th>
+						<td colspan="2">12345678565</td>
+					</tr>
+					<tr>
+						<th style="color: #5FB878;text-align: center;">邮箱</th>
+						<td>12345646@qq.com</td>
+						<th style="color: #5FB878;text-align: center;">出生日期</th>
+						<td colspan="2">1995-12-11</td>
+					</tr>
+					<tr>
+						<th style="color: #5FB878;text-align: center;">学历</th>
+						<td>本科</td>
+						<th style="color: #5FB878;text-align: center;">外语</th>
+						<td colspan="2">英语</td>
+							
+					</tr>
+					<tr>
+						<th style="color: #5FB878;text-align: center;">学院</th>
+						<td>师范</td>
+						<th style="color: #5FB878;text-align: center;">学科</th>
+						<td>数学</td>
+						<th style="color: #5FB878;text-align: center;">入职时间</th>
+						<td>2017-09-01</td>
+					</tr>
+					<tr>
+						<th style="color: #5FB878;text-align: center;">备注</th>
+						<td colspan="5"></td>
+					</tr>
 				</table>
 			</div>
 
@@ -359,8 +475,9 @@ function clearRedis() {
 					</colgroup>
 					<thead>
 						<tr>
-							<th style="text-align: center;">学号</th>
+							<th style="text-align: center;">账号</th>
 							<th style="text-align: center;">活动</th>
+							<th style="text-align: center;">响应时间</th>
 							<th style="text-align: center;">Ip</th>
 							<th style="text-align: center;">时间</th>
 							<th style="text-align: center;">结果</th>
@@ -373,6 +490,7 @@ function clearRedis() {
 									<tr>
 										<td>${tl.userId}</td>
 										<td style="text-align: left; padding-left: 10%;">${tl.method}</td>
+										<td>${tl.reponseTime}</td>
 										<td>${tl.ip}</td>
 										<td>${tl.date}</td>
 										<td>${tl.result}</td>
@@ -391,11 +509,50 @@ function clearRedis() {
 			</div>
 
 			<!-- CRUD管理模块 -->
-			<div id="crud" class="site-text site-block" style="display: none;text-align: center;">
-				<button class="layui-btn">增</button>
-				<button class="layui-btn">删</button> 
-				<button class="layui-btn">查</button>
-				<button class="layui-btn">改</button>
+			<div id="crud" class="layui-tab layui-tab-card" style="display: none;text-align: center; margin: 3% 10%">
+				<ul class="layui-tab-title">
+   					<li class="layui-this">增加学生</li>
+   					<li>增加教师</li>
+    				<li>删</li>
+   					<li>查</li>
+    				<li>改</li>
+  				</ul>
+  				<div class="layui-tab-content" style="height: 500px;">
+   					<div class="layui-tab-item layui-show">
+   						<form class="layui-form">
+   							<div class="layui-form-item">
+   								<label class="layui-form-label">增个屁吧</label>
+    							<div class="layui-input-block">
+     								<input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+    							</div>
+  							</div>
+   						</form>
+   					</div>
+    				<div class="layui-tab-item">2</div>
+    				<div class="layui-tab-item">3</div>
+    				<div class="layui-tab-item">
+    					<form class="layui-form">
+   							<div class="layui-form-item">
+   								<label class="layui-form-label">按账号搜索</label>
+    							<div class="layui-input-block">
+     								<input type="text" name="title" required  lay-verify="required" placeholder="请输入账号" autocomplete="off" class="layui-input">
+    							</div>
+  							</div>
+  							<div class="layui-form-item">
+   								<label class="layui-form-label">按姓名搜索</label>
+    							<div class="layui-input-block">
+     								<input type="text" name="title" required  lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+    							</div>
+  							</div>
+  							<div class="layui-form-item">
+    							<div class="layui-input-block">
+      								<button class="layui-btn" lay-submit lay-filter="formDemo">搜索</button>
+      								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    							</div>
+   						</form>
+    				</div>
+    				<div class="layui-tab-item">4</div>
+  				</div>
 			</div>
 
 			<!-- 权限管理模块 -->
@@ -405,11 +562,12 @@ function clearRedis() {
 		</div>
 	</div>
 	<script type="text/javascript">
-		layui.use([ 'element', 'layer', 'table' ],function() {
+		layui.use([ 'element', 'layer', 'table' ,'form'],function() {
 			var element = layui.element
 			,$ = layui.jquery
 			,layer = layui.layer
-			,table = layui.table;
+			,table = layui.table
+			,form = layui.form;
 		});
 	</script>
 </body>
