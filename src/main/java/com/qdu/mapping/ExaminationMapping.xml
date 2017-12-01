@@ -108,6 +108,11 @@
 	  select * from Examination where CourseId = #{courseId} order by ExaminationID desc limit 1
 	</select>
 	
+	<select id="selectMaxExaminationIdByCourseIdAndStatus" resultMap="ExaminationResult" parameterType="HashMap">
+	  select * from Examination where CourseId = #{courseId} And
+	  ExaminationStatus = #{examinationStatus} order by ExaminationID desc
+	</select>
+	
 	<insert id="insertExamination" parameterType="com.qdu.pojo.Examination">
 	  insert into 
 	  Examination(ExaminationName,OnlyCode,TotalValue,StartTime,Duration,ExaminationStatus,CanEdit,CourseID) 

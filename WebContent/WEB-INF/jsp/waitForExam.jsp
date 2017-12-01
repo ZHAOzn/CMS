@@ -79,7 +79,43 @@
 	function nextstep() {
 		$('#studentRoNo').val(${student.studentRoNo});
 		$('#examinationID').val(${examination.examinationID});
-		$('#examForm').submit();
+		$.ajax({
+	        type: "GET",
+	        data: {
+	       	 "studentRoNo":$('#studentRoNo').val(),
+	         "examinationID":$('#examinationID').val()
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/beforExamFormSubmit.do",
+			success : function(data) {
+				if(data.result == true){
+					$('#examForm').submit();
+				}else {
+					layui.use('layer', function(){ 
+		  	               var $ = layui.jquery, layer = layui.layer; 
+		    			      layer.open({
+		    			        type: 1
+		    			        ,offset: 'auto' 
+		    			        ,id: 'layerDemo'+'auto' 
+		    			        ,title: '失败'
+		    			        ,content: '<div style="padding: 20px 100px;">'+ "考试已经结束." +'</div>'
+		    			        ,btn: '关闭'
+		    			        ,btnAlign: 'c'
+		    			        ,shade: 0 
+		    			        ,yes: function(){
+		    			        	 layer.closeAll();
+		    			        }
+		    			      });
+		  	            });
+				}
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+		
 	}
 	</script>
 </body>

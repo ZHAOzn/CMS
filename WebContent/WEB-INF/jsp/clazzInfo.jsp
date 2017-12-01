@@ -295,7 +295,9 @@ function getPrivateData() {
 	 $('#clazzInfoShow').hide();
 	 $('#addQuestionsDiv').hide();
 	 $('#inClazzStudentInfoDiv').hide();
+	 $('#studentExam').hide();
 	 $('#upLoadShow').show();
+	 
 	 $.ajax({
          type: "GET",
          data: {
@@ -320,6 +322,7 @@ function getPrivateData() {
 		},
 		dataType : "json",
 	});
+	
 }
 function timeoutForFileList() {
 	setTimeout('getPrivateData()',2000);
@@ -333,6 +336,7 @@ function getAddClass() {
 	 $('#clazzInfoShow').hide();
 	 $('#addExaminationDiv').hide();
 	 $('#addQuestionsDiv').hide();
+	 $('#studentExam').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#addClassShow').show();
 }
@@ -347,11 +351,13 @@ function classInfo() {
 	 $('#addExaminationDiv').hide();
 	 $('#addQuestionsDiv').hide();
 	 $('#addClassShow').hide();
+	 $('#studentExam').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#clazzInfoShow1').show();
 	 $('#clazzInfoShow').show();
 	 
 }
+
 //添加班级
 function teacherAddClazz() {
 	if($('#clazzName').val().length > 0 && $('#clazzName').val().length <21 & $('#currentYear').val()!=""){
@@ -432,8 +438,297 @@ function aClick(clazzId) {
 		dataType : "json",
 	});
 }
+//批改试卷
+function TocorrectExamination() {
+	 $('#getHeadLine').html("批改试卷");
+	 $('#clazzForm').hide();
+	 $('#signModel').hide();
+	 $('#otherModel').hide();
+	 $('#upLoadShow').hide();
+	 $('#addClassShow').hide();
+	 $('#addExaminationDiv').hide();
+	 $('#addQuestionsDiv').hide();
+	 $('#addClassShow').hide();
+	 $('#inClazzStudentInfoDiv').hide();
+	 $('#clazzInfoShow1').hide();
+	 $('#clazzInfoShow').hide();
+	 $('#packScore').hide();
+	 $('#ShortAnswerScore').hide();
+	 $('#studentScoreList').hide();
+	 $('#studentScoreListH3').hide();
+	 $('#studentExam').show();
+	 $('#PreExaminationList').show();
+	 
+		$.ajax({
+	        type: "GET",
+	        data: {
+	        	"courseId":${course.courseId}
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/selectExaminationByCourseIdAndAnother.do",
+			success : function(data) {
+				var dataObj = data.examinations;
+				 con = "";
+				 $.each(dataObj, function (index, item) {
+					    con += "<tr id=N"+item.examinationID+">";
+	       	        con += "<td style='text-align:center;'>" + item.examinationID + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.examinationName + "</td>";
+	       	        con += "<td style='text-align:center; color:#FF5722;'>" + item.onlyCode + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.totalValue + "分</td>";
+	       	        con += "<td style='text-align:center;'>" + item.startTime + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.duration + "分钟</td>";
+	       	        con += "<td style='text-align:center;'><div class='site-demo-button' id='layerDemo'><a id="+item.examinationID+" onclick='getStudentExamList(this.id)' class='layui-btn'>" + "批改" + "</a></div></td>";
+	       	        con += "<tr/>";
+	       	    });
+				 $('#teacherExaminationShowTable').html(con);
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+}
+//获取考完的学生的试卷/答案列表
+function getStudentExamList(id) {
+	$('#changeExamEndX').val(id);
+	$.ajax({
+        type: "GET",
+        data: {
+        	"examinationID":id
+        },
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        url: "<%=request.getContextPath()%>/exam/getStudentExamList.do",
+		success : function(data) {
+			var dataObj = data.scores;
+			 con = "";
+			 $.each(dataObj, function (index, item) {
+		        con += "<tr id=SL"+item.examinationID+">";
+	            con += "<td style='text-align:center;'>" + item.studentRoNo + "</td>";
+	            con += "<td style='text-align:center;'>" + item.studentName + "</td>";
+	            con += "<td style='text-align:center;'>" + item.studentClass + "</td>";
+	            con += "<td style='text-align:center;'>" + item.singleSelectionValue + "</td>";
+                con += "<td style='text-align:center;'>" + item.moreSelectionValue + "</td>";
+       	        con += "<td style='text-align:center;'>" + item.judgeValue + "</td>";
+       	        con += "<td style='text-align:center;'><a style='color:#FF5722;' id='P"+item.scoreId+"' onclick='getStudentPackList(this.id)' href='#'>" + item.packValue + "</a></td>";
+       	        con += "<td style='text-align:center;'><a id='S"+item.scoreId+"'>" + item.shortAnswerValue + "</a></td>";
+       	        con += "<td style='text-align:center;'>" + item.totalValue + "</td>";
+       	        con += "<tr/>";
+       	    });
+			 $('#ScoreList').html(con);
+			 $('#PreExaminationList').hide();
+			 $('#packScore').hide();
+			 $('#ShortAnswerScore').hide();
+			 $('#studentScoreList').show();
+			 $('#studentScoreListH3').show();
+		},
+		error : function(data) {
+			alert("??");
+		},
+		dataType : "json",
+	});
+}
+//填空打分
+function getStudentPackList(id) {
+	$.ajax({
+        type: "GET",
+        data: {
+        	"scoreId":id.substring(1)
+        },
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        url: "<%=request.getContextPath()%>/exam/getStudentPackList.do",
+		success : function(data) {
+			var dataObj = data.packs;
+			 con = "";
+			 $.each(dataObj, function (index, item) {
+	            con += "<li style='font-size: 1.2em'>(" + item.questionNumber + ") " +item.packContent + " (" + item.value +"分)</li>";
+	            con += "<li>" + "&nbsp;" + "</li>";
+	            con += "<li><span style='color:#5FB878;'>参考答案：</span>" + item.answer + "</li>";
+	            con += "<li>" + "<input type='text' id='Y"+item.packId+"' value='"+item.value+"' style='display:none'/>" + "</li>";
+	            con += "<li><span style='color:#FF5722;'>学生答案：</span>" + item.studentAnswer + "</li>";
+	            con += "<li>" + "<input type='text' id='X"+item.packId+"' value='"+data.student.studentRoNo+"' style='display:none'/>" + "</li>";
+	            con += "<li>得分：" + "<input id='"+item.packId+"' onchange='setPackStuAnswer(this.id)' type='text'/>" + "</li>";
+       	    });
+			 
+			 var dataOs = data.shortAnswers;
+			 von = "";
+			 $.each(dataOs, function (index, item) {
+				 von += "<li style='font-size: 1.2em'>(" + item.questionNumber + ") " +item.shortAnswerContent + " (" + item.value +"分)</li>";
+				 von += "<li>" + "&nbsp;" + "</li>";
+				 von += "<li>" + "<input type='text' id='YTC"+item.shortAnswerId+"' value='"+item.value+"' style='display:none'/>" + "</li>";
+				 von += "<li><span style='color:#FF5722;'>学生答案：</span>" + item.studentAnswer + "</li>";
+				 von += "<li>" + "<input type='text' id='XTC"+item.shortAnswerId+"' value='"+data.student.studentRoNo+"' style='display:none'/>" + "</li>";
+				 von += "<li>得分：" + "<input id='TC"+item.shortAnswerId+"' onchange='setShortAnswerIdStuAnswer(this.id)' type='text'/>" + "</li>";
+	       	    });
+			 
+			 
+			 $('#PackLi').html(con);
+			 $('#ShortAnswerLi').html(von);
+			 $('#PreExaminationList').hide();
+			 $('#studentScoreList').hide();
+			 $('#studentScoreListH3').hide();
+			 $('#packScore').show();
+			 $('#ShortAnswerScore').show();
+		},
+		error : function(data) {
+			alert("??");
+		},
+		dataType : "json",
+	});
+}
+//老师对填空题打了分
+function setPackStuAnswer(id) {
+	var studentRoNo = $('#X'+id).val();
+	var oldValue = $('#Y'+id).val();
+	var packId = id;
+	var r = /^\+?[1-9][0-9]*$/;
+	if(r.test($('#'+id).val())){
+		if($('#'+id).val() <= oldValue){
+			$.ajax({
+		        type: "GET",
+		        data: {
+		        	"studentRoNo":studentRoNo,
+		        	"packId":packId,
+		        	"value":$('#'+id).val()
+		        },
+		        contentType: "application/json; charset=utf-8",
+		        async: false,
+		        url: "<%=request.getContextPath()%>/exam/setPackStuAnswer.do",
+				success : function(data) {
+					
+				},
+				error : function(data) {
+					alert("??");
+				},
+				dataType : "json",
+			});
+		}else {
+			layui.use('layer', function(){
+	              var $ = layui.jquery, layer = layui.layer; 
+				      layer.open({
+				        type: 1
+				        ,offset: 'auto' 
+				        ,id: 'layerDemo'+'auto'
+				        ,title: '错误'
+				        ,content: '<div style="padding: 20px 100px; color:#FF5722;">'+ "分数超出~." +'</div>'
+				        ,btn: '关闭'
+				        ,btnAlign: 'c' 
+				        ,shade: 0 
+				        ,yes: function(){
+				        	layer.closeAll();
+				        }
+				      });
+	           });
+		}
+	}else {
+		layui.use('layer', function(){
+             var $ = layui.jquery, layer = layui.layer; 
+		      layer.open({
+		        type: 1
+		        ,offset: 'auto'
+		        ,id: 'layerDemo'+'auto'
+		        ,title: '错误'
+		        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数请输入正整数" +'</div>'
+		        ,btn: '关闭'
+		        ,btnAlign: 'c'
+		        ,skin: 'demo-class'
+		        ,shade: 0 
+		        ,yes: function(){
+		        	 layer.closeAll();
+		        }
+		      });
+          });
+	}	
+}
 
+//老师对简答题打分
+function setShortAnswerIdStuAnswer(id) {
+	var studentRoNo = $('#X'+id).val();
+	var oldValue = $('#Y'+id).val();
+	var shortAnswerId = id.substring(2);
+	var zx = /^\+?[1-9][0-9]*$/;
+	if(zx.test($('#'+id).val())){
+		if($('#'+id).val() <= oldValue){
+			$.ajax({
+		        type: "GET",
+		        data: {
+		        	"studentRoNo":studentRoNo,
+		        	"shortAnswerId":shortAnswerId,
+		        	"value":$('#'+id).val()
+		        },
+		        contentType: "application/json; charset=utf-8",
+		        async: false,
+		        url: "<%=request.getContextPath()%>/exam/setShortAnswerStuAnswer.do",
+				success : function(data) {
+					
+				},
+				error : function(data) {
+					alert("??");
+				},
+				dataType : "json",
+			});
+		}else {
+			layui.use('layer', function(){
+	              var $ = layui.jquery, layer = layui.layer; 
+				      layer.open({
+				        type: 1
+				        ,offset: 'auto' 
+				        ,id: 'layerDemo'+'auto'
+				        ,title: '错误'
+				        ,content: '<div style="padding: 20px 100px; color:#FF5722;">'+ "分数超出~." +'</div>'
+				        ,btn: '关闭'
+				        ,btnAlign: 'c' 
+				        ,shade: 0 
+				        ,yes: function(){
+				        	layer.closeAll();
+				        }
+				      });
+	           });
+		}
+	}else {
+		layui.use('layer', function(){
+            var $ = layui.jquery, layer = layui.layer; 
+		      layer.open({
+		        type: 1
+		        ,offset: 'auto'
+		        ,id: 'layerDemo'+'auto'
+		        ,title: '错误'
+		        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数请输入正整数" +'</div>'
+		        ,btn: '关闭'
+		        ,btnAlign: 'c'
+		        ,skin: 'demo-class'
+		        ,shade: 0 
+		        ,yes: function(){
+		        	 layer.closeAll();
+		        }
+		      });
+         });
+	}
 
+}
+//打分完成
+function changeExamEndXX() {
+	layui.use('layer', function(){
+        var $ = layui.jquery, layer = layui.layer; 
+	      layer.open({
+	        type: 1
+	        ,offset: 'auto'
+	        ,id: 'layerDemo'+'auto'
+	        ,title: '成功'
+	        ,content: '<div style="padding: 20px 100px;">'+ "后续可对成绩进行更改" +'</div>'
+	        ,btn: '关闭'
+	        ,btnAlign: 'c'
+	        ,skin: 'demo-class'
+	        ,shade: 0 
+	        ,yes: function(){
+	        	 layer.closeAll();
+	        }
+	      });
+     });
+	getStudentExamList($('#changeExamEndX').val());
+}
 //点击查看试卷
 function addExamination() {
 	 $('#getHeadLine').html("添加试卷");
@@ -442,6 +737,7 @@ function addExamination() {
 	 $('#signModel').hide();
 	 $('#otherModel').hide();
 	 $('#upLoadShow').hide();
+	 $('#studentExam').hide();
 	 $('#clazzInfoShow').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#addClassShow').hide();
@@ -1782,6 +2078,7 @@ function teacherChangeExamination() {
 					});
 	}
 }
+
 </script>
 </head>
 <body>
@@ -1840,7 +2137,7 @@ function teacherChangeExamination() {
 								<a onclick="FirstFunction()" id="addExamination" href="#">查看试卷</a>
 							</dd>
 							<dd>
-								<a id="correctExamination" href="#">批改试卷</a>
+								<a onclick="TocorrectExamination()" id="correctExamination" href="#">批改试卷</a>
 							</dd>
 							<dd>
 								<a id="lookatScore" href="#">查看成绩</a>
@@ -2132,6 +2429,7 @@ function teacherChangeExamination() {
 					$('#clazzInfoShow').hide();
 					$('#inClazzStudentInfoDiv').hide();
 					$('#addQuestionsDiv').hide();
+					 $('#studentExam').hide();
 					$('#addExaminationDiv').hide();
 					$('#signModel').show();
 				});
@@ -2182,6 +2480,7 @@ function teacherChangeExamination() {
 					$('#addClassShow').hide();
 					$('#signModel').hide();
 					$('#addExaminationDiv').hide();
+					 $('#studentExam').hide();
 					$('#inClazzStudentInfoDiv').hide();
 					$('#addQuestionsDiv').hide();
 					$('#clazzInfoShow').hide();
@@ -2351,7 +2650,7 @@ function teacherChangeExamination() {
 				});
 				</script>
 
-
+    
 			<!-- 试卷列表 -->
 			<table id="ExaminationList" class="layui-table" lay-even
 				style="text-align: center; width: 100%; margin-left: 0;">
@@ -3343,7 +3642,119 @@ function teacherChangeExamination() {
 					});
 				}
 			    </script>
+			    
+		<!-- 教师改卷 -->	   
+		<div id="studentExam" class="site-text site-block"
+			style="display: none;margin-top: 0; padding-left: 0; padding-right: 0;"> 
+           <!-- 试卷列表 -->
+			<table id="PreExaminationList" class="layui-table" lay-even
+				style="text-align: center; width: 100%;">
+				<colgroup>
+					<col width="80">
+					<col width="100">
+					<col width="90">
+					<col width="100">
+					<col width="100">
+					<col width="80">
+					<col width="110">
+				</colgroup>
+				<thead>
+					<tr id="title">
+						<th style="text-align: center;">试卷编码</th>
+						<th style="text-align: center;">试卷名称</th>
+						<th style="text-align: center;">考试码</th>
+						<th style="text-align: center;">总分</th>
+						<th style="text-align: center;">开始时间</th>
+						<th style="text-align: center;">考试时长</th>
+						<th style="text-align: center;">操作</th>
+					</tr>
+				</thead>
+				<tbody id="teacherExaminationShowTable">
 
+				</tbody>
+			</table>
+			
+			<!-- 学生的试卷/答案列表 -->
+			<h3 id="studentScoreListH3" style="display: none;color: #FF5722;">判断和简答需要您手动判题🙂</h3>
+			<table id="studentScoreList" class="layui-table" lay-even
+				style="text-align: center; width: 100%; display: none;">
+				<colgroup>
+					<col width="80">
+					<col width="80">
+					<col width="80">
+					<col width="80">
+					<col width="80">
+					<col width="80">
+					<col width="80">
+					<col width="80">
+					<col width="100">
+				</colgroup>
+				<thead>
+					<tr id="title">
+						<th style="text-align: center;">学号</th>
+						<th style="text-align: center;">姓名</th>
+						<th style="text-align: center;">班级</th>
+						<th style="text-align: center;">单选</th>
+						<th style="text-align: center;">多选</th>
+						<th style="text-align: center;">判断</th>
+						<th style="text-align: center;">填空</th>
+						<th style="text-align: center;">简答</th>
+						<th style="text-align: center;">总分</th>
+					</tr>
+				</thead>
+				<tbody id="ScoreList">
+
+				</tbody>
+			</table>
+			
+			
+	    <form class="layui-form layui-form-pane">
+	    <!-- 填空部分打分 -->
+		<div id="packScore"
+		style="background-color: white; margin-left: 5%; padding-left0;
+		margin-right: 5%; padding-top: 10px; font-family: 微软雅黑;display: none;">
+		<h3 style="font-size: 1.4em;color: #5FB878;"><四>填空<span style="font-size: 0.8em"></span></h3>
+		<br />
+		<ul id="PackLi">
+	
+		</ul>
+	   </div>
+	   
+	   <!-- 简答部分打分 -->
+	   <div id="ShortAnswerScore"
+		style="background-color: white; margin-left: 5%; padding-left0;
+		margin-right: 5%; padding-top: 10px; font-family: 微软雅黑;display: none;">
+		<h3 style="font-size: 1.4em;color: #5FB878;"><五>简答<span style="font-size: 0.8em"></span></h3>
+		<br />
+		<ul id="ShortAnswerLi">
+	
+		</ul>
+		<br/><br/>
+		<input id="changeExamEndX" style="display: none;"/>
+		<input class="layui-btn" style="width: 8em" 
+						onclick="changeExamEndXX()" type="button" value="批改完成" />
+	   </div>
+	   
+	   
+	  </form>
+			
+			<script>
+			layui.use([ 'form', 'laydate' ], function() {
+				var form = layui.form, laydate = layui.laydate;
+				form.verify({
+					math:[/^[1-9]\d*/,'输入为大于零的正整数'],
+				});
+			});
+				layui.use('table', function() {
+					var table = layui.table;
+				});
+			    </script>
+		</div>
+		
+		
+		
+		
+		
 		<!-- 上传文件 -->
 		<div id="upLoadShow" class="site-text site-block"
 			style="display: none; margin-top: 0;">

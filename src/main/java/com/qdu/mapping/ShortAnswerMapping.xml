@@ -62,6 +62,13 @@
 	  where ShortAnswerId = #{shortAnswerId}
 	</update>
 	
+	<update id="updateShortAnswerStudentAnswer" parameterType="HashMap">
+	  update ShortAnswer set
+	  StudentAnswer = #{studentAnswer}
+	  where QuestionNumber = #{questionNumber}
+	  And ExaminationID = #{examinationID}
+	</update>
+	
 	<delete id="deleteShortAnswer" parameterType="int">
 	  delete from ShortAnswer where ExaminationID = #{examinationID}
 	</delete>

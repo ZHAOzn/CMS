@@ -5,6 +5,8 @@
 	<resultMap type="com.qdu.pojo.Score" id="ScoreResult">
 		<id property="scoreId" column="ScoreId" />
 		<result property="studentRoNo" column="StudentRoNo" />
+		<result property="studentName" column="StudentName" />
+		<result property="studentClass" column="StudentClass" />
 		<result property="examinationID" column="ExaminationID" />
 		<result property="singleSelectionValue" column="SingleSelectionValue" />
 		<result property="moreSelectionValue" column="MoreSelectionValue" />
@@ -17,14 +19,22 @@
 
    <insert id="insertScore" parameterType="com.qdu.pojo.Score">
       insert into 
-      Score(StudentRoNo,ExaminationID,SingleSelectionValue,MoreSelectionValue,
+      Score(StudentRoNo,StudentName,StudentClass,ExaminationID,SingleSelectionValue,MoreSelectionValue,
       JudgeValue,PackValue,ShortAnswerValue,TotalValue,ExamEnd) 
-      values(#{studentRoNo},#{examinationID},#{singleSelectionValue},#{moreSelectionValue},
+      values(#{studentRoNo},#{studentName},#{studentClass},#{examinationID},#{singleSelectionValue},#{moreSelectionValue},
       #{judgeValue},#{packValue},#{shortAnswerValue},#{totalValue},#{examEnd})
     </insert>
     
     <select id="selectScoreByExIdAndStuRoNo" resultMap="ScoreResult" parameterType="HashMap">
       select * from Score where ExaminationID = #{examinationID} And StudentRoNo = #{studentRoNo}
+    </select>
+    
+    <select id="selectScoreByExId" resultMap="ScoreResult" parameterType="int">
+      select * from Score where ExaminationID = #{examinationID}
+    </select>
+    
+    <select id="selectScoreById" resultMap="ScoreResult" parameterType="int">
+      select * from Score where ScoreId = #{scoreId}
     </select>
     
     <update id="updateScore" parameterType="HashMap">

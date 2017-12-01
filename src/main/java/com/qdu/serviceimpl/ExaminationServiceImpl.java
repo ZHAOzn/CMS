@@ -349,6 +349,36 @@ public class ExaminationServiceImpl implements ExaminationService{
 	public int updateScorebeforLoad(String studentRoNo, int examinationID) {
 		return examinationDaoImpl.updateScorebeforLoad(studentRoNo, examinationID);
 	}
+
+	@Override
+	public int updateExamEnd(String studentRoNo, int examinationID) {
+		return examinationDaoImpl.updateExamEnd(studentRoNo, examinationID);
+	}
+
+	@Override
+	public List<Examination> selectMaxExaminationIdByCourseIdAndStatus(int courseId, String examinationStatus) {
+		return examinationDaoImpl.selectMaxExaminationIdByCourseIdAndStatus(courseId, examinationStatus);
+	}
+
+	@Override
+	public List<Score> selectScoreByExId(int examinationID) {
+		return examinationDaoImpl.selectScoreByExId(examinationID);
+	}
+
+	@Override
+	public Score selectScoreById(int scoreId) {
+		return examinationDaoImpl.selectScoreById(scoreId);
+	}
+
+	@Override
+	public int updatePackStudentAnswer(int examinationID, int questionNumber, String studentAnswer) {
+		return examinationDaoImpl.updatePackStudentAnswer(examinationID, questionNumber, studentAnswer);
+	}
+
+	@Override
+	public int updateShortAnswerStudentAnswer(int examinationID, int questionNumber, String studentAnswer) {
+		return examinationDaoImpl.updateShortAnswerStudentAnswer(examinationID, questionNumber, studentAnswer);
+	}
 	
 	
 }
