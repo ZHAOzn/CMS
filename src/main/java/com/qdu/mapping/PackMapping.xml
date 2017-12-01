@@ -43,6 +43,10 @@
 	  select * from Pack where ExaminationID = #{examinationID} order by QuestionNumber asc
 	</select>
 	
+	<select id="selectPackByExAndQusNum" resultMap="PackResult">
+	  select * from Pack where ExaminationID = #{examinationID} And QuestionNumber = #{questionNumber}
+	</select>
+	
 	<insert id="insertPack" parameterType="com.qdu.pojo.Pack">
 	  insert into 
 	  Pack(QuestionNumber,PackContent,QuestionsType,
