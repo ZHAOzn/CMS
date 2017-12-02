@@ -84,41 +84,7 @@
 		});
 		 //课程信息
 		 $('#checkCourseShow').click(function() {
-			 $('#messageList').html("课程信息");
-			 $('#seprateMessage').hide();
-			 $('#changeCourseinfo').hide();
-			 $('#doubleHandle').hide();
-			 $('#signal').hide();
-			 $('#courseShow').hide();
-			 $('#messageShow').hide();
-			 $('#fushuMessage').hide();
-			 $('#upLoadShow').hide();
-			 $('#forTeacherLogInfo').hide();
-				$('#teacherLogInfo').hide();
-				$("#teacherLogOfTime").hide();
-			 $('#lookData').hide();
-			 $('#fileInfo').hide();
-			 $('#teacherInfoShow').hide();
-			 $('#courseInfo').show();
-			});
-		 //首页
-		  $('#checkCourseShow2').click(function() {
-			  $('#messageList').html("课程信息");
-			 $('#seprateMessage').hide();
-			 $('#changeCourseinfo').hide();
-			 $('#doubleHandle').hide();
-			 $('#signal').hide();
-			 $('#courseShow').hide();
-			 $('#messageShow').hide();
-			 $('#fushuMessage').hide();
-			 $('#lookData').hide();
-			 $('#fileInfo').hide();
-			 $('#forTeacherLogInfo').hide();
-				$('#teacherLogInfo').hide();
-				$("#teacherLogOfTime").hide();
-			 $('#teacherInfoShow').hide();
-			 $('#upLoadShow').hide();
-			 $('#courseInfo').show();
+			 window.location.reload();
 			});
 		 //点击消息
 		  $('#messageButtton').click(function() {
@@ -323,8 +289,23 @@
              //url不加空格！！！！！！！！！！！！！！！！！！！！！！！
              url: "<%=request.getContextPath()%>/course/insertCourse.do",
 			success : function(data) {
-				$('#addCourseShow').show();
-				setTimeout('yourFunction()',2000); 
+				layui.use('layer', function(){
+	 	               var $ = layui.jquery, layer = layui.layer; 
+	   			      layer.open({
+	   			        type: 1
+	   			        ,offset: 'auto'
+	   			        ,id: 'layerDemo'+'auto'
+	   			        ,title: '成功'
+	   			        ,content: '<div style="padding: 20px 100px;">'+ "课程添加成功" +'</div>'
+	   			        ,btn: '关闭'
+	   			        ,btnAlign: 'c'
+	   			        ,skin: 'demo-class'
+	   			        ,shade: 0 
+	   			        ,yes: function(){
+	   			        	 layer.closeAll();
+	   			        }
+	   			      });
+	 	            });
 			},
 			dataType : "json",
 		});
@@ -426,7 +407,23 @@
 					$('#handleMessageShow').show();
 					setTimeout('myFunction()',1500);
 				}else{
-					alert("请勿重复添加");
+					layui.use('layer', function(){
+		 	               var $ = layui.jquery, layer = layui.layer; 
+		   			      layer.open({
+		   			        type: 1
+		   			        ,offset: 'auto'
+		   			        ,id: 'layerDemo'+'auto'
+		   			        ,title: '提示'
+		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "请勿重复添加" +'</div>'
+		   			        ,btn: '关闭'
+		   			        ,btnAlign: 'c'
+		   			        ,skin: 'demo-class'
+		   			        ,shade: 0 
+		   			        ,yes: function(){
+		   			        	 layer.closeAll();
+		   			        }
+		   			      });
+		 	            });
 				}
 			},
 			error : function(data) {
@@ -565,7 +562,23 @@
 	         },
 	     });
 		}else{
-			alert("请至少输入一项吧大侠？");
+			layui.use('layer', function(){
+	               var $ = layui.jquery, layer = layui.layer; 
+			      layer.open({
+			        type: 1
+			        ,offset: 'auto'
+			        ,id: 'layerDemo'+'auto'
+			        ,title: '提示'
+			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "至少输入一个条件" +'</div>'
+			        ,btn: '关闭'
+			        ,btnAlign: 'c'
+			        ,skin: 'demo-class'
+			        ,shade: 0 
+			        ,yes: function(){
+			        	 layer.closeAll();
+			        }
+			      });
+	            });
 		}
 	}
 	//同意学生请假
@@ -587,7 +600,23 @@ function agreeLeave() {
 				$('#handleMessageShow').show();
 				setTimeout('dontCare()',1500);
 			}else{
-				alert("已经处理过");
+				layui.use('layer', function(){
+	 	               var $ = layui.jquery, layer = layui.layer; 
+	   			      layer.open({
+	   			        type: 1
+	   			        ,offset: 'auto'
+	   			        ,id: 'layerDemo'+'auto'
+	   			        ,title: '提示'
+	   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "您已经处理过" +'</div>'
+	   			        ,btn: '关闭'
+	   			        ,btnAlign: 'c'
+	   			        ,skin: 'demo-class'
+	   			        ,shade: 0 
+	   			        ,yes: function(){
+	   			        	 layer.closeAll();
+	   			        }
+	   			      });
+	 	            });
 			}
 		},
 		error : function(data) {
@@ -613,7 +642,23 @@ function cantLeave() {
 				$('#handleMessageShow').show();
 				setTimeout('dontCare()',1500);
 			}else{
-				alert("已经处理过");
+				layui.use('layer', function(){
+	 	               var $ = layui.jquery, layer = layui.layer; 
+	   			      layer.open({
+	   			        type: 1
+	   			        ,offset: 'auto'
+	   			        ,id: 'layerDemo'+'auto'
+	   			        ,title: '提示'
+	   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "您已经处理过" +'</div>'
+	   			        ,btn: '关闭'
+	   			        ,btnAlign: 'c'
+	   			        ,skin: 'demo-class'
+	   			        ,shade: 0 
+	   			        ,yes: function(){
+	   			        	 layer.closeAll();
+	   			        }
+	   			      });
+	 	            });
 			}
 		},
 		error : function(data) {
@@ -622,7 +667,10 @@ function cantLeave() {
 		dataType : "json",
 	});
 }
-
+//首页
+function checkCourseShow2() {
+	window.location.reload();
+}
 </script>
 </head>
 <body>
@@ -654,11 +702,11 @@ function cantLeave() {
 		<!-- 头部导航 -->
 		<div class="layui-header header header-demo">
 			<div class="layui-main">
-				<a class="CMSlogo" href="/"><span
+				<a class="CMSlogo" href="#" onclick="checkCourseShow2()"><span
 					style="color: white; font-size: 25px;">CMS</span></a>
 
 				<ul class="layui-nav">
-					<li class="layui-nav-item"><a id="checkCourseShow2" href="#">
+					<li class="layui-nav-item"><a id="checkCourseShow2" onclick="checkCourseShow2()" href="#">
 							<i class="layui-icon bbbbb"
 							style="font-size: 20px; color: #d2d2d2">&#xe68e;</i>
 					</a></li>
@@ -1047,7 +1095,23 @@ function cantLeave() {
 					 obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
 			            layer.close(index);
 				}else{
-					alert("删除失败");
+					layui.use('layer', function(){
+		 	               var $ = layui.jquery, layer = layui.layer; 
+		   			      layer.open({
+		   			        type: 1
+		   			        ,offset: 'auto'
+		   			        ,id: 'layerDemo'+'auto'
+		   			        ,title: '失败'
+		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "删除失败" +'</div>'
+		   			        ,btn: '关闭'
+		   			        ,btnAlign: 'c'
+		   			        ,skin: 'demo-class'
+		   			        ,shade: 0 
+		   			        ,yes: function(){
+		   			        	 layer.closeAll();
+		   			        }
+		   			      });
+		 	            });
 				}
 			},
 			error : function(data) {
@@ -1130,14 +1194,10 @@ function cantLeave() {
 					<div class="layui-form-item">
 						<label class="layui-form-label">课程类型</label>
 						<div class="layui-input-block">
-							<input id="courseType" type="radio" name="courseType" value="必修"
-								title="必修" checked> <input id="courseType" type="radio"
-								name="courseType" value="选修" title="选修">
-							<!-- 							&nbsp;&nbsp; -->
-							<!-- 							必修&nbsp;<input id="courseType" type="radio" name="courseType" value="必修" -->
-							<!-- 								title="必修" checked> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-							<!-- 							选修&nbsp;<input id="courseType" type="radio" -->
-							<!-- 								name="courseType" value="选修" title="选修"> -->
+							<input id="courseType" type="radio" name="courseType" 
+							value="必修" title="必修" checked> 
+							<input id="courseType" type="radio" name="courseType" 
+							value="选修" title="选修">
 						</div>
 					</div>
 					<div class="layui-form-item">

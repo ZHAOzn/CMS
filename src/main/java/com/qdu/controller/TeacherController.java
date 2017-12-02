@@ -173,6 +173,7 @@ public class TeacherController {
 			System.out.println("老师不存在");
 			map.put("result", true);
 		} else {
+			map.put("teacher", teacher);
 			map.put("result", false);
 		}
 		return map;

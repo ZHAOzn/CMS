@@ -86,28 +86,6 @@
 			 $('#studentDetail').hide();
 			 $('#teacherDetail').hide();
 		});
-		 $('#studentDetailShow').click(function name(){
-			 $('#studentDetail').show();
-			 $('#messageList').html("学生详细信息");
-			 $('#studentLog').hide();
-			 $('#teacherInfo').hide();
-			 $('#teacherLog').hide();
-			 $('#crud').hide();
-			 $('#manageJurisdiction').hide();
-			 $('#studentInfo').hide();
-			 $('#teacherDetail').hide();
-		 });
-		 $('#teacherDetailShow').click(function name(){
-			 $('#teacherDetail').show();
-			 $('#messageList').html("教师详细信息");
-			 $('#studentLog').hide();
-			 $('#teacherInfo').hide();
-			 $('#teacherLog').hide();
-			 $('#crud').hide();
-			 $('#manageJurisdiction').hide();
-			 $('#studentInfo').hide();
-			 $('#studentDetail').hide();
-		 });
 // 		 $('#manageBlog').click(function name() {
 // 			 $('#messageList').html("管理博客");
 // 			 $('#studentInfo').hide();
@@ -117,31 +95,127 @@
 // 			 $('#studentInfo').hide();
 // 		});
 	 });
-
-	//清理redis功能
-	function clearRedis() {
-		alert("....");
-	 	$.ajax({
-         	type: "GET",
-         	data: {
-        	},
-         	contentType: "application/json; charset=utf-8",
-         	dataType: "json",
-         	async: false,
-         	url: "<%=request.getContextPath()%>/admin/clearRedis.do",
-				success : function(data) {
-					if (data.result == true) {
-						alert("清理成功");
-					} else {
-						alert("清理出现问题");
-					}
-				},
-				error : function(data) {
-					alert("服务器异常！");
-				},
-			});
-	};
+		//清理redis功能
+		function clearRedis() {
+		 	$.ajax({
+	         	type: "GET",
+	         	data: {
+	        	},
+	         	contentType: "application/json; charset=utf-8",
+	         	dataType: "json",
+	         	async: false,
+	         	url: "<%=request.getContextPath()%>/admin/clearRedis.do",
+					success : function(data) {
+						if (data.result == true) {
+							layui.use('layer', function(){
+				 	               var $ = layui.jquery, layer = layui.layer; 
+				   			      layer.open({
+				   			        type: 1
+				   			        ,offset: 'auto'
+				   			        ,id: 'layerDemo'+'auto'
+				   			        ,title: '提示'
+				   			        ,content: '<div style="padding: 20px 100px;">'+ "清理成功" +'</div>'
+				   			        ,btn: '关闭'
+				   			        ,btnAlign: 'c'
+				   			        ,skin: 'demo-class'
+				   			        ,shade: 0 
+				   			        ,yes: function(){
+				   			        	 layer.closeAll();
+				   			        }
+				   			      });
+				 	            });
+						} else {
+							alert("清理出现问题");
+						}
+					},
+					error : function(data) {
+						alert("服务器异常！");
+					},
+				});
+		};
+		 	 
+	 //学生详细信息
+	    function studentDetailShow(id){
+		 $('#studentDetail').show();
+		 $('#messageList').html("学生详细信息");
+		 $('#studentLog').hide();
+		 $('#teacherInfo').hide();
+		 $('#teacherLog').hide();
+		 $('#crud').hide();
+		 $('#manageJurisdiction').hide();
+		 $('#studentInfo').hide();
+		 $('#teacherDetail').hide();
+		 
+		 	$.ajax({
+	         	type: "GET",
+	         	data: {
+	         		"studentRoNo":id
+	        	},
+	         	contentType: "application/json; charset=utf-8",
+	         	dataType: "json",
+	         	async: false,
+	         	url: "<%=request.getContextPath()%>/student/confirmExitsStudent.do",
+					success : function(data) {
+						if(data.result == false){
+							$('#studentRoNoInfo').html(data.student.studentRoNo);
+							$('#studentNameInfo').html(data.student.studentName);
+							$('#studentPhotoInfo').attr('src','/ClassManageSys/studentPhoto/'+data.student.studentPhoto); 
+							$('#studentMobileInfo').html(data.student.studentMobile);
+							$('#studentGenderInfo').html(data.student.studentGender);
+							$('#studentEmailInfo').html(data.student.studentEmail);
+							$('#birthDayInfo').html(data.student.birthDay);
+							$('#schoolRecordInfo').html(data.student.schoolRecord);
+							$('#intoSchoolYearInfo').html(data.student.intoSchoolYear);
+							$('#collegeInfo').html(data.student.college);
+							$('#specialInfo').html(data.student.special);
+							$('#freeStyleInfo').html(data.student.freeStyle);
+						}
+					},
+					error : function(data) {
+						alert("服务器异常！");
+					},
+				});
+	 }
 	 
+	    //教师详细信息
+function teacherDetailShow(id){
+	 $('#teacherDetail').show();
+	 $('#messageList').html("教师详细信息");
+	 $('#studentLog').hide();
+	 $('#teacherInfo').hide();
+	 $('#teacherLog').hide();
+	 $('#crud').hide();
+	 $('#manageJurisdiction').hide();
+	 $('#studentInfo').hide();
+	 $('#studentDetail').hide();
+	 
+ 	$.ajax({
+        	type: "GET",
+        	data: {
+        		"teacherMobile":id
+       	},
+        	contentType: "application/json; charset=utf-8",
+        	dataType: "json",
+        	async: false,
+        	url: "<%=request.getContextPath()%>/teacher/confirmExitsTeacher.do",
+			success : function(data) {
+				if(data.result == false){
+					$('#teacherNameInfo').html(data.teacher.teacherName);
+					$('#teacherMobileInfo').html(data.teacher.teacherMobile);
+					$('#teacherGenderInfo').html(data.teacher.teacherGender);
+					$('#teacherEmailInfo').html(data.teacher.teacherEmail);
+					$('#birthDayInfo').html(data.teacher.birthDay);
+					$('#schoolRecordInfo').html(data.teacher.schoolRecord);
+					$('#collegeInfo').html(data.teacher.college);
+					$('#specialInfo').html(data.teacher.special);
+					$('#freeStyleInfo').html(data.teacher.freeStyle);
+				}
+			},
+			error : function(data) {
+				alert("服务器异常！");
+			},
+		});
+}	 
 	  
 </script>
 </head>
@@ -235,15 +309,15 @@
 			<hr class="layui-bg-cyan">
 
 			<!-- 学生信息模块 -->
-			<div id="studentInfo" class="site-text site-block">
-				<table class="layui-table" lay-even style="text-align: center;">
+			<div id="studentInfo" class="site-text site-block" style="padding-left: 0;padding-right: 0">
+				<table class="layui-table" lay-even style="text-align: center; width: 100%;">
 					<colgroup>
-						<col width="150">
-						<col width="120">
-						<col width="150">
-						<col width="150">
-						<col width="120">
-						<col width="120">
+						<col width="200">
+						<col width="200">
+						<col width="200">
+						<col width="200">
+						<col width="200">
+						<col width="200">
 					</colgroup>
 					<thead>
 						<tr>
@@ -265,7 +339,7 @@
 										<td>${s.studentGender}</td>
 										<td>${s.studentMobile}</td>
 										<td>${s.studentEmail}</td>
-										<td><a id="studentDetailShow" href="#"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
+										<td><a id="${s.studentRoNo}" onclick="studentDetailShow(this.id)" href="#"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
 										</a></td>
 									</tr>
 								</c:forEach>
@@ -281,52 +355,51 @@
 			</div>
 			
 			<!-- 学生详细信息模块 -->
-			<div id="studentDetail" class="site-text site-block" style="display: none;text-align: center;">
+			<div id="studentDetail" class="site-text site-block" style="display: none;text-align: center;padding-left: 0;padding-right: 0">
 				<table class="layui-table">
 					<tr>
-						<th style="color: #5FB878;text-align: center;">账号</th>
-						<td>1234</td>
+						<th style="color: #5FB878;text-align: center;">学号</th>
+						<td id="studentRoNoInfo"></td>
 						<th style="color: #5FB878;text-align: center;">姓名</th>
-						<td colspan="2">4875</td>
+						<td colspan="2" id="studentNameInfo"></td>
 						
-						<td rowspan="4">照片</td>
+						<td rowspan="5" style="padding-left: 0;padding-right: 0;"><img id="studentPhotoInfo" width="100%" style="width: 100px; heigh: 120px;"/></td>
 					</tr>
 					<tr>
 						<th style="color: #5FB878;text-align: center;">性别</th>
-						<td>男</td>
+						<td id="studentGenderInfo"></td>
 						<th style="color: #5FB878;text-align: center;">手机</th>
-						<td colspan="2">12345678565</td>
+						<td colspan="2" id="studentMobileInfo"></td>
 					</tr>
 					<tr>
 						<th style="color: #5FB878;text-align: center;">邮箱</th>
-						<td>12345646@qq.com</td>
+						<td id="studentEmailInfo"></td>
 						<th style="color: #5FB878;text-align: center;">出生日期</th>
-						<td colspan="2">1995-12-11</td>
+						<td colspan="2" id="birthDayInfo"></td>
 					</tr>
 					<tr>
 						<th style="color: #5FB878;text-align: center;">学历</th>
-						<td>本科</td>
-						<th style="color: #5FB878;text-align: center;">外语</th>
-						<td colspan="2">英语</td>
+						<td id="schoolRecordInfo"></td>
+						<th style="color: #5FB878;text-align: center;">入学时间</th>
+						<td colspan="2" id="intoSchoolYearInfo"></td>
 							
 					</tr>
 					<tr>
 						<th style="color: #5FB878;text-align: center;">学院</th>
-						<td>师范</td>
+						<td id="collegeInfo"></td>
 						<th style="color: #5FB878;text-align: center;">专业</th>
-						<td>数学</td>
-						<th style="color: #5FB878;text-align: center;">入学时间</th>
-						<td>2017-09-01</td>
+						<td id="specialInfo"></td>
+						
 					</tr>
 					<tr>
 						<th style="color: #5FB878;text-align: center;">freestyle</th>
-						<td colspan="5"></td>
+						<td colspan="5" id="freeStyleInfo"></td>
 					</tr>
 				</table>
 			</div>
 
 			<!-- 学生操作日志模块 -->
-			<div id="studentLog" class="site-text site-block" style="display: none; text-align: center">
+			<div id="studentLog" class="site-text site-block" style="display: none; text-align: center;padding-left: 0;padding-right: 0">
 				<table class="layui-table" lay-even>
 					<colgroup>
 						<col width="150">
@@ -371,7 +444,7 @@
 			</div>
 
 			<!-- 教师信息模块 -->
-			<div id="teacherInfo" class="site-text site-block" style="display: none;">
+			<div id="teacherInfo" class="site-text site-block" style="display: none;padding-left: 0;padding-right: 0">
 				<table class="layui-table" style="text-align: center;">
 					<colgroup>
 						<col width="130">
@@ -404,7 +477,7 @@
 										<td>${t.teacherMobile}</td>
 										<td>${t.teacherEmail}</td>
 										<td>${t.teacherSubject}</td>
-										<td><a id="teacherDetailShow" href="#"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
+										<td><a id="${t.teacherMobile}" onclick="teacherDetailShow(this.id)" href="#"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
 										</a></td>
 									</tr>
 								</c:forEach>
@@ -419,52 +492,41 @@
 				</table>
 			</div>
 			<!-- 教师详细信息模块 -->
-			<div id="teacherDetail" class="site-text site-block" style="display: none;">
+			<div id="teacherDetail" class="site-text site-block" style="display: none;padding-left: 0;padding-right: 0">
 				<table class="layui-table">
 					<tr>
 						<th style="color: #5FB878;text-align: center;">账号</th>
-						<td>1234</td>
+						<td id="teacherMobileInfo"></td>
 						<th style="color: #5FB878;text-align: center;">姓名</th>
-						<td colspan="2">4875</td>
-						
-						<td rowspan="4">照片</td>
+						<td id="teacherNameInfo" colspan="2"></td>
 					</tr>
 					<tr>
 						<th style="color: #5FB878;text-align: center;">性别</th>
-						<td>男</td>
-						<th style="color: #5FB878;text-align: center;">手机</th>
-						<td colspan="2">12345678565</td>
-					</tr>
-					<tr>
+						<td id="teacherGenderInfo"></td>
 						<th style="color: #5FB878;text-align: center;">邮箱</th>
-						<td>12345646@qq.com</td>
-						<th style="color: #5FB878;text-align: center;">出生日期</th>
-						<td colspan="2">1995-12-11</td>
+						<td id="teacherEmailInfo" colspan="2"></td>
 					</tr>
 					<tr>
+						<th style="color: #5FB878;text-align: center;">出生日期</th>
+						<td id="birthDayInfo"></td>
 						<th style="color: #5FB878;text-align: center;">学历</th>
-						<td>本科</td>
-						<th style="color: #5FB878;text-align: center;">外语</th>
-						<td colspan="2">英语</td>
-							
+						<td id="schoolRecordInfo" colspan="2"></td>
 					</tr>
 					<tr>
 						<th style="color: #5FB878;text-align: center;">学院</th>
-						<td>师范</td>
+						<td id="collegeInfo"></td>
 						<th style="color: #5FB878;text-align: center;">学科</th>
-						<td>数学</td>
-						<th style="color: #5FB878;text-align: center;">入职时间</th>
-						<td>2017-09-01</td>
+						<td id="specialInfo" colspan="2"></td>
 					</tr>
 					<tr>
 						<th style="color: #5FB878;text-align: center;">备注</th>
-						<td colspan="5"></td>
+						<td id="freeStyleInfo" colspan="5"></td>
 					</tr>
 				</table>
 			</div>
 
 			<!-- 教师操作日志模块 -->
-			<div id="teacherLog" class="site-text site-block" style="display: none;">
+			<div id="teacherLog" class="site-text site-block" style="display: none; padding-left: 0;padding-right: 0">
 				<table class="layui-table" lay-even>
 					<colgroup>
 						<col width="150">
