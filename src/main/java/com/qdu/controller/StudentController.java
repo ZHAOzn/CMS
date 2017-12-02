@@ -137,12 +137,11 @@ public class StudentController {
 		Map<String, Object> map = new HashMap<>();
 		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
 		if (student == null) {
-			System.out.println("用户不存在");
 			map.put("result", true);
 		} else {
+			map.put("student", student);
 			map.put("result", false);
 		}
-		request.getSession().setAttribute("UserId", studentRoNo);
 		return map;
 	}
 
