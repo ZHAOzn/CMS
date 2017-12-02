@@ -145,5 +145,17 @@ public interface ExaminationDao {
     public int updateStudentAnswerBeforeLoad(String studentRoNo,int examinationID);
 
     public int updateScorebeforLoad(String studentRoNo,int examinationID);
+    
+    public int updateExamEnd(String studentRoNo,int examinationID);
 
+    public List<Examination> selectMaxExaminationIdByCourseIdAndStatus(int courseId,String examinationStatus);
+    
+    public List<Score> selectScoreByExId(int examinationID);
+    
+    public Score selectScoreById(int scoreId);
+    
+    public int updatePackStudentAnswer(int examinationID,int questionNumber,String studentAnswer);
+    
+    public int updateShortAnswerStudentAnswer(int examinationID,int questionNumber,String studentAnswer);
+    
 }

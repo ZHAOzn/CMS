@@ -16,6 +16,10 @@
 	   And QuestionNumber = #{questionNumber}
 	   And StudentRoNo = #{studentRoNo}
 	</select>
+	
+	<select id="selectStudentAnswerByExId" resultMap="StudentAnswerResult" parameterType="int">
+	   select * from StudentAnswer where ExaminationID = #{examinationID} 
+	</select>
 
     <insert id="insertStudentAnswer" parameterType="com.qdu.pojo.StudentAnswer">
       insert into 

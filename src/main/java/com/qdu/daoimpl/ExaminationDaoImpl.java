@@ -487,6 +487,56 @@ public class ExaminationDaoImpl implements ExaminationDao{
 		return sqlSessionFactory.openSession().update(statement,map);
 	}
 
+	@Override
+	public int updateExamEnd(String studentRoNo, int examinationID) {
+		String statement = "com.qdu.mapping.ScoreMapping.updateExamEnd";
+		Map<String, Object> map = new HashMap<>();
+		 map.put("examinationID", examinationID);
+		 map.put("studentRoNo", studentRoNo);
+		return sqlSessionFactory.openSession().update(statement, map);
+	}
+
+	@Override
+	public List<Examination> selectMaxExaminationIdByCourseIdAndStatus(int courseId, String examinationStatus) {
+		String statement = "com.qdu.mapping.ExaminationMapping.selectMaxExaminationIdByCourseIdAndStatus";
+		Map<String, Object> map = new HashMap<>();
+	    map.put("examinationStatus", examinationStatus);
+	    map.put("courseId", courseId);
+		return sqlSessionFactory.openSession().selectList(statement, map);
+	}
+
+	@Override
+	public List<Score> selectScoreByExId(int examinationID) {
+		String statement = "com.qdu.mapping.ScoreMapping.selectScoreByExId";
+		return sqlSessionFactory.openSession().selectList(statement, examinationID);
+	}
+
+	@Override
+	public Score selectScoreById(int scoreId) {
+		String statement = "com.qdu.mapping.ScoreMapping.selectScoreById";
+		return sqlSessionFactory.openSession().selectOne(statement, scoreId);
+	}
+
+	@Override
+	public int updatePackStudentAnswer(int examinationID, int questionNumber, String studentAnswer) {
+		String statement = "com.qdu.mapping.PackMapping.updatePackStudentAnswer";
+		Map<String, Object> map = new HashMap<>();
+		 map.put("questionNumber", questionNumber);
+		 map.put("examinationID", examinationID);
+		 map.put("studentAnswer", studentAnswer);
+		return sqlSessionFactory.openSession().update(statement, map);
+	}
+
+	@Override
+	public int updateShortAnswerStudentAnswer(int examinationID, int questionNumber, String studentAnswer) {
+		String statement = "com.qdu.mapping.ShortAnswerMapping.updateShortAnswerStudentAnswer";
+		Map<String, Object> map = new HashMap<>();
+		 map.put("questionNumber", questionNumber);
+		 map.put("examinationID", examinationID);
+		 map.put("studentAnswer", studentAnswer);
+		return sqlSessionFactory.openSession().update(statement, map);
+	}
+
 	
 	
 	

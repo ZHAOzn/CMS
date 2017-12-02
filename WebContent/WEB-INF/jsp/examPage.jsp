@@ -134,7 +134,7 @@ window.onload=function(){
 	   			        ,offset: 'auto'
 	   			        ,id: 'layerDemo'+'auto'
 	   			        ,title: '提示'
-	   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "考试剩余时间不多" +'</div>'
+	   			        ,content: '<div style="padding: 20px 120px; color:#FF5722">'+ "考试剩余5分钟，请注意时间" +'</div>'
 	   			        ,btn: '关闭'
 	   			        ,btnAlign: 'c'
 	   			        ,skin: 'demo-class'
@@ -166,11 +166,28 @@ window.onload=function(){
 				    
 			}
 		}
-		
+		//交卷
 		function examEnd() {
-			 window.location.href = "<%=request.getContextPath()%>/index.jsp";
+			$.ajax({
+		         type: "GET",
+		         data: {
+		        	 "studentRoNo":${student.studentRoNo},
+		        	 "examinationID":${examination.examinationID}
+		         },
+		         contentType: "application/json; charset=utf-8",
+		         dataType: "json",
+		         async: true,
+		         url: "<%=request.getContextPath()%>/exam/updateExamEnd.do",
+		         success: function (data) {
+		        	if(data.result == true){
+		        		 window.location.href = "<%=request.getContextPath()%>/index.jsp";
+		        	}
+		         },
+		         error: function (data) {
+		             //alert("服务器异常！");
+		         },
+		     });
 		}
-		
 </script>
 <body style="background-color: #eeeeee" onbeforeunload="checkLeave()">
 	<!-- 头部 -->
@@ -235,7 +252,7 @@ window.onload=function(){
 	<!-- 答题部分 -->
 	<div id="singleSelectionArea"
 		style="heigh: 300px; background-color: white; margin-left: 5%; margin-right: 5%; padding-top: 10px; font-family: 微软雅黑">
-		<h3 style="font-size: 1.4em"><一>单选<span style="font-size: 0.8em">(该部分有且仅有一个正确答案，答错不得分)</span></h3>
+		<h3 style="font-size: 1.4em;color: #5FB878;"><一>单选<span style="font-size: 0.8em">(该部分有且仅有一个正确答案，答错不得分)</span></h3>
 		<br />
 		<ul class="layui-timeline">
 			<c:choose>
@@ -289,8 +306,24 @@ window.onload=function(){
 	         async: true,
 	         url: "<%=request.getContextPath()%>/exam/updateSingleSelection.do",
 	         success: function (data) {
-	        	if(data.result == true){
-	        		
+	        	if(data.result == 'end'){
+	        		 layui.use('layer', function(){
+		 	               var $ = layui.jquery, layer = layui.layer; 
+		   			      layer.open({
+		   			        type: 1
+		   			        ,offset: 'auto'
+		   			        ,id: 'layerDemo'+'auto'
+		   			        ,title: '提示'
+		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "抱歉，您已交卷" +'</div>'
+		   			        ,btn: '关闭'
+		   			        ,btnAlign: 'c'
+		   			        ,skin: 'demo-class'
+		   			        ,shade: 0 
+		   			        ,yes: function(){
+		   			        	 layer.closeAll();
+		   			        }
+		   			      });
+		 	            });
 	        	}
 	         },
 	         error: function (data) {
@@ -302,7 +335,7 @@ window.onload=function(){
 	
 	<div id="moreSelectionArea"
 		style="heigh: 300px; background-color: white; margin-left: 5%; margin-right: 5%; padding-top: 10px; font-family: 微软雅黑">
-		<h3 style="font-size: 1.4em"><二>多选<span style="font-size: 0.8em">(该部分最少有一个正确答案，答错或者答对一部分不得分)</span></h3>
+		<h3 style="font-size: 1.4em;color: #5FB878;"><二>多选<span style="font-size: 0.8em">(该部分最少有一个正确答案，答错或者答对一部分不得分)</span></h3>
 		<br />
 		<ul class="layui-timeline">
 			<c:choose>
@@ -346,8 +379,24 @@ window.onload=function(){
 		         async: true,
 		         url: "<%=request.getContextPath()%>/exam/updateMoreSelection.do",
 		         success: function (data) {
-		        	if(data.result == true){
-		        		
+		        	 if(data.result == 'end'){
+		        		 layui.use('layer', function(){
+			 	               var $ = layui.jquery, layer = layui.layer; 
+			   			      layer.open({
+			   			        type: 1
+			   			        ,offset: 'auto'
+			   			        ,id: 'layerDemo'+'auto'
+			   			        ,title: '提示'
+			   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "抱歉，您已交卷" +'</div>'
+			   			        ,btn: '关闭'
+			   			        ,btnAlign: 'c'
+			   			        ,skin: 'demo-class'
+			   			        ,shade: 0 
+			   			        ,yes: function(){
+			   			        	 layer.closeAll();
+			   			        }
+			   			      });
+			 	            });
 		        	}
 		         },
 		         error: function (data) {
@@ -384,7 +433,7 @@ window.onload=function(){
 	
 		<div id="judgeArea"
 		style="heigh: 300px; background-color: white; margin-left: 5%; margin-right: 5%; padding-top: 10px; font-family: 微软雅黑">
-		<h3 style="font-size: 1.4em"><三>判断<span style="font-size: 0.8em">(答错不得分)</span></h3>
+		<h3 style="font-size: 1.4em;color: #5FB878;"><三>判断<span style="font-size: 0.8em">(答错不得分)</span></h3>
 		<br />
 		<ul class="layui-timeline">
 			<c:choose>
@@ -438,8 +487,24 @@ window.onload=function(){
 		         async: true,
 		         url: "<%=request.getContextPath()%>/exam/updateJudge.do",
 		         success: function (data) {
-		        	if(data.result == true){
-		        		
+		        	 if(data.result == 'end'){
+		        		 layui.use('layer', function(){
+			 	               var $ = layui.jquery, layer = layui.layer; 
+			   			      layer.open({
+			   			        type: 1
+			   			        ,offset: 'auto'
+			   			        ,id: 'layerDemo'+'auto'
+			   			        ,title: '提示'
+			   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "抱歉，您已交卷" +'</div>'
+			   			        ,btn: '关闭'
+			   			        ,btnAlign: 'c'
+			   			        ,skin: 'demo-class'
+			   			        ,shade: 0 
+			   			        ,yes: function(){
+			   			        	 layer.closeAll();
+			   			        }
+			   			      });
+			 	            });
 		        	}
 		         },
 		         error: function (data) {
@@ -454,7 +519,7 @@ window.onload=function(){
 	
 		<div id="packArea"
 		style="heigh: 300px; background-color: white; margin-left: 5%; margin-right: 5%; padding-top: 10px; font-family: 微软雅黑">
-		<h3 style="font-size: 1.4em"><四>填空<span style="font-size: 0.8em"></span></h3>
+		<h3 style="font-size: 1.4em;color: #5FB878;"><四>填空<span style="font-size: 0.8em"></span></h3>
 		<br />
 		<ul class="layui-timeline">
 			<c:choose>
@@ -497,8 +562,24 @@ window.onload=function(){
 		         async: true,
 		         url: "<%=request.getContextPath()%>/exam/updatePack.do",
 		         success: function (data) {
-		        	if(data.result == true){
-		        		
+		        	 if(data.result == 'end'){
+		        		 layui.use('layer', function(){
+			 	               var $ = layui.jquery, layer = layui.layer; 
+			   			      layer.open({
+			   			        type: 1
+			   			        ,offset: 'auto'
+			   			        ,id: 'layerDemo'+'auto'
+			   			        ,title: '提示'
+			   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "抱歉，您已交卷" +'</div>'
+			   			        ,btn: '关闭'
+			   			        ,btnAlign: 'c'
+			   			        ,skin: 'demo-class'
+			   			        ,shade: 0 
+			   			        ,yes: function(){
+			   			        	 layer.closeAll();
+			   			        }
+			   			      });
+			 	            });
 		        	}
 		         },
 		         error: function (data) {
@@ -511,7 +592,7 @@ window.onload=function(){
 	
 		<div id="shortAnswerArea"
 		style="heigh: 300px; background-color: white; margin-left: 5%; margin-right: 5%; padding-top: 10px; font-family: 微软雅黑">
-		<h3 style="font-size: 1.4em"><五>简答<span style="font-size: 0.8em"></span></h3>
+		<h3 style="font-size: 1.4em;color: #5FB878;"><五>简答<span style="font-size: 0.8em"></span></h3>
 		<br />
 		<ul class="layui-timeline">
 			<c:choose>
@@ -558,8 +639,24 @@ window.onload=function(){
 	         async: true,
 	         url: "<%=request.getContextPath()%>/exam/updateShortAnswer.do",
 	         success: function (data) {
-	        	if(data.result == true){
-	        		
+	        	 if(data.result == 'end'){
+	        		 layui.use('layer', function(){
+		 	               var $ = layui.jquery, layer = layui.layer; 
+		   			      layer.open({
+		   			        type: 1
+		   			        ,offset: 'auto'
+		   			        ,id: 'layerDemo'+'auto'
+		   			        ,title: '提示'
+		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "抱歉，您已交卷" +'</div>'
+		   			        ,btn: '关闭'
+		   			        ,btnAlign: 'c'
+		   			        ,skin: 'demo-class'
+		   			        ,shade: 0 
+		   			        ,yes: function(){
+		   			        	 layer.closeAll();
+		   			        }
+		   			      });
+		 	            });
 	        	}
 	         },
 	         error: function (data) {

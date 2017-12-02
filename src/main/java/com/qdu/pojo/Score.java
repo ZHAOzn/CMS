@@ -6,6 +6,8 @@ public class Score implements Serializable{
 
 	 private int scoreId;
 	 private String studentRoNo;
+	 private String studentName;
+	 private String studentClass; 
 	 private int examinationID;
 	 private int singleSelectionValue;
 	 private int moreSelectionValue;
@@ -25,6 +27,19 @@ public class Score implements Serializable{
 	}
 	public void setStudentRoNo(String studentRoNo) {
 		this.studentRoNo = studentRoNo;
+	}
+	
+	public String getStudentName() {
+		return studentName;
+	}
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+	public String getStudentClass() {
+		return studentClass;
+	}
+	public void setStudentClass(String studentClass) {
+		this.studentClass = studentClass;
 	}
 	public int getExaminationID() {
 		return examinationID;

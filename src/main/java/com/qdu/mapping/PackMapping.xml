@@ -61,6 +61,13 @@
 	  where PackId = #{packId}
 	</update>
 	
+	<update id="updatePackStudentAnswer" parameterType="HashMap">
+	  update Pack set
+	  StudentAnswer = #{studentAnswer}
+	  where QuestionNumber = #{questionNumber}
+	  And ExaminationID = #{examinationID}
+	</update>
+	
 	<delete id="deletePack" parameterType="int">
 	  delete from Pack where ExaminationID = #{examinationID}
 	</delete>
