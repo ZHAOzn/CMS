@@ -80,4 +80,9 @@ a:active {
 	text-decoration: none;
 }
 
+.CMSlogo-FirstPage{
+	position: absolute;
+	top:16px;
+	left:150px;
+}
 
