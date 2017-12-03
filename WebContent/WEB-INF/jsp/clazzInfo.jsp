@@ -296,6 +296,7 @@ function getPrivateData() {
 	 $('#addQuestionsDiv').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#studentExam').hide();
+	 $('#scoreFormList').hide();
 	 $('#upLoadShow').show();
 	 
 	 $.ajax({
@@ -338,6 +339,7 @@ function getAddClass() {
 	 $('#addQuestionsDiv').hide();
 	 $('#studentExam').hide();
 	 $('#inClazzStudentInfoDiv').hide();
+	 $('#scoreFormList').hide();
 	 $('#addClassShow').show();
 }
 //班级信息
@@ -353,6 +355,7 @@ function classInfo() {
 	 $('#addClassShow').hide();
 	 $('#studentExam').hide();
 	 $('#inClazzStudentInfoDiv').hide();
+	 $('#scoreFormList').hide();
 	 $('#clazzInfoShow1').show();
 	 $('#clazzInfoShow').show();
 	 
@@ -457,6 +460,7 @@ function TocorrectExamination() {
 	 $('#studentScoreList').hide();
 	 $('#studentScoreListH3').hide();
 	 $('#studentExam').show();
+	 $('#scoreFormList').hide();
 	 $('#PreExaminationList').show();
 	 
 		$.ajax({
@@ -514,6 +518,7 @@ function getStudentExamList(id) {
        	        con += "<td style='text-align:center;'><a style='color:#FF5722;' id='P"+item.scoreId+"' onclick='getStudentPackList(this.id)' href='#'>" + item.packValue + "</a></td>";
        	        con += "<td style='text-align:center;'><a id='S"+item.scoreId+"'>" + item.shortAnswerValue + "</a></td>";
        	        con += "<td style='text-align:center;'>" + item.totalValue + "</td>";
+       	        con += "<td style='text-align:center;'>" + item.scoreStatus + "</td>";
        	        con += "<tr/>";
        	    });
 			 $('#ScoreList').html(con);
@@ -540,6 +545,7 @@ function getStudentPackList(id) {
         async: false,
         url: "<%=request.getContextPath()%>/exam/getStudentPackList.do",
 		success : function(data) {
+			$('#ssscoreId').val(id.substring(1));
 			var dataObj = data.packs;
 			 con = "";
 			 $.each(dataObj, function (index, item) {
@@ -710,24 +716,129 @@ function setShortAnswerIdStuAnswer(id) {
 }
 //打分完成
 function changeExamEndXX() {
-	layui.use('layer', function(){
-        var $ = layui.jquery, layer = layui.layer; 
-	      layer.open({
-	        type: 1
-	        ,offset: 'auto'
-	        ,id: 'layerDemo'+'auto'
-	        ,title: '成功'
-	        ,content: '<div style="padding: 20px 100px;">'+ "后续可对成绩进行更改" +'</div>'
-	        ,btn: '关闭'
-	        ,btnAlign: 'c'
-	        ,skin: 'demo-class'
-	        ,shade: 0 
-	        ,yes: function(){
-	        	 layer.closeAll();
-	        }
-	      });
-     });
-	getStudentExamList($('#changeExamEndX').val());
+	$.ajax({
+        type: "GET",
+        data: {
+        	"scoreId":$('#ssscoreId').val()
+        },
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        url: "<%=request.getContextPath()%>/exam/updateScoreStatus.do",
+		success : function(data) {
+			if(data.result == true){
+				layui.use('layer', function(){
+			        var $ = layui.jquery, layer = layui.layer; 
+				      layer.open({
+				        type: 1
+				        ,offset: 'auto'
+				        ,id: 'layerDemo'+'auto'
+				        ,title: '成功'
+				        ,content: '<div style="padding: 20px 100px;">'+ "后续可对成绩进行更改" +'</div>'
+				        ,btn: '关闭'
+				        ,btnAlign: 'c'
+				        ,skin: 'demo-class'
+				        ,shade: 0 
+				        ,yes: function(){
+				        	 layer.closeAll();
+				        }
+				      });
+			     });
+				getStudentExamList($('#changeExamEndX').val());
+			}
+		},
+		error : function(data) {
+			alert("??");
+		},
+		dataType : "json",
+	});
+}
+// 显示成绩单
+function scoreFormList() {
+	$('#getHeadLine').html("成绩show");
+	 $('#changeExaminationForm').hide();
+	 $('#addQuestionsDiv').hide();
+	 $('#signModel').hide();
+	 $('#otherModel').hide();
+	 $('#upLoadShow').hide();
+	 $('#studentExam').hide();
+	 $('#clazzInfoShow').hide();
+	 $('#inClazzStudentInfoDiv').hide();
+	 $('#addClassShow').hide();
+	 $('#scoreFormList').show();
+	 $('#scoreShowTableFirst').show();
+	 $('#scoreShowTableSecond').hide();	 
+	 $.ajax({
+	        type: "GET",
+	        data: {
+	        	"courseId":${course.courseId}
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/selectExaminationByCourseIdAndAnother.do",
+			success : function(data) {
+				var dataObj = data.examinations;
+				 con = "";
+				 $.each(dataObj, function (index, item) {
+					    con += "<tr id=N"+item.examinationID+">";
+	       	        con += "<td style='text-align:center;'>" + item.examinationID + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.examinationName + "</td>";
+	       	        con += "<td style='text-align:center; color:#FF5722;'>" + item.onlyCode + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.totalValue + "分</td>";
+	       	        con += "<td style='text-align:center;'>" + item.startTime + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.duration + "分钟</td>";
+	       	        con += "<td style='text-align:center;'><div class='site-demo-button' id='layerDemo'><a href='#' id='"+item.examinationID+"' onclick='scoreShowTableFirst(this.id)'><i class='layui-icon' style='font-size: 30px; color: #1E9FFF;'>&#xe63c;</i></a> </div></td>";
+	       	        con += "<tr/>";
+	       	    });
+				 $('#scoreShowTable').html(con);
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+}
+
+//看某试卷下面的学生成绩
+function scoreShowTableFirst(id) {
+	$.ajax({
+        type: "GET",
+        data: {
+        	"examinationID":id
+        },
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        url: "<%=request.getContextPath()%>/exam/getStudentExamList.do",
+		success : function(data) {
+			var dataObj = data.scores;
+			 con = "";
+			 $.each(dataObj, function (index, item) {
+		        con += "<tr id=SL"+item.examinationID+">";
+	            con += "<td style='text-align:center;'>" + item.studentRoNo + "</td>";
+	            con += "<td style='text-align:center;'>" + item.studentName + "</td>";
+	            con += "<td style='text-align:center;'>" + item.studentClass + "</td>";
+	            con += "<td style='text-align:center;'>" + item.singleSelectionValue + "</td>";
+                con += "<td style='text-align:center;'>" + item.moreSelectionValue + "</td>";
+       	        con += "<td style='text-align:center;'>" + item.judgeValue + "</td>";
+       	        con += "<td style='text-align:center;'>" + item.packValue + "</a></td>";
+       	        con += "<td style='text-align:center;'>" + item.shortAnswerValue + "</a></td>";
+       	        con += "<td style='text-align:center;'>" + item.totalValue + "</td>";
+       	        con += "<tr/>";
+       	    });
+			 $('#classCount').html(data.count);
+			 $('#classExamCount').html(data.count2);
+			 $('#classAvgCount').html(data.avg);
+			 $('#classMaxCount').html(data.max);
+			 $('#classMinCount').html(data.min);
+			 $('#ScoreListaa').html(con);
+			 $('#scoreShowTableFirst').hide();
+			 $('#scoreShowTableSecond').show();
+		},
+		error : function(data) {
+			alert("??");
+		},
+		dataType : "json",
+	});
+	
 }
 //点击查看试卷
 function addExamination() {
@@ -740,6 +851,7 @@ function addExamination() {
 	 $('#studentExam').hide();
 	 $('#clazzInfoShow').hide();
 	 $('#inClazzStudentInfoDiv').hide();
+	 $('#scoreFormList').hide();
 	 $('#addClassShow').hide();
 	 
 	$.ajax({
@@ -2140,7 +2252,7 @@ function teacherChangeExamination() {
 								<a onclick="TocorrectExamination()" id="correctExamination" href="#">批改试卷</a>
 							</dd>
 							<dd>
-								<a id="lookatScore" href="#">查看成绩</a>
+								<a id="lookatScore" onclick="scoreFormList()" href="#">查看成绩</a>
 							</dd>
 							<!-- <dd>
 								<a href="#">待定</a>
@@ -2184,7 +2296,7 @@ function teacherChangeExamination() {
 						<c:choose>
 							<c:when test="${! empty course.clazz }">
 								<c:forEach items="${course.clazz}" var="c">
-									<tr>
+	  						    <tr>
 										<td>${c.clazzName}</td>
 										<td>${c.currentYear}</td>
 										<td><input name="clazzId" style="display: none;"
@@ -2199,7 +2311,9 @@ function teacherChangeExamination() {
 								</c:forEach>
 							</c:when>
 							<c:otherwise>
-								<a>(空)</a>
+							     <tr>
+							     <td colspan="5">(空)</td>
+							     </tr>
 							</c:otherwise>
 						</c:choose>
 					</tbody>
@@ -2268,7 +2382,7 @@ function teacherChangeExamination() {
 
 		<!-- 班级内部具体信息 -->
 		<div class="site-text site-block" id="inClazzStudentInfoDiv"
-			style="display: none;">
+			style="display: none;padding-left: 0;padding-right: 0;">
 			<br /> 班级人数：<span id="studentCount"></span>
 			<table class="layui-table" lay-even>
 				<colgroup>
@@ -2429,8 +2543,9 @@ function teacherChangeExamination() {
 					$('#clazzInfoShow').hide();
 					$('#inClazzStudentInfoDiv').hide();
 					$('#addQuestionsDiv').hide();
-					 $('#studentExam').hide();
+					$('#studentExam').hide();
 					$('#addExaminationDiv').hide();
+					$('#scoreFormList').hide();
 					$('#signModel').show();
 				});
 			</script>
@@ -2480,10 +2595,11 @@ function teacherChangeExamination() {
 					$('#addClassShow').hide();
 					$('#signModel').hide();
 					$('#addExaminationDiv').hide();
-					 $('#studentExam').hide();
+				    $('#studentExam').hide();
 					$('#inClazzStudentInfoDiv').hide();
 					$('#addQuestionsDiv').hide();
 					$('#clazzInfoShow').hide();
+					$('#scoreFormList').hide();
 					$('#otherModel').show();
 				})
 			</script>
@@ -3687,7 +3803,8 @@ function teacherChangeExamination() {
 					<col width="80">
 					<col width="80">
 					<col width="80">
-					<col width="100">
+					<col width="80">
+					<col width="80">
 				</colgroup>
 				<thead>
 					<tr id="title">
@@ -3700,6 +3817,7 @@ function teacherChangeExamination() {
 						<th style="text-align: center;">填空</th>
 						<th style="text-align: center;">简答</th>
 						<th style="text-align: center;">总分</th>
+						<th style="text-align: center;">状态</th>
 					</tr>
 				</thead>
 				<tbody id="ScoreList">
@@ -3713,6 +3831,7 @@ function teacherChangeExamination() {
 		<div id="packScore"
 		style="background-color: white; margin-left: 5%; padding-left0;
 		margin-right: 5%; padding-top: 10px; font-family: 微软雅黑;display: none;">
+		<input id="ssscoreId" type="text" style="display: none;"/>
 		<h3 style="font-size: 1.4em;color: #5FB878;"><四>填空<span style="font-size: 0.8em"></span></h3>
 		<br />
 		<ul id="PackLi">
@@ -3752,7 +3871,74 @@ function teacherChangeExamination() {
 		</div>
 		
 		
-		
+		<!-- 显示成绩单 -->	   
+		<div id="scoreFormList" class="site-text site-block"
+			style="display: none;margin-top: 0; padding-left: 0; padding-right: 0;"> 
+	        <table id="scoreShowTableFirst" class="layui-table" lay-even
+				style="text-align: center; width: 100%;">
+				<colgroup>
+					<col width="80">
+					<col width="100">
+					<col width="90">
+					<col width="100">
+					<col width="100">
+					<col width="80">
+					<col width="110">
+				</colgroup>
+				<thead>
+					<tr id="title">
+						<th style="text-align: center;">试卷编码</th>
+						<th style="text-align: center;">试卷名称</th>
+						<th style="text-align: center;">考试码</th>
+						<th style="text-align: center;">总分</th>
+						<th style="text-align: center;">开始时间</th>
+						<th style="text-align: center;">考试时长</th>
+						<th style="text-align: center;">查看成绩</th>
+					</tr>
+				</thead>
+				<tbody id="scoreShowTable">
+
+				</tbody>
+			</table>
+			
+			<table id="scoreShowTableSecond" class="layui-table" lay-even
+				style="text-align: center; width: 100%; display: none;">
+				<caption>
+				班级人数：<span id="classCount"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				考试人数：<span id="classExamCount"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				平均分：<span id="classAvgCount"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				最高分：<span id="classMaxCount"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				最低分：<span id="classMinCount"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				</caption>
+				<colgroup>
+					<col width="80">
+					<col width="80">
+					<col width="80">
+					<col width="80">
+					<col width="80">
+					<col width="80">
+					<col width="80">
+					<col width="80">
+					<col width="80">
+				</colgroup>
+				<thead>
+					<tr id="title">
+						<th style="text-align: center;">学号</th>
+						<th style="text-align: center;">姓名</th>
+						<th style="text-align: center;">班级</th>
+						<th style="text-align: center;">单选</th>
+						<th style="text-align: center;">多选</th>
+						<th style="text-align: center;">判断</th>
+						<th style="text-align: center;">填空</th>
+						<th style="text-align: center;">简答</th>
+						<th style="text-align: center;">总分</th>
+					</tr>
+				</thead>
+				<tbody id="ScoreListaa">
+
+				</tbody>
+			</table>
+		</div>
 		
 		
 		<!-- 上传文件 -->

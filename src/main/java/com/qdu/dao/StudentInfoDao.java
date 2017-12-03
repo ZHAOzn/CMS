@@ -27,5 +27,6 @@ public interface StudentInfoDao {
     
     public int updateStudentInfoAboutLeave(int studentInfoId,int askForLeave);
     
+    public int selectCountOfStudentByStudentInfo(int courseId);
 
 }

@@ -537,6 +537,39 @@ public class ExaminationDaoImpl implements ExaminationDao{
 		return sqlSessionFactory.openSession().update(statement, map);
 	}
 
+	@Override
+	public int updateScoreStatus(int scoreId, String scoreStatus) {
+		String statement = "com.qdu.mapping.ScoreMapping.updateScoreStatus";
+		Map<String, Object> map = new HashMap<>();
+		 map.put("scoreId", scoreId);
+		 map.put("scoreStatus", scoreStatus);
+		return sqlSessionFactory.openSession().update(statement, map);
+	}
+
+	@Override
+	public double selectAvgScoreById(int examinationID) {
+		String statement = "com.qdu.mapping.ScoreMapping.selectAvgScoreById";
+		return sqlSessionFactory.openSession().selectOne(statement, examinationID);
+	}
+
+	@Override
+	public int selectMaxScoreById(int examinationID) {
+		String statement = "com.qdu.mapping.ScoreMapping.selectMaxScoreById";
+		return sqlSessionFactory.openSession().selectOne(statement, examinationID);
+	}
+
+	@Override
+	public int selectMinScoreById(int examinationID) {
+		String statement = "com.qdu.mapping.ScoreMapping.selectMinScoreById";
+		return sqlSessionFactory.openSession().selectOne(statement, examinationID);
+	}
+
+	@Override
+	public int selectCountScoreById(int examinationID) {
+		String statement = "com.qdu.mapping.ScoreMapping.selectCountScoreById";
+		return sqlSessionFactory.openSession().selectOne(statement, examinationID);
+	}
+
 	
 	
 	

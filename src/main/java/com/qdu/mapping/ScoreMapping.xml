@@ -15,14 +15,15 @@
 		<result property="shortAnswerValue" column="ShortAnswerValue" />
 		<result property="totalValue" column="TotalValue" />
 		<result property="examEnd" column="ExamEnd" />
+		<result property="scoreStatus" column="ScoreStatus" />
 	</resultMap>
 
    <insert id="insertScore" parameterType="com.qdu.pojo.Score">
       insert into 
       Score(StudentRoNo,StudentName,StudentClass,ExaminationID,SingleSelectionValue,MoreSelectionValue,
-      JudgeValue,PackValue,ShortAnswerValue,TotalValue,ExamEnd) 
+      JudgeValue,PackValue,ShortAnswerValue,TotalValue,ExamEnd,ScoreStatus) 
       values(#{studentRoNo},#{studentName},#{studentClass},#{examinationID},#{singleSelectionValue},#{moreSelectionValue},
-      #{judgeValue},#{packValue},#{shortAnswerValue},#{totalValue},#{examEnd})
+      #{judgeValue},#{packValue},#{shortAnswerValue},#{totalValue},#{examEnd},#{scoreStatus})
     </insert>
     
     <select id="selectScoreByExIdAndStuRoNo" resultMap="ScoreResult" parameterType="HashMap">
@@ -37,6 +38,23 @@
       select * from Score where ScoreId = #{scoreId}
     </select>
     
+    <select id="selectAvgScoreById" parameterType="int" resultType="double">
+      SELECT AVG(TotalValue) FROM Score WHERE ExaminationID = #{examinationID}
+    </select>
+    
+     <select id="selectMaxScoreById" parameterType="int" resultType="int">
+      SELECT MAX(TotalValue) FROM Score WHERE ExaminationID = #{examinationID}
+    </select>
+    
+     <select id="selectMinScoreById" parameterType="int" resultType="int">
+      SELECT MIN(TotalValue) FROM Score WHERE ExaminationID = #{examinationID}
+    </select>
+    
+    <select id="selectCountScoreById" parameterType="int" resultType="int">
+		select count(*) from Score where ExaminationID = #{examinationID} 
+		And ScoreStatus = '批改完成'
+	</select>
+    
     <update id="updateScore" parameterType="HashMap">
       update Score set
       SingleSelectionValue = #{singleSelectionValue},
@@ -46,6 +64,12 @@
           ShortAnswerValue = #{shortAnswerValue},
            TotalValue = #{totalValue}
       where StudentRoNo = #{studentRoNo} And ExaminationID = #{examinationID}
+    </update>
+    
+     <update id="updateScoreStatus" parameterType="HashMap">
+      update Score set
+      ScoreStatus = #{scoreStatus}
+      where ScoreId = #{scoreId}
     </update>
     
      <update id="updateScorebeforLoad" parameterType="HashMap">

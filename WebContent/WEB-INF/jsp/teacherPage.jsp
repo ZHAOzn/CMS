@@ -1195,9 +1195,9 @@ function checkCourseShow2() {
 						<label class="layui-form-label">课程类型</label>
 						<div class="layui-input-block">
 							<input id="courseType" type="radio" name="courseType" 
-							value="必修" title="必修" checked> 
+							value="必修" style="color: #FF5722" title="必修" checked> 
 							<input id="courseType" type="radio" name="courseType" 
-							value="选修" title="选修">
+							value="选修" style="color: #FF5722" title="选修">
 						</div>
 					</div>
 					<div class="layui-form-item">
