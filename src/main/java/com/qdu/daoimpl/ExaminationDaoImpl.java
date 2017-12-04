@@ -570,6 +570,12 @@ public class ExaminationDaoImpl implements ExaminationDao{
 		return sqlSessionFactory.openSession().selectOne(statement, examinationID);
 	}
 
+	@Override
+	public List<Score> selectScoreByStudent(String studentRoNo) {
+		String statement = "com.qdu.mapping.ScoreMapping.selectScoreByStudent";
+		return sqlSessionFactory.openSession().selectList(statement, studentRoNo);
+	}
+
 	
 	
 	

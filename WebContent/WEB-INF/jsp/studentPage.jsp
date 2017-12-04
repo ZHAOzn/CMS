@@ -77,6 +77,7 @@
 			 $('#studentWork').hide();
 			 $('#beforeLeaveMoudle').hide();
 			 $('#afterLeaveMoudle').hide();
+			 $('#examList').hide();
 			 $('#courseInfo').show();
 		});
 		 //个人中心
@@ -97,6 +98,7 @@
 			 $('#studentWork').hide();
 			 $('#beforeLeaveMoudle').hide();
 			 $('#afterLeaveMoudle').hide();
+			 $('#examList').hide();
 			 $('#studentInfoShow').show();
 		 });
 		 //点击修改信息
@@ -118,6 +120,7 @@
 			 $('#studentWork').hide();
 			 $('#beforeLeaveMoudle').hide();
 			 $('#afterLeaveMoudle').hide();
+			 $('#examList').hide();
 			 $('#studentInfoShow').show();
 		 });
 		 //点击操作日志
@@ -137,6 +140,7 @@
 			 $('#studentWork').hide();
 			 $('#beforeLeaveMoudle').hide();
 			 $('#afterLeaveMoudle').hide();
+			 $('#examList').hide();
 			 $('#forStudentLogInfo').show();
 			 $('#studentLogInfo').show();
 		});
@@ -159,6 +163,7 @@
 			 $('#studentWork').hide();
 			 $('#beforeLeaveMoudle').hide();
 			 $('#afterLeaveMoudle').hide();
+			 $('#examList').hide();
 			 $('#messageShow').show();
 			 layui.use('table', function(){
 				  var table = layui.table;
@@ -182,6 +187,7 @@
 				 $("#studentLogOfTime").hide();
 				 $('#studentWork').hide();
 				 $('#beforeLeaveMoudle').hide();
+				 $('#examList').hide();
 				 $('#afterLeaveMoudle').hide();
 				$('#studentAddCourse').show();
 			});
@@ -203,6 +209,7 @@
 				 $('#studentWork').hide();
 				 $('#beforeLeaveMoudle').hide();
 				 $('#afterLeaveMoudle').hide();
+				 $('#examList').hide();
 				$('#signal').show();
 			});
 		 //点击签到记录
@@ -223,6 +230,7 @@
 				$('#signal').hide();
 				$('#beforeLeaveMoudle').hide();
 				 $('#afterLeaveMoudle').hide();
+				 $('#examList').hide();
 				$('#studentWork').show();
 			});
 			//点击完善信息
@@ -246,6 +254,7 @@
 				$('#freeStyleTr').hide();
 				$('#reFreeStyleTr').show();
 				$('#perfectButton').hide();
+				 $('#examList').hide();
 				$('#savefectButton').show();
 			});
 			
@@ -265,6 +274,7 @@
 				$("#studentLogOfTime").hide();
 				$('#forStudentLogInfo').hide();
 			    $('#studentLogInfo').hide();
+			    $('#examList').hide();
 				$('#signal').hide();
 				$('#studentWork').hide();
 				$('#beforeLeaveMoudle').show();
@@ -489,6 +499,7 @@
 		     $('#studentInfoShow').hide();
 		     $('#studentLogInfo').hide();
 		     $('#fushuMessage').hide();
+		     $('#examList').hide();
 			 $('#seprateMessage').show();
 			 $('#messageShow').show();
        }
@@ -717,6 +728,188 @@ function fuckFunction() {
 	$('#afterLeaveSuccess').hide();
 	getLeaveRecord();
 }
+//点击查看试卷
+function examList() {
+	$('#messageList').html("试卷信息");
+	 $('#upLoadShow').hide();
+	 $('#doubleHandle').hide();
+	 $('#signal').hide();
+	 $('#studentAddCourse').hide();
+	 $('#seprateMessage').hide();
+	 $('#messageShow').hide();
+	 $('#insertCourseDiv').hide();
+	 $('#fushuMessage').hide();
+	 $('#studentInfoShow').hide();
+	 $('#forStudentLogInfo').hide();
+	 $('#studentLogInfo').hide();
+	 $("#studentLogOfTime").hide();
+	 $('#studentWork').hide();
+	 $('#beforeLeaveMoudle').hide();
+	 $('#afterLeaveMoudle').hide();
+	 $('#courseInfo').hide();
+	 
+		$.ajax({
+	        type: "GET",
+	        data: {
+	        	"studentRono":$('#studentRoNo').val()
+	        },
+	        contentType: "application/json; charset=utf-8",
+	        async: false,
+	        url: "<%=request.getContextPath()%>/exam/selectScoreByStudent.do",
+			success : function(data) {
+				var dataObj = data.examinations;
+				 con = "";
+				 $.each(dataObj, function (index, item) {
+					    con += "<tr id=N"+item.examinationID+">";
+	       	        con += "<td style='text-align:center;'>" + item.examinationID + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.examinationName + "</td>";
+	       	        con += "<td style='text-align:center; color:#FF5722;'>" + item.onlyCode + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.totalValue + "分</td>";
+	       	        con += "<td style='text-align:center;'>" + item.startTime + "</td>";
+	       	        con += "<td style='text-align:center;'>" + item.duration + "分钟</td>";
+	       	        con += "<td style='text-align:center;'>" + item.examinationStatus + "</td>";
+	       	        con += "<td style='text-align:center;'><a id="+item.examinationID+" onclick='getMyScore(this.id)' href=\'#\'><i class='layui-icon' style='font-size: 30px; color: #1E9FFF;'>&#xe63c;</i>  </a></td>";
+	       	        con += "<tr/>";
+	       	    });
+				 $('#scoreShowTable').html(con);
+				 $('#scoreShowTableFirst').show();
+				 $('#studentScoreDetail').hide();
+				 $('#examList').show();
+			},
+			error : function(data) {
+				alert("??");
+			},
+			dataType : "json",
+		});
+}
+function getMyScore(id) {
+	$.ajax({
+        type: "GET",
+        data: {
+        	"studentRono":$('#studentRoNo').val(),
+        	"examinationID":id
+        },
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        url: "<%=request.getContextPath()%>/exam/getMyScore.do",
+		success : function(data) {
+			if(data.result == true){
+				$('#ExamTitle').html(data.examination.examinationName);
+				$('#ExamTotalValue').html("试卷总分： "+data.examination.totalValue);
+				$('#all').html(data.score.totalValue);
+				$('#single').html(data.score.singleSelectionValue);
+				$('#more').html(data.score.moreSelectionValue);
+				$('#judge').html(data.score.judgeValue);
+				$('#pack').html(data.score.packValue);
+				$('#shortAnswer').html(data.score.shortAnswerValue);
+				
+				var dataObj = data.singleSelections;
+				 con = "";
+				 $.each(dataObj, function (index, item) {
+					con += "<li style='font-size: 1.2em'>("+ item.questionNumber + ")" + item.questionContent + "&nbsp;("+ item.value +"分)</li>";
+	       	        con += "<li><input type='radio' disabled='disabled'  name='studentAnswer' title='A'>A:" + item.optionA +"<br/></li>";
+	       	        con += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='B'>B:" + item.optionB +"<br/></li>";
+	       	        con += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='C'>C:" + item.optionC +"<br/></li>";
+	             	con += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='D'>D:" + item.optionD +"<br/></li>";
+	             	con += "<li>正确答案: " + item.answer +"<br/></li>";
+	             	var dataObj2 = data.studentAnswers1; 
+	             	$.each(dataObj2, function (index2, item2) {
+	             		if(item.questionNumber == item2.questionNumber){
+		             		con += "<li>学生答案: " + item2.stuAnswer +"<br/></li>";
+		             	}
+	             	 });
+				 });
+				 
+				 $('#singleUl').html(con);
+				 //隔断线，NEXT
+				 var moreObj = data.moreSelections;
+				 mon = "";
+				 $.each(moreObj, function (index, item) {
+					 mon += "<li style='font-size: 1.2em'>("+ item.questionNumber + ")" + item.questionContent + "&nbsp;("+ item.value +"分)</li>";
+					 mon += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='A'>A:" + item.optionA +"<br/></li>";
+					 mon += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='B'>B:" + item.optionB +"<br/></li>";
+					 mon += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='C'>C:" + item.optionC +"<br/></li>";
+					 mon += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='D'>D:" + item.optionD +"<br/></li>";
+					 mon += "<li>正确答案: " + item.answer +"<br/></li>";
+	             	var moreObj2 = data.studentAnswers2; 
+	             	$.each(moreObj2, function (index2, item2) {
+	             		if(item.questionNumber == item2.questionNumber){
+	             			mon += "<li>学生答案: " + item2.stuAnswer +"<br/></li>";
+		             	}
+	             	 });
+				 });
+				 $('#moreUl').html(mon);
+				//隔断线，NEXT
+				 var judgeObj = data.judges;
+				 jon = "";
+				 $.each(judgeObj, function (index, item) {
+					 jon += "<li style='font-size: 1.2em'>("+ item.questionNumber + ")" + item.judgeContent + "&nbsp;("+ item.value +"分)</li>";
+					 jon += "<li>正确答案: " + item.answer +"<br/></li>";
+	             	var judgeObj2 = data.studentAnswers3; 
+	             	$.each(judgeObj2, function (index2, item2) {
+	             		if(item.questionNumber == item2.questionNumber){
+	             			jon += "<li>学生答案: " + item2.stuAnswer +"<br/></li>";
+		             	}
+	             	 });
+				 });
+				 $('#judgeUl').html(jon);
+				//隔断线，NEXT
+				 var packObj = data.packs;
+				 pon = "";
+				 $.each(packObj, function (index, item) {
+					 pon += "<li style='font-size: 1.2em'>("+ item.questionNumber + ")" + item.packContent + "&nbsp;("+ item.value +"分)</li>";
+					 pon += "<li>参考答案: " + item.answer +"<br/></li>";
+	             	var packObj2 = data.studentAnswers4; 
+	             	$.each(packObj2, function (index2, item2) {
+	             		if(item.questionNumber == item2.questionNumber){
+	             			pon += "<li>学生答案: " + item2.stuAnswer +"<br/></li>";
+		             	}
+	             	 });
+				 });
+				 $('#packUl').html(pon);
+				//隔断线，NEXT
+				 var shortObj = data.shortAnswers;
+				 son = "";
+				 $.each(shortObj, function (index, item) {
+					 son += "<li style='font-size: 1.2em'>("+ item.questionNumber + ")" + item.shortAnswerContent + "&nbsp;("+ item.value +"分)</li>";
+	             	 var shortObj2 = data.studentAnswers5; 
+	             	$.each(shortObj2, function (index2, item2) {
+	             		if(item.questionNumber == item2.questionNumber){
+	             			son += "<li>学生答案:<br/> <textarea rows='5' cols='100' disabled='disabled'>" + item2.stuAnswer +"</textarea><br/></li>";
+		             	}
+	             	 });
+				 });
+				 $('#shortAnswerUl').html(son);
+				
+				
+				$('#scoreShowTableFirst').hide();
+				$('#studentScoreDetail').show();
+			}else {
+				layui.use('layer', function(){
+		              var $ = layui.jquery, layer = layui.layer; 
+					      layer.open({
+					        type: 1
+					        ,offset: 'auto' 
+					        ,id: 'layerDemo'+'auto'
+					        ,title: '提示'
+					        ,content: '<div style="padding: 20px 100px; color:#FF5722;">'+ "少安毋躁，试卷批改中~" +'</div>'
+					        ,btn: '关闭'
+					        ,btnAlign: 'c' 
+					        ,shade: 0 
+					        ,yes: function(){
+					        	layer.closeAll();
+					        }
+					      });
+		           });
+			}
+			
+		},
+		error : function(data) {
+			alert("??");
+		},
+		dataType : "json",
+	});
+}
 </script>
 
 </head>
@@ -743,7 +936,6 @@ function fuckFunction() {
 			<div class="layui-main">
 				<a class="CMSlogo" href="/"><span
 					style="color: white; font-size: 25px;">CMS</span></a>
-
 				<ul class="layui-nav">
 					<li class="layui-nav-item"><a id="messageButtton" href="#">
 					<i class="layui-icon bbbbb" style="font-size: 20px; color: #d2d2d2">&#xe63a;</i> <span
@@ -788,7 +980,7 @@ function fuckFunction() {
 								<a id="addCourse" href="#">添加课程</a>
 							</dd>
 							<dd>
-								<a href="#">待定</a>
+								<a onclick="examList()" href="#">查看试卷</a>
 							</dd>
 						</dl></li>
 					<li class="layui-nav-item"><a href="javascript:;">数据平台</a>
@@ -811,13 +1003,99 @@ function fuckFunction() {
 
 		<!-- 内容显示 -->
 		<div class="layui-body site-demo"
-			style="padding-top: 4%; overflow: auto;">
+			style="padding-top: 1%; overflow: auto;">
 			<span id="messageList"
 				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;"></span>
-			<hr class="layui-bg-cyan">
+			<hr class="layui-bg-cyan">	
+	       	<!-- 学生查看试卷 -->
+			<div class="site-text site-block" id="examList"
+				style="display: none;margin-top: 0;padding-left: 0; padding-right: 0;">
+              	<table id="scoreShowTableFirst" class="layui-table" lay-even
+				style="text-align: center; width: 100%;">
+				<colgroup>
+					<col width="80">
+					<col width="100">
+					<col width="90">
+					<col width="100">
+					<col width="100">
+					<col width="80">
+					<col width="80">
+					<col width="110">
+				</colgroup>
+				<thead>
+					<tr id="title">
+						<th style="text-align: center;">试卷编码</th>
+						<th style="text-align: center;">试卷名称</th>
+						<th style="text-align: center;">考试码</th>
+						<th style="text-align: center;">总分</th>
+						<th style="text-align: center;">开始时间</th>
+						<th style="text-align: center;">考试时长</th>
+						<th style="text-align: center;">状态</th>
+						<th style="text-align: center;">查看成绩</th>
+					</tr>
+				</thead>
+				<tbody id="scoreShowTable">
+
+				</tbody>
+			</table>
 			
+			<div id="studentScoreDetail" style="display: none;">
+			<h3 id="ExamTitle" style="width: 100%; text-align: center;font-size: 1.4em"></h3>
+			<h3 id="ExamTotalValue" style="width: 100%;font-size: 1.1em;text-align: right;"></h3>
+				   <ul>
+				    <li>单选：<span id="single"></span></li>
+				    <li>多选：<span id="more"></span></li>
+				    <li>判断：<span id="judge"></span></li>
+				    <li>填空：<span id="pack"></span></li>
+				    <li>简答：<span id="shortAnswer"></span></li>
+				    <li>总分：<span id="all"></span></li>
+				   </ul>
+				   
+		<!-- 答题部分 -->   <!-- 单选部分 -->
+		<h3 style="font-size: 1.4em;color: #5FB878;"><一>单选<span style="font-size: 0.8em">(该部分有且仅有一个正确答案，答错不得分)</span></h3>
+		<br />
+		<ul class="layui-timeline" id="singleUl">
+						
+		</ul>
+		<!-- 多选部分 -->
+		<h3 style="font-size: 1.4em;color: #5FB878;"><二>多选<span style="font-size: 0.8em">((该部分最少有一个正确答案，答错或者答对一部分不得分)</span></h3>
+		<br />
+		<ul class="layui-timeline" id="moreUl">
+						
+		</ul>
+		<!-- 判断部分 -->
+		<h3 style="font-size: 1.4em;color: #5FB878;"><三>判断<span style="font-size: 0.8em"></span></h3>
+		<br />
+		<ul class="layui-timeline" id="judgeUl">
+						
+		</ul>
+		<!-- 填空部分 -->
+		<h3 style="font-size: 1.4em;color: #5FB878;"><四>填空<span style="font-size: 0.8em"></span></h3>
+		<br />
+		<ul class="layui-timeline" id="packUl">
+						
+		</ul>
+		<!-- 简答部分 -->
+		<h3 style="font-size: 1.4em;color: #5FB878;"><五>简答<span style="font-size: 0.8em"></span></h3>
+		<br />
+		<ul class="layui-timeline" id="shortAnswerUl">
+						
+		</ul>
+				   
+				</div>
+				<script>
+					//Demo
+					layui.use([ 'form'], function() {
+						var form = layui.form;
+						//监听提交
+						form.on('submit(formDemo)', function(data) {
+							layer.msg(JSON.stringify(data.field));
+							return false;
+						});
+					});
+				</script>
+			</div>
 			<!-- 请假模块 -->
-			
 			<div id="beforeLeaveMoudle"  class="site-text site-block"
 				style="display: none; margin-top: 0;">
 				<!-- 请求发送显示 -->
@@ -944,6 +1222,7 @@ function fuckFunction() {
 						</c:choose>
 					</tbody>
 				</table>
+								
 				<script>
 			layui.use([ 'element', 'layer' ,'table'], function() {
 				var element = layui.element, $ = layui.jquery,table = layui.table;

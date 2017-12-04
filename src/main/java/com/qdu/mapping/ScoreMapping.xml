@@ -30,6 +30,10 @@
       select * from Score where ExaminationID = #{examinationID} And StudentRoNo = #{studentRoNo}
     </select>
     
+    <select id="selectScoreByStudent" resultMap="ScoreResult" parameterType="String">
+      select * from Score where StudentRoNo = #{studentRoNo} order by ScoreId desc
+    </select>
+    
     <select id="selectScoreByExId" resultMap="ScoreResult" parameterType="int">
       select * from Score where ExaminationID = #{examinationID}
     </select>

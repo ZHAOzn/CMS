@@ -404,6 +404,11 @@ public class ExaminationServiceImpl implements ExaminationService{
 	public int selectCountScoreById(int examinationID) {
 		return examinationDaoImpl.selectCountScoreById(examinationID);
 	}
+
+	@Override
+	public List<Score> selectScoreByStudent(String studentRoNo) {
+		return examinationDaoImpl.selectScoreByStudent(studentRoNo);
+	}
 	
 	
 }
