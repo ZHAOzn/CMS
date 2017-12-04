@@ -256,6 +256,8 @@ setTimeout("fresh()",1)
 		
 		<!-- 导航1号 -->
 		<div class="layui-header header header-demo" style="background-color: #222">
+			
+			
 			<div class="layui-main">
 				<a class="CMSlogo-FirstPage" href="/"><span
 					style="color: white; font-size: 25px;">CMS</span></a>
@@ -263,12 +265,9 @@ setTimeout("fresh()",1)
 				<!-- 登录form模块 -->
 				<div id="loginForm" 
 					style="width: 30%; higth: 100%; margin-top: 170px; background-color: rgba(0, 0, 0, 0.7); position: fixed; margin-left: 35%; display: none;">
-					<a href="#" id="sss" class="alogin"
-						style="float: left; text-decoration: none; color: white; font-size: 28px; background-color: rgba(0, 0, 0, 1);">学生登录</a>
+					<a href="#" id="sss" class="alogin" style="float: left; text-decoration: none; color: white; font-size: 28px; background-color: rgba(0, 0, 0, 1);">学生登录</a>
 					<a href="#" id="ttt" class="alogin" style="float: left; text-decoration: none; color: white; font-size: 28px;">教师登录</a>
-					<form id="studentForm"
-						action="<%=request.getContextPath()%>/student/studentLogin.do"
-						method="post" style="text-align: center; font-size: 20px;">
+					<form id="studentForm" action="<%=request.getContextPath()%>/student/studentLogin.do" method="post" style="text-align: center; font-size: 20px;">
 						<br> <br> <br> <br> <span style="color: white">学号:</span>><input 
 							name="studentRoNo" id="studentRono" type="text"/><br /> <br /> <span
 							style="color: white">密码:</span>><input name="studentPassword" id="stpw" 
@@ -281,9 +280,9 @@ setTimeout("fresh()",1)
 								<a id="stu" href="<%=request.getContextPath()%>/student/addStudent.do"
 								target="_blank" class="btn btn-primary btn-lg" style="width: 130px;"> 注册</a>
 							</div>
-							<br><br>
-							
+							<br><br>		
 					</form>
+					
 					<form id="teacherForm"
 						action="<%=request.getContextPath()%>/teacher/teacherLogin.do"
 						method="post"
@@ -310,7 +309,7 @@ setTimeout("fresh()",1)
 
 				<ul class="layui-nav">
 					<li class="layui-nav-item">
-							<a href="#" id="lll" type="submit" style="width: 100px;font-size: 20px;" >登录</a>
+							<a id="lll" href="#" type="submit" style="width: 100px;font-size: 20px;" >登录</a>
 					</li>
 				</ul>
 
