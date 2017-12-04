@@ -1195,6 +1195,7 @@ public class ExaminationController {
 			score.setShortAnswerValue(0);
 			score.setTotalValue(0);
 			score.setExamEnd(0);
+			score.setScoreStatus("待批改");
 			examinationServiceImpl.insertScore(score);
 		} else {
 
@@ -1641,8 +1642,19 @@ public class ExaminationController {
 	@ResponseBody
 	public Map<String, Object> getStudentExamList(String examinationID){
 		Map<String, Object> map = new HashMap<>();
+		Examination examination = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationID));
+		int count = studentInfoServiceImpl.selectCountOfStudentByStudentInfo(examination.getCourseID());
+		int count2 = examinationServiceImpl.selectCountScoreById(Integer.parseInt(examinationID));
+		double avg = examinationServiceImpl.selectAvgScoreById(Integer.parseInt(examinationID));
+		double max = examinationServiceImpl.selectMaxScoreById(Integer.parseInt(examinationID));
+		double min = examinationServiceImpl.selectMinScoreById(Integer.parseInt(examinationID));
 		List<Score> scores = examinationServiceImpl.selectScoreByExId(Integer.parseInt(examinationID));
 		map.put("scores", scores);
+		map.put("count", count);
+		map.put("count2", count2);
+		map.put("avg", avg);
+		map.put("max", max);
+		map.put("min", min);
 		return map;
 	}
 	
@@ -1713,8 +1725,19 @@ public class ExaminationController {
 			return map;
 	}
 	
-	
-	
+//更新答案状态
+	@RequestMapping(value = "/updateScoreStatus.do")
+	@ResponseBody
+	public Map<String, Object> updateScoreStatus(int scoreId){
+		Map<String, Object> map = new HashMap<>();
+		int tem = examinationServiceImpl.updateScoreStatus(scoreId, "批改完成");
+		 if(tem > 0){
+				map.put("result", true);
+			}else {
+				map.put("result", false);
+			}
+		return map;
+	}
 	
 	
 	

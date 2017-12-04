@@ -161,8 +161,14 @@ public interface ExaminationService {
     
     public int updateShortAnswerStudentAnswer(int examinationID,int questionNumber,String studentAnswer);
     
+    public int updateScoreStatus(int scoreId, String scoreStatus);
     
+    public double selectAvgScoreById(int examinationID);
     
+    public int selectMaxScoreById(int examinationID);
     
+    public int selectMinScoreById(int examinationID);
+    
+    public int selectCountScoreById(int examinationID);
     
 }

@@ -16,6 +16,7 @@ public class Score implements Serializable{
 	 private int shortAnswerValue;
 	 private int totalValue;
 	 private int examEnd;
+	 private String scoreStatus;
 	public int getScoreId() {
 		return scoreId;
 	}
@@ -89,6 +90,12 @@ public class Score implements Serializable{
 	}
 	public void setExamEnd(int examEnd) {
 		this.examEnd = examEnd;
+	}
+	public String getScoreStatus() {
+		return scoreStatus;
+	}
+	public void setScoreStatus(String scoreStatus) {
+		this.scoreStatus = scoreStatus;
 	}
 
 	 

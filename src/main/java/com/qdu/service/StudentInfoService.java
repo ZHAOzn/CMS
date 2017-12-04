@@ -27,4 +27,6 @@ public interface StudentInfoService {
 	
 	public int updateStudentInfoAboutLeave(int studentInfoId, int askForLeave);
 	
+	public int selectCountOfStudentByStudentInfo(int courseId);
+	
 }

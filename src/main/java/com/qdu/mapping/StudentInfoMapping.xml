@@ -105,6 +105,11 @@
 		Course
 		where CourseId = #{courseId})
 	</select>
+	
+	<select id="selectCountOfStudentByStudentInfo" parameterType="int"
+		resultType="int">
+		select count(*) from StudentInfo where CourseId = #{courseId}
+	</select>
 
 	<select id="selectCourseByStudentRono" resultMap="StudentInfoResult"
 		parameterType="String">

@@ -93,4 +93,10 @@ public class StudentInfoImpl implements StudentInfoDao{
 		return sessionFactory.openSession().update(statement, map);
 	}
 
+	@Override
+	public int selectCountOfStudentByStudentInfo(int courseId) {
+		String statement = "com.qdu.mapping.StudentInfoMapping.selectCountOfStudentByStudentInfo";
+		return sessionFactory.openSession().selectOne(statement,courseId);
+	}
+
 }
