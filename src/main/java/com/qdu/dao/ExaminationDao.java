@@ -168,4 +168,6 @@ public interface ExaminationDao {
     
     public int selectCountScoreById(int examinationID);
     
+    public List<Score> selectScoreByStudent(String studentRoNo);
+    
 }

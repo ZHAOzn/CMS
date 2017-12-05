@@ -1739,9 +1739,80 @@ public class ExaminationController {
 		return map;
 	}
 	
+	@RequestMapping(value = "/selectScoreByStudent.do")
+	@ResponseBody
+	public Map<String, Object> selectScoreByStudent(String studentRono){
+		Map<String, Object> map = new HashMap<>();
+		List<StudentInfo> studentInfos = studentInfoServiceImpl.selectCourseByStudentRono(studentRono);
+		List<Examination> examinations = new ArrayList<>();
+		for(StudentInfo studentInfo:studentInfos){
+			List<Examination> examinationS2 = examinationServiceImpl.selectExaminationByCourseId(studentInfo.getCourse().getCourseId());
+		    for(Examination examination:examinationS2){
+		    	examinations.add(examination);
+		    }
+			
+		}
+		//List<Score> scores = examinationServiceImpl.selectScoreByStudent(studentRono);
+		map.put("examinations", examinations);
+		return map;
+	}
 	
-	
-	
+	//查看学生自己的试卷及成绩
+	@RequestMapping(value = "/getMyScore.do")
+	@ResponseBody
+	public Map<String, Object> getMyScore(String studentRono,String examinationID){
+		Map<String, Object> map = new HashMap<>();
+		Score score = examinationServiceImpl.selectScoreByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRono);
+		Examination examination = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationID));
+		if(score.getScoreStatus().equals("批改完成")){
+			List<StudentAnswer> studentAnswers1 = new ArrayList<>();//单选答案List
+			List<StudentAnswer> studentAnswers2 = new ArrayList<>();//多选答案List
+			List<StudentAnswer> studentAnswers3 = new ArrayList<>();//判断答案List
+			List<StudentAnswer> studentAnswers4 = new ArrayList<>();//填空答案List
+			List<StudentAnswer> studentAnswers5 = new ArrayList<>();//简答答案List
+		    List<SingleSelection> singleSelections = examinationServiceImpl.selectSingleByExaminationID(Integer.parseInt(examinationID));
+		    for(SingleSelection singleSelection:singleSelections){
+		       StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRono, singleSelection.getQuestionNumber()); 
+		       studentAnswers1.add(studentAnswer);
+		    }
+		    List<MoreSelection> moreSelections = examinationServiceImpl.selectMoreByExaminationID(Integer.parseInt(examinationID));
+		    for(MoreSelection moreSelection:moreSelections){
+		    	StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRono, moreSelection.getQuestionNumber());
+		        studentAnswers2.add(studentAnswer);
+		    }
+		    List<Judge> judges = examinationServiceImpl.selectJudgeByExaminationID(Integer.parseInt(examinationID));
+		    for(Judge judge:judges){
+		    	StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRono, judge.getQuestionNumber());
+		        studentAnswers3.add(studentAnswer);
+		    }
+		    List<Pack> packs = examinationServiceImpl.selectPackByExaminationIDX(Integer.parseInt(examinationID));
+		    for(Pack pack:packs){
+		    	StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRono, pack.getQuestionNumber());
+		        studentAnswers4.add(studentAnswer);
+		    }
+		    List<ShortAnswer> shortAnswers = examinationServiceImpl.selectShortAnswerByExaminationIDX(Integer.parseInt(examinationID));
+		    for(ShortAnswer shortAnswer:shortAnswers){
+		    	StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRono, shortAnswer.getQuestionNumber());
+		        studentAnswers5.add(studentAnswer);
+		    }
+		    map.put("studentAnswers1", studentAnswers1);
+		    map.put("studentAnswers2", studentAnswers2);
+		    map.put("studentAnswers3", studentAnswers3);
+		    map.put("studentAnswers4", studentAnswers4);
+		    map.put("studentAnswers5", studentAnswers5);
+		    map.put("singleSelections", singleSelections);
+		    map.put("moreSelections", moreSelections);
+		    map.put("judges", judges);
+		    map.put("packs", packs);
+		    map.put("shortAnswers", shortAnswers);
+		    map.put("result", true);
+			map.put("score", score);
+			map.put("examination", examination);
+		}else {
+			map.put("result", false);
+		}
+		return map;
+	}
 	
 	
 	

@@ -171,4 +171,6 @@ public interface ExaminationService {
     
     public int selectCountScoreById(int examinationID);
     
+    public List<Score> selectScoreByStudent(String studentRoNo);
+    
 }

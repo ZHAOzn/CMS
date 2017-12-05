@@ -252,14 +252,14 @@ setTimeout("fresh()",1)
 	style="background-image: url('lib/timg (1).jpg'); background-repeat: no-repeat; background-size: cover;">
 
 
-	<div style="width: 100%; height: 1000px" class="layui-layout layui-layout-admin">
+	<div style="width: 100%; height: 1000px;" class="layui-layout layui-layout-admin">
 		
 		<!-- 导航1号 -->
-		<div class="layui-header header header-demo" style="background-color: #222">
+		<div class="layui-header header header-demo" style="background-color: #222; width: 100%; position: fixed;">
 			
 			
 			<div class="layui-main">
-				<a class="CMSlogo-FirstPage" href="/"><span
+				<a class="CMSlogo-FirstPage" href="#"><span
 					style="color: white; font-size: 25px;">CMS</span></a>
 				
 				<!-- 登录form模块 -->
@@ -386,7 +386,7 @@ setTimeout("fresh()",1)
 <!-- 		</nav> -->
         
         <!-- 考试入口 -->
-			<div id="examInner" class="site-text site-block" 
+			<div id="examInner" class="site-text" 
 				style="text-align: center; width: 50%;; 
 				top: 300px; position: fixed; margin-left: 26%;">
 				<form id="ExamForm" class="layui-form layui-form-pane" action="<%=request.getContextPath()%>/exam/studentToExam.do">
