@@ -273,14 +273,14 @@ setTimeout("fresh()",1)
 							style="color: white">密码:</span>><input name="studentPassword" id="stpw" 
 							type="password" disabled="disabled" /><br /> <br />
 							 <a href="<%=request.getContextPath()%>/student/getStudentPasswordBack.do"
-							    class="aChangePW" target="_blank">忘记密码>></a><br/><br /> 
+							    class="aChangePW" target="_blank">忘记密码>></a><br/><br/><br/> 
 							<div style="text-align: center;">
-							 	<input id="stu" class="btn btn-primary btn-lg" style="width: 130px;" type="button"
+							 	<input id="stu" class="layui-btn" style="width: 120px;" type="button"
 								value="登录" /> 
 								<a id="stu" href="<%=request.getContextPath()%>/student/addStudent.do"
-								target="_blank" class="btn btn-primary btn-lg" style="width: 130px;"> 注册</a>
+								target="_blank" class="layui-btn" style="width: 120px;"> 注册</a>
 							</div>
-							<br><br>		
+							<br>		
 					</form>
 					
 					<form id="teacherForm"
@@ -294,14 +294,14 @@ setTimeout("fresh()",1)
 							type="password" /><br /> <br />
 						
 							 <a href="<%=request.getContextPath()%>/teacher/getTeacherPasswordBack.do" class="aChangePW"
-							target="_blank">忘记密码>></a><br/><br /> 
+							target="_blank">忘记密码>></a><br/><br/><br/>
 							<div style="text-align: center;">
-							 	<input id="tea" class="btn btn-primary btn-lg" style="width: 130px;" type="button"
+							 	<input id="tea" class="layui-btn" style="width: 120px;" type="button"
 								value="登录" /> 
 								<a id="stu" href="<%=request.getContextPath()%>/teacher/forTeacherRegister.do"
-								target="_blank" class="btn btn-primary btn-lg" style="width: 130px;"> 注册</a>
+								target="_blank" class="layui-btn" style="width: 120px;"> 注册</a>
 							</div>
-							<br><br>
+							<br>
 					</form>
 					<br> <br> <br> <br> <br>
 				</div>
@@ -488,7 +488,7 @@ setTimeout("fresh()",1)
 
 		<div
 			style="background-color: rgba(0, 0, 0, 0.6); height: 100%; background-size: cover;">
-			<div class="container"></div>
+
 		</div>
          
          
