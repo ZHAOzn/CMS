@@ -119,7 +119,7 @@ public interface ExaminationDao {
     //学生答案
     public int insertStudentAnswer(StudentAnswer studentAnswer);
     
-    public int updateStudentAnswer(String studentRoNo,int examinationID,int questionNumber,String stuAnswer);
+    public int updateStudentAnswer(String studentRoNo,int examinationID,int questionNumber,String stuAnswer,int getValue);
     //成绩
     public int insertScore(Score score);
     

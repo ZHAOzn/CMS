@@ -7,7 +7,7 @@ import com.qdu.pojo.StudentInfo;
 
 public interface StudentInfoService { 
 
-	public void insertStudentInfo(String studentRoNo,int courseId);
+	public int insertStudentInfo(StudentInfo studentInfo);
 	
 	public void deleteStudentInfoByCourse(int courseId);
 	 
@@ -28,5 +28,11 @@ public interface StudentInfoService {
 	public int updateStudentInfoAboutLeave(int studentInfoId, int askForLeave);
 	
 	public int selectCountOfStudentByStudentInfo(int courseId);
+	
+	public StudentInfo selectStudentInfoOfLate(String studentRoNo, int courseId);
+	
+	public int updateStudentInfoAboutLateOrLeave(int comeLate, int leaveEarlier, int studentInfoId);
+	
+	public StudentInfo selectStudentInfoById(int studentInfoId);
 	
 }

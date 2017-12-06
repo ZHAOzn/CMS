@@ -1227,6 +1227,7 @@ public class ExaminationController {
 					studentAnswer.setQuestionNumber(singleSelections.get(i).getQuestionNumber());
 					studentAnswer.setQuestionsType(singleSelections.get(i).getQuestionsType());
 					studentAnswer.setStuAnswer("");
+					studentAnswer.setGetValue(0);
 					examinationServiceImpl.insertStudentAnswer(studentAnswer);
 				}
 			}
@@ -1245,6 +1246,7 @@ public class ExaminationController {
 					studentAnswer.setQuestionNumber(moreSelections.get(i).getQuestionNumber());
 					studentAnswer.setQuestionsType(moreSelections.get(i).getQuestionsType());
 					studentAnswer.setStuAnswer("");
+					studentAnswer.setGetValue(0);
 					examinationServiceImpl.insertStudentAnswer(studentAnswer);
 				}
 			}
@@ -1263,6 +1265,7 @@ public class ExaminationController {
 					studentAnswer.setQuestionNumber(judges.get(i).getQuestionNumber());
 					studentAnswer.setQuestionsType(judges.get(i).getQuestionsType());
 					studentAnswer.setStuAnswer("");
+					studentAnswer.setGetValue(0);
 					examinationServiceImpl.insertStudentAnswer(studentAnswer);
 				}
 			}
@@ -1281,6 +1284,7 @@ public class ExaminationController {
 					studentAnswer.setQuestionNumber(packs.get(i).getQuestionNumber());
 					studentAnswer.setQuestionsType(packs.get(i).getQuestionsType());
 					studentAnswer.setStuAnswer("");
+					studentAnswer.setGetValue(0);
 					examinationServiceImpl.insertStudentAnswer(studentAnswer);
 				}
 			}
@@ -1299,6 +1303,7 @@ public class ExaminationController {
 					studentAnswer.setQuestionNumber(shortAnswers.get(i).getQuestionNumber());
 					studentAnswer.setQuestionsType(shortAnswers.get(i).getQuestionsType());
 					studentAnswer.setStuAnswer("");
+					studentAnswer.setGetValue(0);
 					examinationServiceImpl.insertStudentAnswer(studentAnswer);
 				}
 			}
@@ -1353,8 +1358,15 @@ public class ExaminationController {
 			}
 		}
 
-		int tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID),
-				questionNumber, stuAnswer);
+		int tem = 0;
+		if(stuAnswer.equals(singleSelection.getAnswer())){
+			tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID),
+					questionNumber, stuAnswer,singleSelection.getValue());
+		}else {
+			tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID),
+					questionNumber, stuAnswer,0);
+		}
+				
 		if (tem > 0) {
 			map.put("result", true);
 		} else {
@@ -1423,8 +1435,24 @@ public class ExaminationController {
 		
 		
 		
-		int tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID),
-				questionNumber, temAnswer);
+		int tem = 0;
+		int bb = 0;
+		for (int i = 0; i < oldAnswer.length(); i++) {
+			for (int j = 0; j < temAnswer.length(); j++) {
+				if (oldAnswer.charAt(i) == temAnswer.charAt(j)) {
+					bb++;
+					continue;
+				}
+			}
+		}
+		if(bb == oldAnswer.length() && bb == temAnswer.length()){
+			tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID),
+					questionNumber, temAnswer,moreSelection.getValue());
+		}else {
+			tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID),
+					questionNumber, temAnswer,0);
+		}
+				
 		if (tem > 0) {
 			map.put("result", true);
 		} else {
@@ -1506,8 +1534,25 @@ public class ExaminationController {
 			}
 		}
 
-		int tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID),
-				questionNumber, temAnswer);
+		
+		int tem = 0;
+		int bb = 0;
+		for (int i = 0; i < oldAnswer.length(); i++) {
+			for (int j = 0; j < temAnswer.length(); j++) {
+				if (oldAnswer.charAt(i) == temAnswer.charAt(j)) {
+					bb++;
+					continue;
+				}
+			}
+		}
+		if(bb == oldAnswer.length() && bb == temAnswer.length()){
+			tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID),
+					questionNumber, temAnswer,moreSelection.getValue());
+		}else {
+			tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID),
+					questionNumber, temAnswer,0);
+		}
+				
 		if (tem > 0) {
 			map.put("result", true);
 		} else {
@@ -1561,9 +1606,15 @@ public class ExaminationController {
 						score.getTotalValue() + judge.getValue());
 			}
 		}
-
-		int tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID),
-				questionNumber, stuAnswer);
+        
+		int tem = 0;
+		if(stuAnswer.equals(judge.getAnswer())){
+			tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID),
+					questionNumber, stuAnswer,judge.getValue());
+		}else {
+			tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID),
+					questionNumber, stuAnswer,0);
+		}
 		if (tem > 0) {
 			map.put("result", true);
 		} else {
@@ -1583,7 +1634,7 @@ public class ExaminationController {
 		Map<String, Object> map = new HashMap<>();
 		Score score = examinationServiceImpl.selectScoreByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRoNo);
 		if(score.getExamEnd() == 0){
-		int tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID), questionNumber, stuAnswer);
+		int tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID), questionNumber, stuAnswer,0);
 		if(tem > 0){
 			map.put("result", true);
 		}else {
@@ -1602,7 +1653,7 @@ public class ExaminationController {
 			Map<String, Object> map = new HashMap<>();
 			Score score = examinationServiceImpl.selectScoreByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRoNo);
 			if(score.getExamEnd() == 0){
-			int tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID), questionNumber, stuAnswer);
+			int tem = examinationServiceImpl.updateStudentAnswer(studentRoNo, Integer.parseInt(examinationID), questionNumber, stuAnswer,0);
 			if(tem > 0){
 				map.put("result", true);
 			}else {
@@ -1694,11 +1745,13 @@ public class ExaminationController {
 	  Map<String, Object> map = new HashMap<>();
 	  Pack pack = examinationServiceImpl.selectPackByPackId(packId);
 	  Score score = examinationServiceImpl.selectScoreByExIdAndStuRoNo(pack.getExamination().getExaminationID(), studentRoNo);
-	   int tem = examinationServiceImpl.updateScore(studentRoNo, pack.getExamination().getExaminationID(), 
+	  StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(pack.getExamination().getExaminationID(), studentRoNo, pack.getQuestionNumber());
+	  int tem = examinationServiceImpl.updateScore(studentRoNo, pack.getExamination().getExaminationID(), 
 			   score.getSingleSelectionValue(), score.getMoreSelectionValue(), score.getJudgeValue(), 
-			   value, score.getShortAnswerValue(), score.getSingleSelectionValue()+score.getMoreSelectionValue()+
-			   score.getJudgeValue()+value+score.getShortAnswerValue());
-	   if(tem > 0){
+			   score.getPackValue() - studentAnswer.getGetValue() + value, score.getShortAnswerValue(), score.getSingleSelectionValue()+score.getMoreSelectionValue()+
+			   score.getJudgeValue()+value+score.getShortAnswerValue()-studentAnswer.getGetValue());
+	  examinationServiceImpl.updateStudentAnswer(studentRoNo, pack.getExamination().getExaminationID(), pack.getQuestionNumber(), studentAnswer.getStuAnswer(), value);
+	  if(tem > 0){
 			map.put("result", true);
 		}else {
 			map.put("result", false);
@@ -1713,11 +1766,13 @@ public class ExaminationController {
 		Map<String, Object> map = new HashMap<>();
 		ShortAnswer shortAnswer = examinationServiceImpl.selectShortAnswerByShortAnswerId(shortAnswerId);
 		 Score score = examinationServiceImpl.selectScoreByExIdAndStuRoNo(shortAnswer.getExamination().getExaminationID(), studentRoNo);
-		   int tem = examinationServiceImpl.updateScore(studentRoNo, shortAnswer.getExamination().getExaminationID(), 
+		 StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(shortAnswer.getExamination().getExaminationID(), studentRoNo, shortAnswer.getQuestionNumber());
+		 int tem = examinationServiceImpl.updateScore(studentRoNo, shortAnswer.getExamination().getExaminationID(), 
 				   score.getSingleSelectionValue(), score.getMoreSelectionValue(), score.getJudgeValue(), 
-				   score.getPackValue(), value, score.getSingleSelectionValue()+score.getMoreSelectionValue()+
-				   score.getJudgeValue()+value+ score.getPackValue());
-		   if(tem > 0){
+				   score.getPackValue(), score.getShortAnswerValue()-studentAnswer.getGetValue() + value, score.getSingleSelectionValue()+score.getMoreSelectionValue()+
+				   score.getJudgeValue()+value+ score.getPackValue() - studentAnswer.getGetValue());
+		 examinationServiceImpl.updateStudentAnswer(studentRoNo, shortAnswer.getExamination().getExaminationID(), shortAnswer.getQuestionNumber(),studentAnswer.getStuAnswer(), value);  
+		 if(tem > 0){
 				map.put("result", true);
 			}else {
 				map.put("result", false);
@@ -1738,7 +1793,7 @@ public class ExaminationController {
 			}
 		return map;
 	}
-	
+	//学生查看关于自己的试卷
 	@RequestMapping(value = "/selectScoreByStudent.do")
 	@ResponseBody
 	public Map<String, Object> selectScoreByStudent(String studentRono){

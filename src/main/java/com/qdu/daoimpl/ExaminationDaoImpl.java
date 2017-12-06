@@ -363,13 +363,14 @@ public class ExaminationDaoImpl implements ExaminationDao{
 	}
 
 	@Override
-	public int updateStudentAnswer(String studentRoNo, int examinationID, int questionNumber, String stuAnswer) {
+	public int updateStudentAnswer(String studentRoNo, int examinationID, int questionNumber, String stuAnswer,int getValue) {
 		String statement = "com.qdu.mapping.StudentAnswerMapping.updateStudentAnswer";
 		Map<String, Object> map = new HashMap<>();
 	    map.put("studentRoNo", studentRoNo);
 	    map.put("examinationID", examinationID);
 	    map.put("questionNumber", questionNumber);
 	    map.put("stuAnswer", stuAnswer);
+	    map.put("getValue", getValue);
 		return sqlSessionFactory.openSession().update(statement,map);
 	}
 

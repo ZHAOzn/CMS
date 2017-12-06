@@ -363,7 +363,7 @@ function teacherDetailShow(id){
 						<th style="color: #5FB878;text-align: center;">姓名</th>
 						<td colspan="2" id="studentNameInfo"></td>
 						
-						<td rowspan="5" style="padding-left: 0;padding-right: 0;"><img id="studentPhotoInfo" width="100%" style="width: 100px; heigh: 120px;"/></td>
+						<td rowspan="5" style="padding-left: 0;padding-right: 0;"><img id="studentPhotoInfo" lay-src="" width="100%" style="width: 100px; heigh: 120px;"/></td>
 					</tr>
 					<tr>
 						<th style="color: #5FB878;text-align: center;">性别</th>
@@ -397,6 +397,16 @@ function teacherDetailShow(id){
 					</tr>
 				</table>
 			</div>
+			<script type="text/javascript">
+			layui.use('flow', function(){
+				  var flow = layui.flow;
+				  //当你执行这样一个方法时，即对页面中的全部带有lay-src的img元素开启了懒加载（当然你也可以指定相关img）
+				  flow.lazyimg({
+					  elem:'#studentDetail'
+				  }); 
+				});
+			
+			</script>
 
 			<!-- 学生操作日志模块 -->
 			<div id="studentLog" class="site-text site-block" style="display: none; text-align: center;padding-left: 0;padding-right: 0">

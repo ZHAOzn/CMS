@@ -647,6 +647,7 @@ public class StudentController {
 			System.out.println(studentRoNo +":" +studentPassword+":"+clazzId +":" +courseId);
 			Map<String, Object> map = new HashMap<>();
 			Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+			Course course = courseServiceImpl.selectCourseById(courseId);
 			StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoByMany(studentRoNo,courseId);
 				if (student == null) {
 					map.put("message", "学号错误");
@@ -658,7 +659,16 @@ public class StudentController {
 					map.put("message", "请勿重复加入");
 					System.out.println("333333333");
 				}else{
-					studentInfoServiceImpl.insertStudentInfo(studentRoNo, courseId);
+					StudentInfo studentInfo3 = new StudentInfo();
+					studentInfo3.setStudent(student);
+					studentInfo3.setCourse(course);
+					studentInfo3.setSignIn(0);
+					studentInfo3.setAbsenteeism(0);
+					studentInfo3.setAskForLeave(0);
+					studentInfo3.setComeLate(0);
+					studentInfo3.setLeaveEarlier(0);
+					studentInfo3.setLeaveRecord(0);
+					studentInfoServiceImpl.insertStudentInfo(studentInfo3);
 					clazzStuServiceImpl.insertClazzStu(clazzId,studentRoNo);
 					map.put("result", true);
 					System.out.println("444444444");

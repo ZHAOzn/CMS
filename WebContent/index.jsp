@@ -245,6 +245,14 @@ setTimeout("fresh()",1)
 			}
 		});
 	});
+	function studentClick() {
+		$('#sss').css('border-bottom','1px solid #009688');
+		$('#ttt').css({border:"none"});
+	}
+	function teacherClick() {
+		$('#sss').css({border:"none"});
+		$('#ttt').css('border-bottom','1px solid #009688');
+	}
 </script>
 </head>
 
@@ -265,15 +273,16 @@ setTimeout("fresh()",1)
 				<!-- 登录form模块 -->
 				<div id="loginForm" 
 					style="width: 30%; higth: 100%; margin-top: 170px; background-color: rgba(0, 0, 0, 0.7); position: fixed; margin-left: 35%; display: none;">
-					<a href="#" id="sss" class="alogin" style="float: left; text-decoration: none; color: white; font-size: 28px; background-color: rgba(0, 0, 0, 1);">学生登录</a>
-					<a href="#" id="ttt" class="alogin" style="float: left; text-decoration: none; color: white; font-size: 28px;">教师登录</a>
+					<a href="#" id="sss" class="alogin" style="float: left; text-decoration: none; color: white; font-size: 28px; 
+					background-color: rgba(0, 0, 0, 1); border-bottom: solid;border-color: #009688; border-bottom-width: 1px;" onclick="studentClick()">学生登录</a>
+					<a href="#" id="ttt" class="alogin" style="float: left; text-decoration: none; color: white; font-size: 28px;" onclick="teacherClick()">教师登录</a>
 					<form id="studentForm" action="<%=request.getContextPath()%>/student/studentLogin.do" method="post" style="text-align: center; font-size: 20px;">
 						<br> <br> <br> <br> <span style="color: white">学号:</span>><input 
 							name="studentRoNo" id="studentRono" type="text"/><br /> <br /> <span
 							style="color: white">密码:</span>><input name="studentPassword" id="stpw" 
 							type="password" disabled="disabled" /><br /> <br />
 							 <a href="<%=request.getContextPath()%>/student/getStudentPasswordBack.do"
-							    class="aChangePW" target="_blank">忘记密码>></a><br/><br/><br/> 
+							    class="aChangePW" target="_blank">忘记密码>></a><br/> 
 							<div style="text-align: center;">
 							 	<input id="stu" class="layui-btn" style="width: 120px;" type="button"
 								value="登录" /> 
@@ -294,7 +303,7 @@ setTimeout("fresh()",1)
 							type="password" /><br /> <br />
 						
 							 <a href="<%=request.getContextPath()%>/teacher/getTeacherPasswordBack.do" class="aChangePW"
-							target="_blank">忘记密码>></a><br/><br/><br/>
+							target="_blank">忘记密码>></a><br/>
 							<div style="text-align: center;">
 							 	<input id="tea" class="layui-btn" style="width: 120px;" type="button"
 								value="登录" /> 

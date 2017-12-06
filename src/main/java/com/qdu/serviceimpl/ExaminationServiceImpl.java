@@ -284,8 +284,8 @@ public class ExaminationServiceImpl implements ExaminationService{
 	}
 
 	@Override
-	public int updateStudentAnswer(String studentRoNo, int examinationID, int questionNumber, String stuAnswer) {
-		return examinationDaoImpl.updateStudentAnswer(studentRoNo, examinationID, questionNumber, stuAnswer);
+	public int updateStudentAnswer(String studentRoNo, int examinationID, int questionNumber, String stuAnswer,int getValue) {
+		return examinationDaoImpl.updateStudentAnswer(studentRoNo, examinationID, questionNumber, stuAnswer,getValue);
 	}
 
 	@Override

@@ -202,7 +202,7 @@ function showQrImg() {
              setInterval("CountDown()",1000);
              //5s刷新
              setInterval('YesConfirm()', 5000);
-             var t1 = window.setTimeout("hello()",10000); //10s后显示随机数
+             var t1 = window.setTimeout("hello()",11500); //10s后显示随机数
             // window.clearTimeout(t1);//去掉定时器             
          },
          error: function (data) {
@@ -274,6 +274,7 @@ function submitSignIn() {
 	    			        ,btnAlign: 'c' //按钮居中
 	    			        ,shade: 0 //不显示遮罩
 	    			        ,yes: function(){
+	    			        	layer.closeAll();
 	    			        	window.location.reload();
 	    			        }
 	    			      });
@@ -536,6 +537,7 @@ function getStudentExamList(id) {
 }
 //填空打分
 function getStudentPackList(id) {
+	window.location.reload;
 	$.ajax({
         type: "GET",
         data: {
@@ -589,7 +591,7 @@ function setPackStuAnswer(id) {
 	var studentRoNo = $('#X'+id).val();
 	var oldValue = $('#Y'+id).val();
 	var packId = id;
-	var r = /^\+?[1-9][0-9]*$/;
+	var r = /^\+?[0-9][0-9]*$/;
 	if(r.test($('#'+id).val())){
 		if($('#'+id).val() <= oldValue){
 			$.ajax({
@@ -636,7 +638,7 @@ function setPackStuAnswer(id) {
 		        ,offset: 'auto'
 		        ,id: 'layerDemo'+'auto'
 		        ,title: '错误'
-		        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数请输入正整数" +'</div>'
+		        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数请输入0或正整数" +'</div>'
 		        ,btn: '关闭'
 		        ,btnAlign: 'c'
 		        ,skin: 'demo-class'
@@ -654,7 +656,7 @@ function setShortAnswerIdStuAnswer(id) {
 	var studentRoNo = $('#X'+id).val();
 	var oldValue = $('#Y'+id).val();
 	var shortAnswerId = id.substring(2);
-	var zx = /^\+?[1-9][0-9]*$/;
+	var zx = /^\+?[0-9][0-9]*$/;
 	if(zx.test($('#'+id).val())){
 		if($('#'+id).val() <= oldValue){
 			$.ajax({
@@ -701,7 +703,7 @@ function setShortAnswerIdStuAnswer(id) {
 		        ,offset: 'auto'
 		        ,id: 'layerDemo'+'auto'
 		        ,title: '错误'
-		        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数请输入正整数" +'</div>'
+		        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "分数请输入0或正整数" +'</div>'
 		        ,btn: '关闭'
 		        ,btnAlign: 'c'
 		        ,skin: 'demo-class'
@@ -764,6 +766,9 @@ function scoreFormList() {
 	 $('#clazzInfoShow').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#addClassShow').hide();
+	 $('#addExaminationForm').hide();
+	 $('#ExaminationList').hide();
+	 $('#addExaminationDiv').hide();
 	 $('#scoreFormList').show();
 	 $('#scoreShowTableFirst').show();
 	 $('#scoreShowTableSecond').hide();	 
@@ -2198,7 +2203,7 @@ function teacherChangeExamination() {
 		<!-- 头部导航 -->
 		<div class="layui-header header header-demo">
 			<div class="layui-main">
-				<a class="CMSlogo"
+				<a class="CMSlogo" id="pageTitle"
 					href="<%=request.getContextPath()%>/teacher/teacherLogin.do?id=${teacher.teacherMobile}&&password=${teacher.teacherPassword}"><span
 					style="color: white; font-size: 25px;">CMS</span></a>
 				<ul class="layui-nav">
@@ -2234,16 +2239,16 @@ function teacherChangeExamination() {
 						href="javascript:;">签到系统</a>
 						<dl class="layui-nav-child">
 							<dd>
-								<a id="signShow" href="#">点名签到</a>
+								<a id="signShow" onclick="signShow()" href="#">点名签到</a>
 							</dd>
 							<dd>
-								<a id="otherShow" href="#">签到记录</a>
+								<a id="otherShow" onclick="otherShow()" href="#">签到记录</a>
 							</dd>
 							<!-- <dd>
 								<a href="#">待定</a>
 							</dd> -->
 						</dl></li>
-					<li class="layui-nav-item"><a href="javascript:;">考试系统</a>
+					<li class="layui-nav-item layui-nav-itemed"><a href="javascript:;">考试系统</a>
 						<dl class="layui-nav-child">
 							<dd>
 								<a onclick="FirstFunction()" id="addExamination" href="#">查看试卷</a>
@@ -2270,8 +2275,80 @@ function teacherChangeExamination() {
 
 			<br><span
 				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;">${course.courseName}：<span
-				id="getHeadLine">考勤签到</span></span>
+				id="getHeadLine">班级信息</span></span>
 			<hr class="layui-bg-cyan">
+			
+			<!-- 工具 -->
+			<ul class="layui-fixbar">
+			<li class="layui-icon" onclick="" lay-type="bar1" style=""><i class="layui-icon" style="font-size: 30px; color:white;background-color:#009688;">&#xe606;</i></li>
+			<li id="to_top" onclick="returnTitle()" class="layui-icon layui-fixbar-top" lay-type="top" style="display: list-item;"><i class="layui-icon" style="font-size: 30px; color:white;background-color:#009688;">&#xe604;</i></li>
+			</ul>
+			
+			<script type="text/javascript">
+			 layui.use('util', function(){
+				  var util = layui.util;
+				  //执行
+				  util.fixbar({
+				    bar1: true
+				    ,click: function(type){
+				      console.log(type);
+				      if(type === 'bar1'){
+				        alert('点击了bar1')
+				      }
+				    }
+				  });
+				}); 
+			</script>
+			
+			<!-- 迟到或者早退修改 -->
+			<div id="comeLateOrLeaveEarly" style="position: fixed; background-color: #e2e2e2; width: 30%;
+			 top: 200px;opacity: 1; padding-left:10px;display:none;
+			z-index: 20; margin-left: 10%;">
+			<h3 style="font-size: 1.5em; width: 100%; text-align: center;">迟到or早退</h3>
+			<br/>
+				  <form class="layui-form" action="">
+				    <div class="layui-form-item">
+						<label style="background-color: #FF5722;text-align: center;" class="layui-form-label">学号</label>
+						<div class="layui-input-block">
+							<input id="QstudentRoNo" type="text" readonly="readonly"
+								class="layui-input" style="width: 90%;">
+						</div>
+					</div>
+					
+					<div class="layui-form-item">
+						<label style="background-color: #FF5722;text-align: center;" class="layui-form-label">姓名</label>
+						<div class="layui-input-block">
+							<input id="QstudentName" type="text" readonly="readonly"
+								class="layui-input" style="width: 90%;">
+						</div>
+					</div>
+					
+					
+					<div class="layui-form-item">
+						<label style="background-color: #FF5722;text-align: center;" class="layui-form-label">迟到</label>
+						<div class="layui-input-block">
+							<input id="QstudentComeLate" type="text" readonly="readonly"
+								class="layui-input" style="width: 30%;float: left;">
+								<a onclick="addComeLate()" href="#"><i class="layui-icon" style="font-size: 40px; color: #1E9FFF;float: left; margin-left: 15px;">&#xe608;</i></a>
+						</div>
+					</div>
+					<input type="text" id="studentInFOID" style="display: none;" readonly="readonly"/>
+					<div class="layui-form-item">
+						<label style="background-color: #FF5722;text-align: center;" class="layui-form-label">早退</label>
+						<div class="layui-input-block">
+							<input id="QstudentLeaveEarly" type="text" readonly="readonly"
+								class="layui-input" style="width: 30%;float: left;">
+								<a onclick="addLeaveEarly()" href="#"><i class="layui-icon" style="font-size: 40px; color: #1E9FFF;float: left; margin-left: 15px;">&#xe608;</i></a> 
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<input id="subButton" class="layui-btn" style="width: 60%;"
+								onclick="closeThisStuInfo()" type="button" value="取消更改" />
+						</div>
+					</div>
+				  </form>
+			</div>
 
 
 			<!-- 班级信息 -->
@@ -2382,7 +2459,7 @@ function teacherChangeExamination() {
 
 		<!-- 班级内部具体信息 -->
 		<div class="site-text site-block" id="inClazzStudentInfoDiv"
-			style="display: none;padding-left: 0;padding-right: 0;">
+			style="display: none;padding-left: 0;padding-right: 0; padding-top: 0; margin-top: 0;">
 			<br /> 班级人数：<span id="studentCount"></span>
 			<table class="layui-table" lay-even>
 				<colgroup>
@@ -2463,13 +2540,13 @@ function teacherChangeExamination() {
 		<div id="signModel"
 			style="width: 100%; overflow: hidden; height: 100%; display: none;">
 			<!-- 签到模块 -->
-			<div style="width: 49%; float: right; margin-top: 3%;">
+			<div style="width: 35%; float: right; margin-top: 3%;">
 				<!-- 二维码模块 -->
 				<div style="width: 98%; height: 20%; text-align: center;">
 					<!-- 签到数字 -->
 					<div id="validateCode"
 						style="width: 98; height: 30px; font-size: 25px; text-align: center;">
-						<span id="timer">签到码</span>
+						<span id="timer" style="color: #FF5722;">签到码</span>
 					</div>
 					<!-- 签到二维码 -->
 					<div
@@ -2492,7 +2569,7 @@ function teacherChangeExamination() {
 				<hr style="width: 2px; height: 100%; background-color: #c2c2c2;"></hr>
 			</div>
 			<!-- 签到状况模块 -->
-			<div style="width: 46%; text-align: center;">
+			<div style="width: 58%; text-align: center;">
 				<!-- 实时签到表 -->
 				<table class="layui-table" width="99%" border="1" id="showStudents"
 					style="margin-top: 10%; margin-left: 15px; display: none;">
@@ -2510,6 +2587,7 @@ function teacherChangeExamination() {
 							<th>早退</th>
 							<th>旷课</th>
 							<th>请假</th>
+							<th>修改</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -2525,6 +2603,7 @@ function teacherChangeExamination() {
 										<td>${c.student.studentInfo.leaveEarlier}</td>
 										<td>${c.student.studentInfo.absenteeism}</td>
 										<td>${c.student.studentInfo.askForLeave}</td>
+										<td><a id="Q${c.student.studentRoNo}" onclick="changeQiandao(this.id)" href="#"><i class="layui-icon" style="font-size: 24px; color: #1E9FFF;">&#xe642;</i></a></td>
 									</tr>
 								</c:forEach>
 							</c:when>
@@ -2536,7 +2615,7 @@ function teacherChangeExamination() {
 
 		<script>
 				//签到模块显示
-				$('#signShow').click(function() {
+				function signShow() {
 					$('#getHeadLine').html("点名签到");
 					$('#addClassShow').hide();
 					$('#otherModel').hide();
@@ -2547,7 +2626,115 @@ function teacherChangeExamination() {
 					$('#addExaminationDiv').hide();
 					$('#scoreFormList').hide();
 					$('#signModel').show();
-				});
+				}
+				//点击修改迟到或者早退
+				function changeQiandao(studentRoNo) {
+					var studentRoNo = studentRoNo.substring(1);
+					$.ajax({
+			              type: "GET",
+			              data: {
+			            	  "studentRoNo":studentRoNo,
+			            	  "courseId":${course.courseId}
+			              },
+			              contentType: "application/json; charset=utf-8",
+			              async: false,
+			              dataType: "json",
+			              url: "<%=request.getContextPath()%>/studentInfo/changeQiandao.do",
+			              success: function (data) {
+			  				 $('#studentInFOID').val(data.studentInfo.studentInfoId);
+			            	 $('#QstudentRoNo').val(data.student.studentRoNo);
+			            	 $('#QstudentName').val(data.student.studentName);
+			            	 $('#QstudentComeLate').val(data.studentInfo.comeLate);
+			            	 $('#QstudentLeaveEarly').val(data.studentInfo.leaveEarlier);
+			            	 $('#comeLateOrLeaveEarly').show();
+			              },
+			              error: function (data) {
+			            	  alert("服务器异常");
+			              }
+			          });
+					
+				}
+				//添加迟到次数
+				function addComeLate() {
+					$.ajax({
+			              type: "GET",
+			              data: {
+			            	  "studentInfoId": $('#studentInFOID').val()
+			              },
+			              contentType: "application/json; charset=utf-8",
+			              async: false,
+			              dataType: "json",
+			              url: "<%=request.getContextPath()%>/studentInfo/addComeLate.do",
+			              success: function (data) {
+			            	  if(data.result == true){
+			            		  $('#QstudentComeLate').val(data.studentInfo.comeLate);
+			            		  layui.use('layer', function(){
+					 	               var $ = layui.jquery, layer = layui.layer; 
+					   			      layer.open({
+					   			        type: 1
+					   			        ,offset: 'auto'
+					   			        ,id: 'layerDemo'+'auto'
+					   			        ,title: '成功'
+					   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "添加迟到次数成功" +'</div>'
+					   			        ,btn: '关闭'
+					   			        ,btnAlign: 'c'
+					   			        ,skin: 'demo-class'
+					   			        ,shade: 0 
+					   			        ,yes: function(){
+					   			        	 layer.closeAll();
+					   			        }
+					   			      });
+					 	            });
+			            	  }
+			            	 
+			              },
+			              error: function (data) {
+			            	  alert("服务器异常");
+			              }
+			          });
+				}
+				//添加早退次数
+				function addLeaveEarly() {
+					$.ajax({
+			              type: "GET",
+			              data: {
+			            	  "studentInfoId":$('#studentInFOID').val()
+			              },
+			              contentType: "application/json; charset=utf-8",
+			              async: false,
+			              dataType: "json",
+			              url: "<%=request.getContextPath()%>/studentInfo/addLeaveEarly.do",
+			              success: function (data) {
+			            	  if(data.result == true){
+			            		  $('#QstudentLeaveEarly').val(data.studentInfo.leaveEarlier);
+			            		  layui.use('layer', function(){
+					 	               var $ = layui.jquery, layer = layui.layer; 
+					   			      layer.open({
+					   			        type: 1
+					   			        ,offset: 'auto'
+					   			        ,id: 'layerDemo'+'auto'
+					   			        ,title: '成功'
+					   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "添加早退次数成功" +'</div>'
+					   			        ,btn: '关闭'
+					   			        ,btnAlign: 'c'
+					   			        ,skin: 'demo-class'
+					   			        ,shade: 0 
+					   			        ,yes: function(){
+					   			        	 layer.closeAll();
+					   			        }
+					   			      });
+					 	            });
+			            	  }
+			              },
+			              error: function (data) {
+			            	  alert("服务器异常");
+			              }
+			          });
+				}
+				function closeThisStuInfo() {
+					$('#comeLateOrLeaveEarly').hide();
+				}
+				//添加早退次数
 			</script>
 
 		<!-- 签到记录模块 -->
@@ -2589,7 +2776,7 @@ function teacherChangeExamination() {
 
 		<script>
 				//其它模块显示
-				$('#otherShow').click(function(){
+				function otherShow() {
 					$('#getHeadLine').html("签到记录");
 					$('#upLoadShow').hide();
 					$('#addClassShow').hide();
@@ -2601,7 +2788,7 @@ function teacherChangeExamination() {
 					$('#clazzInfoShow').hide();
 					$('#scoreFormList').hide();
 					$('#otherModel').show();
-				})
+				}
 			</script>
 
 

@@ -18,8 +18,8 @@ public class StudentInfoServiceImpl implements StudentInfoService{
 	private StudentInfoDao studentInfoDaoImpl;
 
 	@Override
-	public void insertStudentInfo(String studentRoNo,int courseId) {
-		studentInfoDaoImpl.insertStudentInfo(studentRoNo,courseId);
+	public int insertStudentInfo(StudentInfo studentInfo) {
+		return studentInfoDaoImpl.insertStudentInfo(studentInfo);
 	}
 
 	@Override
@@ -70,6 +70,21 @@ public class StudentInfoServiceImpl implements StudentInfoService{
 	@Override
 	public int selectCountOfStudentByStudentInfo(int courseId) {
 		return studentInfoDaoImpl.selectCountOfStudentByStudentInfo(courseId);
+	}
+
+	@Override
+	public StudentInfo selectStudentInfoOfLate(String studentRoNo, int courseId) {
+		return studentInfoDaoImpl.selectStudentInfoOfLate(studentRoNo, courseId);
+	}
+
+	@Override
+	public int updateStudentInfoAboutLateOrLeave(int comeLate, int leaveEarlier, int studentInfoId) {
+		return studentInfoDaoImpl.updateStudentInfoAboutLateOrLeave(comeLate, leaveEarlier, studentInfoId);
+	}
+
+	@Override
+	public StudentInfo selectStudentInfoById(int studentInfoId) {
+		return studentInfoDaoImpl.selectStudentInfoById(studentInfoId);
 	}
 	
 
