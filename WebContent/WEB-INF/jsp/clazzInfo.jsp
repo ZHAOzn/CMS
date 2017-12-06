@@ -4303,9 +4303,36 @@ function teacherChangeExamination() {
 	</div>
 
 	</div>
+	
+	<ul class="layui-fixbar">
+		<li class="layui-icon" style="background-color:#393D49" lay-type="bar1">&#xe650;</li>
+		<li class="layui-icon" style="background-color:#393D49" lay-type="bar2">&#xe68e;</li>
+		<li class="layui-icon layui-fixbar-top" style="background-color:#393D49" lay-type="top">&#xe604;</li>
+	</ul>
+	
 	<script>
-		layui.use([ 'element', 'layer', 'table' ], function() {
-			var element = layui.element, $ = layui.jquery, layer = layui.layer;
+		layui.use([ 'element', 'layer', 'table', 'util'], function() {
+			var element = layui.element
+			,$ = layui.jquery
+			,layer = layui.layer
+			,util = layui.util;
+			
+			//固定块
+			 util.fixbar({
+				bar1: true
+				,bar2: true
+			    ,bgcolor: '#393D49'	
+			    ,showHeight:0
+			    ,click: function(type){
+					if(type === 'bar1'){
+						layer.msg('icon是可以随便换的')
+			      	}else if(type === 'bar2') {
+			      		alert('icon是可以随便换的')
+			        }
+			    }
+			});
+
+			
 			//监听导航点击
 			element.on('nav(demo)', function(elem) {
 				//console.log(elem)

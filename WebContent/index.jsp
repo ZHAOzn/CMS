@@ -282,7 +282,7 @@ setTimeout("fresh()",1)
 							style="color: white">密码:</span>><input name="studentPassword" id="stpw" 
 							type="password" disabled="disabled" /><br /> <br />
 							 <a href="<%=request.getContextPath()%>/student/getStudentPasswordBack.do"
-							    class="aChangePW" target="_blank">忘记密码>></a><br/> 
+							    class="aChangePW" target="_blank">忘记密码>></a><br/><br/>
 							<div style="text-align: center;">
 							 	<input id="stu" class="layui-btn" style="width: 120px;" type="button"
 								value="登录" /> 
@@ -303,7 +303,7 @@ setTimeout("fresh()",1)
 							type="password" /><br /> <br />
 						
 							 <a href="<%=request.getContextPath()%>/teacher/getTeacherPasswordBack.do" class="aChangePW"
-							target="_blank">忘记密码>></a><br/>
+							target="_blank">忘记密码>></a><br/><br/>
 							<div style="text-align: center;">
 							 	<input id="tea" class="layui-btn" style="width: 120px;" type="button"
 								value="登录" /> 
