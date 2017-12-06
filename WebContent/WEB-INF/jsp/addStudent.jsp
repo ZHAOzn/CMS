@@ -19,6 +19,8 @@
 <link type="text/css" rel="stylesheet"
 	href="<%=request.getContextPath()%>/layui/css/layui.css">
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
+<link type="text/css" rel="stylesheet"
+	href="<%=request.getContextPath()%>/layui/css/global.css">
 <title>学生注册</title>
 <style type="text/css">
 #lllww:HOVER {
@@ -86,7 +88,7 @@
 
 
 	<div
-		style="heigh:300px;background-color: white; margin-left: 19%; margin-right:20%; padding-left: 10%; padding-right:10%;  padding-top: 8%; padding-bottom: 500px;">
+		style="heigh:300px;background-color: white; margin-left: 19%; margin-right:20%; padding-left: 10%; padding-right:10%;  padding-top: 3%; padding-bottom: 500px;">
 		<form style="float:left; width: 80%;" class="layui-form layui-form-pane"  action="<%=request.getContextPath()%>/student/insertStudent.do" enctype="multipart/form-data" method="post">
 			<div class="layui-form-item">
 				<label class="layui-form-label" for="id">学号</label>
@@ -232,6 +234,36 @@
 				photovalidate: [/\S/,'请上传照片'],
 			});
 		});
+		
+	</script>
+	<div class="fly-footer">
+		<p>
+			<a href="#">CMS博客</a> 2017 &copy; <a href="#">cms118.cc 出品</a>
+		</p>
+		<p>
+			<a href="#" onclick="firstPlan()">初创计划</a> <a href="#"
+				onclick="getEmail()">联系作者合作</a> <a href="#" onclick="getMsg()">微信公众号</a>
+		</p>
+	</div>
+	<script type="text/javascript">
+	function getMsg() {
+		layui.use('layer', function() {
+			var $ = layui.jquery, layer = layui.layer;
+			layer.msg('开发中，敬请期待！');
+		});
+	}
+	function getEmail() {
+		layui.use('layer', function() {
+			var $ = layui.jquery, layer = layui.layer;
+			layer.msg('E-Mail:1185547466@qq.com');
+		});
+	}
+	function firstPlan() {
+		layui.use('layer', function() {
+			var $ = layui.jquery, layer = layui.layer;
+			layer.msg('感谢您的关注！');
+		});
+	}
 	</script>
 </body>
 </html>
