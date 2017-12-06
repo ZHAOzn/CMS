@@ -9,6 +9,7 @@
 		<result property="questionNumber" column="QuestionNumber" />
 		<result property="questionsType" column="QuestionsType" />
 		<result property="stuAnswer" column="StuAnswer" />
+		<result property="getValue" column="GetValue" />
 	</resultMap>
 	
 	<select id="selectStudentAnswerByExIdAndStuRoNo" resultMap="StudentAnswerResult" parameterType="HashMap">
@@ -23,19 +24,21 @@
 
     <insert id="insertStudentAnswer" parameterType="com.qdu.pojo.StudentAnswer">
       insert into 
-      StudentAnswer(StudentRoNo,ExaminationID,QuestionNumber,QuestionsType,StuAnswer) 
-      values(#{studentRoNo},#{examinationID},#{questionNumber},#{questionsType},#{stuAnswer})
+      StudentAnswer(StudentRoNo,ExaminationID,QuestionNumber,QuestionsType,StuAnswer,GetValue) 
+      values(#{studentRoNo},#{examinationID},#{questionNumber},#{questionsType},#{stuAnswer},#{getValue})
     </insert>
     
     <update id="updateStudentAnswer" parameterType="HashMap">
       update StudentAnswer set
-      StuAnswer = #{stuAnswer}
+      StuAnswer = #{stuAnswer},
+      GetValue = #{getValue}
       where StudentRoNo = #{studentRoNo} And ExaminationID = #{examinationID} And QuestionNumber = #{questionNumber}
     </update>
     
     <update id="updateStudentAnswerBeforeLoad" parameterType="HashMap">
       update StudentAnswer set
-      StuAnswer = ''
+      StuAnswer = '',
+      GetValue = 0
       where StudentRoNo = #{studentRoNo} And ExaminationID = #{examinationID}
     </update>
 

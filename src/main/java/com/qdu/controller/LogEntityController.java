@@ -54,7 +54,7 @@ public class LogEntityController {
 		return map;
 	}
 	//管理员登录
-	@RequestMapping(value = "/adminLogin.do")
+	@RequestMapping(value = "/adminLogin.do",method = RequestMethod.POST)
 	public String adminLogin(ModelMap map,HttpServletRequest request){
 		List<LogEntity> logEntities = new ArrayList<LogEntity>();
 		 int totalCount = logEntityServiceImpl.selectLogEntityCount();

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.jdbc.SQL;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -19,12 +20,9 @@ public class StudentInfoImpl implements StudentInfoDao{
 	SqlSessionFactory sessionFactory;
 
 	@Override
-	public void insertStudentInfo(String studentRoNo,int courseId) {
-		HashMap<String, Object> map = new HashMap<>();
+	public int insertStudentInfo(StudentInfo studentInfo) {
 		String statement = "com.qdu.mapping.StudentInfoMapping.insertStudentInfo";	
-		map.put("studentRoNo", studentRoNo);
-		map.put("courseId", courseId);
-		sessionFactory.openSession().insert(statement, map);
+		return sessionFactory.openSession().insert(statement, studentInfo);
 	}
 
 	@Override
@@ -97,6 +95,31 @@ public class StudentInfoImpl implements StudentInfoDao{
 	public int selectCountOfStudentByStudentInfo(int courseId) {
 		String statement = "com.qdu.mapping.StudentInfoMapping.selectCountOfStudentByStudentInfo";
 		return sessionFactory.openSession().selectOne(statement,courseId);
+	}
+
+	@Override
+	public StudentInfo selectStudentInfoOfLate(String studentRoNo, int courseId) {
+		String statement = "com.qdu.mapping.StudentInfoMapping.selectStudentInfoOfLate";
+		Map<String, Object> map = new HashMap<>();
+		map.put("studentRoNo", studentRoNo);
+		map.put("courseId", courseId);
+		return sessionFactory.openSession().selectOne(statement, map);
+	}
+
+	@Override
+	public int updateStudentInfoAboutLateOrLeave(int comeLate, int leaveEarlier, int studentInfoId) {
+		String statement = "com.qdu.mapping.StudentInfoMapping.updateStudentInfoAboutLateOrLeave";
+		Map<String, Object> map = new HashMap<>();
+		map.put("comeLate", comeLate);
+		map.put("leaveEarlier", leaveEarlier);
+		map.put("studentInfoId", studentInfoId);
+		return sessionFactory.openSession().update(statement, map);
+	}
+
+	@Override
+	public StudentInfo selectStudentInfoById(int studentInfoId) {
+		String statement = "com.qdu.mapping.StudentInfoMapping.selectStudentInfoById";
+		return sessionFactory.openSession().selectOne(statement,studentInfoId);
 	}
 
 }

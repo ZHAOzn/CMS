@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.qdu.aop.SystemLog;
+import com.qdu.pojo.Clazz;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Course;
 import com.qdu.pojo.Message;
@@ -57,13 +58,23 @@ public class StudentInfoController {
 		String studentRoNo = request.getParameter("studentRoNo");
 		String password = request.getParameter("studentPassword");
 		String courseId = request.getParameter("courseId");
+		Course course = courseServiceImpl.selectCourseById(Integer.parseInt(courseId));
 		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
 		if (student != null && MD5Util.md5(password, "juin").equals(student.getStudentPassword())) {
 			System.out.println("芝麻开门");
 			StudentInfo studentInfo2 = studentInfoServiceImpl.selectStudentInfoByMany(studentRoNo,
 					Integer.parseInt(courseId));
 			if (studentInfo2 == null) {
-				studentInfoServiceImpl.insertStudentInfo(studentRoNo, Integer.parseInt(courseId));
+				StudentInfo studentInfo3 = new StudentInfo();
+				studentInfo3.setStudent(student);
+				studentInfo3.setCourse(course);
+				studentInfo3.setSignIn(0);
+				studentInfo3.setAbsenteeism(0);
+				studentInfo3.setAskForLeave(0);
+				studentInfo3.setComeLate(0);
+				studentInfo3.setLeaveEarlier(0);
+				studentInfo3.setLeaveRecord(0);
+				studentInfoServiceImpl.insertStudentInfo(studentInfo3);
 			}
 			System.out.println(222);
 			int clazzId = Integer.parseInt(request.getParameter("clazzId"));
@@ -101,7 +112,18 @@ public class StudentInfoController {
 				int tem2 = clazzStuServiceImpl.insertClazzStu(clazzId,studentRoNo);
 				System.out.println(tem2);
 				if(tem2 > 0){
-					studentInfoServiceImpl.insertStudentInfo(studentRoNo,courseId);
+					Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+					Course course = courseServiceImpl.selectCourseById(courseId);
+					StudentInfo studentInfo3 = new StudentInfo();
+					studentInfo3.setStudent(student);
+					studentInfo3.setCourse(course);
+					studentInfo3.setSignIn(0);
+					studentInfo3.setAbsenteeism(0);
+					studentInfo3.setAskForLeave(0);
+					studentInfo3.setComeLate(0);
+					studentInfo3.setLeaveEarlier(0);
+					studentInfo3.setLeaveRecord(0);
+					studentInfoServiceImpl.insertStudentInfo(studentInfo3);
 				}
 			}
 			Teacher teacher = teacherServiceImpl.selectTeacherByEmail(teacherMobile);
@@ -123,6 +145,50 @@ public class StudentInfoController {
 		} 
 		return map;
 	}
+	//修改学生迟到早退的情况
+	@RequestMapping(value = "/changeQiandao.do")
+	@ResponseBody 
+	public Map<String, Object> changeQiandao(String studentRoNo,int courseId){
+		Map<String, Object> map = new HashMap<>();
+		StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoOfLate(studentRoNo, courseId);		
+		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+		map.put("studentInfo", studentInfo);
+		map.put("student", student);
+		return map; 
+	}
+	//添加学生迟到次数
+	@RequestMapping(value = "/addComeLate.do")
+	@ResponseBody
+	public Map<String, Object> addComeLate(int studentInfoId){
+		Map<String, Object> map = new HashMap<>();
+		StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoById(studentInfoId);
+		int tem = studentInfoServiceImpl.updateStudentInfoAboutLateOrLeave(studentInfo.getComeLate()+1, studentInfo.getLeaveEarlier(), studentInfoId);
+		if(tem > 0){
+			map.put("result", true);
+			StudentInfo studentInfo2 = studentInfoServiceImpl.selectStudentInfoById(studentInfoId);
+			map.put("studentInfo", studentInfo2);
+		}else {
+			map.put("result", false);
+		}
+		return map;
+	}
 	
+	//添加早退迟到次数
+		@RequestMapping(value = "/addLeaveEarly.do")
+		@ResponseBody
+		public Map<String, Object> addLeaveEarly(int studentInfoId){
+			Map<String, Object> map = new HashMap<>();
+			StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoById(studentInfoId);
+			int tem = studentInfoServiceImpl.updateStudentInfoAboutLateOrLeave(studentInfo.getComeLate(), studentInfo.getLeaveEarlier()+1, studentInfoId);
+			if(tem > 0){
+				map.put("result", true);
+				StudentInfo studentInfo2 = studentInfoServiceImpl.selectStudentInfoById(studentInfoId);
+				map.put("studentInfo", studentInfo2);
+			}else {
+				map.put("result", false);
+			}
+			return map;
+		}
+
 
 }

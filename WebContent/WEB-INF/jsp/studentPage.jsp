@@ -807,15 +807,23 @@ function getMyScore(id) {
 				 con = "";
 				 $.each(dataObj, function (index, item) {
 					con += "<li style='font-size: 1.2em'>("+ item.questionNumber + ")" + item.questionContent + "&nbsp;("+ item.value +"分)</li>";
-	       	        con += "<li><input type='radio' disabled='disabled'  name='studentAnswer' title='A'>A:" + item.optionA +"<br/></li>";
+	       	        con += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='A'>A:" + item.optionA +"<br/></li>";
 	       	        con += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='B'>B:" + item.optionB +"<br/></li>";
 	       	        con += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='C'>C:" + item.optionC +"<br/></li>";
 	             	con += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='D'>D:" + item.optionD +"<br/></li>";
+	             	con += "<li>&nbsp;</li>";
 	             	con += "<li>正确答案: " + item.answer +"<br/></li>";
-	             	var dataObj2 = data.studentAnswers1; 
+	             	var dataObj2 = data.studentAnswers1;
 	             	$.each(dataObj2, function (index2, item2) {
 	             		if(item.questionNumber == item2.questionNumber){
 		             		con += "<li>学生答案: " + item2.stuAnswer +"<br/></li>";
+		             		con += "<li>&nbsp;</li>";
+		             		if(item2.getValue == item.value){
+		             			con += "<li><i class='layui-icon' style='font-size: 30px; color: #1E9FFF;'>&#xe618;</i></li>";
+		             		}else {
+		             			con += "<li><i class='layui-icon' style='font-size: 30px; color: #FF5722;'>&#x1006;</i></li>";
+							}
+		             		return false; 
 		             	}
 	             	 });
 				 });
@@ -830,11 +838,19 @@ function getMyScore(id) {
 					 mon += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='B'>B:" + item.optionB +"<br/></li>";
 					 mon += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='C'>C:" + item.optionC +"<br/></li>";
 					 mon += "<li><input type='radio' disabled='disabled' name='studentAnswer' title='D'>D:" + item.optionD +"<br/></li>";
+					 mon += "<li>&nbsp;</li>";
 					 mon += "<li>正确答案: " + item.answer +"<br/></li>";
 	             	var moreObj2 = data.studentAnswers2; 
 	             	$.each(moreObj2, function (index2, item2) {
 	             		if(item.questionNumber == item2.questionNumber){
 	             			mon += "<li>学生答案: " + item2.stuAnswer +"<br/></li>";
+	             			mon += "<li>&nbsp;</li>";
+	             			if(item2.getValue == item.value){
+		             			mon += "<li><i class='layui-icon' style='font-size: 30px; color: #1E9FFF;'>&#xe618;</i></li>";
+		             		}else {
+		             			mon += "<li><i class='layui-icon' style='font-size: 30px; color: #FF5722;'>&#x1006;</i></li>";
+							}
+		             		return false; 
 		             	}
 	             	 });
 				 });
@@ -844,11 +860,19 @@ function getMyScore(id) {
 				 jon = "";
 				 $.each(judgeObj, function (index, item) {
 					 jon += "<li style='font-size: 1.2em'>("+ item.questionNumber + ")" + item.judgeContent + "&nbsp;("+ item.value +"分)</li>";
+					 jon += "<li>&nbsp;</li>";
 					 jon += "<li>正确答案: " + item.answer +"<br/></li>";
 	             	var judgeObj2 = data.studentAnswers3; 
 	             	$.each(judgeObj2, function (index2, item2) {
 	             		if(item.questionNumber == item2.questionNumber){
 	             			jon += "<li>学生答案: " + item2.stuAnswer +"<br/></li>";
+	             			jon += "<li>&nbsp;</li>";
+	             			if(item2.getValue == item.value){
+		             			jon += "<li><i class='layui-icon' style='font-size: 30px; color: #1E9FFF;'>&#xe618;</i></li>";
+		             		}else {
+		             			jon += "<li><i class='layui-icon' style='font-size: 30px; color: #FF5722;'>&#x1006;</i></li>";
+							}
+		             		return false; 
 		             	}
 	             	 });
 				 });
@@ -858,11 +882,15 @@ function getMyScore(id) {
 				 pon = "";
 				 $.each(packObj, function (index, item) {
 					 pon += "<li style='font-size: 1.2em'>("+ item.questionNumber + ")" + item.packContent + "&nbsp;("+ item.value +"分)</li>";
+					 pon += "<li>&nbsp;</li>";
 					 pon += "<li>参考答案: " + item.answer +"<br/></li>";
 	             	var packObj2 = data.studentAnswers4; 
 	             	$.each(packObj2, function (index2, item2) {
 	             		if(item.questionNumber == item2.questionNumber){
 	             			pon += "<li>学生答案: " + item2.stuAnswer +"<br/></li>";
+	             			pon += "<li>&nbsp;</li>";
+		             		pon += "<li>该题得分：<span style='color:#FF5722;'>"+ item2.getValue +"</span></li>";
+		             		return false; 
 		             	}
 	             	 });
 				 });
@@ -876,7 +904,9 @@ function getMyScore(id) {
 	             	$.each(shortObj2, function (index2, item2) {
 	             		if(item.questionNumber == item2.questionNumber){
 	             			son += "<li>学生答案:<br/> <textarea rows='5' cols='100' disabled='disabled'>" + item2.stuAnswer +"</textarea><br/></li>";
-		             	}
+	             			son += "<li>&nbsp;</li>";
+	             			son += "<li>该题得分：<span style='color:#FF5722;'>"+ item2.getValue +"</span></li>";
+	             		}
 	             	 });
 				 });
 				 $('#shortAnswerUl').html(son);
@@ -939,7 +969,7 @@ function getMyScore(id) {
 				<ul class="layui-nav">
 					<li class="layui-nav-item"><a id="messageButtton" href="#">
 					<i class="layui-icon bbbbb" style="font-size: 20px; color: #d2d2d2">&#xe63a;</i> <span
-							id="TmessageCount" class="layui-badge" style="margin-left: 43%;">${messageCount}</span></a></li>
+							id="TmessageCount" class="layui-badge" style="margin-left: 15%;">${messageCount}</span></a></li>
 					<li class="layui-nav-item"><a id="studentInfoCenter" href="#">
 					<i class="layui-icon bbbbb" style="font-size: 20px; color: #d2d2d2">&#xe612;</i><span
 							id="redSignal" style="display: none;" class="layui-badge-dot"></span></a></li>
@@ -1042,6 +1072,8 @@ function getMyScore(id) {
 			<div id="studentScoreDetail" style="display: none;">
 			<h3 id="ExamTitle" style="width: 100%; text-align: center;font-size: 1.4em"></h3>
 			<h3 id="ExamTotalValue" style="width: 100%;font-size: 1.1em;text-align: right;"></h3>
+		      <span id=""> 得分：<i class="layui-icon" style="font-size: 13px; color: #1E9FFF;">&#xe65b;</i>  </span>
+		      <hr class="layui-bg-red" style="width: 40%;">   
 				   <ul>
 				    <li>单选：<span id="single"></span></li>
 				    <li>多选：<span id="more"></span></li>
@@ -1052,13 +1084,13 @@ function getMyScore(id) {
 				   </ul>
 				   
 		<!-- 答题部分 -->   <!-- 单选部分 -->
-		<h3 style="font-size: 1.4em;color: #5FB878;"><一>单选<span style="font-size: 0.8em">(该部分有且仅有一个正确答案，答错不得分)</span></h3>
+		<h3 style="font-size: 1.4em;color: #5FB878;"><一>单选<span style="font-size: 0.8em">(该部分每题有且仅有一个正确答案，答错不得分)</span></h3>
 		<br />
 		<ul class="layui-timeline" id="singleUl">
-						
+		<br/>				
 		</ul>
 		<!-- 多选部分 -->
-		<h3 style="font-size: 1.4em;color: #5FB878;"><二>多选<span style="font-size: 0.8em">((该部分最少有一个正确答案，答错或者答对一部分不得分)</span></h3>
+		<h3 style="font-size: 1.4em;color: #5FB878;"><二>多选<span style="font-size: 0.8em">((该部分每题至少有一个选项正确，答错或者答对一部分不得分)</span></h3>
 		<br />
 		<ul class="layui-timeline" id="moreUl">
 						

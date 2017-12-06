@@ -49,9 +49,6 @@ window.onload=function(){
               event.keyCode=0;
               event.returnValue = false;
           }
-          if (window.event && window.event.keyCode == 8) {
-              window.event.returnValue = false;
-          }
     }
     document.oncontextmenu = function() {
         event.returnValue = false;
@@ -210,6 +207,27 @@ window.onload=function(){
 		</form>
 	</div>
 	</nav>
+	<!-- 工具 -->
+			<ul class="layui-fixbar">
+			<li class="layui-icon" onclick="" lay-type="bar1" style=""><i class="layui-icon" style="font-size: 30px; color:white;background-color:#009688;">&#xe606;</i></li>
+			<li id="to_top" onclick="returnTitle()" class="layui-icon layui-fixbar-top" lay-type="top" style="display: list-item;"><i class="layui-icon" style="font-size: 30px; color:white;background-color:#009688;">&#xe604;</i></li>
+			</ul>
+			
+			<script type="text/javascript">
+			 layui.use('util', function(){
+				  var util = layui.util;
+				  //执行
+				  util.fixbar({
+				    bar1: true
+				    ,click: function(type){
+				      console.log(type);
+				      if(type === 'bar1'){
+				        alert('点击了bar1')
+				      }
+				    }
+				  });
+				}); 
+			</script>
 
 	<div>
 		<input id="hour" type="text" style="display: none;" /> <input
@@ -252,7 +270,7 @@ window.onload=function(){
 	<!-- 答题部分 -->
 	<div id="singleSelectionArea"
 		style="heigh: 300px; background-color: white; margin-left: 5%; margin-right: 5%; padding-top: 10px; font-family: 微软雅黑">
-		<h3 style="font-size: 1.4em;color: #5FB878;"><一>单选<span style="font-size: 0.8em">(该部分有且仅有一个正确答案，答错不得分)</span></h3>
+		<h3 style="font-size: 1.4em;color: #5FB878;"><一>单选<span style="font-size: 0.8em">(该部分每题有且仅有一个正确答案，答错不得分)</span></h3>
 		<br />
 		<ul class="layui-timeline">
 			<c:choose>
@@ -335,7 +353,7 @@ window.onload=function(){
 	
 	<div id="moreSelectionArea"
 		style="heigh: 300px; background-color: white; margin-left: 5%; margin-right: 5%; padding-top: 10px; font-family: 微软雅黑">
-		<h3 style="font-size: 1.4em;color: #5FB878;"><二>多选<span style="font-size: 0.8em">(该部分最少有一个正确答案，答错或者答对一部分不得分)</span></h3>
+		<h3 style="font-size: 1.4em;color: #5FB878;"><二>多选<span style="font-size: 0.8em">(该部分每题至少有一个选项正确，答错或者答对一部分不得分)</span></h3>
 		<br />
 		<ul class="layui-timeline">
 			<c:choose>

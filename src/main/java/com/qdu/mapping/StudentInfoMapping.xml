@@ -106,6 +106,17 @@
 		where CourseId = #{courseId})
 	</select>
 	
+	<select id="selectStudentInfoOfLate" resultMap="StudentInfoResult">
+		select StudentInfoId, comeLate,leaveEarlier from
+		StudentInfo where StudentRoNo = #{studentRoNo}
+		And CourseId = #{courseId}
+	</select>
+	
+	<select id="selectStudentInfoById" resultMap="StudentInfoResult">
+		select StudentInfoId, comeLate,leaveEarlier from
+		StudentInfo where StudentInfoId = #{studentInfoId}
+	</select>
+	
 	<select id="selectCountOfStudentByStudentInfo" parameterType="int"
 		resultType="int">
 		select count(*) from StudentInfo where CourseId = #{courseId}
@@ -147,17 +158,26 @@
 		select * from StudentInfo where StudentRoNo = #{studentRoNo}
 	</select>
 
-
-	<insert id="insertStudentInfo" parameterType="HashMap">
+	<insert id="insertStudentInfo" parameterType="com.qdu.pojo.StudentInfo">
 		insert into
-		StudentInfo(StudentRoNo,CourseId)
-		values(#{studentRoNo},#{courseId})
+		StudentInfo(StudentRoNo,CourseId,SignIn,ComeLate,LeaveEarlier,Absenteeism,
+		LeaveRecord,AskForLeave)
+		values(#{student.studentRoNo},#{course.courseId},#{signIn},#{comeLate},#{leaveEarlier},#{absenteeism},
+		#{leaveRecord},#{askForLeave})
 	</insert>
 
 	<delete id="deleteStudentInfoByCourse" parameterType="int">
 		delete from
 		StudentInfo where CourseId = #{clazzId}
 	</delete>
+	
+	<update id="updateStudentInfoAboutLateOrLeave" parameterType="HashMap">
+		update
+		StudentInfo set
+		ComeLate = #{comeLate},
+		LeaveEarlier = #{leaveEarlier}
+		where StudentInfoId = #{studentInfoId}
+	</update>
 
 	<update id="updateStudentInfoAboutSignIn" parameterType="HashMap">
 		update

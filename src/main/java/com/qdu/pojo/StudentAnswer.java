@@ -10,6 +10,7 @@ public class StudentAnswer implements Serializable{
 	private int questionNumber;
 	private String questionsType;
 	private String stuAnswer;
+	private int getValue;
 	public int getsAId() {
 		return sAId;
 	}
@@ -45,6 +46,12 @@ public class StudentAnswer implements Serializable{
 	}
 	public void setStuAnswer(String stuAnswer) {
 		this.stuAnswer = stuAnswer;
+	}
+	public int getGetValue() {
+		return getValue;
+	}
+	public void setGetValue(int getValue) {
+		this.getValue = getValue;
 	}
 	
 	

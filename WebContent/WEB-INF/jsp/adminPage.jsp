@@ -87,7 +87,7 @@ background-repeat: no-repeat; background-size: cover;">
 	<div class="site-text site-block"
 		style="width: 100%; margin-top: 10%;text-align: center;">
 		<form id="adminForm"
-			action="<%=request.getContextPath()%>/admin/adminLogin.do"
+			action="<%=request.getContextPath()%>/admin/adminLogin.do" method="post"
 		    style="text-align: center; font-size: 20px;width:40%; margin-left:30%;
 			background-color: rgba(0, 0, 0, 0.7);">
 			<br> <br> <br> <br> <span style="color: white">账号:</span><input
@@ -102,17 +102,6 @@ background-repeat: no-repeat; background-size: cover;">
 			<br>
 			<br>
 		</form>
-
 	</div>
-
-	<%-- <form id="adminForm"
-		action="<%=request.getContextPath()%>/admin/adminLogin.do"
-		method="post">
-		<input type="text" name="repageNow" value="1" style="display: none;"/>
-		<h3>管理员登录</h3>
-		账号：<input type="password" id="adminId" name="adminId" /><br /> 密码：<input
-			type="password" id="adminPassword" name="adminPassword" /><br /> <input
-			id="tryLogin" type="button" onclick="wannaLogin()" value="强势登录" />
-	</form> --%>
 </body>
 </html>
