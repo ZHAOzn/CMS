@@ -92,8 +92,15 @@ public class MyBlogController {
 		map.put("sum", sum);
 		return map;
 	}
-	
-	
+	//获取某一博文
+	@RequestMapping(value = "/getBlogById.do")
+	@ResponseBody
+	public Map<String, Object> getBlogById(int blogId){
+		Map<String, Object> map = new HashMap<>();
+		MyBlog myBlog = myBlogServiceImpl.selectMyBlogById(blogId);
+		map.put("myBlog", myBlog);
+		return map;
+	}
 	
 	
 	

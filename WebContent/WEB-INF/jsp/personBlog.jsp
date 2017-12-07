@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -73,7 +74,54 @@
 						   $('#D_ucm').show();
 							$('#LAY_ucm').hide();
 					}
+					   function getBlogById(id) {
+						   $.ajax({
+					              type: "GET",
+					              data: {
+					            	  "blogId":id
+					              },
+					              contentType: "application/json; charset=utf-8",
+					              async: false,
+					              dataType: "json",
+					              url: "<%=request.getContextPath()%>/blog/getBlogById.do",
+					              success: function (data) {
+					            	   $('#waitForYou').html(data.myBlog.blogContent);
+					            	  
+					              },
+					              error: function (data) {
+					            	  alert("服务器异常");
+					              }
+					          });
+					}
 					</script>
+					<div id="D_ucm" class="site-text site-block" style="display: none; padding-top: 15px;
+					width: 80%; padding-left: 15%;">
+					<span>发布过的博文&nbsp;<i class="layui-icon" style="font-size: 23px; color: #1E9FFF;">&#xe609;</i> </span>
+					<br/>
+					<ul class="layui-tab-title">
+						<li>按发布时间&nbsp;<i class="layui-icon" style="font-size: 17px; color: #FF5722">&#xe62f;</i>  </li>
+						<li>按点击热度&nbsp;<i class="layui-icon" style="font-size: 17px; color: #FF5722">&#xe62f;</i>  </li>
+					</ul>
+					<ul style="padding-left: 2%;">
+					 <c:choose>
+					   <c:when test="${! empty myBlogs}">
+					      <c:forEach items="${myBlogs}" var="s">
+					        <li><span>${s.blogId}.&nbsp;</span> <a id="${s.blogId}" onclick="getBlogById(this.id)" href="#">${s.blogTitle}</a></li>
+					      </c:forEach>
+					   </c:when>
+					     <c:otherwise>
+					       <li>暂无数据</li>
+					     </c:otherwise>
+					 </c:choose>
+					</ul>
+					
+					<div id="waitForYou">
+					 <img alt="" src="D:\gitdemo\2014-S7-Java1314\.metadata\.plugins\org.eclipse.wst.server.core\tmp1\wtpwebapps\CMS\blog\timg (1).jpg
+					 ">
+					
+					</div>
+					
+					</div>
 					
 					<div class="layui-form layui-tab-content" id="LAY_ucm"
 						style="padding: 0px 0;">
@@ -207,14 +255,14 @@
 				   	   			        ,skin: 'demo-class'
 				   	   			        ,shade: 0 
 				   	   			        ,yes: function(){
-				   	   			        	 layer.closeAll();
+				   	   			 		 window.location.reload();
 				   	   			        }
 				   	   			      });
 				   	 	            });
 				            	  }else{
 				            		  layui.use('layer', function() {
 				          				var $ = layui.jquery, layer = layui.layer;
-				          				layer.msg('更新信息失败..');
+				          				layer.msg('新建失败..');
 				          			});
 				            	  }
 				              },
@@ -230,6 +278,10 @@
 						});
 				}
 			}
+				//刷新页面函数
+					 function yourFunction() {
+						 window.location.reload();
+					}
 			</script>
 			
 					<div class="layui-form-item">

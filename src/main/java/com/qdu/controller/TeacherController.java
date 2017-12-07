@@ -38,6 +38,7 @@ import com.qdu.pojo.FilePackage;
 import com.qdu.pojo.LeaveRecord;
 import com.qdu.pojo.LogEntity;
 import com.qdu.pojo.Message;
+import com.qdu.pojo.MyBlog;
 import com.qdu.pojo.Student;
 import com.qdu.pojo.StudentInfo;
 import com.qdu.pojo.Teacher;
@@ -47,6 +48,7 @@ import com.qdu.service.FilePackageService;
 import com.qdu.service.LeaveRecordService;
 import com.qdu.service.LogEntityService;
 import com.qdu.service.MessageService;
+import com.qdu.service.MyBlogService;
 import com.qdu.service.StudentInfoService;
 import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
@@ -78,6 +80,8 @@ public class TeacherController {
 	private LeaveRecordService leaveRecordServiceImpl;
 	@Autowired
 	private StudentInfoService studentInfoServiceImpl;
+	@Autowired 
+	private MyBlogService myBlogServiceImpl;
 
 	// 教师登录准备
 	@RequestMapping(value = "/forTeacherLogin.do")
@@ -517,6 +521,8 @@ public class TeacherController {
 		Teacher teacher = teacherServiceImpl.selectTeacherByEmail(userId);
 		if(userPassWord != null && userPassWord.equals(teacher.getTeacherPassword())){
 			map.put("teacher", teacher);
+			List<MyBlog> myBlogs = myBlogServiceImpl.selectMyBlogByUserId(userId);
+			map.put("myBlogs", myBlogs);
 			return "personBlog";
 		}else {
 			return "failer";
@@ -560,7 +566,7 @@ public class TeacherController {
 				if(fileName != null && path != null){
 					Map<String, Object> map2 = new HashMap<>();
 					objData.put("code", 0);
-					map2.put("src", path);
+					map2.put("src", "http://localhost:8080/ClassManageSys/blog/"+fileName);
 					map2.put("title", fileName);
 					objData.put("data", map2);
 				}else {
