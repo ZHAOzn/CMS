@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +38,7 @@ import com.qdu.pojo.FilePackage;
 import com.qdu.pojo.LeaveRecord;
 import com.qdu.pojo.LogEntity;
 import com.qdu.pojo.Message;
+import com.qdu.pojo.MyBlog;
 import com.qdu.pojo.Student;
 import com.qdu.pojo.StudentInfo;
 import com.qdu.pojo.Teacher;
@@ -46,6 +48,7 @@ import com.qdu.service.FilePackageService;
 import com.qdu.service.LeaveRecordService;
 import com.qdu.service.LogEntityService;
 import com.qdu.service.MessageService;
+import com.qdu.service.MyBlogService;
 import com.qdu.service.StudentInfoService;
 import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
@@ -77,6 +80,8 @@ public class TeacherController {
 	private LeaveRecordService leaveRecordServiceImpl;
 	@Autowired
 	private StudentInfoService studentInfoServiceImpl;
+	@Autowired 
+	private MyBlogService myBlogServiceImpl;
 
 	// 教师登录准备
 	@RequestMapping(value = "/forTeacherLogin.do")
@@ -424,8 +429,6 @@ public class TeacherController {
 	public Map<String, Object> cantLeave(int leaveRecordId,String teacherMobile,String teacherName,
 			String studentRoNo,String content,HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
-		System.out.println("11111111111111111111");
-		System.out.println(teacherMobile + studentRoNo + content+": " +leaveRecordId);
 		LeaveRecord leaveRecord = leaveRecordServiceImpl.selectLeaveRecordByleaveRecordId(leaveRecordId);
 		if(leaveRecord.getStatus().equals("待批")){
 			Message message = new Message();
@@ -512,5 +515,69 @@ public class TeacherController {
 		}
 		return map;
 	}
+	
+	@RequestMapping(value = "/toPersonBlog.do",method = RequestMethod.POST)
+	public String toPersonBlog(String userId,String userPassWord,ModelMap map,HttpServletRequest request,HttpServletResponse response){
+		Teacher teacher = teacherServiceImpl.selectTeacherByEmail(userId);
+		if(userPassWord != null && userPassWord.equals(teacher.getTeacherPassword())){
+			map.put("teacher", teacher);
+			List<MyBlog> myBlogs = myBlogServiceImpl.selectMyBlogByUserId(userId);
+			map.put("myBlogs", myBlogs);
+			return "personBlog";
+		}else {
+			return "failer";
+		}		
+	}
+	
+	// 个人博客图片上传
+		@SystemLog(module = "教师", methods = "日志管理-上传文件")
+		@RequestMapping(value = "/myBlogImg.do",method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> myBlogImg(@RequestParam("file") MultipartFile file,
+				HttpServletRequest request) throws IOException, Throwable {
+			JSONObject objData = new JSONObject();  
+			if(file.getSize()/1024 <= 500){
+			String fileName = file.getOriginalFilename();
+			// 定义上传路径
+			String path = request.getSession().getServletContext().getRealPath("/") + "blog";
+			boolean isFileUpload = ServletFileUpload.isMultipartContent(request);
+			// 如果是文件上传类型
+			if (isFileUpload) {
+				// 得到文件上传工厂
+				DiskFileItemFactory GongChang = new DiskFileItemFactory();
+				// 处理文件上传核心类
+				ServletFileUpload fileUpload = new ServletFileUpload(GongChang);
+				// 设置文件上传类的编码格式
+				fileUpload.setHeaderEncoding("UTF-8");
+				// 得到文件名
+				// 拼接一个新的文件名
+				// 路径
+				File targetFile = new File(path, fileName);
+				System.out.println(targetFile.getAbsolutePath());
+				if (!targetFile.exists()) {
+					targetFile.mkdirs();
+				}
+				// 保存
+				try {
+					file.transferTo(targetFile);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				if(fileName != null && path != null){
+					Map<String, Object> map2 = new HashMap<>();
+					objData.put("code", 0);
+					map2.put("src", "http://localhost:8080/ClassManageSys/blog/"+fileName);
+					map2.put("title", fileName);
+					objData.put("data", map2);
+				}else {
+					objData.put("msg", "插入图片失败");
+				}
+					
+			}
+		}else {
+			objData.put("msg", "图片不得超过500kb");
+		}
+			return objData;
+		}
 	
 }

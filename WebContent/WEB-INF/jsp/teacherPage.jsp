@@ -462,6 +462,10 @@
 			dataType : "json",
 		});
 	}
+	//个人博客
+	function toPersonBlog() {
+		$('#PersonBlogForm').submit();
+	}
 	//ajax获取上传的文件列表
 	function getPrivateData() {
 		 $('#messageList').html("文件上传");
@@ -767,7 +771,7 @@ function checkCourseShow2() {
 								<a href="#">待定</a>
 							</dd> -->
 						</dl></li>
-					<li class="layui-nav-item"><a href="#">个人博客</a></li>
+					<li class="layui-nav-item"><a href="#" onclick="toPersonBlog()">个人博客</a></li>
 					<li class="layui-nav-item"><a id="teacherLog" href="#">操作日志</a></li>
 				</ul>
 			</div>
@@ -778,6 +782,13 @@ function checkCourseShow2() {
 			style="padding-top: 3%; overflow: auto;">
 			<br /> <span id="messageList" style="margin-left: 5%;">课程信息</span>
 			<hr class="layui-bg-cyan">
+			
+			
+			<!-- 教师博客 -->
+			<form id="PersonBlogForm" action="<%=request.getContextPath()%>/teacher/toPersonBlog.do" method="post" style="display: none;">
+			  <input type="text" name="userId" value="${teacher.teacherMobile}"/>
+			  <input type="text" name="userPassWord" value="${teacher.teacherPassword}"/>
+			</form>
 
 			<!-- 教师操作日志表 -->
 			<div id="forTeacherLogInfo" class="site-text site-block"
@@ -1131,24 +1142,6 @@ function checkCourseShow2() {
 			<!-- 附属详细消息 -->
 			<div id="fushuMessage"
 				style="width: 100%; padding-left: 25%; display: none;">
-				<!-- 拒绝请假信息 -->
-				<!-- <form class="layui-form-pane" 
-					id="detailInfoOfLeave"
-						 	   style="position: fixed; margin-top: 6%; background-color: #d2d2d2; text-align: center; margin-left: 6%; display: none; width: 20%;">
-					<div class="layui-form-item layui-form-text">
-						 <label class="layui-form-label">拒绝说明</label> 
-						<div class="layui-input-block">
-							<textarea id="refuseContent" placeholder="请输入内容" required
-								lay-verify="textLength" class="layui-textarea"
-								style="width: 100%;"></textarea>
-							<P id="limitP" style="color: red; display: none;">限制50字以内,不可为空</P>
-						</div>
-					</div>
-					
-						<button class="layui-btn" style="width: 50%;"
-							onclick="myConfirmCantLeave()">确定</button>
-				</form> -->
-
 				<h3 id="messageTitle"></h3>
 				<hr />
 				<br /> <br /> <span id="messageSnder"></span><br /> <br /> <br />
@@ -1472,7 +1465,6 @@ function checkCourseShow2() {
 						</div>
 					</div>
 				</form>
-
 				<script>
 					//Demo
 					layui.use([ 'form', 'laydate' ], function() {

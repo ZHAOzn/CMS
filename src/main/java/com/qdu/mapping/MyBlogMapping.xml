@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.mapping.MyBlogMapping">
+	<cache type="com.qdu.cache.RedisCache" />
+	<resultMap type="com.qdu.pojo.MyBlog" id="MyBlogResult">
+		<id property="blogId" column="BlogId" />
+		<result property="blogAuthor" column="BlogAuthor" />
+		<result property="role" column="Role" />
+		<result property="blogTitle" column="BlogTitle" />
+		<result property="belongTo" column="BelongTo" />
+		<result property="blogContent" column="BlogContent" />
+		<result property="blogTarget" column="BlogTarget" />
+		<result property="blogFifter" column="BlogFifter" />
+		<result property="createTime" column="CreateTime" />
+		<result property="up" column="Up" />
+		<result property="down" column="Down" />
+		<result property="blogComment" column="BlogComment" />
+		<result property="hotClick" column="HotClick" />
+	</resultMap>
+	
+	<select id="selectMyBlogById" resultMap="MyBlogResult">
+	   select * from MyBlog where BlogId = #{blogId} order by BlogId desc
+	</select>
+	
+	<select id="selectMyBlogByUserId" resultMap="MyBlogResult">
+	   select * from MyBlog where BlogAuthor = #{blogAuthor} order by BlogId desc
+	</select>
+	
+	<insert id="insertMyBlog" parameterType="com.qdu.pojo.MyBlog">
+	  insert into 
+	  MyBlog(BlogAuthor,Role,BlogTitle,BelongTo,BlogContent,BlogTarget,BlogFifter,CreateTime,
+	  Up,Down,BlogComment,HotClick) 
+	  values(#{blogAuthor},#{role},#{blogTitle},#{belongTo},#{blogContent},#{blogTarget},#{blogFifter},#{createTime},
+	  #{up},#{down},#{blogComment},#{hotClick})
+	</insert>
+	
+	
+
+</mapper>
