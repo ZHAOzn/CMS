@@ -515,7 +515,7 @@ public class TeacherController {
 		}
 		return map;
 	}
-	
+	//查看教师自己的博客
 	@RequestMapping(value = "/toPersonBlog.do",method = RequestMethod.POST)
 	public String toPersonBlog(String userId,String userPassWord,ModelMap map,HttpServletRequest request,HttpServletResponse response){
 		Teacher teacher = teacherServiceImpl.selectTeacherByEmail(userId);

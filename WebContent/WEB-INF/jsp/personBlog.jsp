@@ -70,9 +70,153 @@
 						$('#D_ucm').hide();
 						$('#LAY_ucm').show();
 					}
+					   //查看博客通过发布时间
 					   function lookAtBlog() {
-						   $('#D_ucm').show();
-							$('#LAY_ucm').hide();
+						   $.ajax({
+					              type: "GET",
+					              data: {
+					            	  "blogAuthor":${teacher.teacherMobile}
+					              },
+					              contentType: "application/json; charset=utf-8",
+					              async: false,
+					              dataType: "json",
+					              url: "<%=request.getContextPath()%>/blog/teacherReadBlog.do",
+					              success: function (data) {
+					            	 var dataObj = data.myBlogs;
+									 con = "";
+									 $.each(dataObj, function (index, item) {
+										    con += "<tr id='TD"+item.blogId+"' class='ttr'>";
+						        	        con += "<td style='text-align:center;'>" + index + "</td>";
+						        	        con += "<td style='text-align:center;'><a id='"+item.blogId+"' onclick='getBlogById(this.id)' href='#'>" + item.blogTitle + "</a></td>";
+						        	        con += "<td style='text-align:center;'><div class='site-demo-button' id='layerDemo'><a class='ttd' id='D"+item.blogId+"' data-method='notice' onclick='beforeDeleteMyBlog(this.id)' href='#'><i class='layui-icon' style='font-size: 20px; color: #1E9FFF;'>&#xe640;</i></a></div></td>";
+						        	        con += "<td style='text-align:center;'><a id='U"+item.blogId+"' onclick='beforeUpdateMyBlog(this.id)' href='#'><i class='layui-icon' style='font-size: 20px; color: #1E9FFF;'>&#xe642;</i></a></td>";
+						        	        con += "<tr/>";
+						        	        if(index == 0){
+						        	        	getBlogById(item.blogId);
+						        	        }
+						        	    });
+									  $('#blogThreafd').html(con);
+					            	  $('#D_ucm').show();
+									  $('#LAY_ucm').hide();
+					              },
+					              error: function (data) {
+					            	  alert("服务器异常");
+					              }
+					          });
+							 //删除
+							layui.use([ 'element', 'layer'], function() {
+								var element = layui.element, $ = layui.jquery, layer = layui.layer;
+								//触发事件
+								var active = {
+									notice : function() {
+										//示范一个公告层
+										layer.open({
+													type : 1,
+													title : false //不显示标题栏
+													,
+													closeBtn : false,
+													area : '300px;',
+													shade : 0.8,
+													id : 'LAY_layuipro' //设定一个id，防止重复弹出
+													,
+													btn : [ '删除', '取消' ],
+													yes : function(index, layero) {
+														deleteMyBlog();
+														layer.closeAll();
+													},
+													btn2 : function(index, layero) {
+														//按钮【按钮二】的回调
+													},
+													btnAlign : 'c',
+													moveType : 1 //拖拽模式，0或者1
+													,
+													content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定删除该博文？</div>'
+												});
+									}
+
+								};
+
+								$('#layerDemo .ttd').on(
+										'click',
+										function() {
+											var othis = $(this), method = othis.data('method');
+											active[method] ? active[method].call(this, othis) : '';
+										});
+					          });
+					    }
+					   //查看自己博客通过热度
+					   function lookAtBlogByHot() {
+						   $.ajax({
+					              type: "GET",
+					              data: {
+					            	  "blogAuthor":${teacher.teacherMobile}
+					              },
+					              contentType: "application/json; charset=utf-8",
+					              async: false,
+					              dataType: "json",
+					              url: "<%=request.getContextPath()%>/blog/teacherReadBlogByHot.do",
+					              success: function (data) {
+					            	 var dataObj = data.myBlogs;
+									 con = "";
+									 $.each(dataObj, function (index, item) {
+										    con += "<tr id='TD"+item.blogId+"' class='ttr'>";
+						        	        con += "<td style='text-align:center;'>" + index + "</td>";
+						        	        con += "<td style='text-align:center;'><a id='"+item.blogId+"' onclick='getBlogById(this.id)' href='#'>" + item.blogTitle + "&nbsp;&nbsp;<i class='layui-icon' style='font-size: 10px; color: #FF5722;'>&#xe756;</i>("+ item.hotClick + ")</a></td>";
+						        	        con += "<td style='text-align:center;'><div class='site-demo-button' id='layerDemo'><a class='ttd' id='D"+item.blogId+"' data-method='notice' onclick='beforeDeleteMyBlog(this.id)' href='#'><i class='layui-icon' style='font-size: 20px; color: #1E9FFF;'>&#xe640;</i></a></div></td>";
+						        	        con += "<td style='text-align:center;'><a id='U"+item.blogId+"' onclick='beforeUpdateMyBlog(this.id)' href='#'><i class='layui-icon' style='font-size: 20px; color: #1E9FFF;'>&#xe642;</i></a></td>";
+						        	        con += "<tr/>";
+						        	        if(index == 0){
+						        	        	getBlogById(item.blogId);
+						        	        }
+						        	    });
+									  $('#blogThreafd').html(con);
+					            	  $('#D_ucm').show();
+									  $('#LAY_ucm').hide();
+					              },
+					              error: function (data) {
+					            	  alert("服务器异常");
+					              }
+					          });
+							 //删除
+							layui.use([ 'element', 'layer'], function() {
+								var element = layui.element, $ = layui.jquery, layer = layui.layer;
+								//触发事件
+								var active = {
+									notice : function() {
+										//示范一个公告层
+										layer.open({
+													type : 1,
+													title : false //不显示标题栏
+													,
+													closeBtn : false,
+													area : '300px;',
+													shade : 0.8,
+													id : 'LAY_layuipro' //设定一个id，防止重复弹出
+													,
+													btn : [ '删除', '取消' ],
+													yes : function(index, layero) {
+														deleteMyBlog();
+														layer.closeAll();
+													},
+													btn2 : function(index, layero) {
+														//按钮【按钮二】的回调
+													},
+													btnAlign : 'c',
+													moveType : 1 //拖拽模式，0或者1
+													,
+													content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定删除该博文？</div>'
+												});
+									}
+
+								};
+
+								$('#layerDemo .ttd').on(
+										'click',
+										function() {
+											var othis = $(this), method = othis.data('method');
+											active[method] ? active[method].call(this, othis) : '';
+										});
+					          });
 					}
 					   function getBlogById(id) {
 						   $.ajax({
@@ -85,7 +229,15 @@
 					              dataType: "json",
 					              url: "<%=request.getContextPath()%>/blog/getBlogById.do",
 					              success: function (data) {
-					            	   $('#waitForYou').html(data.myBlog.blogContent);
+									  $('#thisBlogFifter').html(data.myBlog.blogFifter);
+					                  $('#thisAuthor').html("作者:&nbsp;"+data.teacher.teacherName);
+									  $('#thisBeLongTo').html("类别:&nbsp;"+data.myBlog.belongTo);
+									  $('#thisCreateTime').html("发布时间:&nbsp;"+data.myBlog.createTime);
+									  $('#thisTarget').html("标签:&nbsp;"+data.myBlog.blogTarget);
+					            	  $('#thisTitle').html(data.myBlog.blogTitle);
+					            	  $('#thisContent').html(data.myBlog.blogContent);
+					            	  $('#thisUp').html("(" + data.myBlog.up + ")");
+					            	  $('#thisDown').html("(" + data.myBlog.down + ")");
 					            	  
 					              },
 					              error: function (data) {
@@ -93,36 +245,226 @@
 					              }
 					          });
 					}
+					   var blogIdTem;
+					   function beforeDeleteMyBlog(id) {
+						   blogIdTem = id.substring(1);
+					}
+					   function deleteMyBlog() {
+						   $.ajax({
+					              type: "GET",
+					              data: {
+					            	  "blogId":blogIdTem
+					              },
+					              contentType: "application/json; charset=utf-8",
+					              async: false,
+					              dataType: "json",
+					              url: "<%=request.getContextPath()%>/blog/deleteMyBlog.do",
+					              success: function (data) {
+					            	  if(data.result == true){
+					            		  $('#TD'+blogIdTem).hide();
+					            	  }else {
+					            		  layui.use('layer', function(){
+							 	               var $ = layui.jquery, layer = layui.layer; 
+							   			      layer.open({
+							   			        type: 1
+							   			        ,offset: 'auto'
+							   			        ,id: 'layerDemo'+'auto'
+							   			        ,title: '失败'
+							   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "删除失败" +'</div>'
+							   			        ,btn: '关闭'
+							   			        ,btnAlign: 'c'
+							   			        ,skin: 'demo-class'
+							   			        ,shade: 0 
+							   			        ,yes: function(){
+							   			        	 layer.closeAll();
+							   			        }
+							   			      });
+							 	            });
+									}
+					              },
+					              error: function (data) {
+					            	  alert("服务器异常");
+					              }
+					          });
+					}
+					   //修改博文
+					   var myBlogIdTem;
+					   function beforeUpdateMyBlog(id) {
+						   blogId = id.substring(1);
+						   $.ajax({
+					              type: "GET",
+					              data: {
+					            	  "blogId":blogId
+					              },
+					              contentType: "application/json; charset=utf-8",
+					              async: false,
+					              dataType: "json",
+					              url: "<%=request.getContextPath()%>/blog/getBlogById.do",
+					              success: function (data) {
+					            	  if(data.result == true){
+					            		  myBlogIdTem = data.myBlog.blogId;
+					            		   $('#belongTo').val(data.myBlog.belongTo);
+					            		   $('#title').val(data.myBlog.blogTitle);
+					            		   $('#blogContent').val(data.myBlog.blogContent);
+					            		   $('#blogTarget').val(data.myBlog.blogTarget);
+					            		   $('#blogFifter').val(data.myBlog.blogFifter);
+					            		  
+					            		    $('#firstDiv').hide();
+					            		    $('#secondDiv').hide();
+					            		    $('#beforesaveChange').show();
+					            		    $('#D_ucm').hide();
+											$('#LAY_ucm').show();
+					            	  }else {
+					            		  layui.use('layer', function(){
+							 	               var $ = layui.jquery, layer = layui.layer; 
+							   			      layer.open({
+							   			        type: 1
+							   			        ,offset: 'auto'
+							   			        ,id: 'layerDemo'+'auto'
+							   			        ,title: '失败'
+							   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "获取不到文章" +'</div>'
+							   			        ,btn: '关闭'
+							   			        ,btnAlign: 'c'
+							   			        ,skin: 'demo-class'
+							   			        ,shade: 0 
+							   			        ,yes: function(){
+							   			        	 layer.closeAll();
+							   			        }
+							   			      });
+							 	            });
+									}
+					              },
+					              error: function (data) {
+					            	  alert("服务器异常");
+					              }
+					          });
+					}
+				 //修改博文
+					function saveChange() {
+						var blogId = myBlogIdTem;
+						if($('#L_vercode').val() == $('#sum').val() && $('#sum').val() != ""){
+							  if($('#belongTo').val() != "" && $('#title').val() != "" && 
+									  $('#blogTarget').val() != "" && $('#blogFifter').val() != "" ){
+								  
+							    $('#jiaoben').show();
+							    
+						    	$.ajax({
+						              type: "POST",
+						              data: {
+						            	  "blogAuthor":${teacher.teacherMobile},
+						            	  "blogId":blogId,
+						            	  "role":"教师",
+						            	  "title":$('#title').val(),
+						            	  "belongTo":$('#belongTo').val(),
+						            	  "blogContent":$('#replace').val(),
+						            	  "blogTarget":$('#blogTarget').val(),
+						            	  "blogFifter":$('#blogFifter').val(),
+						              },
+						              contentType: "application/x-www-form-urlencoded; charset=utf-8",
+						              async: false,
+						              dataType: "json",
+						              url: "<%=request.getContextPath()%>/blog/updateMyBlog.do",
+						              success: function (data) {
+						            	  if(data.result == true){
+						            		  layui.use('layer', function(){
+						   	 	               var $ = layui.jquery, layer = layui.layer; 
+						   	   			      layer.open({
+						   	   			        type: 1
+						   	   			        ,offset: 'auto'
+						   	   			        ,id: 'layerDemo'+'auto'
+						   	   			        ,title: '成功'
+						   	   			        ,content: '<div style="padding: 20px 100px;">'+ "修改博文成功" +'</div>'
+						   	   			        ,btn: '关闭'
+						   	   			        ,btnAlign: 'c'
+						   	   			        ,skin: 'demo-class'
+						   	   			        ,shade: 0 
+						   	   			        ,yes: function(){
+						   	   			 		 window.location.reload();
+						   	   			        }
+						   	   			      });
+						   	 	            });
+						            	  }else{
+						            		  layui.use('layer', function() {
+						          				var $ = layui.jquery, layer = layui.layer;
+						          				layer.msg('修改失败..');
+						          			});
+						            	  }
+						              },
+						              error: function (data) {
+						            	  alert("服务器异常");
+						              }
+						          });
+							  }
+						   }else{
+							   layui.use('layer', function() {
+									var $ = layui.jquery, layer = layui.layer;
+									layer.msg('怀疑你是机器人QAQ..');
+								});
+						}
+					}
 					</script>
 					<div id="D_ucm" class="site-text site-block" style="display: none; padding-top: 15px;
-					width: 80%; padding-left: 15%;">
+					width: 100%; padding-left: 1%;">
+					<div style="width: 100%; height: 800px; " >
 					<span>发布过的博文&nbsp;<i class="layui-icon" style="font-size: 23px; color: #1E9FFF;">&#xe609;</i> </span>
 					<br/>
-					<ul class="layui-tab-title">
-						<li>按发布时间&nbsp;<i class="layui-icon" style="font-size: 17px; color: #FF5722">&#xe62f;</i>  </li>
-						<li>按点击热度&nbsp;<i class="layui-icon" style="font-size: 17px; color: #FF5722">&#xe62f;</i>  </li>
+					<ul class="layui-tab-title" style="">
+						<li><a href="#" onclick="lookAtBlog()">按发布时间&nbsp;<i class="layui-icon" style="font-size: 17px; color: #FF5722">&#xe62f;</i> </a> </li>
+						<li><a href="#" onclick="lookAtBlogByHot()">按点击热度&nbsp;<i class="layui-icon" style="font-size: 17px; color: #FF5722">&#xe62f;</i> </a> </li>
 					</ul>
-					<ul style="padding-left: 2%;">
-					 <c:choose>
-					   <c:when test="${! empty myBlogs}">
-					      <c:forEach items="${myBlogs}" var="s">
-					        <li><span>${s.blogId}.&nbsp;</span> <a id="${s.blogId}" onclick="getBlogById(this.id)" href="#">${s.blogTitle}</a></li>
-					      </c:forEach>
-					   </c:when>
-					     <c:otherwise>
-					       <li>暂无数据</li>
-					     </c:otherwise>
-					 </c:choose>
-					</ul>
-					
-					<div id="waitForYou">
-					 <img alt="" src="D:\gitdemo\2014-S7-Java1314\.metadata\.plugins\org.eclipse.wst.server.core\tmp1\wtpwebapps\CMS\blog\timg (1).jpg
-					 ">
+					<div style=" width: 30%;float: left; overflow: auto;">
+					<table class="layui-table" style="width: 100%;">
+					 <colgroup>
+						<col width="150">
+						<col width="200">
+						<col width="130">
+						<col width="130">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;"></th>
+							<th style="text-align: center;">标题</th>
+							<th colspan="2" style="text-align: center;">操作</th>
+						</tr>
+					</thead>
+					 <tbody id="blogThreafd">
+		                
+					 </tbody>
+					</table>
+					</div>
+					<!-- 博文内容 -->
+					<div id="waitForYou" style="width: 67%;height:700px; float: left;border-left: solid;  margin-left:2%;
+					border-color: #e2e2e2; padding-left: 2%;overflow: auto;">
+					   <h4 id="thisTitle" style="width: 100%;text-align: center; font-family: 微软雅黑"></h4>
+					   <hr class="layui-bg-cyan">
+					   <ul>
+					     <li style="color: #FF5722;" >
+					     <input type="radio" checked="checked" readonly="readonly" title="访问权限：" style="margin-left: 0;padding-left: 0;"/>
+					     <span id="thisBlogFifter"></span> </li>
+					     <li id="thisAuthor"></li>
+					     <li id="thisBeLongTo"></li>
+					     <li id="thisCreateTime"></li>
+					     <li id="thisTarget"></li>
+					      <li>&nbsp;</li>
+					       <li>&nbsp;</li>
+					   </ul>
+					   <!-- 正文 -->
+					   <div id="thisContent" style="width: 100%; padding-left: 2%;">
+					   
+					   </div>
+					   <!-- 点赞啥的 -->
+					    <hr class="layui-bg-cyan">
+					    <div id="thisFooter" style="width: 100%; padding-left: 20%；">
+					        <i class="layui-icon" style="font-size: 20px; color: #FF5722">&#xe6c6;</i><span id="thisUp"></span>  
+					        <i class="layui-icon" style="font-size: 20px; padding-left:20px;
+					         color: #FF5722;">&#xe6c5;</i>  <span id="thisDown"></span>  
+					   </div>
 					
 					</div>
-					
+					<br/>
 					</div>
-					
+					</div>
+					<br/>
 					<div class="layui-form layui-tab-content" id="LAY_ucm"
 						style="padding: 0px 0;">
 						<div class="layui-tab-item layui-show">
@@ -186,12 +528,6 @@
 						  var layedit = layui.layedit;
 						  $('#replace').val(layedit.getContent(tem));
 						});
-/* 					  alert(111111222222);
-					  alert($('#belongTo').val());
-					  alert($('#title').val());
-					  
-					  alert($('#blogTarget').val());
-					  alert($('#blogFifter').val()); */
 					  if($('#belongTo').val() != "" && $('#title').val() != ""  && 
 							  $('#blogTarget').val() != "" && $('#blogFifter').val() != "" ){
 					    	$.ajax({
@@ -217,7 +553,38 @@
 					          });
 					  }
 				}
-				  
+				  //验证数字
+				  function beforeSaveChange() {
+					  layui.use('layedit', function(){
+						  var layedit = layui.layedit;
+						  $('#replace').val(layedit.getContent(tem));
+						});
+					  if($('#belongTo').val() != "" && $('#title').val() != ""  && 
+							  $('#blogTarget').val() != "" && $('#blogFifter').val() != "" ){
+					    	$.ajax({
+					              type: "GET",
+					              data: {
+					              },
+					              contentType: "application/json; charset=utf-8",
+					              async: false,
+					              dataType: "json",
+					              url: "<%=request.getContextPath()%>/blog/getRandomValue.do",
+					              success: function (data) {
+					            	   $('#a1').html(data.a1);
+					            	   $('#a2').html(data.a2);
+					            	   $('#sum').val(data.sum);
+					            	   $('#jiaoben').show();
+					            	   $('#beforesaveChange').hide();
+					            	   $('#saveChange').show();
+					            	   window.location.hash = "#jiaoben";  
+					              },
+					              error: function (data) {
+					            	  alert("服务器异常");
+					              }
+					          });
+					  }
+				}
+				  // 新建博文
 				  function createNewBlog() {
 					  if($('#L_vercode').val() == $('#sum').val() && $('#sum').val() != ""){
 					  if($('#belongTo').val() != "" && $('#title').val() != "" && 
@@ -226,7 +593,7 @@
 					    $('#jiaoben').show();
 					    
 				    	$.ajax({
-				              type: "GET",
+				              type: "POST",
 				              data: {
 				            	  "blogAuthor":${teacher.teacherMobile},
 				            	  "role":"教师",
@@ -236,7 +603,7 @@
 				            	  "blogTarget":$('#blogTarget').val(),
 				            	  "blogFifter":$('#blogFifter').val(),
 				              },
-				              contentType: "application/json; charset=utf-8",
+				              contentType: "application/x-www-form-urlencoded; charset=utf-8",
 				              async: false,
 				              dataType: "json",
 				              url: "<%=request.getContextPath()%>/blog/insertMyBlog.do",
@@ -282,6 +649,7 @@
 					 function yourFunction() {
 						 window.location.reload();
 					}
+				
 			</script>
 			
 					<div class="layui-form-item">
@@ -302,8 +670,8 @@
 								<select lay-verify="required" required name="class"
 									lay-filter="column" id="blogFifter">
 									<option></option>
-									<option value="private">私有</option>
-									<option value="public">公开</option>
+									<option value="仅自己可见">私有</option>
+									<option value="公开">公开</option>
 								</select>
 							</div>
 						</div><br/><br/><br/>
@@ -333,6 +701,14 @@
 							<div id="secondDiv"  style="display: none;">
 								<a class="layui-btn" onclick="createNewBlog()">立即发布</a>
 							</div>
+							
+							<div id="beforesaveChange"  style="display: none;">
+								<a class="layui-btn" onclick="beforeSaveChange()">保存修改</a>
+							</div>
+							
+							<div id="saveChange"  style="display: none;">
+								<a class="layui-btn" onclick="saveChange()">保存修改</a>
+							</div>
 						</form>
 					</div>
 				</div>
@@ -341,7 +717,7 @@
 	</div>
 </div>
 
-	<div class="fly-footer">
+	<div class="fly-footer" style="margin-top: 10px;">
 		<p>
 			<a href="#">CMS博客</a> 2017 &copy; <a href="#">cms118.cc 出品</a>
 		</p>
