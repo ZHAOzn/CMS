@@ -3096,7 +3096,7 @@ function teacherChangeExamination() {
 					<br /> <br /> <br /> <label class="layui-form-label"
 						style="background-color: #009688;">答案</label>
 					<div class="layui-input-inline">
-						<select id="SingleSelectioAnswer" lay-verify="required">
+						<select id="SingleSelectioAnswer">
 							<option value="A">A</option>
 							<option value="B">B</option>
 							<option value="C">C</option>
