@@ -328,16 +328,16 @@ setTimeout("fresh()",1)
         <!-- 考试入口 -->
 			<div id="examInner" class="site-text" 
 				style="text-align: center; width: 50%;; 
-				top: 300px; position: fixed; margin-left: 26%;">
+				top: 300px; position: fixed; margin-left: 29%;">
 				<form id="ExamForm" class="layui-form layui-form-pane" action="<%=request.getContextPath()%>/exam/studentToExam.do">
 					<div class="layui-form-item" style="width: 100%;">
 						<div style="width: 100%; float: left;">
-							<label class="layui-form-label" style="width: 20%; background-color: #e2e2e2;">输入考试码：</label>
+							<label class="layui-form-label" style="width: 18%; background-color: #e2e2e2;">输入考试码：</label>
 							<div class="layui-input-block">
 								<input id="onlyCode" type="text" lay-verify="CoreKey" name="onlyCode"
 									placeholder="请输入考试码" autocomplete="off" class="layui-input"
 									style="width: 50%; float: left;"> 
-									<input class="layui-btn" lay-submit type="button"
+								<input class="layui-btn" lay-submit type="button"
 									 value="现在考试" style="float: left;" onclick="toExam()"/>
 							</div>
 						</div>
