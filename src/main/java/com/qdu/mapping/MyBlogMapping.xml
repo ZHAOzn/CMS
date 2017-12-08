@@ -26,6 +26,10 @@
 	   select * from MyBlog where BlogAuthor = #{blogAuthor} order by BlogId desc
 	</select>
 	
+	<select id="selectMyBlogByConCat" resultMap="MyBlogResult">
+	   select * from MyBlog where BlogContent like concat('%', #{blogTitle},'%') And BlogFifter = '公开' order by BlogId desc
+	</select>
+	
 	<select id="selectMyBlogByHot" resultMap="MyBlogResult">
 	   select * from MyBlog where BlogAuthor = #{blogAuthor} order by hotClick desc
 	</select>

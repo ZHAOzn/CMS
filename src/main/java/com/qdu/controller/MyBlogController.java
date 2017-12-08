@@ -9,6 +9,7 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -165,4 +166,25 @@ public class MyBlogController {
 			}
 			return map;
 		}
+		//教师查看资料时选择查看博文
+		@RequestMapping(value = "/teacherSearchBlog.do")
+		@ResponseBody
+		public Map<String, Object> teacherSearchBlog(String fileName){
+			Map<String, Object> map = new HashMap<>();
+			List<MyBlog> myBlogs  = myBlogServiceImpl.selectMyBlogByConCat(fileName);
+			map.put("result", true);
+			map.put("myBlogs", myBlogs);
+			return map;
+		}
+		//教师查看资料时选择查看博文
+				@RequestMapping(value = "/getBlogTemValue.do")
+				public String getBlogTemValue(int blogId,ModelMap map){
+					MyBlog myBlog = myBlogServiceImpl.selectMyBlogById(blogId);
+					map.put("teacher", teacherServiceImpl.selectTeacherByMobile(myBlog.getBlogAuthor()));
+					map.put("myBlog", myBlog);
+					return "blogDetail";
+				}
+		
+		
+		
 }

@@ -17,5 +17,7 @@ public interface MyBlogService {
 public int deleteMyBlogById(int blogId);
 	
 	public int updateBlog(MyBlog myBlog);
+	
+	public List<MyBlog> selectMyBlogByConCat(String blogTitle);
 
 }

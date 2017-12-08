@@ -44,6 +44,11 @@ public class MyBlogServiceImpl implements MyBlogService{
 	public int updateBlog(MyBlog myBlog) {
 		return myBlogDaoImpl.updateBlog(myBlog);
 	}
+
+	@Override
+	public List<MyBlog> selectMyBlogByConCat(String blogTitle) {
+		return myBlogDaoImpl.selectMyBlogByConCat(blogTitle);
+	}
 	
 	
 

@@ -579,5 +579,17 @@ public class TeacherController {
 		}
 			return objData;
 		}
+		
+		//教师端获取课件资料
+		@RequestMapping(value = "/teacherGetFile.do")
+		@ResponseBody
+		public Map<String, Object> teacherGetFile(String fileName) {
+			System.out.println(fileName);
+			Map<String, Object> map = new HashMap<>();
+			List<FilePackage> filePackages = filePackageServiceImpl.selectFile(fileName);
+				map.put("result", true);
+				map.put("filePackages", filePackages);
+			return map;
+		}
 	
 }

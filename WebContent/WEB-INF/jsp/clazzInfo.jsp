@@ -516,7 +516,7 @@ function getStudentExamList(id) {
 	            con += "<td style='text-align:center;'>" + item.singleSelectionValue + "</td>";
                 con += "<td style='text-align:center;'>" + item.moreSelectionValue + "</td>";
        	        con += "<td style='text-align:center;'>" + item.judgeValue + "</td>";
-       	        con += "<td style='text-align:center;'><a style='color:#FF5722;' id='P"+item.scoreId+"' onclick='getStudentPackList(this.id)' href='#'>" + item.packValue + "</a></td>";
+       	        con += "<td style='text-align:center;'><a style='color:#FF5722;' id='P"+item.scoreId+"' onclick='getStudentPackList(this.id)' href='#'>" + item.packValue + "&nbsp;<i class='layui-icon' style='font-size: 14px; color: #1E9FFF;'>&#xe62a;</i>  </a></td>";
        	        con += "<td style='text-align:center;'><a id='S"+item.scoreId+"'>" + item.shortAnswerValue + "</a></td>";
        	        con += "<td style='text-align:center;'>" + item.totalValue + "</td>";
        	        con += "<td style='text-align:center;'>" + item.scoreStatus + "</td>";

@@ -781,14 +781,14 @@ function checkCourseShow2() {
 		<div class="layui-body site-demo"
 			style="padding-top: 3%; overflow: auto;">
 			<br /> <span id="messageList" style="margin-left: 5%;">课程信息</span>
-			<hr class="layui-bg-cyan">
+			<hr class="layui-bg-cyan" style="width: 100%;">
 			
 			
 			<!-- 查看资料，搜寻各种格式的，自己的，或者他人 -->
-			<div id="lookData" class="site-text site-block" style="padding-top: 5px;margin-top: 0;display: none;">
+			<div id="lookData" class="site-text site-block" style="padding-top: 5px;margin-top: 0;display: none;padding-left: 0;padding-right: 0">
 				<form class="layui-form" action="">
 					<div class="layui-form-item" style="width: 100%; margin-left: 1%;">
-						 <div class="layui-form-item" style="height: 100%; width: 49%; float: left;">
+						 <div class="layui-form-item" style="height: 100%; width: 35%; float: left;">
 						    <label class="layui-form-label">类型</label>
 						    <div class="layui-input-block" style="width: 150px;">
 						      <select id="dataType" name="dataType" lay-verify="required" style="width: 100%;">
@@ -800,9 +800,9 @@ function checkCourseShow2() {
 						  </div>
 						
 						<div style="height: 100%; width: 49%; float: left;">
-							<label class="layui-form-label" style="">输入关键字</label>
-							<div class="layui-input-block" style="">
-								<input id="dataContent" type="text" lay-verify="CoreKey"
+							<label class="layui-form-label">输入关键字</label>
+							<div class="layui-input-block" >
+								<input id="dataContent" type="text" lay-verify="required" required
 									placeholder="如  'java'" autocomplete="off" class="layui-input"
 									style="width: 60%; float: left;"> <input
 									class="layui-btn" lay-submit type="button"
@@ -813,7 +813,49 @@ function checkCourseShow2() {
 					</div>
 				</form>
 				<hr class="layui-bg-cyan">
+				
+			    <table id="teacherGetFileList" class="layui-table" lay-even style="width: 100%; display: none; margin-left: 0;margin-right: 0; padding-left: 0;padding-right: 0;">
+					<colgroup>
+						<col width="250">
+						<col width="300">
+						<col width="440">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;">文件类型</th>
+							<th style="text-align: center;">上传时间</th>
+							<th style="text-align: center;">文件名称</th>
+						</tr>
+					</thead>
+					<tbody id="privateData">
 
+					</tbody>
+				</table>
+			
+			<table id="teacherGetBlogList" class="layui-table" style="width: 100%; display: none;">
+					 <colgroup>
+						<col width="150">
+						<col width="200">
+						<col width="200">
+						<col width="200">
+						<col width="200">
+						<col width="130">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;"></th>
+							<th style="text-align: center;">类别</th>
+							<th style="text-align: center;">标题</th>
+							<th style="text-align: center;">标签</th>
+							<th style="text-align: center;">创建时间</th>
+							<th style="text-align: center;">点击</th>
+						</tr>
+					</thead>
+					 <tbody id="blogThreafd">
+		                
+					 </tbody>
+					</table>
+			
 			</div>
 			
 		    <script>
@@ -828,6 +870,94 @@ function checkCourseShow2() {
 							logDate:[/\S/,'日期不可为空']
 						});
 					});
+					//点击查询
+					function searchData() {
+						if($('#dataType').val() != "" && $('#dataContent').val() != ""){
+							if($('#dataType').val() == '课件'){
+								$.ajax({
+							        type: "GET",
+							        data: {
+							        	"fileName" :$('#dataContent').val()
+							        },
+							        contentType: "application/json; charset=utf-8",
+							        async: false,
+							        url: "<%=request.getContextPath()%>/teacher/teacherGetFile.do",
+									success : function(data) {
+										if(data.result == true){
+											var dataObj = data.filePackages;
+											 con = "";
+											 $.each(dataObj, function (index, item) {
+												con += "<tr>";
+								       	        con += "<td style='text-align:center;'>" + item.fileType + "</td>";
+								       	        con += "<td style='text-align:center;'>" + item.createTime + "</td>";
+								       	        con += "<td style='text-align:center; color:#FF5722;'><a  target='_blank' style='color:#FF5722;' href=\'<%=request.getContextPath() %>/file/"+item.fileName+"\'>" + item.fileName + "</a></td>";
+								       	        con += "<tr/>";
+							      
+								       	    });
+											 $('#privateData').html(con);
+											 $('#teacherGetFileList').show();
+											 $('#teacherGetBlogList').hide();
+										}else {
+											layui.use('layer', function(){ //独立版的layer无需执行这一句
+									               var $ = layui.jquery, layer = layui.layer; 
+						            			      layer.open({
+						            			        type: 1
+						            			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+						            			        ,id: 'layerDemo'+'auto' //防止重复弹出
+						            			        ,title: '失败'
+						            			        ,content: '<div style="padding: 20px 100px;">'+"请求资源未找到"+'</div>'
+						            			        ,btn: '关闭'
+						            			        ,btnAlign: 'c' //按钮居中
+						            			        ,shade: 0 //不显示遮罩
+						            			        ,yes: function(){
+						            			          layer.closeAll();
+						            			        }
+						            			      });
+									               });
+										}
+									},
+									error : function(data) {
+										alert("??");
+									},
+									dataType : "json",
+								});
+							}else if ($('#dataType').val() == '博客') {
+								 $.ajax({
+						              type: "GET",
+						              data: {
+						            	  "fileName" :$('#dataContent').val()
+						              },
+						              contentType: "application/json; charset=utf-8",
+						              async: false,
+						              dataType: "json",
+						              url: "<%=request.getContextPath()%>/blog/teacherSearchBlog.do",
+						              success: function (data) {
+						            	 var dataObj = data.myBlogs;
+										 con = "";
+										 $.each(dataObj, function (index, item) {
+											    con += "<tr id='TD"+item.blogId+"'>";
+							        	        con += "<td style='text-align:center;'>" + index + "</td>";
+							        	        con += "<td style='text-align:center;'>" + item.belongTo + "</td>";
+							        	        con += "<td style='text-align:center;'><a style='color:#FF5722;' id='"+item.blogId+"' target='_blank' href='<%=request.getContextPath()%>/blog/getBlogTemValue.do?blogId="+item.blogId+"'>" + item.blogTitle + "</a></td>";
+							        	        con += "<td style='text-align:center;'>" + item.up + "</td>";
+							        	        con += "<td style='text-align:center;'>" + item.down + "</td>";
+							        	        con += "<td style='text-align:center;'>" + item.hotClick + "</td>";
+							        	        con += "<tr/>";
+							        	    });
+										 $('#blogThreafd').html(con);
+										 $('#teacherGetFileList').hide();
+										 $('#teacherGetBlogList').show();
+						              },
+						              error: function (data) {
+						            	  alert("服务器异常");
+						              }
+						          });
+							}
+						}else {
+							
+						}
+						
+					}
 			</script>
 			
 			<!-- 教师博客 -->
