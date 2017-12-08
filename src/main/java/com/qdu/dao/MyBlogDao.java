@@ -11,5 +11,11 @@ public interface MyBlogDao {
 	public List<MyBlog> selectMyBlogByUserId(String blogAuthor);
 	
 	public int insertMyBlog(MyBlog myBlog);
+	
+	public List<MyBlog> selectMyBlogByHot(String blogAuthor);
+	
+	public int deleteMyBlogById(int blogId);
+	
+	public int updateBlog(MyBlog myBlog);
 
 }

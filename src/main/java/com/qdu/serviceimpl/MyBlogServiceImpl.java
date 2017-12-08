@@ -29,6 +29,21 @@ public class MyBlogServiceImpl implements MyBlogService{
 	public int insertMyBlog(MyBlog myBlog) {
 		return myBlogDaoImpl.insertMyBlog(myBlog);
 	}
+
+	@Override
+	public List<MyBlog> selectMyBlogByHot(String blogAuthor) {
+		return myBlogDaoImpl.selectMyBlogByHot(blogAuthor);
+	}
+
+	@Override
+	public int deleteMyBlogById(int blogId) {
+		return myBlogDaoImpl.deleteMyBlogById(blogId);
+	}
+
+	@Override
+	public int updateBlog(MyBlog myBlog) {
+		return myBlogDaoImpl.updateBlog(myBlog);
+	}
 	
 	
 

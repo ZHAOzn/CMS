@@ -31,6 +31,24 @@ public class MyBlogDaoImpl implements MyBlogDao{
 		String statement = "com.qdu.mapping.MyBlogMapping.insertMyBlog";
 		return sqlSessionFactory.openSession().insert(statement, myBlog);
 	}
+
+	@Override
+	public List<MyBlog> selectMyBlogByHot(String blogAuthor) {
+		String statement = "com.qdu.mapping.MyBlogMapping.selectMyBlogByHot";
+		return sqlSessionFactory.openSession().selectList(statement, blogAuthor);
+	}
+
+	@Override
+	public int deleteMyBlogById(int blogId) {
+		String statement = "com.qdu.mapping.MyBlogMapping.deleteMyBlogById";
+		return sqlSessionFactory.openSession().delete(statement, blogId);
+	}
+
+	@Override
+	public int updateBlog(MyBlog myBlog) {
+		String statement = "com.qdu.mapping.MyBlogMapping.updateBlog";
+		return sqlSessionFactory.openSession().update(statement, myBlog);
+	}
 	
 	
 }

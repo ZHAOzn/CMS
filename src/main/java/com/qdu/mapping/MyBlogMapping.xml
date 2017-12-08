@@ -26,6 +26,24 @@
 	   select * from MyBlog where BlogAuthor = #{blogAuthor} order by BlogId desc
 	</select>
 	
+	<select id="selectMyBlogByHot" resultMap="MyBlogResult">
+	   select * from MyBlog where BlogAuthor = #{blogAuthor} order by hotClick desc
+	</select>
+	
+	<delete id="deleteMyBlogById" parameterType="int">
+	  delete From MyBlog where BlogId = #{blogId}
+	</delete>
+	
+	<update id="updateBlog" parameterType="com.qdu.pojo.MyBlog">
+	  update MyBlog set
+	  BlogTitle = #{blogTitle},
+	  BelongTo = #{belongTo},
+	  BlogContent = #{blogContent},
+	  BlogTarget = #{blogTarget},
+	  BlogFifter = #{blogFifter}
+	  where BlogId = #{blogId}
+	</update>
+	
 	<insert id="insertMyBlog" parameterType="com.qdu.pojo.MyBlog">
 	  insert into 
 	  MyBlog(BlogAuthor,Role,BlogTitle,BelongTo,BlogContent,BlogTarget,BlogFifter,CreateTime,
