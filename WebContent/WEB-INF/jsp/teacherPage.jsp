@@ -759,14 +759,14 @@ function checkCourseShow2() {
 								<a href="">跳转</a>
 							</dd> -->
 						</dl></li>
-					<li class="layui-nav-item"><a href="#">查看资料</a>
+					<li class="layui-nav-item layui-nav-itemed"><a href="#">查看资料</a>
 						<dl class="layui-nav-child">
 							<dd>
 								<a id="lookatData" href="#">资料仓库</a>
 							</dd>
-							<dd>
+						<!-- 	<dd>
 								<a id="dataUpload" onclick="getPrivateData()" href="#">课件上传</a>
-							</dd>
+							</dd> -->
 							<!-- <dd>
 								<a href="#">待定</a>
 							</dd> -->
@@ -783,6 +783,52 @@ function checkCourseShow2() {
 			<br /> <span id="messageList" style="margin-left: 5%;">课程信息</span>
 			<hr class="layui-bg-cyan">
 			
+			
+			<!-- 查看资料，搜寻各种格式的，自己的，或者他人 -->
+			<div id="lookData" class="site-text site-block" style="padding-top: 5px;margin-top: 0;display: none;">
+				<form class="layui-form" action="">
+					<div class="layui-form-item" style="width: 100%; margin-left: 1%;">
+						 <div class="layui-form-item" style="height: 100%; width: 49%; float: left;">
+						    <label class="layui-form-label">类型</label>
+						    <div class="layui-input-block" style="width: 150px;">
+						      <select id="dataType" name="dataType" lay-verify="required" style="width: 100%;">
+						        <option value=""></option>
+						        <option value="课件">课件</option>
+						        <option value="博客">博客</option>
+						      </select>
+						    </div>
+						  </div>
+						
+						<div style="height: 100%; width: 49%; float: left;">
+							<label class="layui-form-label" style="">输入关键字</label>
+							<div class="layui-input-block" style="">
+								<input id="dataContent" type="text" lay-verify="CoreKey"
+									placeholder="如  'java'" autocomplete="off" class="layui-input"
+									style="width: 60%; float: left;"> <input
+									class="layui-btn" lay-submit type="button"
+									onclick="searchData()" value="查询"
+									style="float: left;" />
+							</div>
+						</div>
+					</div>
+				</form>
+				<hr class="layui-bg-cyan">
+
+			</div>
+			
+		    <script>
+					//Demo
+					layui.use([ 'form', 'laydate' ], function() {
+						var form = layui.form, laydate = layui.laydate;
+						laydate.render({
+							elem : '#logDate'
+						});
+						
+						form.verify({
+							logDate:[/\S/,'日期不可为空']
+						});
+					});
+			</script>
 			
 			<!-- 教师博客 -->
 			<form id="PersonBlogForm" action="<%=request.getContextPath()%>/teacher/toPersonBlog.do" method="post" style="display: none;">

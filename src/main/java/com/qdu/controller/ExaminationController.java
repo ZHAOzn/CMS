@@ -77,9 +77,27 @@ public class ExaminationController {
 	@ResponseBody
 	public Map<String, Object> selectExaminationByMyId(int examinationId) throws ParseException {
 		Map<String, Object> map = new HashMap<>();
-		Examination examination = examinationServiceImpl.selectExaminationByExaminationId(examinationId);
+		Examination examination2 = examinationServiceImpl.selectExaminationByExaminationId(examinationId);
 		long t1 = System.currentTimeMillis();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+		String ts1 = examination2.getStartTime().substring(0, 10).replace("-", "");
+		String ts2 = examination2.getStartTime().substring(11).replace(":", "");
+		String ts3 = ts1 + ts2;
+		long tx = Long.parseLong(ts3);
 
+		String aString = sdf.format(new Date());
+		String cs1 = aString.substring(0, 10).replace("-", "");
+		String cs2 = aString.substring(11, 19).replace(":", "");
+		String cs3 = cs1 + cs2;
+		long ts = Long.parseLong(cs3);
+		long endTime = tx + (examination2.getDuration() / 60) * 10000 + (examination2.getDuration() % 60) * 100;
+
+		if (ts > endTime) {
+			examinationServiceImpl.updateExaminationOfEdit(examinationId, 0);
+		} 
+		
+		Examination examination = examinationServiceImpl.selectExaminationByExaminationId(examinationId);
 		if (examination.getCanEdit() == 0) {
 			List<SingleSelection> singleSelections = examinationServiceImpl.selectSingleByExaminationID(examinationId);
 			List<MoreSelection> moreSelections = examinationServiceImpl.selectMoreByExaminationID(examinationId);
@@ -128,9 +146,10 @@ public class ExaminationController {
 		System.out.println(examinationName);
 		System.out.println(totalValue);
 		List<Examination> examinations = examinationServiceImpl.selectExamination();
+		System.out.println(examinations.size());
 		int maxId = 0;
-		if (examinations.size() > 0) {
-			maxId = examinationServiceImpl.selectMaxExaminationIdByCourseId(courseId).getExaminationID();
+		if (examinations !=null && examinations.size() > 0) {
+			maxId = examinationServiceImpl.selectExamination().get(0).getExaminationID();
 		} else {
 			maxId = 0;
 		}
