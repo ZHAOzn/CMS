@@ -3306,11 +3306,7 @@ function teacherChangeExamination() {
 					<!-- 本题备注 -->
 					<label class="layui-form-label" style="background-color: #009688;">备注</label>
 					<div class="layui-input-inline">
-						<input id="MoreSelectionNote" type="text" name="MoreSelectionNote"
-							required
-							style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
-							lay-verify="required" placeholder="如：考察学生发散思维" autocomplete="off"
-							class="layui-input">
+						<input id="MoreSelectionNote" class="layui-input" type="text" name="MoreSelectionNote" style="border-top: none; border-left: none; border-right: none; border-color: #009688;" placeholder="如：考察学生发散思维" autocomplete="off">
 					</div>
 					<br /> <br /> <br /> <input id="MoreSelectionButton"
 						class="layui-btn" style="width: 8em" lay-submit
@@ -3462,9 +3458,9 @@ function teacherChangeExamination() {
 					<!-- 本题备注 -->
 					<label class="layui-form-label" style="background-color: #009688;">备注</label>
 					<div class="layui-input-inline">
-						<input id="JudgeNote" type="text" name="JudgeNote" required
+						<input id="JudgeNote" type="text" name="JudgeNote"
 							style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
-							lay-verify="required" placeholder="如：考察学生判断能力" autocomplete="off"
+							placeholder="如：考察学生判断能力" autocomplete="off"
 							class="layui-input">
 					</div>
 					<br /> <br /> <br /> <input id="JudgeButton" class="layui-btn"
@@ -3611,9 +3607,9 @@ function teacherChangeExamination() {
 					<!-- 本题备注 -->
 					<label class="layui-form-label" style="background-color: #009688;">备注</label>
 					<div class="layui-input-inline">
-						<input id="PackNote" type="text" name="PackNote" required
+						<input id="PackNote" type="text" name="PackNote"
 							style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
-							lay-verify="required" placeholder="如：考察学生计算能力" autocomplete="off"
+							placeholder="如：考察学生计算能力" autocomplete="off"
 							class="layui-input">
 					</div>
 					<br /> <br /> <br /> <input id="PackButton" class="layui-btn"
@@ -3749,10 +3745,7 @@ function teacherChangeExamination() {
 					<!-- 本题备注 -->
 					<label class="layui-form-label" style="background-color: #009688;">备注</label>
 					<div class="layui-input-inline">
-						<input id="ShortAnswerNote" type="text" name="ShortAnswerNote"
-							required
-							style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
-							lay-verify="required" placeholder="如：考察学生综合能力" autocomplete="off"
+						<input id="ShortAnswerNote" type="text" name="ShortAnswerNote" style="border-top: none; border-left: none; border-right: none; border-color: #009688;" placeholder="如：考察学生综合能力" autocomplete="off"
 							class="layui-input">
 					</div>
 					<br /> <br /> <br /> <input id="ShortAnswerButton"
