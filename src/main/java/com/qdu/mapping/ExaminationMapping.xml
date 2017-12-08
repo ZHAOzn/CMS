@@ -93,7 +93,7 @@
 	</select>
 	
 	<select id="selectExamination" resultMap="ExaminationResult">
-	  select * from Examination 
+	  select * from Examination order by ExaminationID desc
 	</select>
 	
 	<select id="selectExaminationOnlyCode" resultMap="ExaminationResult">
