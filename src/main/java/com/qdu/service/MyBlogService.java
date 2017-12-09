@@ -14,10 +14,14 @@ public interface MyBlogService {
 	
 	public List<MyBlog> selectMyBlogByHot(String blogAuthor);
 	
-public int deleteMyBlogById(int blogId);
+    public int deleteMyBlogById(int blogId);
 	
 	public int updateBlog(MyBlog myBlog);
 	
 	public List<MyBlog> selectMyBlogByConCat(String blogTitle);
+	
+	public List<MyBlog> selectMyBlogByVerify();
+	
+	public int updateBlogofVerify(MyBlog myBlog);
 
 }

@@ -76,6 +76,7 @@ public class MyBlogController {
 		myBlog.setDown(0);
 		myBlog.setHotClick(0);
 		myBlog.setBlogComment(0);
+		myBlog.setVerify("等待审核"); 
 		int tem = myBlogServiceImpl.insertMyBlog(myBlog);
 		if(tem > 0){
 			map.put("result", true);
@@ -166,25 +167,24 @@ public class MyBlogController {
 			}
 			return map;
 		}
+	//教师查看资料时选择查看博文
+	@RequestMapping(value = "/teacherSearchBlog.do")
+	@ResponseBody
+	public Map<String, Object> teacherSearchBlog(String fileName){
+		Map<String, Object> map = new HashMap<>();
+		List<MyBlog> myBlogs  = myBlogServiceImpl.selectMyBlogByConCat(fileName); 
+		map.put("result", true);
+		map.put("myBlogs", myBlogs);
+		return map;
+	}
 		//教师查看资料时选择查看博文
-		@RequestMapping(value = "/teacherSearchBlog.do")
-		@ResponseBody
-		public Map<String, Object> teacherSearchBlog(String fileName){
-			Map<String, Object> map = new HashMap<>();
-			List<MyBlog> myBlogs  = myBlogServiceImpl.selectMyBlogByConCat(fileName);
-			map.put("result", true);
-			map.put("myBlogs", myBlogs);
-			return map;
-		}
-		//教师查看资料时选择查看博文
-				@RequestMapping(value = "/getBlogTemValue.do")
-				public String getBlogTemValue(int blogId,ModelMap map){
-					MyBlog myBlog = myBlogServiceImpl.selectMyBlogById(blogId);
-					map.put("teacher", teacherServiceImpl.selectTeacherByMobile(myBlog.getBlogAuthor()));
-					map.put("myBlog", myBlog);
-					return "blogDetail";
-				}
-		
-		
+	@RequestMapping(value = "/getBlogTemValue.do")
+	public String getBlogTemValue(int blogId,ModelMap map){
+		MyBlog myBlog = myBlogServiceImpl.selectMyBlogById(blogId);
+		map.put("teacher", teacherServiceImpl.selectTeacherByMobile(myBlog.getBlogAuthor()));
+		map.put("myBlog", myBlog);
+		return "blogDetail";
+	}
+	
 		
 }

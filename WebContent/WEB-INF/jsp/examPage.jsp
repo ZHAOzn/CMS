@@ -22,6 +22,7 @@
 	src="<%=request.getContextPath()%>/js/jquery-3.2.0.min.js"></script>
 <script type="text/javascript"
 	src="<%=request.getContextPath()%>/js/jquery.webcam.min.js"></script>
+		<script src="<%=request.getContextPath()%>/layui/mods/index.js"></script>
 <title>${examination.examinationName}考试页面</title>
 </head>
 <script type="text/javascript">
@@ -207,27 +208,25 @@ window.onload=function(){
 		</form>
 	</div>
 	</nav>
-	<!-- 工具 -->
-			<ul class="layui-fixbar">
-			<li class="layui-icon" onclick="" lay-type="bar1" style=""><i class="layui-icon" style="font-size: 30px; color:white;background-color:#009688;">&#xe606;</i></li>
-			<li id="to_top" onclick="returnTitle()" class="layui-icon layui-fixbar-top" lay-type="top" style="display: list-item;"><i class="layui-icon" style="font-size: 30px; color:white;background-color:#009688;">&#xe604;</i></li>
-			</ul>
-			
-			<script type="text/javascript">
-			 layui.use('util', function(){
-				  var util = layui.util;
-				  //执行
-				  util.fixbar({
-				    bar1: true
-				    ,click: function(type){
-				      console.log(type);
-				      if(type === 'bar1'){
-				        alert('点击了bar1')
-				      }
-				    }
-				  });
-				}); 
-			</script>
+        <script>
+//刷新页面函数
+	 function yourFunction() {
+		 window.location.reload();
+	}
+	 layui.use('form', function() {
+			var form = layui.form;
+		});
+			layui.cache.page = 'jie';
+			layui.cache.user = {
+			 
+			};
+			layui.config({
+			  version: "3.0.0"
+			  ,base: '<%=request.getContextPath()%>/layui/mods/'
+			}).extend({
+				fly : 'index'
+			}).use('fly');
+	</script>
 
 	<div>
 		<input id="hour" type="text" style="display: none;" /> <input

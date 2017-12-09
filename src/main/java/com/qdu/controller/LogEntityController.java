@@ -1,6 +1,8 @@
 package com.qdu.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.qdu.aop.SystemLog;
 import com.qdu.cache.RedisCache;
 import com.qdu.pojo.Admin;
+import com.qdu.pojo.Feedback;
 import com.qdu.pojo.LogEntity;
+import com.qdu.pojo.MyBlog;
 import com.qdu.pojo.Student;
 import com.qdu.pojo.Teacher;
 import com.qdu.service.LogEntityService;
+import com.qdu.service.MyBlogService;
 import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
 import com.qdu.util.Page;
@@ -30,9 +35,14 @@ import com.qdu.util.Page;
 @RequestMapping(value="/admin")
 public class LogEntityController {
 
-	@Autowired LogEntityService logEntityServiceImpl;
-	@Autowired StudentService studentServiceImpl;
-	@Autowired TeacherService teacherServiceImpl;
+	@Autowired 
+	LogEntityService logEntityServiceImpl;
+	@Autowired 
+	StudentService studentServiceImpl;
+	@Autowired 
+	TeacherService teacherServiceImpl;
+	@Autowired 
+	private MyBlogService myBlogServiceImpl;
 	//超管准备登录
 	@RequestMapping(value="/forAdminLogin.do")
 	public String forAdminLogin(ModelMap map) {
@@ -62,7 +72,9 @@ public class LogEntityController {
 		    List<Teacher> teachers = teacherServiceImpl.selectTeacher();
 		    List<LogEntity> teacherLogEntitys = logEntityServiceImpl.selectTeacherLogEntity();
 		    List<LogEntity> studentLogEntitys = logEntityServiceImpl.selectStudentLogEntity();
+		    List<MyBlog> myBlogs = myBlogServiceImpl.selectMyBlogByVerify();
 			map.put("logEntities", logEntities);
+			map.put("myBlogs", myBlogs);
 			map.put("students", students);
 			map.put("teachers", teachers);
 			map.put("teacherLogEntitys", teacherLogEntitys);
@@ -94,5 +106,44 @@ public class LogEntityController {
 			map.put("result", true);
 			return map;
 		}
+		
+   //管理员通过审核的博文
+	@RequestMapping(value = "/updateBlogofVerify.do")
+	@ResponseBody
+	public Map<String, Object> updateBlogofVerify(int blogId){
+		Map<String, Object> map = new HashMap<>();
+		MyBlog myBlog = myBlogServiceImpl.selectMyBlogById(blogId);
+		myBlog.setVerify("审核通过");
+		int tem = myBlogServiceImpl.updateBlogofVerify(myBlog);
+		if(tem > 0){
+			map.put("result", true);
+		}else {
+			map.put("result", false);
+		}
+		return map;
+	}
+	//管理员不通过审核的博文
+		@RequestMapping(value = "/updateBlogofVerifySecond.do")
+		@ResponseBody
+		public Map<String, Object> updateBlogofVerifySecond(int blogId){
+			Map<String, Object> map = new HashMap<>();
+			MyBlog myBlog = myBlogServiceImpl.selectMyBlogById(blogId);
+			myBlog.setVerify("审核未通过");
+			int tem = myBlogServiceImpl.updateBlogofVerify(myBlog);
+			if(tem > 0){
+				map.put("result", true);
+			}else {
+				map.put("result", false);
+			}
+			return map;
+		}
+		
+		
+		
+		
+		
+		
+		
+		
 	
 }

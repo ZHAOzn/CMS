@@ -19,5 +19,9 @@ public interface MyBlogDao {
 	public int updateBlog(MyBlog myBlog);
 	
 	public List<MyBlog> selectMyBlogByConCat(String blogTitle);
+	
+	public List<MyBlog> selectMyBlogByVerify();
+	
+	public int updateBlogofVerify(MyBlog myBlog);
 
 }

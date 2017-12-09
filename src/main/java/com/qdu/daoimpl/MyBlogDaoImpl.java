@@ -55,6 +55,18 @@ public class MyBlogDaoImpl implements MyBlogDao{
 		String statement = "com.qdu.mapping.MyBlogMapping.selectMyBlogByConCat";
 		return sqlSessionFactory.openSession().selectList(statement, blogTitle);
 	}
+
+	@Override
+	public List<MyBlog> selectMyBlogByVerify() {
+		String statement = "com.qdu.mapping.MyBlogMapping.selectMyBlogByVerify";
+		return sqlSessionFactory.openSession().selectList(statement);
+	}
+
+	@Override
+	public int updateBlogofVerify(MyBlog myBlog) {
+		String statement = "com.qdu.mapping.MyBlogMapping.updateBlogofVerify";
+		return sqlSessionFactory.openSession().update(statement, myBlog);
+	}
 	
 	
 }

@@ -21,6 +21,7 @@
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
 <link type="text/css" rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/bootstrap.min.css">
+		<script src="<%=request.getContextPath()%>/layui/mods/index.js"></script>
 <style type="text/css">
 #lllww:HOVER {
 	text-decoration: none;
@@ -66,6 +67,10 @@
 						<li id="lookAtBlog" onclick="lookAtBlog()" class="">查看博客</li>
 					</ul>
 					<script type="text/javascript">
+					layui.use(['form'], function(){
+						var form = layui.form;
+						form.render(); 
+						});
 					   function pushBlog() {
 						$('#D_ucm').hide();
 						$('#LAY_ucm').show();
@@ -88,6 +93,7 @@
 										    con += "<tr id='TD"+item.blogId+"' class='ttr'>";
 						        	        con += "<td style='text-align:center;'>" + index + "</td>";
 						        	        con += "<td style='text-align:center;'><a id='"+item.blogId+"' onclick='getBlogById(this.id)' href='#'>" + item.blogTitle + "</a></td>";
+						        	        con += "<td style='text-align:center;'><a href='#'>" + item.verify + "</a></td>";
 						        	        con += "<td style='text-align:center;'><div class='site-demo-button' id='layerDemo'><a class='ttd' id='D"+item.blogId+"' data-method='notice' onclick='beforeDeleteMyBlog(this.id)' href='#'><i class='layui-icon' style='font-size: 20px; color: #1E9FFF;'>&#xe640;</i></a></div></td>";
 						        	        con += "<td style='text-align:center;'><a id='U"+item.blogId+"' onclick='beforeUpdateMyBlog(this.id)' href='#'><i class='layui-icon' style='font-size: 20px; color: #1E9FFF;'>&#xe642;</i></a></td>";
 						        	        con += "<tr/>";
@@ -415,15 +421,17 @@
 					<div style=" width: 30%;float: left; overflow: auto;">
 					<table class="layui-table" style="width: 100%;">
 					 <colgroup>
-						<col width="150">
+						<col width="40">
 						<col width="200">
-						<col width="130">
-						<col width="130">
+						<col width="100">
+						<col width="50">
+						<col width="50">
 					</colgroup>
 					<thead>
 						<tr>
 							<th style="text-align: center;"></th>
 							<th style="text-align: center;">标题</th>
+							<th style="text-align: center;">状态</th>
 							<th colspan="2" style="text-align: center;">操作</th>
 						</tr>
 					</thead>

@@ -17,11 +17,19 @@
 <link type="text/css" rel="stylesheet"
 	href="<%=request.getContextPath()%>/layui/css/layui.css">
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
+	<script src="<%=request.getContextPath()%>/layui/mods/index.js"></script>
 <title>教师门户</title>
 
 <script type="text/javascript">
+layui.use(['form'], function(){
+	var form = layui.form;
+	form.render(); 
+	});
 	 $(document).ready(function () {
-		 
+		 layui.use(['form'], function(){
+			 var form = layui.form;
+			 form.render(); 
+			 });		 
 		 //首先检查学生个人信息是否完善
 		 if(${empty student.college} ||${empty student.special}||${empty student.intoSchoolYear}
 		 ||${empty student.schoolRecord}||${empty student.birthDay}||${empty student.freeStyle}){
@@ -783,7 +791,18 @@ function checkCourseShow2() {
 			<br /> <span id="messageList" style="margin-left: 5%;">课程信息</span>
 			<hr class="layui-bg-cyan" style="width: 100%;">
 			
-			
+	<script>
+	layui.cache.page = 'jie';
+	layui.cache.user = {
+	 
+	};
+	layui.config({
+	  version: "3.0.0"
+	  ,base: '<%=request.getContextPath()%>/layui/mods/'
+	}).extend({
+		fly : 'index'
+	}).use('fly');
+	</script>
 			<!-- 查看资料，搜寻各种格式的，自己的，或者他人 -->
 			<div id="lookData" class="site-text site-block" style="padding-top: 5px;margin-top: 0;display: none;padding-left: 0;padding-right: 0">
 				<form class="layui-form" action="">
@@ -1206,6 +1225,7 @@ function checkCourseShow2() {
 					//Demo
 					layui.use([ 'form', 'laydate' ], function() {
 						var form = layui.form, laydate = layui.laydate;
+						form.render(); 
 						laydate.render({
 							elem : '#birthDay'
 						});
@@ -1220,9 +1240,9 @@ function checkCourseShow2() {
 				</script>
 
 			<!-- 显示消息 -->
-			<div id="messageShow"
+			<div id="messageShow" 
 				style="margin-left: 5%; margin-right: 5%; display: none;">
-				<table class="layui-table"
+				<table class="layui-table" lay-skin="line"
 					lay-data="{page:true,height:485,width:1070, url:'<%=request.getContextPath() %>/student/getSeperratePage.do',
 			 id:'test', where:{messageAcpter:'${teacher.teacherMobile}'}, limit:10}"
 					lay-filter="test">
@@ -1244,9 +1264,9 @@ function checkCourseShow2() {
         </script>
         <script type="text/html" id="status">
                   {{#  if(d.haveRead == '已读'){ }}
-                    <i class="layui-icon" style="font-size: 30px; color: #5FB878;">&#xe618;</i>
+                    <i class="layui-icon" style="font-size: 20px; color: #5FB878;">&#xe618;</i>
                      {{#  } else { }}
-                       <i class="layui-icon" style="font-size: 30px; color: #FF5722;">&#xe607;</i>
+                       <i class="layui-icon" style="font-size: 20px; color: #FF5722;">&#xe607;</i>
                          {{#  } }}
             </script>
 			<script type="text/html" id="barDemo">
@@ -1430,7 +1450,7 @@ function checkCourseShow2() {
 					//Demo
 					layui.use([ 'form', 'laydate' ], function() {
 						var form = layui.form, laydate = layui.laydate;
-
+						form.render(); 
 						//监听提交
 						form.on('submit(demo())', function(data) {
 							return false;
@@ -1454,7 +1474,7 @@ function checkCourseShow2() {
 
 			<!-- 课程信息 -->
 			<div class="layui-form sessiontable" id="courseInfo" style="">
-				<table class="layui-table" lay-even style="text-align: center;">
+				<table class="layui-table" lay-skin="line" lay-even style="text-align: center;">
 					<colgroup>
 						<col width="150">
 						<col width="200">
@@ -1496,7 +1516,7 @@ function checkCourseShow2() {
 															method="post">
 															<input name="clazzId" style="display: none;"
 																value="${c.clazzId}" /> <a class="aSign"
-																id="${c.clazzId}" onclick="aClick(this.id)" href="#">${c.clazzName}</a>
+																id="${c.clazzId}" onclick="" href="#">${c.clazzName}</a>
 														</form>
 														<br />
 													</c:forEach>
@@ -1506,7 +1526,7 @@ function checkCourseShow2() {
 												</c:otherwise>
 											</c:choose></td>
 										<td style="text-align: center;"><a class="aSign"
-											href="<%=request.getContextPath()%>/course/forsearchClazz.do?courseId=${r.courseId}&teacherMobile=${teacher.teacherMobile}">查看/签到</a></td>
+											href="<%=request.getContextPath()%>/course/forsearchClazz.do?courseId=${r.courseId}&teacherMobile=${teacher.teacherMobile}">查看/签到&nbsp;<i class="layui-icon" style="font-size: 15px; color: #FF5722;">&#xe62a;</i>  </a></td>
 										<td>
 											<!-- <a href="/course/forChangeCousrInfo.do?courseId=${r.courseId}">修改</a> -->
 											<div class="site-demo-button" id="layerDemo"
@@ -1645,7 +1665,7 @@ function checkCourseShow2() {
 					//Demo
 					layui.use([ 'form', 'laydate' ], function() {
 						var form = layui.form, laydate = layui.laydate;
-
+						form.render(); 
 						//监听提交
 						form.on('submit(formDemo)', function(data) {
 							layer.msg(JSON.stringify(data.field));

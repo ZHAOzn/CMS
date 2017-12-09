@@ -3,6 +3,7 @@ package com.qdu.dao;
 import java.util.List;
 
 import com.qdu.pojo.Admin;
+import com.qdu.pojo.Feedback;
 import com.qdu.pojo.LogEntity;
 
 public interface LogEntityDao {
@@ -22,6 +23,11 @@ public interface LogEntityDao {
 	public List<LogEntity> selectTeacherLogEntity();
 	
 	public List<LogEntity> selectStudentLogEntity();
+	
+	//反馈
+	public int insertFeedback(Feedback feedback);
+	
+	public List<Feedback> selectFeedback();
 
 }
  

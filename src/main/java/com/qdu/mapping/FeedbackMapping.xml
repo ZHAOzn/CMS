@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.mapping.FeedbackMapping">
+	<cache type="com.qdu.cache.RedisCache" />
+	<resultMap type="com.qdu.pojo.Feedback" id="FeedbackResult">
+		<id property="feedbackId" column="FeedbackId" />
+		<result property="identity" column="Identity" />
+		<result property="userId" column="UserId" />
+		<result property="currentTime" column="CurrentTime" />
+		<result property="feedbackContent" column="FeedbackContent" />
+	</resultMap>
+	
+	<insert id="insertFeedback" parameterType="com.qdu.pojo.Feedback">
+	  insert into 
+	  Feedback(Identity,UserId,CurrentTime,FeedbackContent) 
+	  values(#{identity},#{userId},#{currentTime},#{feedbackContent})
+	</insert>
+	
+	<select id="selectFeedback" resultMap="FeedbackResult">
+	  select * from Feedback order by FeedbackId desc
+	</select>
+	<!-- 
+	<select id="selectFeedbackByStudent" resultMap="FeedbackResult">
+	  select * from Feedback where Identity = '学生' order by FeedbackId desc
+	</select> -->
+
+	
+</mapper>
+

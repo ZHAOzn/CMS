@@ -29,6 +29,7 @@
 			 $('#crud').hide();
 			 $('#manageJurisdiction').hide();
 			 $('#studentDetail').hide();
+			 $('#manageBlogDiv').hide();
 			 $('#teacherDetail').hide();
 		});
 		 $('#studentLogShow').click(function name() {
@@ -40,6 +41,7 @@
 			 $('#crud').hide();
 			 $('#manageJurisdiction').hide();
 			 $('#studentDetail').hide();
+			 $('#manageBlogDiv').hide();
 			 $('#teacherDetail').hide();
 		});
 		 $('#teacherInfoShow').click(function name() {
@@ -50,6 +52,7 @@
 			 $('#teacherLog').hide();
 			 $('#crud').hide();
 			 $('#manageJurisdiction').hide();
+			 $('#manageBlogDiv').hide();
 			 $('#studentDetail').hide();
 			 $('#teacherDetail').hide();
 		});
@@ -58,6 +61,7 @@
 			 $('#messageList').html("操作日志");
 			 $('#studentInfo').hide();
 			 $('#studentLog').hide();
+			 $('#manageBlogDiv').hide();
 			 $('#teacherInfo').hide();
 			 $('#crud').hide();
 			 $('#manageJurisdiction').hide();
@@ -70,6 +74,7 @@
 			 $('#studentInfo').hide();
 			 $('#studentLog').hide();
 			 $('#teacherInfo').hide();
+			 $('#manageBlogDiv').hide();
 			 $('#teacherLog').hide();
 			 $('#manageJurisdiction').hide();
 			 $('#studentDetail').hide();
@@ -81,15 +86,23 @@
 			 $('#studentInfo').hide();
 			 $('#studentLog').hide();
 			 $('#teacherInfo').hide();
+			 $('#manageBlogDiv').hide();
 			 $('#teacherLog').hide();
 			 $('#crud').hide();
 			 $('#studentDetail').hide();
 			 $('#teacherDetail').hide();
 		});
-// 		 $('#manageBlog').click(function name() {
-// 			 $('#messageList').html("管理博客");
-// 			 $('#studentInfo').hide();
-// 		});
+		 $('#manageBlogShow').click(function name() {
+			 $('#messageList').html("管理博客");
+			 $('#manageJurisdiction').hide();
+			 $('#studentInfo').hide();
+			 $('#studentLog').hide();
+			 $('#teacherInfo').hide();
+			 $('#teacherLog').hide();
+			 $('#crud').hide();
+			 $('#studentDetail').hide();
+			 $('#manageBlogDiv').show();
+ 		});
 // 		 $('#manageBlog').click(function name() {
 // 			 $('#messageList').html("发布公告");
 // 			 $('#studentInfo').hide();
@@ -143,6 +156,7 @@
 		 $('#teacherLog').hide();
 		 $('#crud').hide();
 		 $('#manageJurisdiction').hide();
+		 $('#manageBlogDiv').hide();
 		 $('#studentInfo').hide();
 		 $('#teacherDetail').hide();
 		 
@@ -184,6 +198,7 @@ function teacherDetailShow(id){
 	 $('#studentLog').hide();
 	 $('#teacherInfo').hide();
 	 $('#teacherLog').hide();
+	 $('#manageBlogDiv').hide();
 	 $('#crud').hide();
 	 $('#manageJurisdiction').hide();
 	 $('#studentInfo').hide();
@@ -273,7 +288,7 @@ function teacherDetailShow(id){
 								<a id="studentLogShow" href="#">操作日志</a>
 							</dd>
 						</dl></li>
-					<li class="layui-nav-item"><a href="#">教师管理</a>
+					<li class="layui-nav-item layui-nav-itemed"><a href="#">教师管理</a>
 						<dl class="layui-nav-child">
 							<dd>
 								<a id="teacherInfoShow" href="#">教师信息</a>
@@ -307,6 +322,177 @@ function teacherDetailShow(id){
 			<span id="messageList"
 				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;">学生信息</span>
 			<hr class="layui-bg-cyan">
+			
+			
+			<!-- 博客管理 -->
+			<div id="manageBlogDiv" class="site-text site-block" style="padding-left: 0;padding-right: 0;display: none;">
+				<table class="layui-table" lay-skin="line" lay-even style="text-align: center; width: 100%;">
+					<colgroup>
+						<col width="200">
+						<col width="200">
+						<col width="200">
+						<col width="200">
+						<col width="200">
+						<col width="200">
+						<col width="200">
+						<col width="200">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;">批量处理</th>
+							<th style="text-align: center;">作者</th>
+							<th style="text-align: center;">角色</th>
+							<th style="text-align: center;">标题</th>
+							<th style="text-align: center;">类别</th>
+							<th style="text-align: center;">权限</th>
+							<th style="text-align: center;">时间</th>
+							<th style="text-align: center;">查验</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:choose>
+							<c:when test="${! empty myBlogs}">
+								<c:forEach items="${myBlogs}" var="s">
+									<tr id="T${s.blogId}">
+										<td> <input type="checkbox" name="like[write]"></td>
+										<td>${s.blogAuthor}</td>
+										<td>${s.role}</td>
+										<td>${s.blogTitle}</td>
+										<td>${s.belongTo}</td>
+										<td>${s.blogFifter}</td>
+										<td>${s.createTime}</td>
+										<td><a id="${s.blogId}" onclick="getBlog(this.id)" href="#"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe63c;</i>
+										</a></td>
+									</tr>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<tr>
+									<td colspan="9">(暂无待审博文)</td>
+								</tr>
+							</c:otherwise>
+						</c:choose>
+					</tbody>
+				</table>
+			</div>
+			
+			<script type="text/javascript">
+			function getBlog(id) {
+				 $.ajax({
+		              type: "GET",
+		              data: {
+		            	  "blogId":id
+		              },
+		              contentType: "application/json; charset=utf-8",
+		              async: false,
+		              dataType: "json",
+		              url: "<%=request.getContextPath()%>/blog/getBlogById.do",
+		              success: function (data) {
+		            	  layer.open({
+		                      type: 1
+		                      ,title: false //不显示标题栏
+		                      ,closeBtn: true
+		                      ,area: '800px;'
+		                      ,shade: 0.8
+		                      ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+		                      ,btn: ['通过审核', '残忍拒绝']
+		                      ,btnAlign: 'c'
+		                      ,moveType: 0 //拖拽模式，0或者1
+		                      ,content: '<div style="background-color: #393D49; color: #fff;"><div  style="width:100%;"> <label>待审博文<i class="layui-icon" style="font-size: 13px; color: white;">&#xe623;</i>  </label><br/><br/><div style="heigh:500px; overflow: auto;"><h3>作者:'+data.teacher.teacherName+'<h3><br/><h3>标题:'+data.myBlog.blogTitle+'<h3><br/>'+data.myBlog.blogContent+'</div></div></div>'
+		                      ,yes: function(){
+		                    	  pass(id); 
+		          			  }
+		            	    ,btn2: function(index, layero){
+		            		    nopass(id);
+		            		  }
+		                    });
+		              },
+		              error: function (data) {
+		            	  alert("服务器异常");
+		              }
+		          });
+			}
+			function pass(id) {
+				$.ajax({
+		              type: "GET",
+		              data: {
+		            	  "blogId":id
+		              },
+		              contentType: "application/json; charset=utf-8",
+		              async: false,
+		              dataType: "json",
+		              url: "<%=request.getContextPath()%>/admin/updateBlogofVerify.do",
+		              success: function (data) {
+		            	  if(data.result == true){
+		            		  layui.use('layer', function(){
+				 	               var $ = layui.jquery, layer = layui.layer; 
+				   			      layer.open({
+				   			        type: 1
+				   			        ,offset: 'auto'
+				   			        ,id: 'layerDemo'+'auto'
+				   			        ,title: '成功'
+				   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "审核通过" +'</div>'
+				   			        ,btn: '关闭'
+				   			        ,btnAlign: 'c'
+				   			        ,skin: 'demo-class'
+				   			        ,shade: 0 
+				   			        ,yes: function(){
+				   			        	$('#T'+id).hide();
+				   			        	 layer.closeAll();
+				   			        }
+				   			      });
+				 	            });
+		            	  }else {
+		            		  layer.msg('审核失败');
+						}
+		            	  
+		              },
+		              error: function (data) {
+		            	  alert("服务器异常");
+		              }
+		          });
+			}
+			function nopass(id){
+				$.ajax({
+		              type: "GET",
+		              data: {
+		            	  "blogId":id
+		              },
+		              contentType: "application/json; charset=utf-8",
+		              async: false,
+		              dataType: "json",
+		              url: "<%=request.getContextPath()%>/admin/updateBlogofVerifySecond.do",
+		              success: function (data) {
+		            	  if(data.result == true){
+		            		  layui.use('layer', function(){
+				 	               var $ = layui.jquery, layer = layui.layer; 
+				   			      layer.open({
+				   			        type: 1
+				   			        ,offset: 'auto'
+				   			        ,id: 'layerDemo'+'auto'
+				   			        ,title: '成功'
+				   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "审核修订为未通过" +'</div>'
+				   			        ,btn: '关闭'
+				   			        ,btnAlign: 'c'
+				   			        ,skin: 'demo-class'
+				   			        ,shade: 0 
+				   			        ,yes: function(){
+				   			        	$('#T'+id).hide();
+				   			        	 layer.closeAll();
+				   			        }
+				   			      });
+				 	            });
+		            	  }else {
+		            		  layer.msg('审核失败');
+						}
+		            	  
+		              },
+		              error: function (data) {
+		            	  alert("服务器异常");
+		              }
+		          });
+			}
+			</script>
 
 			<!-- 学生信息模块 -->
 			<div id="studentInfo" class="site-text site-block" style="padding-left: 0;padding-right: 0">

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.qdu.dao.LogEntityDao;
 import com.qdu.pojo.Admin;
+import com.qdu.pojo.Feedback;
 import com.qdu.pojo.LogEntity;
 import com.qdu.service.LogEntityService;
 
@@ -55,6 +56,16 @@ public class LogEntityServiceImpl implements LogEntityService{
 	@Override
 	public List<LogEntity> selectStudentLogEntity() {
 		return logEntityDaoImpl.selectStudentLogEntity();
+	}
+
+	@Override
+	public int insertFeedback(Feedback feedback) {
+		return logEntityDaoImpl.insertFeedback(feedback);
+	}
+
+	@Override
+	public List<Feedback> selectFeedback() {
+		return logEntityDaoImpl.selectFeedback();
 	}
 
 }

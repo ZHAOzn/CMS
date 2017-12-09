@@ -34,6 +34,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.qdu.aop.SystemLog;
 import com.qdu.pojo.Course;
+import com.qdu.pojo.Feedback;
 import com.qdu.pojo.FilePackage;
 import com.qdu.pojo.LeaveRecord;
 import com.qdu.pojo.LogEntity;
@@ -591,5 +592,72 @@ public class TeacherController {
 				map.put("filePackages", filePackages);
 			return map;
 		}
-	
+		//反馈
+		@RequestMapping(value = "/insertFeedback.do")
+		@ResponseBody
+		public Map<String, Object> insertFeedback(String returnInfoToAdmin){
+			System.out.println(returnInfoToAdmin);
+			Map<String, Object> map = new HashMap<>();
+			Feedback feedback = new Feedback();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:mm");
+			feedback.setCurrentTime(sdf.format(new Date()));
+			feedback.setFeedbackContent(returnInfoToAdmin);
+			int tem = logEntityServiceImpl.insertFeedback(feedback);
+			if(tem > 0){
+				map.put("result", true);
+			}
+			else {
+				map.put("result", false); 
+			}
+			return map;
+		}
+		
+	//创建一个公告
+		@RequestMapping(value = "/addProclamation.do")
+		@ResponseBody
+		public Map<String, Object> addProclamation(String messageContent,String teacherMobile,int courseId){
+			Map<String, Object> map = new HashMap<>();
+			List<StudentInfo> studentInfos = studentInfoServiceImpl.selectInfoFromInfoAndStudent(courseId);
+			Message message = new Message();
+			Teacher teacher = teacherServiceImpl.selectTeacherByMobile(teacherMobile);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			message.setMessageSender(teacherMobile);
+			message.setMessageTitle(teacher.getTeacherName() + "发布了一个公告！");
+			message.setSendTime(sdf.format(new Date()));
+			message.setHaveRead("未读");
+			message.setMessageContent(messageContent);
+			message.setMessageType("publish");
+			int tem = 0;
+			for(StudentInfo studentInfo:studentInfos){
+				message.setMessageAccepter(studentInfo.getStudent().getStudentRoNo());
+				tem = messageServiceImpl.insertMessage(message);
+			}
+			if(tem > 0){
+				map.put("result", true);
+			}
+			else {
+				map.put("result", false); 
+			}
+			return map;
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 }

@@ -15,10 +15,18 @@
 <link type="text/css" rel="stylesheet" href="<%=request.getContextPath()%>/css/studentPage.css">
 <link type="text/css" rel="stylesheet" href="<%=request.getContextPath()%>/layui/css/layui.css">
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
+<script src="<%=request.getContextPath()%>/layui/mods/index.js"></script>
 
 <title>学生页面</title>
 <script type="text/javascript">
+layui.use(['form'], function(){
+	var form = layui.form;
+	});
 	 $(document).ready(function () {
+		 layui.use(['form'], function(){
+			 var form = layui.form;
+
+			 });
 		 //检查入学时间是否为0
 		 if(${student.intoSchoolYear} == '0'){
 			 $('#innerTime').html("");
@@ -454,13 +462,40 @@
 	            async: false,
 	            url: "<%=request.getContextPath()%>/student/getMessageByAjax.do",
 				success : function(data) {
-					if(data.mmm.messageType == 'insertCourse'){
+					if(data.mmm.messageType == 'publish'){
+						layer.open({
+				            type: 1
+				            ,title: false //不显示标题栏
+				            ,closeBtn: true
+				            ,area: '300px;'
+				            ,shade: 0.8
+				            ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+				            ,btn: ['知道了~']
+				            ,btnAlign: 'c'
+				            ,moveType: 0 //拖拽模式，0或者1
+				            ,content: '<div style="background-color: #393D49; color: #fff;"><br/>' + data.mmm.messageContent +'<br/></div>'
+				            ,yes: function(){
+				            	layer.closeAll();
+							  }
+				           
+				          });
+					}else if(data.mmm.messageType == 'insertCourse'){
 						$('#forMessageContent').hide();
 						$('#messageContent').hide();
 						$('#seprateMessage').hide();
 						$('#insertCourseDiv').show();
 						$('#MteacherMobile').val(data.mmm.messageSender);
+						$('#messageTitleS').html('<span style="color:#5FB878">标题 :&nbsp</span>' + data.mmm.messageTitle);
+						$('#messageSenderNameS').html('<span style="color:#5FB878">发件人姓名 :&nbsp</span>' + data.teacher.teacherName + '<br/>' + '<br/>'+ '<br/>');
+						$('#messageContentS').html(data.mmm.messageContent);
 						$('#MCourseId').val(data.mmm.messageContent);
+						$('#messageShow').hide();
+						$('#messageSnderS').html('<span style="color:#5FB878">发件人账号 :&nbsp</span> <' + data.mmm.messageSender +'>');
+						if(data.teacher != null){
+						$('#messageSenderNameS').show();
+						  }
+						$('#sendTime').html('<span style="color:#5FB878">时间  :&nbsp</span><' + data.mmm.sendTime +'>');
+						$('#fushuMessage').show();
 					}
 					if(data.mmm.messageType == 'leaveRecord'){
 						$('#messageContent').html(data.mmm.messageContent);
@@ -468,20 +503,21 @@
 						$('#messageContent').show();
 						$('#seprateMessage').hide();
 						$('#insertCourseDiv').show();
+						$('#messageTitleS').html('<span style="color:#5FB878">标题 :&nbsp</span>' + data.mmm.messageTitle);
+						$('#messageSenderNameS').html('<span style="color:#5FB878">发件人姓名 :&nbsp</span>' + data.teacher.teacherName + '<br/>' + '<br/>'+ '<br/>');
 						$('#MteacherMobile').val(data.mmm.messageSender);
 						$('#MCourseId').val(data.mmm.messageContent);
+						$('#messageContentS').html(data.mmm.messageTitle);
+						$('#messageShow').hide();
+						$('#messageSnderS').html('<span style="color:#5FB878">发件人账号 :&nbsp</span> <' + data.mmm.messageSender +'>');
+						if(data.teacher != null){
+						$('#messageSenderNameS').show();
+						  }
+						$('#sendTime').html('<span style="color:#5FB878">时间  :&nbsp</span><' + data.mmm.sendTime +'>');
+						$('#fushuMessage').show();
 					}
 					
-					$('#messageShow').hide();
-					$('#messageTitle').html('标题 <' + data.mmm.messageTitle + '>');
-					$('#messageSnder').html('发件人账号 <' + data.mmm.messageSender +'>');
-					if(data.teacher != null){
-					$('#messageSenderName').html('发件人姓名 <' + data.teacher.teacherName +'><br/><br/><br/><br/>');
-					$('#messageSenderName').show();
-					  }
-					$('#sendTime').html('时间 <' + data.mmm.sendTime +'>');
-					$('#messageContent').html(data.mmm.messageContent);
-					$('#fushuMessage').show();
+					
 				},
 				error : function(data) {
 					alert("异常");
@@ -964,7 +1000,7 @@ function getMyScore(id) {
 		<!-- 头部导航 -->
 		<div class="layui-header header header-demo">
 			<div class="layui-main">
-				<a class="CMSlogo" href="/"><span
+				<a class="CMSlogo" href="#"><span
 					style="color: white; font-size: 25px;">CMS</span></a>
 				<ul class="layui-nav">
 					<li class="layui-nav-item"><a id="messageButtton" href="#">
@@ -1013,7 +1049,7 @@ function getMyScore(id) {
 								<a onclick="examList()" href="#">查看试卷</a>
 							</dd>
 						</dl></li>
-					<li class="layui-nav-item"><a href="javascript:;">数据平台</a>
+					<li class="layui-nav-item layui-nav-itemed"><a href="javascript:;">数据平台</a>
 						<dl class="layui-nav-child">
 							<dd>
 								<a id="studentWordRecord" href="#">签到记录</a>
@@ -1037,6 +1073,23 @@ function getMyScore(id) {
 			<span id="messageList"
 				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;"></span>
 			<hr class="layui-bg-cyan">	
+			
+			
+			
+	<script>
+	layui.cache.page = 'jie';
+	layui.cache.user = {
+	 
+	};
+	layui.config({
+	  version: "3.0.0"
+	  ,base: '<%=request.getContextPath()%>/layui/mods/'
+	}).extend({
+		fly : 'index'
+	}).use('fly');
+	</script>
+			
+			
 	       	<!-- 学生查看试卷 -->
 			<div class="site-text site-block" id="examList"
 				style="display: none;margin-top: 0;padding-left: 0; padding-right: 0;">
@@ -1197,7 +1250,7 @@ function getMyScore(id) {
 			//时间控制
 			layui.use([ 'form', 'laydate' ], function() {
 			 var form = layui.form, laydate = layui.laydate;
-
+                form.render();
 				laydate.render({
 					elem : '#leaveTime',
 				});
@@ -1335,7 +1388,7 @@ function getMyScore(id) {
 									<tr>
 									    <td>${s.course.courseId}</td>
 										<td><a id="${s.course.courseId}" onclick="getPrivateData(this.id)" href="#" class="aSign">
-										${s.course.courseName}</a></td>
+										${s.course.courseName}&nbsp;<i class="layui-icon" style="font-size: 15px; color: #1E9FFF;">&#xe61d;</i></a></td>
 										<td>${s.course.courseType}</td>
 										<td>${s.course.startTime}</td>
 										<td>${s.course.endTime}</td>
@@ -1493,7 +1546,7 @@ function getMyScore(id) {
 			<!-- 显示消息 -->
 			<div id="messageShow"
 				style="margin-left: 5%; margin-right: 5%; display: none;">
-				<table class="layui-table"
+				<table class="layui-table" lay-skin="line"
 					lay-data="{page:true,height:485,width:1070, url:'<%=request.getContextPath() %>/student/getSeperratePage.do',
 			 id:'test', where:{messageAcpter:'${student.studentRoNo}'}, limit:10}"
 					lay-filter="test" style="width: 100%;">
@@ -1569,12 +1622,12 @@ function getMyScore(id) {
 			<!-- 附属详细消息 -->
 			<div id="fushuMessage"
 				style="width: 100%; padding-left: 25%; display: none; margin-top: 5%;">
-				<h3 id="messageTitle"></h3>
+				<h3 id="messageTitleS"></h3>
 				<hr />
-				<br /> <br /> <span id="messageSnder"></span><br /> <br /> <br />
-				<br /> <span id="messageSenderName" style="display: none;"></span>
+				<br /> <br /> <span id="messageSnderS"></span><br /> <br /> <br />
+				<br /> <span id="messageSenderNameS" style="display: none;"></span>
 				<span id="sendTime"></span><br /> <br /> <br /> <br /> <span
-					id="forMessageContent">内容<br /></span>
+					id="forMessageContentS">内容<br /></span>
 				<textarea id="messageContent" rows="5" cols="40" readonly="readonly"></textarea>
 				<br /> <br />
 				<div id="insertCourseDiv" style="display: none;">
@@ -2029,14 +2082,6 @@ function getMyScore(id) {
 	</div>
 
 
-	<div
-		style="height: 100px; margin-top: 42.6%; background-color: #000011; text-align: center; padding-top: 5px">
-		<div class="navbar-header"
-			style="text-align: center; width: 100%; margin-top: 3%; color: white; z-index: 3">
-
-			<a style="" class="navbar-brand" href="#">copyright by CMS team</a>
-		</div>
-	</div>
 
 	<script type="text/javascript">
    //刷新当前页面

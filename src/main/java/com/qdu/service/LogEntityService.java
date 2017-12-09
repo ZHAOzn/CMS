@@ -3,6 +3,7 @@ package com.qdu.service;
 import java.util.List;
 
 import com.qdu.pojo.Admin;
+import com.qdu.pojo.Feedback;
 import com.qdu.pojo.LogEntity;
 
 public interface LogEntityService {
@@ -19,9 +20,14 @@ public interface LogEntityService {
 	
 	public List<LogEntity> selectStudentLogByTime(String userId, String dateTime,String coreKey);
 	
-public List<LogEntity> selectTeacherLogEntity();
+    public List<LogEntity> selectTeacherLogEntity();
 	
 	public List<LogEntity> selectStudentLogEntity();
+	
+	//反馈
+	public int insertFeedback(Feedback feedback);
+	
+	public List<Feedback> selectFeedback();
 
 }
   

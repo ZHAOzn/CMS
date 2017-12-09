@@ -16,9 +16,16 @@ public class MyBlog implements Serializable{
 			private int down;
 			private int blogComment;
 			private int hotClick;
+			private String verify;
 			
 			
 			
+			public String getVerify() {
+				return verify;
+			}
+			public void setVerify(String verify) {
+				this.verify = verify;
+			}
 			public String getBlogTitle() {
 				return blogTitle;
 			}

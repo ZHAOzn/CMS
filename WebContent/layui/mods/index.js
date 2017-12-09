@@ -608,15 +608,59 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
   
   //固定Bar
   util.fixbar({
-    bar1: '&#xe642;'
+    bar1: '&#xe606;'
     ,bgcolor: '#009688'
     ,click: function(type){
       if(type === 'bar1'){
-        layer.msg('打开 index.js，开启发表新帖的路径');
+        //layer.msg('功能开发中');
         //location.href = 'jie/add.html';
+    	//示范一个公告层
+          layer.open({
+            type: 1
+            ,title: false //不显示标题栏
+            ,closeBtn: true
+            ,area: '300px;'
+            ,shade: 0.8
+            ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+            ,btn: ['提交反馈', '残忍拒绝']
+            ,btnAlign: 'c'
+            ,moveType: 0 //拖拽模式，0或者1
+            ,content: '<div style="background-color: #393D49; color: #fff;"><div  style="width:100%;"> <label>反馈信息</label><textarea style="color:#393D49" id="returnInfoToAdmin"  placeholder="CMS目前还不是非常成熟，所以存在这样那样的问题，但是大家一直不离不弃让我们很是感动，如果您在使用中发现了不合理的地方或是bug，真心的希望您能够反馈给我们，我们会针对性的做出调整" class="layui-textarea"></textarea></div></div>'
+            ,yes: function(){
+            	returnInfoToAdmin();
+			  }
+           
+          });
       }
     }
   });
+  function returnInfoToAdmin() {
+	  if($('#returnInfoToAdmin').val() != ""){
+     	 $.ajax({
+	             type: "GET",
+	             data: {
+	            	 "returnInfoToAdmin":$('#returnInfoToAdmin').val()
+	             },
+	             contentType: "application/json; charset=utf-8",
+	             async: true,
+	             url: 'insertFeedback.do',
+				success : function(data) {
+					if(data.result == true){
+						layer.msg('感谢您的支持');
+					}else {
+						layer.msg('出现错误');
+					}
+				},
+				error : function(data) {
+					layer.msg(data);
+				},
+				dataType : "json",
+			});
+		     layer.closeAll();
+     }else {
+     	layer.msg('反馈信息不可为空');
+		}
+}
 
   exports('fly', fly);
 

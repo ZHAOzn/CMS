@@ -16,6 +16,7 @@
 		<result property="down" column="Down" />
 		<result property="blogComment" column="BlogComment" />
 		<result property="hotClick" column="HotClick" />
+		<result property="verify" column="Verify" />
 	</resultMap>
 	
 	<select id="selectMyBlogById" resultMap="MyBlogResult">
@@ -27,7 +28,14 @@
 	</select>
 	
 	<select id="selectMyBlogByConCat" resultMap="MyBlogResult">
-	   select * from MyBlog where BlogContent like concat('%', #{blogTitle},'%') And BlogFifter = '公开' order by BlogId desc
+	   select * from MyBlog where BlogContent like concat('%', #{blogTitle},'%') 
+	   And BlogFifter = '公开' 
+	   And Verify = '审核完成'
+	   order by BlogId desc
+	</select>
+	
+	<select id="selectMyBlogByVerify" resultMap="MyBlogResult">
+	   select * from MyBlog where Verify = '等待审核' order by BlogId desc
 	</select>
 	
 	<select id="selectMyBlogByHot" resultMap="MyBlogResult">
@@ -37,6 +45,12 @@
 	<delete id="deleteMyBlogById" parameterType="int">
 	  delete From MyBlog where BlogId = #{blogId}
 	</delete>
+	
+	<update id="updateBlogofVerify" parameterType="com.qdu.pojo.MyBlog">
+	  update MyBlog set
+	  Verify = #{verify}
+	  where BlogId = #{blogId}
+	</update>
 	
 	<update id="updateBlog" parameterType="com.qdu.pojo.MyBlog">
 	  update MyBlog set
@@ -51,9 +65,9 @@
 	<insert id="insertMyBlog" parameterType="com.qdu.pojo.MyBlog">
 	  insert into 
 	  MyBlog(BlogAuthor,Role,BlogTitle,BelongTo,BlogContent,BlogTarget,BlogFifter,CreateTime,
-	  Up,Down,BlogComment,HotClick) 
+	  Up,Down,BlogComment,HotClick,Verify) 
 	  values(#{blogAuthor},#{role},#{blogTitle},#{belongTo},#{blogContent},#{blogTarget},#{blogFifter},#{createTime},
-	  #{up},#{down},#{blogComment},#{hotClick})
+	  #{up},#{down},#{blogComment},#{hotClick},#{verify})
 	</insert>
 	
 	

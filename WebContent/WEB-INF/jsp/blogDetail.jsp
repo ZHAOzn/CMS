@@ -21,6 +21,7 @@
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
 <link type="text/css" rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/bootstrap.min.css">
+	<script src="<%=request.getContextPath()%>/layui/mods/index.js"></script>
 <title>博客查询结果</title>
 </head>
 <body>
