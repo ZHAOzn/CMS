@@ -325,88 +325,19 @@ setTimeout("fresh()",1)
 			</div>
 		</div>
 		
-		
-		
-		<!-- 头部 -->
-<!-- 		<nav class="navbar navbar-inverse navbar-fixed-top"> -->
-<!-- 		<div class="container"> -->
-<!-- 			<!-- 头部logo --> -->
-<!-- 			<div class="navbar-header"> -->
-			
-<!-- 				<button type="button" class="navbar-toggle collapsed" -->
-<!-- 					data-toggle="collapse" data-target="#navbar" aria-expanded="false" -->
-<!-- 					aria-controls="navbar"> -->
-<!-- 				</button> -->
-<!-- 				<a class="navbar-brand" href="#">CMS</a> -->
-<!-- 			</div> -->
-
-<!-- 			<div id="navbar" class="navbar-collapse collapse"> -->
-<!-- 				登录模块 -->
-<!-- 				<div id="loginForm" -->
-<!-- 					style="width: 30%; higth: 100%; margin-top: 170px; background-color: rgba(0, 0, 0, 0.7); position: fixed; margin-left: 320px; display: none;"> -->
-<!-- 					<a href="#" id="sss" class="alogin" -->
-<!-- 						style="float: left; text-decoration: none; color: white; font-size: 28px; background-color: rgba(0, 0, 0, 1);">学生登录</a> -->
-<!-- 					<a href="#" id="ttt" class="alogin" style="float: left; text-decoration: none; color: white; font-size: 28px;">教师登录</a> -->
-<!-- 					<form id="studentForm" -->
-<%-- 						action="<%=request.getContextPath()%>/student/studentLogin.do" --%>
-<!-- 						method="post" style="text-align: center; font-size: 20px;"> -->
-<!-- 						<br> <br> <br> <br> <span style="color: white">学号:</span>><input  -->
-<!-- 							name="studentRoNo" id="studentRono" type="text"/><br /> <br /> <span -->
-<!-- 							style="color: white">密码:</span>><input name="studentPassword" id="stpw"  -->
-<!-- 							type="password" disabled="disabled" /><br /> <br /> -->
-<%-- 							 <a href="<%=request.getContextPath()%>/student/getStudentPasswordBack.do" --%>
-<!-- 							    class="aChangePW" target="_blank">忘记密码>></a><br/><br />  -->
-<!-- 							<div style="text-align: center;"> -->
-<!-- 							 	<input id="stu" class="btn btn-primary btn-lg" style="width: 130px;" type="button" -->
-<!-- 								value="登录" />  -->
-<%-- 								<a id="stu" href="<%=request.getContextPath()%>/student/addStudent.do" --%>
-<!-- 								target="_blank" class="btn btn-primary btn-lg" style="width: 130px;"> 注册</a> -->
-<!-- 							</div> -->
-<!-- 							<br><br> -->
-							
-<!-- 					</form> -->
-<!-- 					<form id="teacherForm" -->
-<%-- 						action="<%=request.getContextPath()%>/teacher/teacherLogin.do" --%>
-<!-- 						method="post" -->
-<!-- 						style="text-align: center; font-size: 20px; display: none;"> -->
-<!-- 						<input type="text" name="repageNow" value="1" style="display: none;"/> -->
-<!-- 						<br> <br> <br> <br> <span style="color: white">手机:</span>><input  -->
-<!-- 							name="teacherId" id="teacherMobile" type="text" /><br /> <br /> <span -->
-<!-- 							style="color: white">密码:</span>><input name="password" id="tcpw"  -->
-<!-- 							type="password" /><br /> <br /> -->
-						
-<%-- 							 <a href="<%=request.getContextPath()%>/teacher/getTeacherPasswordBack.do" class="aChangePW" --%>
-<!-- 							target="_blank">忘记密码>></a><br/><br />  -->
-<!-- 							<div style="text-align: center;"> -->
-<!-- 							 	<input id="tea" class="btn btn-primary btn-lg" style="width: 130px;" type="button" -->
-<!-- 								value="登录" />  -->
-<%-- 								<a id="stu" href="<%=request.getContextPath()%>/teacher/forTeacherRegister.do" --%>
-<!-- 								target="_blank" class="btn btn-primary btn-lg" style="width: 130px;"> 注册</a> -->
-<!-- 							</div> -->
-<!-- 							<br><br> -->
-<!-- 					</form> -->
-<!-- 					<br> <br> <br> <br> <br> -->
-<!-- 				</div> -->
-<!-- 				<form class="navbar-form navbar-right"> -->
-<!-- 					<a href="#" id="lll" type="submit" style="width: 100px;" class="btn btn-primary">登录</a> -->
-<!-- 				</form> -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-<!-- 		</nav> -->
-        
         <!-- 考试入口 -->
 			<div id="examInner" class="site-text" 
 				style="text-align: center; width: 50%;; 
-				top: 300px; position: fixed; margin-left: 26%;">
+				top: 300px; position: fixed; margin-left: 29%;">
 				<form id="ExamForm" class="layui-form layui-form-pane" action="<%=request.getContextPath()%>/exam/studentToExam.do">
 					<div class="layui-form-item" style="width: 100%;">
 						<div style="width: 100%; float: left;">
-							<label class="layui-form-label" style="width: 20%; background-color: #e2e2e2;">输入考试码：</label>
+							<label class="layui-form-label" style="width: 18%; background-color: #e2e2e2;">输入考试码：</label>
 							<div class="layui-input-block">
 								<input id="onlyCode" type="text" lay-verify="CoreKey" name="onlyCode"
 									placeholder="请输入考试码" autocomplete="off" class="layui-input"
 									style="width: 50%; float: left;"> 
-									<input class="layui-btn" lay-submit type="button"
+								<input class="layui-btn" lay-submit type="button"
 									 value="现在考试" style="float: left;" onclick="toExam()"/>
 							</div>
 						</div>
