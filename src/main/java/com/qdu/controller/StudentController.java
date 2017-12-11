@@ -30,6 +30,7 @@ import com.qdu.aop.SystemLog;
 import com.qdu.pojo.Clazz;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Course;
+import com.qdu.pojo.Feedback;
 import com.qdu.pojo.LeaveRecord;
 import com.qdu.pojo.LogEntity;
 import com.qdu.pojo.Message;
@@ -82,6 +83,7 @@ public class StudentController {
 	private LeaveRecordService leaveRecordServiceImpl;
 	@Autowired 
 	private MyBlogService myBlogServiceImpl;
+	
 
 	// 学生登录
 	@RequestMapping(value = "/studentLogin.do",method = RequestMethod.POST)
@@ -745,5 +747,36 @@ public class StudentController {
 			}
 				
 		}
+		
+		//反馈
+	@RequestMapping(value = "/insertFeedback.do")
+	@ResponseBody
+	public Map<String, Object> insertFeedback(String returnInfoToAdmin){
+		System.out.println(returnInfoToAdmin);
+		Map<String, Object> map = new HashMap<>();
+		Feedback feedback = new Feedback();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:mm");
+		feedback.setCurrentTime(sdf.format(new Date()));
+		feedback.setFeedbackContent(returnInfoToAdmin);
+		feedback.setResult("未解决");
+		int tem = logEntityServiceImpl.insertFeedback(feedback);
+		if(tem > 0){
+			map.put("result", true);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}		
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 }

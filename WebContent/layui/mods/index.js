@@ -656,10 +656,10 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
 				},
 				dataType : "json",
 			});
-		     layer.closeAll();
      }else {
      	layer.msg('反馈信息不可为空');
 		}
+	  layer.closeAll();
 }
 
   exports('fly', fly);

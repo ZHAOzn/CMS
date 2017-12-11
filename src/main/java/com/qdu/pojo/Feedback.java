@@ -7,6 +7,25 @@ public class Feedback {
 	private String userId;
 	private String currentTime;
 	private String feedbackContent;
+	private String reson;
+	private String result;
+	
+	
+	
+	
+	
+	public String getReson() {
+		return reson;
+	}
+	public void setReson(String reson) {
+		this.reson = reson;
+	}
+	public String getResult() {
+		return result;
+	}
+	public void setResult(String result) {
+		this.result = result;
+	}
 	public int getFeedbackId() {
 		return feedbackId;
 	}

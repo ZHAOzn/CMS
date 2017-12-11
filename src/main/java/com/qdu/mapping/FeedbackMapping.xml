@@ -8,17 +8,26 @@
 		<result property="userId" column="UserId" />
 		<result property="currentTime" column="CurrentTime" />
 		<result property="feedbackContent" column="FeedbackContent" />
+	    <result property="reson" column="Reson" />
+	    <result property="result" column="Result" />
 	</resultMap>
 	
 	<insert id="insertFeedback" parameterType="com.qdu.pojo.Feedback">
 	  insert into 
-	  Feedback(Identity,UserId,CurrentTime,FeedbackContent) 
-	  values(#{identity},#{userId},#{currentTime},#{feedbackContent})
+	  Feedback(Identity,UserId,CurrentTime,FeedbackContent,Reson,Result) 
+	  values(#{identity},#{userId},#{currentTime},#{feedbackContent},#{reson},#{result})
 	</insert>
 	
 	<select id="selectFeedback" resultMap="FeedbackResult">
 	  select * from Feedback order by FeedbackId desc
 	</select>
+	
+	<update id="updateFeedbackOfReson" parameterType="HashMap">
+	   update Feedback set
+	   Reson = #{reson},
+	   Result = #{result}
+	   where FeedbackId = #{feedbackId}
+	</update>
 	<!-- 
 	<select id="selectFeedbackByStudent" resultMap="FeedbackResult">
 	  select * from Feedback where Identity = '学生' order by FeedbackId desc

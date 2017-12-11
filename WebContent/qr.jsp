@@ -4,6 +4,45 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width; initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{margin:0;padding:0;text-decoration:none;list-style:none;
+         font-size:14px;font-family:"微软雅黑";text-align:center;
+         color:black;}
+         .clear{clear:both;}
+         #header,#content,#footer{margin:0 auto;margin-top:10px;}  
+         #header,#footer{margin-top:10px;height:100px;}
+         #header,#footer,.left,.right,.center{background:#333;}
+        /*通用样式*/
+         /*手机*/
+        @media screen and (max-width:600px){
+           #header,#content,#footer{width:400px;}
+           .right,.center{margin-top:10px;}
+           .left,.right{height:100px;}
+           .center{height:200px;}
+        }
+
+        /*平板*/
+        @media screen and (min-width:600px) and (max-width:960px){
+        #header,#content,#footer{width:600px;}
+        .right{display:none;}
+        .left,.center{height:400px;float:left;}
+        .left{width:160px;margin-right:10px;}
+        .center{width:430px;}
+        }
+
+        /*PC*/
+        @media screen and (min-width:960px){
+        #header,#content,#footer{width:960px;}
+        .left,.center,.right{height:400px;float:left;}
+        .left{width:200px;margin-right:10px;}
+        .center{width:540px;margin-right:10px;}
+        .right{width:200px;} 
+        }
+    </style>
 <link rel="shortcut icon" type="image/x-icon"
 	href="<%=request.getContextPath()%>/icon/cms2.ico" media="screen" />
 
@@ -41,9 +80,9 @@
 	</div>
 	</nav>
 	<div class="site-text site-block"
-		style="width: 100%; margin-top: 6%;padding-left: 20%">
+		style="width: 100%; margin-top: 16%;">
 		<form action="<%=request.getContextPath()%>/course/createQrNew.do">
-			<table style="width: 60%; height: 40em;"
+			<table style="width: 100%; height: 30em;"
 				class="layui-table">
 				<tr>
 					<td>课程名称</td>

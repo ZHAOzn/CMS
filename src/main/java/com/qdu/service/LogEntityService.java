@@ -28,6 +28,8 @@ public interface LogEntityService {
 	public int insertFeedback(Feedback feedback);
 	
 	public List<Feedback> selectFeedback();
+	
+	public int updateFeedbackOfReson(int feedbackId, String reson, String result);
 
 }
   

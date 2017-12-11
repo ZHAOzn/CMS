@@ -153,8 +153,10 @@ function closeValidateCode() {
 	$("#validateCode").hide();
 }
 //二维码要用到的随机数
+var run = true;
 function hello(){ 
-	 $.ajax({
+	if(run){
+	$.ajax({
          type: "GET",
          data: {
          },
@@ -171,7 +173,8 @@ function hello(){
          },
      });
 	 window.setTimeout("closeValidateCode()",30000);
-	} 
+	}
+} 
 //倒计时
 var maxtime = 10;
 function CountDown(){  
@@ -200,10 +203,12 @@ function showQrImg() {
          async: false,
          url: "<%=request.getContextPath()%>/course/getQrImg.do",
          success: function (data) {
+        	 run = true;
         	 var url = "/ClassManageSys/qrImg/" + data.url + ".gif";
         	 var imgPre = document.getElementById("qrImg");
 //         	 imgPre.style.display = "block";
              imgPre.src = url;
+             maxtime = 10;
              setInterval("CountDown()",1000);
              //5s刷新
              setInterval('YesConfirm()', 5000);
@@ -217,42 +222,45 @@ function showQrImg() {
 }
 //获取签到成功学生列表
 function YesConfirm() {
-	 $.ajax({
-         type: "GET",
-         data: {
-        	 "courseId": ${course.courseId}
-         },
-         contentType: "application/json; charset=utf-8",
-         dataType: "json",
-         async: true,
-         url: "<%=request.getContextPath()%>/student/getTemStudent.do",
-         success: function (data) {
-        	    var dataObj = data.clazzStuss, //返回的data为json格式的数据
-        	    con =  '\
-        	    		<caption>当前签到进度</caption>\
-        				<tr>\
-        					<th>学号</th>\
-        					<th>姓名</th>\
-        					<th>班级</th>\
-        				</tr>\
-        				';
-        	    $.each(dataObj, function (index, item) {  
-        	        con += "<tr>";
-        	        con += "<td>" + item.student.studentRoNo + "</td>";
-        	        con += "<td>" + item.student.studentName + "</td>";
-        	        con += "<td>" + item.clazz.clazzName + "</td>";
-        	        con += "<tr/>";
-        	    });
-        	        //可以在控制台打印一下看看，这是拼起来的标签和数据
-        	        //把内容入到这个div中即完成
-        	        $('#showStudents').show();
-        	    $("#showStudents").html(con);
-         },
-         error: function (data) { 
-             console.log(data);
-             alert("服务器异常！");
-         },
-     });
+	if(run){
+		$.ajax({
+	         type: "GET",
+	         data: {
+	        	 "courseId": ${course.courseId}
+	         },
+	         contentType: "application/json; charset=utf-8",
+	         dataType: "json",
+	         async: true,
+	         url: "<%=request.getContextPath()%>/student/getTemStudent.do",
+	         success: function (data) {
+	        	    var dataObj = data.clazzStuss, //返回的data为json格式的数据
+	        	    con =  '\
+	        	    		<caption>当前签到进度</caption>\
+	        				<tr>\
+	        					<th>学号</th>\
+	        					<th>姓名</th>\
+	        					<th>班级</th>\
+	        				</tr>\
+	        				';
+	        	    $.each(dataObj, function (index, item) {  
+	        	        con += "<tr>";
+	        	        con += "<td>" + item.student.studentRoNo + "</td>";
+	        	        con += "<td>" + item.student.studentName + "</td>";
+	        	        con += "<td>" + item.clazz.clazzName + "</td>";
+	        	        con += "<tr/>";
+	        	    });
+	        	        //可以在控制台打印一下看看，这是拼起来的标签和数据
+	        	        //把内容入到这个div中即完成
+	        	        $('#showStudents').show();
+	        	    $("#showStudents").html(con);
+	         },
+	         error: function (data) { 
+	             console.log(data);
+	             alert("服务器异常！");
+	         },
+	     });
+	}
+	 
 }
 //提交签到表
 function submitSignIn() {
@@ -279,6 +287,7 @@ function submitSignIn() {
 	    			        ,btnAlign: 'c' //按钮居中
 	    			        ,shade: 0 //不显示遮罩
 	    			        ,yes: function(){
+	    			        	run = false;
 	    			        	layer.closeAll();
 	    			        	window.location.reload();
 	    			        }
@@ -304,6 +313,7 @@ function getPrivateData() {
 	 $('#studentExam').hide();
 	 $('#scoreFormList').hide();
 	 $('#proclamationDiv').hide();
+	 $('#homeWork').hide();  
 	 $('#upLoadShow').show();
 	 
 	 $.ajax({
@@ -343,6 +353,7 @@ function getAddClass() {
 	 $('#upLoadShow').hide();
 	 $('#clazzInfoShow').hide();
 	 $('#addExaminationDiv').hide();
+	 $('#homeWork').hide();
 	 $('#addQuestionsDiv').hide();
 	 $('#studentExam').hide();
 	 $('#inClazzStudentInfoDiv').hide();
@@ -358,6 +369,7 @@ function classInfo() {
 	 $('#otherModel').hide();
 	 $('#upLoadShow').hide();
 	 $('#addClassShow').hide();
+	 $('#homeWork').hide();  
 	 $('#addExaminationDiv').hide();
 	 $('#addQuestionsDiv').hide();
 	 $('#addClassShow').hide();
@@ -578,6 +590,7 @@ function TocorrectExamination() {
 	 $('#addClassShow').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#clazzInfoShow1').hide();
+	 $('#homeWork').hide();  
 	 $('#clazzInfoShow').hide();
 	 $('#packScore').hide();
 	 $('#ShortAnswerScore').hide();
@@ -904,6 +917,7 @@ function scoreFormList() {
 	 $('#studentExam').hide();
 	 $('#clazzInfoShow').hide();
 	 $('#proclamationDiv').hide();
+	 $('#homeWork').hide();  
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#addClassShow').hide();
 	 $('#addExaminationForm').hide();
@@ -994,6 +1008,7 @@ function addExamination() {
 	 $('#otherModel').hide();
 	 $('#upLoadShow').hide();
 	 $('#proclamationDiv').hide();
+	 $('#homeWork').hide();  
 	 $('#studentExam').hide();
 	 $('#clazzInfoShow').hide();
 	 $('#inClazzStudentInfoDiv').hide();
@@ -1103,26 +1118,23 @@ function teacherAddExamination() {
 	        url: "<%=request.getContextPath()%>/exam/addExamination.do",
 			success : function(data) {
 				if(data.result == true){
-					layui.use('layer', function(){ //独立版的layer无需执行这一句
+					layui.use('layer', function(){
 		  	               var $ = layui.jquery, layer = layui.layer; 
-		  	             //触发事件
 		    			      layer.open({
 		    			        type: 1
-		    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-		    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+		    			        ,offset: 'auto'
+		    			        ,id: 'layerDemo'+'auto'
 		    			        ,title: '成功'
 		    			        ,content: '<div style="padding: 20px 100px;">'+ "添加试卷成功." +'</div>'
 		    			        ,btn: '关闭'
-		    			        ,btnAlign: 'c' //按钮居中
-		    			        ,shade: 0 //不显示遮罩
+		    			        ,btnAlign: 'c'
+		    			        ,shade: 0
 		    			        ,yes: function(){
 		    			        	setTimeout('FirstFunction()',500);
 		    			        	layer.closeAll();
 		    			        }
 		    			      });
 		  	            });
-					//$('#afterAddExamination').show();
-	                
 				}else {
 					layui.use('layer', function(){ //独立版的layer无需执行这一句
 		  	               var $ = layui.jquery, layer = layui.layer; 
@@ -2352,7 +2364,24 @@ function proclamation() {
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#scoreFormList').hide();
 	 $('#addClassShow').hide();
+	 $('#homeWork').hide();  
 	 $('#proclamationDiv').show();
+}
+//课后作业
+function afterClassHomeWork() {
+	 $('#getHeadLine').html("课后作业");
+	 $('#signModel').hide();
+	 $('#otherModel').hide();
+	 $('#upLoadShow').hide();
+	 $('#clazzInfoShow').hide();
+	 $('#addExaminationDiv').hide();
+	 $('#addQuestionsDiv').hide();
+	 $('#studentExam').hide();
+	 $('#inClazzStudentInfoDiv').hide();
+	 $('#scoreFormList').hide();
+	 $('#addClassShow').hide();
+	 $('#proclamationDiv').hide();
+	 $('#homeWork').show();      
 }
 //返回首页
 function returnTeacherIndex() {
@@ -2526,12 +2555,97 @@ function returnTeacherIndex() {
 			    
               </form>
 		</div>
+		
+		
+		<!-- 发布作业 -->
+			<div class="site-text site-block" id="homeWork" style="display: none; height: 400px;">
+			<form class="layui-form">
+			  <div class="layui-form-item layui-form-text" style="margin-top: 50px;">
+                 <label class="layui-form-label" style="width: 100%;text-align: left;">课后作业：<span style="color: #FF5722;">@该课程下所有学生</span></label>
+                 
+                 <div class="layui-form-item">
+				<label class="layui-form-label" for="datetime" style="text-align: left;">完成时间：</label>
+				<div class="layui-input-block">
+					<input id="homeWordDatetime" type="text" name="datetime" required style="width: 50%;"
+						lay-verify="required" autocomplete="off"
+						class="layui-input">
+				</div>
+			   </div>
+                      <div class="layui-input-block" style="margin-left: 0;">
+                           <textarea id="homeWorkContent" placeholder="请输入内容" class="layui-textarea" style="height: 150px;"></textarea>
+                       </div>
+                 </div>
+                 
+				<div style="height: 60px; width: 300px;">
+				    <input class="layui-btn" style="margin-left: 14%;"
+								onclick="proclamationNowHome()" type="button" value="布置作业" />
+						<button style=" margin-left: 14%; width: 100px"
+						type="reset" class="layui-btn layui-btn-primary">重置</button>
+					<br /> <br /> <br />
+					<script type="text/javascript">
+					function proclamationNowHome() {
+						   if($('#homeWorkContent').val() != ""){
+							   $.ajax({
+							         type: "GET",
+							         data: {
+							        	 "teacherMobile":${teacher.teacherMobile},
+							        	 "courseId":${course.courseId},
+							        	 "homeWorkContent":$('#homeWorkContent').val(),
+							        	 "homeWordDatetime":$('#homeWordDatetime').val()
+							         },
+							         contentType: "application/json; charset=utf-8",
+							         async: true,
+							         url: "<%=request.getContextPath()%>/teacher/pushHomeWork.do",
+									success : function(data) {
+										if(data.result == true){
+											layui.use('layer', function(){
+									              var $ = layui.jquery, layer = layui.layer; 
+												      layer.open({
+												        type: 1
+												        ,offset: 'auto' 
+												        ,id: 'layerDemo'+'auto'
+												        ,title: '成功'
+												        ,content: '<div style="padding: 20px 100px; color:#FF5722;">'+ "作业布置完成" +'</div>'
+												        ,btn: '关闭'
+												        ,btnAlign: 'c' 
+												        ,shade: 0 
+												        ,yes: function(){
+												        	layer.closeAll();
+												        }
+												      });
+									           });
+											$('#homeWorkContent').val("");
+											$('#homeWordDatetime').val("");
+										}else {
+											layer.msg('布置失败，暂无学生接收~');
+										}
+									},
+									error : function(data) {
+									},
+									dataType : "json",
+								});
+						   }else {
+							   layer.msg('内容不可为空哦~');
+						}
+							
+						 }
+					   
+					</script>
+				  </div>
+			    
+              </form>
+		</div>
    <script>
    layui.use(['form', 'layedit', 'laydate'], function(){
-  var form = layui.form
-  ,layer = layui.layer
+  var form = layui.form,laydate = layui.laydate;
+   form.render();
+   laydate.render({
+		elem : '#homeWordDatetime'
+	});
+   layer = layui.layer
   ,layedit = layui.layedit
   ,laydate = layui.laydate;  
+   });
   </script>
   
 			
@@ -2860,6 +2974,7 @@ function returnTeacherIndex() {
 					$('#inClazzStudentInfoDiv').hide();
 					$('#addQuestionsDiv').hide();
 					$('#proclamationDiv').hide();
+					$('#homeWork').hide();  
 					$('#studentExam').hide();
 					$('#addExaminationDiv').hide();
 					$('#scoreFormList').hide();
@@ -3023,6 +3138,7 @@ function returnTeacherIndex() {
 				    $('#studentExam').hide();
 				    $('#proclamationDiv').hide();
 					$('#inClazzStudentInfoDiv').hide();
+					$('#homeWork').hide();  
 					$('#addQuestionsDiv').hide();
 					$('#clazzInfoShow').hide();
 					$('#scoreFormList').hide();

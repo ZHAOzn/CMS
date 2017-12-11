@@ -74,12 +74,13 @@ public class LogEntityController {
 	@RequestMapping(value = "/adminLogin.do",method = RequestMethod.POST)
 	public String adminLogin(ModelMap map,HttpServletRequest request){
 		List<LogEntity> logEntities = new ArrayList<LogEntity>();
-		 int totalCount = logEntityServiceImpl.selectLogEntityCount();
 		    List<Student> students = studentServiceImpl.selectStuList();
 		    List<Teacher> teachers = teacherServiceImpl.selectTeacher();
 		    List<LogEntity> teacherLogEntitys = logEntityServiceImpl.selectTeacherLogEntity();
 		    List<LogEntity> studentLogEntitys = logEntityServiceImpl.selectStudentLogEntity();
 		    List<MyBlog> myBlogs = myBlogServiceImpl.selectMyBlogByVerify();
+		    List<Feedback> feedbacks = logEntityServiceImpl.selectFeedback();
+		    map.put("feedbacks", feedbacks);
 			map.put("logEntities", logEntities);
 			map.put("myBlogs", myBlogs);
 			map.put("students", students);
@@ -169,7 +170,19 @@ public class LogEntityController {
 			return map;
 		}
 		
-		
+		//管理员解决反馈
+	@RequestMapping(value = "/resolveFeedback.do")
+	@ResponseBody
+	public Map<String, Object> beforResolveFeedback(int feedbackId,String reson){
+		Map<String, Object> map = new HashMap<>();
+		int tem =  logEntityServiceImpl.updateFeedbackOfReson(feedbackId, reson, "已解决");
+		if(tem > 0){
+			map.put("result", true);
+		}else {
+			map.put("result", false);
+		}
+		return map;
+	}	
 		
 		
 		

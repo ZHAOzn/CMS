@@ -611,6 +611,7 @@ public class TeacherController {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:mm");
 			feedback.setCurrentTime(sdf.format(new Date()));
 			feedback.setFeedbackContent(returnInfoToAdmin);
+			feedback.setResult("未解决");
 			int tem = logEntityServiceImpl.insertFeedback(feedback);
 			if(tem > 0){
 				map.put("result", true);
@@ -668,7 +669,35 @@ public class TeacherController {
 		return map;
 	}	
 
-		
+	//布置作业
+	@RequestMapping(value = "/pushHomeWork.do")
+	@ResponseBody
+	public Map<String, Object> pushHomeWork(String homeWorkContent,@DateTimeFormat(pattern = "yyyy-MM-dd") Date homeWordDatetime,String teacherMobile,int courseId){
+		Map<String, Object> map = new HashMap<>();
+		List<StudentInfo> studentInfos = studentInfoServiceImpl.selectInfoFromInfoAndStudent(courseId);
+		Message message = new Message();
+		Teacher teacher = teacherServiceImpl.selectTeacherByMobile(teacherMobile);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		message.setMessageSender(teacherMobile);
+		message.setMessageTitle(teacher.getTeacherName() + "老师布置了作业！");
+		message.setSendTime(sdf.format(new Date()));
+		message.setHaveRead("未读");
+		message.setMessageContent("<span style='color:#FF5722'>完成时间："+ sdf.format(homeWordDatetime) +"！</span><br/>"+homeWorkContent);
+		message.setMessageOther(sdf.format(homeWordDatetime));
+		message.setMessageType("homeWork");
+		int tem = 0;
+		for(StudentInfo studentInfo:studentInfos){
+			message.setMessageAccepter(studentInfo.getStudent().getStudentRoNo());
+			tem = messageServiceImpl.insertMessage(message);
+		}
+		if(tem > 0){
+			map.put("result", true);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}
 		
 		
 		

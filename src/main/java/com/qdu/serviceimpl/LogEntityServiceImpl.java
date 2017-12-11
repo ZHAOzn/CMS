@@ -68,4 +68,9 @@ public class LogEntityServiceImpl implements LogEntityService{
 		return logEntityDaoImpl.selectFeedback();
 	}
 
+	@Override
+	public int updateFeedbackOfReson(int feedbackId, String reson, String result) {
+		return logEntityDaoImpl.updateFeedbackOfReson(feedbackId, reson, result);
+	}
+
 }

@@ -5,6 +5,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width; initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="shortcut icon" type="image/x-icon"
 	href="<%=request.getContextPath()%>/icon/cms2.ico" media="screen" />
 
@@ -43,7 +47,7 @@
 	</nav>
 	<!-- 添加课程 -->
 	<div
-		style="heigh: 300px; background-color: white; margin-left: 19%; margin-right: 20%; padding-left: 10%; padding-right: 10%; padding-top: 8%; padding-bottom: 100px;">
+		style="heigh: 300px; background-color: white;  padding-left: 10%; padding-right: 10%; padding-top: 8%; padding-bottom: 100px;">
 
 
 		<div id="addCourseShow"
@@ -77,9 +81,8 @@
 			<br />
 			<div class="layui-form-item">
 				<label class="layui-form-label" for="password">班级</label>
-				<div>
-					<select id="clazzId" name="clazzId"
-						style="height: 2.7em; width: 30%;">
+				<div class="layui-input-inline">
+					<select id="clazzId" name="clazzId" style="width: 100%; height: 2.6em">
 						<c:choose>
 							<c:when test="${! empty clazz}">
 								<c:forEach items="${clazz}" var="c">
@@ -106,9 +109,14 @@
 	</div>
 
 	<script>
-	function onload() {
+	layui.use('form', function() {
+	var form = layui.form;
+	form.render(); 
+	});
+	
+/* 	function onload() {
 		$('#addCourseShow').hide();
-	}
+	} */
 	function trySubmit() {
 		if($('#id').val() != "" && $('#studentPassword').val() != ""){
 		$.ajax({
@@ -125,21 +133,38 @@
               url: "<%=request.getContextPath()%>/student/confirmAddCourse.do",
 							success : function(data) {
 								if (data.result == true) {
-									$('#zzz').html("成功添加该课程..");
-									$('#addCourseShow').show();
-									setTimeout('onload()',5000);
+									layui.use('layer', function(){ //独立版的layer无需执行这一句
+						  	               var $ = layui.jquery, layer = layui.layer; 
+						  	             //触发事件
+						    			      layer.open({
+						    			        type: 1
+						    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+						    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+						    			        ,title: '成功'
+						    			        ,content: '<div style="padding: 20px 100px;">'+ "成功加入该课程." +'</div>'
+						    			        ,btn: '关闭'
+						    			        ,btnAlign: 'c' //按钮居中
+						    			        ,shade: 0 //不显示遮罩
+						    			        ,yes: function(){
+						    			        	layer.closeAll();
+						    			        }
+						    			      });
+						  	            });
 								} else if (data.message == "学号错误") {
-									$('#zzz').html("学号错误..");
-									$('#addCourseShow').show();
-									setTimeout('onload()',5000);
+									layui.use('layer', function() {
+										var $ = layui.jquery, layer = layui.layer;
+										layer.msg('学号错误！');
+									});
 								} else if (data.message == "密码错误") {
-									$('#zzz').html("密码错误..");
-									$('#addCourseShow').show();
-									setTimeout('onload()',5000);
+									layui.use('layer', function() {
+										var $ = layui.jquery, layer = layui.layer;
+										layer.msg('密码错误！');
+									});
 								} else if (data.message == '请勿重复加入') {
-									$('#zzz').html("请勿重复加入..");
-									$('#addCourseShow').show();
-									setTimeout('onload()',5000);
+									layui.use('layer', function() {
+										var $ = layui.jquery, layer = layui.layer;
+										layer.msg('您已在该课程内！');
+									});
 								}
 							},
 							error : function(data) {

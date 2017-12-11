@@ -28,6 +28,7 @@
 			 $('#teacherLog').hide();
 			 $('#crud').hide();
 			 $('#manageJurisdiction').hide();
+			 $('#feedbackDiv').hide();
 			 $('#studentDetail').hide();
 			 $('#manageBlogDiv').hide();
 			 $('#teacherDetail').hide();
@@ -38,6 +39,7 @@
 			 $('#studentLog').show();
 			 $('#teacherInfo').hide();
 			 $('#teacherLog').hide();
+			 $('#feedbackDiv').hide();
 			 $('#crud').hide();
 			 $('#manageJurisdiction').hide();
 			 $('#studentDetail').hide();
@@ -49,6 +51,7 @@
 			 $('#teacherInfo').show();
 			 $('#studentInfo').hide();
 			 $('#studentLog').hide();
+			 $('#feedbackDiv').hide();
 			 $('#teacherLog').hide();
 			 $('#crud').hide();
 			 $('#manageJurisdiction').hide();
@@ -63,6 +66,7 @@
 			 $('#studentLog').hide();
 			 $('#manageBlogDiv').hide();
 			 $('#teacherInfo').hide();
+			 $('#feedbackDiv').hide();
 			 $('#crud').hide();
 			 $('#manageJurisdiction').hide();
 			 $('#studentDetail').hide();
@@ -74,6 +78,7 @@
 			 $('#studentInfo').hide();
 			 $('#studentLog').hide();
 			 $('#teacherInfo').hide();
+			 $('#feedbackDiv').hide();
 			 $('#manageBlogDiv').hide();
 			 $('#teacherLog').hide();
 			 $('#manageJurisdiction').hide();
@@ -85,6 +90,7 @@
 			 $('#messageList').html("权限管理");
 			 $('#studentInfo').hide();
 			 $('#studentLog').hide();
+			 $('#feedbackDiv').hide();
 			 $('#teacherInfo').hide();
 			 $('#manageBlogDiv').hide();
 			 $('#teacherLog').hide();
@@ -98,6 +104,7 @@
 			 $('#studentInfo').hide();
 			 $('#studentLog').hide();
 			 $('#teacherInfo').hide();
+			 $('#feedbackDiv').hide();
 			 $('#teacherLog').hide();
 			 $('#crud').hide();
 			 $('#studentDetail').hide();
@@ -156,6 +163,7 @@
 		 $('#teacherLog').hide();
 		 $('#crud').hide();
 		 $('#manageJurisdiction').hide();
+		 $('#feedbackDiv').hide();
 		 $('#manageBlogDiv').hide();
 		 $('#studentInfo').hide();
 		 $('#teacherDetail').hide();
@@ -199,6 +207,7 @@ function teacherDetailShow(id){
 	 $('#teacherInfo').hide();
 	 $('#teacherLog').hide();
 	 $('#manageBlogDiv').hide();
+	 $('#feedbackDiv').hide();
 	 $('#crud').hide();
 	 $('#manageJurisdiction').hide();
 	 $('#studentInfo').hide();
@@ -231,7 +240,20 @@ function teacherDetailShow(id){
 			},
 		});
 }	 
-	  
+//查看反馈信息
+function feedbackDShow() {
+	 $('#manageJurisdiction').hide();
+	 $('#messageList').html("反馈处理");
+	 $('#studentInfo').hide();
+	 $('#studentLog').hide();
+	 $('#teacherInfo').hide();
+	 $('#manageBlogDiv').hide();
+	 $('#teacherLog').hide();
+	 $('#crud').hide();
+	 $('#studentDetail').hide();
+	 $('#teacherDetail').hide();
+	$('#feedbackDiv').show();
+}
 </script>
 </head>
 <body>
@@ -309,9 +331,11 @@ function teacherDetailShow(id){
 								<a onclick="clearRedis()" href="#">清理redis</a>
 							</dd>
 						</dl></li>
-					<li class="layui-nav-item"><a id="manageBlogShow" href="#">管理博客</a></li>
+					<li class="layui-nav-item"><a id="manageBlogShow" href="#">博文审核</a></li>
 					<li class="layui-nav-item"><a id="manageAnnouncementShow"
-						href="#">公告发布</a></li>
+						href="#">发布公告</a></li>
+					<li class="layui-nav-item"><a onclick="feedbackDShow()"
+						href="#">反馈处理</a></li>
 				</ul>
 			</div>
 		</div>
@@ -322,6 +346,99 @@ function teacherDetailShow(id){
 			<span id="messageList"
 				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;">学生信息</span>
 			<hr class="layui-bg-cyan">
+			
+			
+			<!-- 反馈 -->
+			<div id="feedbackDiv" class="site-text site-block" style="padding-left: 0;padding-right: 0;display: none;">
+			<ul id="feedbackUl" style="width: 100%; margin-top: 10px; margin-left: 0;margin-right: 0;padding-left: 0;padding-right: 0;padding-top: 0;">
+		      <c:choose>
+		        <c:when test="${!empty feedbacks}">
+		          <c:forEach  items="${feedbacks}" var="s"  varStatus="status" begin="0">
+		            <li  class="site-block" style="background-color: #eeeeee;margin-top: 0;">
+		              (${status.index}).<a target='_blank' href="">${s.feedbackContent}</a>&nbsp;&nbsp;
+		             <a href="#" id="${s.feedbackId}" onclick="beforResolveFeedback(this.id)"><span id="F${s.feedbackId}" style="color: #FF5722">${s.result}</span></a>
+		            </li>
+		            <input type="text" id="C${s.feedbackId}" value="${s.reson}" readonly="readonly" style="display: none;"/>
+		          </c:forEach>
+		        </c:when>
+		        <c:otherwise>
+		           <li  class="site-block" style="background-color: #dddddd;">暂无</li>
+		        </c:otherwise>
+		      </c:choose>
+		    </ul>
+			</div>
+			
+			<script type="text/javascript">
+			  function beforResolveFeedback(id) {
+				  if($('#F' + id).html() == "未解决"){
+					  layui.use('layer', function(){
+		 	          var $ = layui.jquery, layer = layui.layer; 
+					  layer.open({
+				            type: 1
+				            ,title: false //不显示标题栏
+				            ,closeBtn: true
+				            ,area: '300px;'
+				            ,shade: 0.8
+				            ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+				            ,btn: ['提交处理', '暂时忽略']
+				            ,btnAlign: 'c'
+				            ,moveType: 0 //拖拽模式，0或者1
+				            ,content: '<div style="background-color: #393D49; color: #fff;"><div  style="width:100%;"> <label>解决方法</label><textarea style="color:#393D49" id="returnInfoToAdmin"  placeholder="针对反馈的解决方案" class="layui-textarea"></textarea></div></div>'
+				            ,yes: function(){
+				            	resolveFeedback(id);
+							  }
+				          });
+					  });
+				  }else {
+					  layui.use('layer', function(){
+		 	               var $ = layui.jquery, layer = layui.layer; 
+		   			      layer.open({
+		   			        type: 1
+		   			        ,offset: 'auto'
+		   			        ,id: 'layerDemo'+'auto'
+		   			        ,title: '处理明细'
+		   			        ,content: '<div style="padding: 20px 100px; overflow:auto; color:#FF5722">'+ $('#C'+id).val() +'</div>'
+		   			        ,btn: '关闭'
+		   			        ,btnAlign: 'c'
+		   			        ,skin: 'demo-class'
+		   			        ,shade: 0 
+		   			        ,yes: function(){
+		   			         //window.location.reload();
+		   			        layer.closeAll();
+		   			        }
+		   			      });
+		 	            });
+				}
+			}
+			  function resolveFeedback(id) {
+				  if($('#returnInfoToAdmin').val() != ""){
+					  $.ajax({
+			              type: "GET",
+			              data: {
+			                  "feedbackId":id,
+			                  "reson":$('#returnInfoToAdmin').val()
+			              },
+			              contentType: "application/json; charset=utf-8",
+			              async: false,
+			              dataType: "json",
+			              url: "<%=request.getContextPath()%>/admin/resolveFeedback.do",
+			              success: function (data) {
+			            	  if(data.result == true){
+			            		  layer.msg("处理成功");
+			            		  $('#F'+id).html("已处理");
+			            	  }
+			              },
+			              error: function (data) {
+			            	  
+			              }
+			          });
+					 
+				  }else {
+					  layer.msg("方案内容不可为空！");
+				}
+				 
+			}
+			 </script>
 			
 			
 			<!-- 博客管理 -->
@@ -830,44 +947,3 @@ function teacherDetailShow(id){
 	</script>
 </body>
 </html>
-
-
-
-
-
-
-<%-- <div style=" width: 70%; height:500px; overflow: auto;">
-	<table border="1" style="width: 100%">
-		<caption>用户操作日志</caption>
-		<tr height="10px">
-			<th>账号</th>
-			<th>用户</th>
-			<th>ip地址</th>
-			<th colspan="3">方法</th>
-			<th>日期</th>
-			<th>响应时间</th>
-			<th width="30px" style="width: 40px; overflow: auto;">结果</th>
-		</tr>
-		<c:choose>
-		<c:when test="${! empty logEntities}">
-		<c:forEach items="${logEntities}" var="s">
-		<tr height="10px">
-		<td>${s.userId}</td>
-		<td>${s.module}</td>
-		<td>${s.ip}</td>
-		<td colspan="3">${s.method}</td>
-		<td>${s.date}</td>
-		<td>${s.reponseTime}</td>
-		<td style="width: 40px; overflow: auto;">${s.result}</td>
-		</tr>
-		</c:forEach>
-		</c:when>
-		<c:otherwise>
-		<tr>
-		<td colspan="7">(空)</td>
-		</tr>
-		</c:otherwise>
-		</c:choose>
-   </table>
-
-   </div> --%>

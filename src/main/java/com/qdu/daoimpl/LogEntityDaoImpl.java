@@ -82,4 +82,14 @@ public class LogEntityDaoImpl implements LogEntityDao{
 		return sessionFactory.openSession().selectList(statement);
 	}
 
+	@Override
+	public int updateFeedbackOfReson(int feedbackId, String reson, String result) {
+		String statement = "com.qdu.mapping.FeedbackMapping.updateFeedbackOfReson";
+		Map<String, Object> map = new HashMap<>();
+		map.put("feedbackId", feedbackId);
+		map.put("reson", reson);
+		map.put("result", result);
+		return sessionFactory.openSession().update(statement,map);
+	}
+
 }
