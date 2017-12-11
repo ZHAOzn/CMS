@@ -86,6 +86,7 @@ layui.use(['form'], function(){
 			 $('#beforeLeaveMoudle').hide();
 			 $('#afterLeaveMoudle').hide();
 			 $('#examList').hide();
+			 $('#lookData').hide();
 			 $('#courseInfo').show();
 		});
 		 //个人中心
@@ -105,6 +106,7 @@ layui.use(['form'], function(){
 			 $("#studentLogOfTime").hide();
 			 $('#studentWork').hide();
 			 $('#beforeLeaveMoudle').hide();
+			 $('#lookData').hide();
 			 $('#afterLeaveMoudle').hide();
 			 $('#examList').hide();
 			 $('#studentInfoShow').show();
@@ -128,6 +130,7 @@ layui.use(['form'], function(){
 			 $('#studentWork').hide();
 			 $('#beforeLeaveMoudle').hide();
 			 $('#afterLeaveMoudle').hide();
+			 $('#lookData').hide();
 			 $('#examList').hide();
 			 $('#studentInfoShow').show();
 		 });
@@ -147,6 +150,7 @@ layui.use(['form'], function(){
 			 $("#studentLogOfTime").hide();
 			 $('#studentWork').hide();
 			 $('#beforeLeaveMoudle').hide();
+			 $('#lookData').hide();
 			 $('#afterLeaveMoudle').hide();
 			 $('#examList').hide();
 			 $('#forStudentLogInfo').show();
@@ -171,6 +175,7 @@ layui.use(['form'], function(){
 			 $('#studentWork').hide();
 			 $('#beforeLeaveMoudle').hide();
 			 $('#afterLeaveMoudle').hide();
+			 $('#lookData').hide();
 			 $('#examList').hide();
 			 $('#messageShow').show();
 			 layui.use('table', function(){
@@ -196,6 +201,7 @@ layui.use(['form'], function(){
 				 $('#studentWork').hide();
 				 $('#beforeLeaveMoudle').hide();
 				 $('#examList').hide();
+				 $('#lookData').hide();
 				 $('#afterLeaveMoudle').hide();
 				$('#studentAddCourse').show();
 			});
@@ -218,6 +224,7 @@ layui.use(['form'], function(){
 				 $('#beforeLeaveMoudle').hide();
 				 $('#afterLeaveMoudle').hide();
 				 $('#examList').hide();
+				 $('#lookData').hide();
 				$('#signal').show();
 			});
 		 //点击签到记录
@@ -237,6 +244,7 @@ layui.use(['form'], function(){
 				 $('#studentLogInfo').hide();
 				$('#signal').hide();
 				$('#beforeLeaveMoudle').hide();
+				$('#lookData').hide();
 				 $('#afterLeaveMoudle').hide();
 				 $('#examList').hide();
 				$('#studentWork').show();
@@ -260,6 +268,7 @@ layui.use(['form'], function(){
 				$('#reBirthDayTr').show();
 				$('#forSavefectButton').show();
 				$('#freeStyleTr').hide();
+				$('#lookData').hide();
 				$('#reFreeStyleTr').show();
 				$('#perfectButton').hide();
 				 $('#examList').hide();
@@ -284,6 +293,7 @@ layui.use(['form'], function(){
 			    $('#studentLogInfo').hide();
 			    $('#examList').hide();
 				$('#signal').hide();
+				$('#lookData').hide();
 				$('#studentWork').hide();
 				$('#beforeLeaveMoudle').show();
 				 $('#afterLeaveMoudle').show();
@@ -376,7 +386,23 @@ layui.use(['form'], function(){
 				if(searchIfExistCourse()){
 				if(ccclazzName != "" ){
 				if(pushAddCourse(courseId,courseName,ccclazzName)){
-					$('#addCourseShow').show();
+					layui.use('layer', function(){
+		 	               var $ = layui.jquery, layer = layui.layer; 
+		   			      layer.open({
+		   			        type: 1
+		   			        ,offset: 'auto'
+		   			        ,id: 'layerDemo'+'auto'
+		   			        ,title: '成功'
+		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "请求已发出！" +'</div>'
+		   			        ,btn: '关闭'
+		   			        ,btnAlign: 'c'
+		   			        ,skin: 'demo-class'
+		   			        ,shade: 0 
+		   			        ,yes: function(){
+		   			        	 layer.closeAll();
+		   			        }
+		   			      });
+		 	            });
 					setTimeout('yourFunction()',2000); 
 				   }
 					}else{
@@ -462,7 +488,24 @@ layui.use(['form'], function(){
 	            async: false,
 	            url: "<%=request.getContextPath()%>/student/getMessageByAjax.do",
 				success : function(data) {
-					if(data.mmm.messageType == 'publish'){
+					if(data.mmm.messageType == 'admin'){
+						layer.open({
+				            type: 1
+				            ,title: false //不显示标题栏
+				            ,closeBtn: true
+				            ,area: '300px;'
+				            ,shade: 0.8
+				            ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+				            ,btn: ['知道了~']
+				            ,btnAlign: 'c'
+				            ,moveType: 0 //拖拽模式，0或者1
+				            ,content: '<div style="background-color: #393D49; color: #fff;"><br/>' + data.mmm.messageContent +'<br/></div>'
+				            ,yes: function(){
+				            	layer.closeAll();
+							  }
+				           
+				          });
+					}else if(data.mmm.messageType == 'publish'){
 						layer.open({
 				            type: 1
 				            ,title: false //不显示标题栏
@@ -535,6 +578,7 @@ layui.use(['form'], function(){
 		     $('#studentInfoShow').hide();
 		     $('#studentLogInfo').hide();
 		     $('#fushuMessage').hide();
+		     $('#lookData').hide();
 		     $('#examList').hide();
 			 $('#seprateMessage').show();
 			 $('#messageShow').show();
@@ -779,6 +823,7 @@ function examList() {
 	 $('#forStudentLogInfo').hide();
 	 $('#studentLogInfo').hide();
 	 $("#studentLogOfTime").hide();
+	 $('#lookData').hide();
 	 $('#studentWork').hide();
 	 $('#beforeLeaveMoudle').hide();
 	 $('#afterLeaveMoudle').hide();
@@ -813,7 +858,10 @@ function examList() {
 				 $('#examList').show();
 			},
 			error : function(data) {
-				alert("??");
+				 layui.use('layer', function() {
+       				var $ = layui.jquery, layer = layui.layer;
+       				layer.msg('您未作答');
+       			});
 			},
 			dataType : "json",
 		});
@@ -971,10 +1019,39 @@ function getMyScore(id) {
 			
 		},
 		error : function(data) {
-			alert("??");
+			 layui.use('layer', function() {
+    				var $ = layui.jquery, layer = layui.layer;
+    				layer.msg('您未作答');
+    			});
 		},
 		dataType : "json",
 	});
+}
+//个人博客
+function toPersonBlog() {
+	$('#PersonBlogForm').submit();
+}
+//查看其他人博客
+function lookData() {
+	$('#messageList').html("博文中心");
+	 $('#upLoadShow').hide();
+	 $('#doubleHandle').hide();
+	 $('#signal').hide();
+	 $('#studentAddCourse').hide();
+	 $('#seprateMessage').hide();
+	 $('#messageShow').hide();
+	 $('#insertCourseDiv').hide();
+	 $('#fushuMessage').hide();
+	 $('#studentInfoShow').hide();
+	 $('#forStudentLogInfo').hide();
+	 $('#studentLogInfo').hide();
+	 $("#studentLogOfTime").hide();
+	 $('#studentWork').hide();
+	 $('#beforeLeaveMoudle').hide();
+	 $('#afterLeaveMoudle').hide();
+	 $('#examList').hide();
+	 $('#courseInfo').hide();
+	 $('#lookData').show();
 }
 </script>
 
@@ -1061,21 +1138,136 @@ function getMyScore(id) {
 								<a id="studentLog" href="#">操作日志</a>
 							</dd>
 						</dl></li>
-					<li class="layui-nav-item"><a href="#">博客中心</a></li>
-					<li class="layui-nav-item"><a href="#">课堂资料</a></li>
+					<li class="layui-nav-item layui-nav-itemed""><a href="#">博客中心</a>
+					<dl class="layui-nav-child">
+							<dd>
+								<a onclick="toPersonBlog()" href="#">个人博客</a>
+							</dd>
+							<dd>
+								<a onclick="lookData()" href="#">查阅博文</a>
+							</dd>
+						</dl>
+					</li>
 				</ul>
 			</div>
 		</div>
 
-		<!-- 内容显示 -->
-		<div class="layui-body site-demo"
-			style="padding-top: 1%; overflow: auto;">
-			<span id="messageList"
-				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;"></span>
-			<hr class="layui-bg-cyan">	
+	<!-- 内容显示 -->
+	<div class="layui-body site-demo"
+		style="padding-top: 1%; overflow: auto;">
+		<span id="messageList"
+			style="margin-left: 5%; color: #c2c2c2; font-style: oblique;"></span>
+		<hr class="layui-bg-cyan">	
+		
+		<!-- 查看资料，搜寻各种格式的，自己的，或者他人 -->
+			<div id="lookData" class="site-text site-block" style="padding-top: 5px;margin-top: 0;display: none;padding-left: 0;padding-right: 0">
+				<form class="layui-form" action="">
+					<div class="layui-form-item" style="width: 100%; margin-left: 1%;">
+						 <div class="layui-form-item" style="height: 100%; width: 35%; float: left;">
+						    <label class="layui-form-label">类型</label>
+						    <div class="layui-input-block" style="width: 150px;">
+						      <select id="dataType" name="dataType" lay-verify="required" style="width: 100%;">
+						        <option></option>
+								<option value="AI">AI</option>
+								<option value="安全">安全</option>
+								<option value="算法">算法</option>
+								<option value="后端">后端</option>
+								<option value="前端">前端</option>
+								<option value="终端">终端</option>
+						      </select>
+						    </div>
+						  </div>
+						
+						<div style="height: 100%; width: 49%; float: left;">
+							<label class="layui-form-label">输入关键字</label>
+							<div class="layui-input-block" >
+								<input id="dataContent" type="text" lay-verify="required" required
+									placeholder="如  'java'" autocomplete="off" class="layui-input"
+									style="width: 60%; float: left;"> <input
+									class="layui-btn" lay-submit type="button"
+									onclick="searchData()" value="查询"
+									style="float: left;" />
+							</div>
+						</div>
+					</div>
+				</form>
+				<hr class="layui-bg-cyan">
+							
+		    <ul id="studentBlogUl" style="width: 100%; margin-top: 10px; margin-left: 0;margin-right: 0;padding-left: 0;padding-right: 0;">
+		      <c:choose>
+		        <c:when test="${!empty myBlogs}">
+		          <c:forEach  items="${myBlogs}" var="s"  varStatus="status" begin="0">
+		            <li  class="site-block" style="background-color: #eeeeee;">
+		              (${status.index}).<a id="${s.blogId}" target='_blank' href="<%=request.getContextPath()%>/blog/getBlogTemValue.do?blogId=${s.blogId}&userId=${student.studentRoNo}&role=student" style="color: #5FB878;">${s.blogTitle}</a>&nbsp;&nbsp;
+		              <i class="layui-icon" style="font-size: 20px; color: #FF5722">&#xe6c6;
+		              </i><span id="thisUp">${s.up}</span>  
+		              <i class="layui-icon" style="font-size: 20px; padding-left:20px;
+					         color: #FF5722;">&#xe6c5;</i>  <span id="thisDown">${s.down}</span>
+		            </li>
+		          </c:forEach>
+		        </c:when>
+		        <c:otherwise>
+		           <li  class="site-block" style="background-color: #dddddd;">暂无</li>
+		        </c:otherwise>
+		      </c:choose>
+		    </ul>
+		    <ul id="BlogUl" style="width: 100%; margin-top: 10px; margin-left: 0;margin-right: 0;
+		    padding-left: 0;padding-right: 0; display: none;">
+		      
+		    </ul>
+			
+			</div>
+			
+   <script>
+		//Demo
+		layui.use([ 'form', 'laydate' ], function() {
+			var form = layui.form, laydate = layui.laydate;
+			form.render();
+		});
+//点击查询
+function searchData() {
+	if($('#dataType').val() != "" && $('#dataContent').val() != ""){
+     $.ajax({
+            type: "GET",
+            data: {
+          	  "blogContent" :$('#dataContent').val(),
+          	  "belongTo" :$('#dataType').val()
+            },
+            contentType: "application/json; charset=utf-8",
+            async: false,
+            dataType: "json",
+            url: "<%=request.getContextPath()%>/blog/studentSearchBlog.do",
+            success: function (data) {
+            	var dataObj = data.myBlogs;
+            	var con = "";
+            	 $.each(dataObj, function(index, item) {
+	        	        con += "<li class='site-block' style='background-color: #eeeeee;'>("+index+").<a id='"+ item.blogId +"' target='_blank' href='<%=request.getContextPath()%>/blog/getBlogTemValue.do?userId=${student.studentRoNo}&blogId= " + item.blogId + "&role=student' style='color: #5FB878;'> " + item.blogTitle + " </a>&nbsp;&nbsp;<i class='layui-icon' style='font-size: 20px; color: #FF5722'>&#xe6c6;</i><span id='thisUp'>"+ item.up +"</span>  <i class='layui-icon' style='font-size: 20px; padding-left:20px;color: #FF5722;'>&#xe6c5;</i>  <span id='thisDown'>"+ item.down +"</span> </li>";
+	        	    });
+            	$('#BlogUl').html(con);
+            	$('#studentBlogUl').hide();
+            	$('#BlogUl').show();
+            },
+            error: function (data) {
+          	  alert("服务器异常");
+            }
+        });
+	}else{
+		layui.use('layer', function() {
+			var $ = layui.jquery, layer = layui.layer;
+			layer.msg('总是要填一项...');
+		});
+	}
+}
+</script>
 			
 			
-			
+	<!-- 学生博客 -->
+	<form id="PersonBlogForm" action="<%=request.getContextPath()%>/student/toPersonBlog.do" method="post" style="display: none;">
+	  <input type="text" name="userId" value="${student.studentRoNo}"/>
+	  <input type="text" name="userPassWord" value="${student.studentPassword}"/>
+	  <input type="text" name="userRole" value="student"/>
+	</form>
+	
 	<script>
 	layui.cache.page = 'jie';
 	layui.cache.user = {
@@ -1396,7 +1588,7 @@ function getMyScore(id) {
 										<td>${s.course.schoolTem}</td>
 										<td>${s.course.teacher.teacherName}</td>
 										<td>${s.course.teacher.teacherMobile}</td>
-										<td><a href="#" class="aSign">退出</a></td>
+										<td><a onclick="wantToExitCourse()" href="#" class="aSign">退出</a></td>
 										<!--  <td colspan="8"></td>-->
 									</tr>
 								</c:forEach>
@@ -1421,7 +1613,14 @@ function getMyScore(id) {
 				table.init('signRecord',{
 					
 				});
+							
 			});
+			function wantToExitCourse() {
+				layui.use('layer', function() {
+					var $ = layui.jquery, layer = layui.layer;
+					layer.msg('仅能由教师端删除学生！');
+				});
+			}
 			</script>
 
 
@@ -1587,7 +1786,7 @@ function getMyScore(id) {
             		if(layEvent === 'detail'){ //查看
              			getMessage(data.messageId);
            			} else if(layEvent === 'del'){ //删除
-              			layer.confirm('真的删除行么', function(index){
+              			layer.confirm('真的删除该消息么？', function(index){
                				//向服务端发送删除指令
           					$.ajax({
                      			type: "GET",
@@ -1917,6 +2116,7 @@ function getMyScore(id) {
 					//Demo
 					layui.use([ 'form', 'laydate' ], function() {
 						var form = layui.form, laydate = layui.laydate;
+						form.render();
 						laydate.render({
 							elem : '#birthDay'
 						});

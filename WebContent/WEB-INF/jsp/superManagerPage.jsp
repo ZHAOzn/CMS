@@ -398,7 +398,7 @@ function teacherDetailShow(id){
 		                      ,btn: ['通过审核', '残忍拒绝']
 		                      ,btnAlign: 'c'
 		                      ,moveType: 0 //拖拽模式，0或者1
-		                      ,content: '<div style="background-color: #393D49; color: #fff;"><div  style="width:100%;"> <label>待审博文<i class="layui-icon" style="font-size: 13px; color: white;">&#xe623;</i>  </label><br/><br/><div style="heigh:500px; overflow: auto;"><h3>作者:'+data.teacher.teacherName+'<h3><br/><h3>标题:'+data.myBlog.blogTitle+'<h3><br/>'+data.myBlog.blogContent+'</div></div></div>'
+		                      ,content: '<div style="background-color: #393D49; color: #fff;"><div  style="width:100%;"> <label>待审博文<i class="layui-icon" style="font-size: 13px; color: white;">&#xe623;</i>  </label><br/><br/><div style="heigh:500px; overflow: auto;"><h3>作者:'+data.userName+'<h3><br/><h3>标题:'+data.myBlog.blogTitle+'<h3><br/>'+data.myBlog.blogContent+'</div></div></div>'
 		                      ,yes: function(){
 		                    	  pass(id); 
 		          			  }

@@ -45,7 +45,8 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="<%=request.getContextPath()%>/teacher/teacherLogin.do?id=${teacher.teacherMobile}&&password=${teacher.teacherPassword}">CMS</a>
+			<a class="navbar-brand" id="pageTitle" onclick="returnTeacherIndex()"
+					href="#">CMS</a>
 		</div>
 		<form class="navbar-form navbar-right"
 			style="margin-right: 5%; float: left;">
@@ -54,6 +55,12 @@
 		</form>
 	</div>
 	</nav>
+	
+	<!-- 教师首页 -->
+			<form id="returnTeacherIndexForm" action="<%=request.getContextPath()%>/teacher/teacherLogin.do" method="post" style="display: none;">
+			  <input type="text" name="id" value="${teacher.teacherMobile}"/>
+			  <input type="text" name="password" value="${teacher.teacherPassword}"/>
+			</form>
 	
 	<textarea id="replace" rows="20" cols="20" style="display: none;"></textarea>
 
@@ -67,6 +74,10 @@
 						<li id="lookAtBlog" onclick="lookAtBlog()" class="">查看博客</li>
 					</ul>
 					<script type="text/javascript">
+					//返回首页
+					function returnTeacherIndex() {
+						$('#returnTeacherIndexForm').submit();
+					}
 					layui.use(['form'], function(){
 						var form = layui.form;
 						form.render(); 

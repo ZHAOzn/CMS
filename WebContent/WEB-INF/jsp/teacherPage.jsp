@@ -412,7 +412,23 @@ layui.use(['form'], function(){
              url: "<%=request.getContextPath()%>/studentInfo/insertStudentInfoByteacher.do",
 			success : function(data) {
 				if(data.result == true){
-					$('#handleMessageShow').show();
+					layui.use('layer', function(){
+		 	               var $ = layui.jquery, layer = layui.layer; 
+		   			      layer.open({
+		   			        type: 1
+		   			        ,offset: 'auto'
+		   			        ,id: 'layerDemo'+'auto'
+		   			        ,title: '成功'
+		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "处理成功！" +'</div>'
+		   			        ,btn: '关闭'
+		   			        ,btnAlign: 'c'
+		   			        ,skin: 'demo-class'
+		   			        ,shade: 0 
+		   			        ,yes: function(){
+		   			        	 layer.closeAll();
+		   			        }
+		   			      });
+		 	            });
 					setTimeout('myFunction()',1500);
 				}else{
 					layui.use('layer', function(){
@@ -957,7 +973,7 @@ function checkCourseShow2() {
 											    con += "<tr id='TD"+item.blogId+"'>";
 							        	        con += "<td style='text-align:center;'>" + index + "</td>";
 							        	        con += "<td style='text-align:center;'>" + item.belongTo + "</td>";
-							        	        con += "<td style='text-align:center;'><a style='color:#FF5722;' id='"+item.blogId+"' target='_blank' href='<%=request.getContextPath()%>/blog/getBlogTemValue.do?blogId="+item.blogId+"'>" + item.blogTitle + "</a></td>";
+							        	        con += "<td style='text-align:center;'><a style='color:#FF5722;' id='"+item.blogId+"' target='_blank' href='<%=request.getContextPath()%>/blog/getBlogTemValue.do?userId=${teacher.teacherMobile}&role=teacher&blogId="+item.blogId+"'>" + item.blogTitle + "</a></td>";
 							        	        con += "<td style='text-align:center;'>" + item.up + "</td>";
 							        	        con += "<td style='text-align:center;'>" + item.down + "</td>";
 							        	        con += "<td style='text-align:center;'>" + item.hotClick + "</td>";
@@ -983,6 +999,7 @@ function checkCourseShow2() {
 			<form id="PersonBlogForm" action="<%=request.getContextPath()%>/teacher/toPersonBlog.do" method="post" style="display: none;">
 			  <input type="text" name="userId" value="${teacher.teacherMobile}"/>
 			  <input type="text" name="userPassWord" value="${teacher.teacherPassword}"/>
+			  <input type="text" name="userRole" value="teacher"/>
 			</form>
 
 			<!-- 教师操作日志表 -->
@@ -1285,7 +1302,7 @@ function checkCourseShow2() {
         if(layEvent === 'detail'){ //查看
          getMessage(data.messageId);
         } else if(layEvent === 'del'){ //删除
-          layer.confirm('真的删除行么', function(index){
+          layer.confirm('真的删除该消息么？', function(index){
            
             //向服务端发送删除指令
    		 $.ajax({
@@ -1474,14 +1491,16 @@ function checkCourseShow2() {
 
 			<!-- 课程信息 -->
 			<div class="layui-form sessiontable" id="courseInfo" style="">
-				<table class="layui-table" lay-skin="line" lay-even style="text-align: center;">
+				<table class="layui-table"  lay-even style="text-align: center;">
 					<colgroup>
+						<col width="130">
+						<col width="200">
+						<col width="150">
 						<col width="150">
 						<col width="200">
-						<col width="200">
+						<col width="170">
 						<col width="150">
 						<col width="150">
-						<col width="300">
 					</colgroup>
 					<thead>
 						<tr>
@@ -1490,7 +1509,8 @@ function checkCourseShow2() {
 							<th style="text-align: center;">二维码信息</th>
 							<th style="text-align: center;">学年</th>
 							<th style="text-align: center;">班级</th>
-							<th colspan="3" style="text-align: center;">操作</th>
+							<th style="text-align: center;">事务</th>
+							<th colspan="2" style="text-align: center;">操作</th>
 						</tr>
 					</thead>
 					<tbody>

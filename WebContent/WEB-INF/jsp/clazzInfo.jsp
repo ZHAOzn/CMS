@@ -417,7 +417,9 @@ function yourFunction() {
  window.location.reload();
 }
 //查看班级里的学生信息
+var clazzIdTem;
 function aClick(clazzId) {
+	clazzIdTem = clazzId;
 	$.ajax({
         type: "GET",
         data: {
@@ -433,16 +435,129 @@ function aClick(clazzId) {
 			var dataObj = data.students;
 			 con = "";
 			 $.each(dataObj, function (index, item) {
-				    con += "<tr>";
+				con += "<tr id='Tr"+ item.studentRoNo +"'>";
        	        con += "<td style='text-align:center;'>" + item.studentRoNo + "</td>";
        	        con += "<td style='text-align:center;'>" + item.studentName + "</td>";
        	        con += "<td style='text-align:center;'>" + item.studentGender + "</td>";
        	        con += "<td style='text-align:center;'>" + item.studentMobile + "</td>";
        	        con += "<td style='text-align:center;'><img src=\'/ClassManageSys/studentPhoto/"+item.studentPhoto+"\'/></td>";
+       	        con += "<td id='ds' style='text-align:center;'><div class='site-demo-button' id='layerDemo'><a class='myDelete' id='"+ item.studentRoNo +"' onclick='forDeleteStudent(this.id)' data-method='notice' href='#' style='color:#5FB878'>" + "<i class='layui-icon' style='font-size: 30px; color: #1E9FFF;'>&#xe640;</i>  " + "</a></div></td>";
        	        con += "<tr/>";
        	    });
 			 $('#inClazzStudentInfoTable').html(con);
 			 $('#inClazzStudentInfoDiv').show();
+		},
+		error : function(data) {
+			alert("??");
+		},
+		dataType : "json",
+	});
+	layui.use([ 'element', 'layer' ],function() {
+		var element = layui.element, $ = layui.jquery, layer = layui.layer;
+		//触发事件
+		var active = {
+			notice : function() {
+				//示范一个公告层
+				layer
+						.open({
+							type : 1,
+							title : false //不显示标题栏
+							,
+							closeBtn : false,
+							area : '300px;',
+							shade : 0.8,
+							id : 'LAY_layuipro' //设定一个id，防止重复弹出
+							,
+							btn : [ '删除', '取消' ],
+							yes : function(index, layero) {
+								deleteStudent();
+								layer.closeAll();
+							},
+							btn2 : function(index, layero) {
+								//按钮【按钮二】的回调
+							},
+							btnAlign : 'c',
+							moveType : 1 //拖拽模式，0或者1
+							,
+							content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定移除该学生？</div>'
+						});
+			},
+			page : function() {
+				layer.open({
+					type : 1,
+					title : false,
+					closeBtn : 0,
+					area : '390px',
+					skin : 'layui-layer-lan', //没有背景色
+					shadeClose : true,
+					content : $('#target')
+				});
+			}
+
+		};
+
+		$('#layerDemo .myDelete').on(
+				'click',
+				function() {
+					var othis = $(this), method = othis
+							.data('method');
+					active[method] ? active[method].call(
+							this, othis) : '';
+				});
+
+		//监听导航点击
+		element.on('nav(demo)', function(elem) {
+			//console.log(elem)
+			layer.msg(elem.text());
+		});
+	});
+}
+//服务于删除学生
+var studentRoNoTem;
+function forDeleteStudent(studentRoNo) {
+	 studentRoNoTem = studentRoNo;
+}
+//删除某一学生
+function deleteStudent() {
+	$.ajax({
+        type: "GET",
+        data: {
+       	 "clazzId":clazzIdTem,
+       	 "studentRoNo":studentRoNoTem,
+         "courseId":${course.courseId}
+        },
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        url: "<%=request.getContextPath()%>/teacher/deleteStudent.do",
+		success : function(data) {
+			if(data.result == true){
+				var ccount = $('#studentCount').html();
+		        	$('#studentCount').html(ccount-1);
+				layui.use('layer', function(){
+	 	               var $ = layui.jquery, layer = layui.layer; 
+	   			      layer.open({
+	   			        type: 1
+	   			        ,offset: 'auto'
+	   			        ,id: 'layerDemo'+'auto'
+	   			        ,title: '成功'
+	   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "删除成功" +'</div>'
+	   			        ,btn: '关闭'
+	   			        ,btnAlign: 'c'
+	   			        ,skin: 'demo-class'
+	   			        ,shade: 0 
+	   			        ,yes: function(){
+	   			         //window.location.reload();
+	   			        layer.closeAll();
+	   			        }
+	   			      });
+	 	            });
+				$('#Tr' + studentRoNoTem).hide();
+			}else{
+				layui.use('layer', function() {
+					var $ = layui.jquery, layer = layui.layer;
+					layer.msg('出现问题，删除失败！');
+				});
+			}
 		},
 		error : function(data) {
 			alert("??");
@@ -2239,6 +2354,10 @@ function proclamation() {
 	 $('#addClassShow').hide();
 	 $('#proclamationDiv').show();
 }
+//返回首页
+function returnTeacherIndex() {
+	$('#returnTeacherIndexForm').submit();
+}
 </script>
 </head>
 <body>
@@ -2246,8 +2365,8 @@ function proclamation() {
 		<!-- 头部导航 -->
 		<div class="layui-header header header-demo">
 			<div class="layui-main">
-				<a class="CMSlogo" id="pageTitle"
-					href="<%=request.getContextPath()%>/teacher/teacherLogin.do?id=${teacher.teacherMobile}&&password=${teacher.teacherPassword}"><span
+				<a class="CMSlogo" id="pageTitle" onclick="returnTeacherIndex()"
+					href="#"><span
 					style="color: white; font-size: 25px;">CMS</span></a>
 				<ul class="layui-nav">
 					<li class="layui-nav-item"><a href="">签到Module</a></li>
@@ -2333,6 +2452,12 @@ function proclamation() {
 				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;">${course.courseName}：<span
 				id="getHeadLine">班级信息</span></span>
 			<hr class="layui-bg-cyan">
+			
+			<!-- 教师首页 -->
+			<form id="returnTeacherIndexForm" action="<%=request.getContextPath()%>/teacher/teacherLogin.do" method="post" style="display: none;">
+			  <input type="text" name="id" value="${teacher.teacherMobile}"/>
+			  <input type="text" name="password" value="${teacher.teacherPassword}"/>
+			</form>
 			
 			<!-- 发布公告 -->
 			<div class="site-text site-block" id="proclamationDiv" style="display: none; height: 400px;">
@@ -2573,11 +2698,12 @@ function proclamation() {
 			<br /> 班级人数：<span id="studentCount"></span>
 			<table class="layui-table" lay-even>
 				<colgroup>
-					<col width="200">
-					<col width="120">
+					<col width="150">
 					<col width="100">
-					<col width="200">
+					<col width="100">
+					<col width="150">
 					<col width="210">
+					<col width="80">
 				</colgroup>
 				<thead>
 					<tr>
@@ -2586,6 +2712,7 @@ function proclamation() {
 						<th style="text-align: center;">性别</th>
 						<th style="text-align: center;">手机</th>
 						<th style="text-align: center;">照片</th>
+						<th style="text-align: center;">操作</th>
 					</tr>
 				</thead>
 				<tbody id="inClazzStudentInfoTable">

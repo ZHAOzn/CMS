@@ -86,6 +86,11 @@ public class StudentInfoServiceImpl implements StudentInfoService{
 	public StudentInfo selectStudentInfoById(int studentInfoId) {
 		return studentInfoDaoImpl.selectStudentInfoById(studentInfoId);
 	}
+
+	@Override
+	public int deleteStudentInfoById(int studentInfoId) {
+		return studentInfoDaoImpl.deleteStudentInfoById(studentInfoId);
+	}
 	
 
 }

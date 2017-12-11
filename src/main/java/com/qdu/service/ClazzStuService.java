@@ -17,5 +17,7 @@ public interface ClazzStuService {
 	public ClazzStu selectClazzStuByCourse(String studentRoNo, int courseId);
 	
 	public List<ClazzStu> selectClazzStuListByCourse(int courseId);
+	
+	public int deleteClazzStuById(int clazzStuId);
 
 }

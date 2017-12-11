@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.mapping.MyBlogUpMapping">
+	<cache type="com.qdu.cache.RedisCache" />
+	<resultMap type="com.qdu.pojo.MyBlogUp" id="MyBlogUpResult">
+		<id property="myBlogUpId" column="MyBlogUpId" />
+		<result property="blogId" column="BlogId" />
+        <result property="userId" column="UserId" />
+	</resultMap>
+	
+	<insert id="insertMyBlogUp" parameterType="com.qdu.pojo.MyBlogUp">
+	  insert into 
+	  MyBlogUp(BlogId,UserId) 
+	  values(#{blogId},#{userId})
+	</insert>
+	
+	<select id="selectMyBlogUp" resultMap="MyBlogUpResult">
+	  select * from MyBlogUp where  BlogId = #{blogId} and UserId = #{userId}
+	</select>
+	
+	<delete id="deleteMyBlogUp">
+	  delete from MyBlogUp where MyBlogUpId = #{myBlogUpId}
+	</delete>
+	
+</mapper>

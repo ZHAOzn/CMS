@@ -54,7 +54,7 @@
 	     <li style="color: #FF5722;" >
 	     访问权限：<input type="radio" checked="checked" readonly="readonly" title="访问权限：" style="margin-left: 0;padding-left: 0;"/>
 	     <span id="thisBlogFifter">${myBlog.blogFifter}</span> </li>
-	   <li id="thisAuthor">  作者：${teacher.teacherName}</li>
+	   <li id="thisAuthor">  作者：${name}</li>
 	    <li id="thisBeLongTo"> 类别： ${myBlog.belongTo}</li>
 	     <li id="thisCreateTime"> 创建时间：${myBlog.createTime}</li>
 	     <li id="thisTarget"> 标签：${myBlog.blogTarget}</li>
@@ -67,15 +67,57 @@
 	   </div>
 	   <!-- 点赞啥的 -->
 	    <hr class="layui-bg-cyan">
-	    <div id="thisFooter" style="width: 100%; padding-left: 20%;padding-bottom: 100px;">
-	        <i class="layui-icon" style="font-size: 20px; color: #FF5722">&#xe6c6;</i><span id="thisUp">${myBlog.up}</span>  
-	        <i class="layui-icon" style="font-size: 20px; padding-left:20px;
-	         color: #FF5722;">&#xe6c5;</i>  <span id="thisDown">${myBlog.down}</span>  
+	    <div id="thisFooter" style="width: 100%; padding-left: 0;padding-bottom: 100px;">
+	        <a href="#" onclick="upMyBlog()"><i class="layui-icon" style="font-size: 20px; color: #FF5722">&#xe6c6;</i></a><span id="thisUp">${myBlog.up}</span>  
+	        <a href="#" onclick="downMyBlog()"><i class="layui-icon" style="font-size: 20px; padding-left:20px;
+	         color: #FF5722;">&#xe6c5;</i> </a> <span id="thisDown">${myBlog.down}</span>  
 	   </div>
 	
 	</div>
 
     <script>
+    //点赞
+    function upMyBlog() {
+    	$.ajax({
+            type: "GET",
+            data: {
+          	  "userId":${userId},
+              "blogId":${myBlog.blogId}
+            },
+            contentType: "application/json; charset=utf-8",
+            async: false,
+            dataType: "json",
+            url: "<%=request.getContextPath()%>/blog/upMyBlog.do",
+            success: function (data) {
+          	  $('#thisUp').html(data.myBlog2.up);
+          	  $('#thisDown').html(data.myBlog2.down);
+            },
+            error: function (data) {
+          	  alert("服务器异常");
+            }
+        });
+	}
+    //中指
+    function downMyBlog() {
+    	$.ajax({
+            type: "GET",
+            data: {
+          	  "userId":${userId},
+              "blogId":${myBlog.blogId}
+            },
+            contentType: "application/json; charset=utf-8",
+            async: false,
+            dataType: "json",
+            url: "<%=request.getContextPath()%>/blog/downMyBlog.do",
+            success: function (data) {
+          	  $('#thisUp').html(data.myBlog2.up);
+          	$('#thisDown').html(data.myBlog2.down);
+            },
+            error: function (data) {
+          	  alert("服务器异常");
+            }
+        });
+	}
 //刷新页面函数
 	 function yourFunction() {
 		 window.location.reload();

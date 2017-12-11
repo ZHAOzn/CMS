@@ -62,4 +62,10 @@ public class ClazzStuDaoImpl implements ClazzStuDao{
 		return SqlSessionFactory.openSession().selectList(statement, courseId);
 	}
 
+	@Override
+	public int deleteClazzStuById(int clazzStuId) {
+		String statement = "com.qdu.mapping.ClazzStuMapping.deleteClazzStuById";
+		return SqlSessionFactory.openSession().delete(statement, clazzStuId);
+	}
+
 }

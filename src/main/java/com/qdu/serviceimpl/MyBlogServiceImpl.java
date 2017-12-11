@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.qdu.dao.MyBlogDao;
 import com.qdu.pojo.MyBlog;
+import com.qdu.pojo.MyBlogUp;
 import com.qdu.service.MyBlogService;
 
 @Service
@@ -58,6 +59,46 @@ public class MyBlogServiceImpl implements MyBlogService{
 	@Override
 	public int updateBlogofVerify(MyBlog myBlog) {
 		return myBlogDaoImpl.updateBlogofVerify(myBlog);
+	}
+
+	@Override
+	public List<MyBlog> selectMyBlogByNoFilter() {
+		return myBlogDaoImpl.selectMyBlogByNoFilter();
+	}
+
+	@Override
+	public List<MyBlog> studentSearchBlog(String blogContent, String belongTo) {
+		return myBlogDaoImpl.studentSearchBlog(blogContent, belongTo);
+	}
+
+	@Override
+	public int updateBlogofUp(MyBlog myBlog) {
+		return myBlogDaoImpl.updateBlogofUp(myBlog);
+	}
+
+	@Override
+	public int updateBlogofDown(MyBlog myBlog) {
+		return myBlogDaoImpl.updateBlogofDown(myBlog);
+	}
+
+	@Override
+	public int updateBlogofHotClick(MyBlog myBlog) {
+		return myBlogDaoImpl.updateBlogofHotClick(myBlog);
+	}
+
+	@Override
+	public int insertMyBlogUp(MyBlogUp myBlogUp) {
+		return  myBlogDaoImpl.insertMyBlogUp(myBlogUp);
+	}
+
+	@Override
+	public MyBlogUp selectMyBlogUp(String userId, int blogId) {
+		return myBlogDaoImpl.selectMyBlogUp(userId, blogId);
+	}
+
+	@Override
+	public int deleteMyBlogUp(int myBlogUpId) {
+		return myBlogDaoImpl.deleteMyBlogUp(myBlogUpId);
 	}
 	
 	

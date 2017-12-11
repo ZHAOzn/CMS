@@ -30,8 +30,22 @@
 	<select id="selectMyBlogByConCat" resultMap="MyBlogResult">
 	   select * from MyBlog where BlogContent like concat('%', #{blogTitle},'%') 
 	   And BlogFifter = '公开' 
-	   And Verify = '审核完成'
+	   And Verify = '审核通过'
 	   order by BlogId desc
+	</select>
+	
+	<select id="selectMyBlogByNoFilter" resultMap="MyBlogResult">
+	   select * from MyBlog where  BlogFifter = '公开' 
+	   And Verify = '审核通过'
+	   order by BlogId desc
+	</select>
+	
+	<select id="studentSearchBlog" resultMap="MyBlogResult" parameterType="HashMap">
+	  select * from MyBlog where BlogContent like concat('%', #{blogContent},'%') 
+	   And BlogFifter = '公开' 
+	   And Verify = '审核通过'
+	   And BelongTo = #{belongTo}
+	   order by hotClick desc
 	</select>
 	
 	<select id="selectMyBlogByVerify" resultMap="MyBlogResult">
@@ -49,6 +63,24 @@
 	<update id="updateBlogofVerify" parameterType="com.qdu.pojo.MyBlog">
 	  update MyBlog set
 	  Verify = #{verify}
+	  where BlogId = #{blogId}
+	</update>
+	
+	<update id="updateBlogofUp" parameterType="com.qdu.pojo.MyBlog">
+	  update MyBlog set
+	  Up = #{up}
+	  where BlogId = #{blogId}
+	</update>
+	
+	<update id="updateBlogofDown" parameterType="com.qdu.pojo.MyBlog">
+	  update MyBlog set
+	  Down = #{down}
+	  where BlogId = #{blogId}
+	</update>
+	
+	<update id="updateBlogofHotClick" parameterType="com.qdu.pojo.MyBlog">
+	  update MyBlog set
+	  HotClick = #{hotClick}
 	  where BlogId = #{blogId}
 	</update>
 	

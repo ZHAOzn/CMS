@@ -33,6 +33,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.qdu.aop.SystemLog;
+import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Course;
 import com.qdu.pojo.Feedback;
 import com.qdu.pojo.FilePackage;
@@ -44,6 +45,7 @@ import com.qdu.pojo.Student;
 import com.qdu.pojo.StudentInfo;
 import com.qdu.pojo.Teacher;
 import com.qdu.service.ClazzService;
+import com.qdu.service.ClazzStuService;
 import com.qdu.service.CourseService;
 import com.qdu.service.FilePackageService;
 import com.qdu.service.LeaveRecordService;
@@ -83,6 +85,8 @@ public class TeacherController {
 	private StudentInfoService studentInfoServiceImpl;
 	@Autowired 
 	private MyBlogService myBlogServiceImpl;
+	@Autowired 
+	private ClazzStuService clazzStuServiceImpl;
 
 	// 教师登录准备
 	@RequestMapping(value = "/forTeacherLogin.do")
@@ -98,7 +102,7 @@ public class TeacherController {
 
 	// 教师登录
 	@SystemLog(module = "教师", methods = "日志管理-登录/刷新")
-	@RequestMapping(value = "/teacherLogin.do")
+	@RequestMapping(value = "/teacherLogin.do",method = RequestMethod.POST)
 	public String teacherLogin(HttpServletRequest request,String id, String password, ModelMap map) {
 		if (id == null) {
 			id = request.getParameter("teacherId");
@@ -518,16 +522,21 @@ public class TeacherController {
 	}
 	//查看教师自己的博客
 	@RequestMapping(value = "/toPersonBlog.do",method = RequestMethod.POST)
-	public String toPersonBlog(String userId,String userPassWord,ModelMap map,HttpServletRequest request,HttpServletResponse response){
-		Teacher teacher = teacherServiceImpl.selectTeacherByEmail(userId);
-		if(userPassWord != null && userPassWord.equals(teacher.getTeacherPassword())){
-			map.put("teacher", teacher);
-			List<MyBlog> myBlogs = myBlogServiceImpl.selectMyBlogByUserId(userId);
-			map.put("myBlogs", myBlogs);
-			return "personBlog";
+	public String toPersonBlog(String userRole,String userId,String userPassWord,ModelMap map,HttpServletRequest request,HttpServletResponse response){
+		if(userRole.equals("teacher")){
+			Teacher teacher = teacherServiceImpl.selectTeacherByEmail(userId);
+			if(userPassWord != null && userPassWord.equals(teacher.getTeacherPassword())){
+				map.put("teacher", teacher);
+				List<MyBlog> myBlogs = myBlogServiceImpl.selectMyBlogByUserId(userId);
+				map.put("myBlogs", myBlogs);
+				return "personBlog";
+			}else {
+				return "failer";
+			}	
 		}else {
 			return "failer";
-		}		
+		}	
+			
 	}
 	
 	// 个人博客图片上传
@@ -641,8 +650,24 @@ public class TeacherController {
 			return map;
 		}
 		
-		
-		
+	//从班级列表里删除学生
+	@RequestMapping(value = "/deleteStudent.do")
+	@ResponseBody
+	public Map<String, Object> deleteStudent(String studentRoNo,int clazzId,int courseId){
+		Map<String, Object> map = new HashMap<>();
+		StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoByMany(studentRoNo, courseId);
+		ClazzStu clazzStu = clazzStuServiceImpl.selectClazzStuByCourse(studentRoNo, courseId);
+		int tem = clazzStuServiceImpl.deleteClazzStuById(clazzStu.getClazzStuId());
+		int tem2 = studentInfoServiceImpl.deleteStudentInfoById(studentInfo.getStudentInfoId());
+		if((tem+tem2) > 1){
+			map.put("result", true);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}	
+
 		
 		
 		
