@@ -13,6 +13,10 @@
      select * from FilePackage where CourseId = #{courseId} order by FileId desc
      </select>
      
+     <select id="selectFile" resultMap="FilePackageResult">
+     select * from FilePackage where FileName LIKE  CONCAT('%',#{fileName},'%') order by FileId  desc
+     </select>
+     
      <insert id="insertFile" parameterType="com.qdu.pojo.FilePackage">
      insert into 
      FilePackage(CourseId,FileName,FileType,CreateTime) 

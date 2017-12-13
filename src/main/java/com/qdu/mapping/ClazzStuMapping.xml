@@ -75,5 +75,10 @@
 		delete from
 		ClazzStu where ClazzId = #{clazzd}
 	</delete>
+	
+	<delete id="deleteClazzStuById" parameterType="int">
+		delete from
+		ClazzStu where ClazzStuId = #{clazzStuId}
+	</delete>
 
 </mapper>

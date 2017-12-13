@@ -26,5 +26,10 @@ public class FilePackageServiceImpl implements FilePackageService{
 		return filePackageDaoImpl.selectFileByCourseId(courseId);
 	}
 
+	@Override
+	public List<FilePackage> selectFile(String fileName) {
+		return filePackageDaoImpl.selectFile(fileName);
+	}
+
 	
 }

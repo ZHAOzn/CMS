@@ -25,6 +25,12 @@ public class FilePackageDaoImpl implements FilePackageDao{
 		return sqlSessionFactory.openSession().selectList(statement, courseId);
 	}
 
+	@Override
+	public List<FilePackage> selectFile(String fileName) {
+		String statement = "com.qdu.mapping.FilePackageMapping.selectFile";
+		return sqlSessionFactory.openSession().selectList(statement,fileName);
+	}
+
 	
 	
 

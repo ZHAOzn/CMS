@@ -34,5 +34,7 @@ public interface StudentInfoDao {
     public int updateStudentInfoAboutLateOrLeave(int comeLate,int leaveEarlier,int studentInfoId);
     
     public StudentInfo selectStudentInfoById(int studentInfoId);
+    
+    public int deleteStudentInfoById(int studentInfoId);
 
 }

@@ -10,4 +10,5 @@ public interface FilePackageService {
 	
 	public List<FilePackage> selectFileByCourseId(int courseId);
 
+	public List<FilePackage> selectFile(String fileName);
 }

@@ -19,11 +19,16 @@ response.sendRedirect(request.getContextPath() + "/index.jsp");
 <link type="text/css" rel="stylesheet"
 	href="<%=request.getContextPath()%>/layui/css/layui.css">
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
+<script src="<%=request.getContextPath()%>/layui/mods/index.js"></script>
 <title>班级信息</title>
 
 
 
 <script type="text/javascript">
+layui.use(['form'], function(){
+var form = layui.form;
+
+});
 
 var examinationId;
 //修改班级信息
@@ -148,8 +153,10 @@ function closeValidateCode() {
 	$("#validateCode").hide();
 }
 //二维码要用到的随机数
+var run = true;
 function hello(){ 
-	 $.ajax({
+	if(run){
+	$.ajax({
          type: "GET",
          data: {
          },
@@ -166,7 +173,8 @@ function hello(){
          },
      });
 	 window.setTimeout("closeValidateCode()",30000);
-	} 
+	}
+} 
 //倒计时
 var maxtime = 10;
 function CountDown(){  
@@ -195,10 +203,12 @@ function showQrImg() {
          async: false,
          url: "<%=request.getContextPath()%>/course/getQrImg.do",
          success: function (data) {
+        	 run = true;
         	 var url = "/ClassManageSys/qrImg/" + data.url + ".gif";
         	 var imgPre = document.getElementById("qrImg");
 //         	 imgPre.style.display = "block";
              imgPre.src = url;
+             maxtime = 10;
              setInterval("CountDown()",1000);
              //5s刷新
              setInterval('YesConfirm()', 5000);
@@ -212,42 +222,45 @@ function showQrImg() {
 }
 //获取签到成功学生列表
 function YesConfirm() {
-	 $.ajax({
-         type: "GET",
-         data: {
-        	 "courseId": ${course.courseId}
-         },
-         contentType: "application/json; charset=utf-8",
-         dataType: "json",
-         async: true,
-         url: "<%=request.getContextPath()%>/student/getTemStudent.do",
-         success: function (data) {
-        	    var dataObj = data.clazzStuss, //返回的data为json格式的数据
-        	    con =  '\
-        	    		<caption>当前签到进度</caption>\
-        				<tr>\
-        					<th>学号</th>\
-        					<th>姓名</th>\
-        					<th>班级</th>\
-        				</tr>\
-        				';
-        	    $.each(dataObj, function (index, item) {  
-        	        con += "<tr>";
-        	        con += "<td>" + item.student.studentRoNo + "</td>";
-        	        con += "<td>" + item.student.studentName + "</td>";
-        	        con += "<td>" + item.clazz.clazzName + "</td>";
-        	        con += "<tr/>";
-        	    });
-        	        //可以在控制台打印一下看看，这是拼起来的标签和数据
-        	        //把内容入到这个div中即完成
-        	        $('#showStudents').show();
-        	    $("#showStudents").html(con);
-         },
-         error: function (data) { 
-             console.log(data);
-             alert("服务器异常！");
-         },
-     });
+	if(run){
+		$.ajax({
+	         type: "GET",
+	         data: {
+	        	 "courseId": ${course.courseId}
+	         },
+	         contentType: "application/json; charset=utf-8",
+	         dataType: "json",
+	         async: true,
+	         url: "<%=request.getContextPath()%>/student/getTemStudent.do",
+	         success: function (data) {
+	        	    var dataObj = data.clazzStuss, //返回的data为json格式的数据
+	        	    con =  '\
+	        	    		<caption>当前签到进度</caption>\
+	        				<tr>\
+	        					<th>学号</th>\
+	        					<th>姓名</th>\
+	        					<th>班级</th>\
+	        				</tr>\
+	        				';
+	        	    $.each(dataObj, function (index, item) {  
+	        	        con += "<tr>";
+	        	        con += "<td>" + item.student.studentRoNo + "</td>";
+	        	        con += "<td>" + item.student.studentName + "</td>";
+	        	        con += "<td>" + item.clazz.clazzName + "</td>";
+	        	        con += "<tr/>";
+	        	    });
+	        	        //可以在控制台打印一下看看，这是拼起来的标签和数据
+	        	        //把内容入到这个div中即完成
+	        	        $('#showStudents').show();
+	        	    $("#showStudents").html(con);
+	         },
+	         error: function (data) { 
+	             console.log(data);
+	             alert("服务器异常！");
+	         },
+	     });
+	}
+	 
 }
 //提交签到表
 function submitSignIn() {
@@ -274,6 +287,7 @@ function submitSignIn() {
 	    			        ,btnAlign: 'c' //按钮居中
 	    			        ,shade: 0 //不显示遮罩
 	    			        ,yes: function(){
+	    			        	run = false;
 	    			        	layer.closeAll();
 	    			        	window.location.reload();
 	    			        }
@@ -298,6 +312,8 @@ function getPrivateData() {
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#studentExam').hide();
 	 $('#scoreFormList').hide();
+	 $('#proclamationDiv').hide();
+	 $('#homeWork').hide();  
 	 $('#upLoadShow').show();
 	 
 	 $.ajax({
@@ -337,9 +353,11 @@ function getAddClass() {
 	 $('#upLoadShow').hide();
 	 $('#clazzInfoShow').hide();
 	 $('#addExaminationDiv').hide();
+	 $('#homeWork').hide();
 	 $('#addQuestionsDiv').hide();
 	 $('#studentExam').hide();
 	 $('#inClazzStudentInfoDiv').hide();
+	 $('#proclamationDiv').hide();
 	 $('#scoreFormList').hide();
 	 $('#addClassShow').show();
 }
@@ -351,12 +369,14 @@ function classInfo() {
 	 $('#otherModel').hide();
 	 $('#upLoadShow').hide();
 	 $('#addClassShow').hide();
+	 $('#homeWork').hide();  
 	 $('#addExaminationDiv').hide();
 	 $('#addQuestionsDiv').hide();
 	 $('#addClassShow').hide();
 	 $('#studentExam').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#scoreFormList').hide();
+	 $('#proclamationDiv').hide();
 	 $('#clazzInfoShow1').show();
 	 $('#clazzInfoShow').show();
 	 
@@ -409,7 +429,9 @@ function yourFunction() {
  window.location.reload();
 }
 //查看班级里的学生信息
+var clazzIdTem;
 function aClick(clazzId) {
+	clazzIdTem = clazzId;
 	$.ajax({
         type: "GET",
         data: {
@@ -425,16 +447,129 @@ function aClick(clazzId) {
 			var dataObj = data.students;
 			 con = "";
 			 $.each(dataObj, function (index, item) {
-				    con += "<tr>";
+				con += "<tr id='Tr"+ item.studentRoNo +"'>";
        	        con += "<td style='text-align:center;'>" + item.studentRoNo + "</td>";
        	        con += "<td style='text-align:center;'>" + item.studentName + "</td>";
        	        con += "<td style='text-align:center;'>" + item.studentGender + "</td>";
        	        con += "<td style='text-align:center;'>" + item.studentMobile + "</td>";
        	        con += "<td style='text-align:center;'><img src=\'/ClassManageSys/studentPhoto/"+item.studentPhoto+"\'/></td>";
+       	        con += "<td id='ds' style='text-align:center;'><div class='site-demo-button' id='layerDemo'><a class='myDelete' id='"+ item.studentRoNo +"' onclick='forDeleteStudent(this.id)' data-method='notice' href='#' style='color:#5FB878'>" + "<i class='layui-icon' style='font-size: 30px; color: #1E9FFF;'>&#xe640;</i>  " + "</a></div></td>";
        	        con += "<tr/>";
        	    });
 			 $('#inClazzStudentInfoTable').html(con);
 			 $('#inClazzStudentInfoDiv').show();
+		},
+		error : function(data) {
+			alert("??");
+		},
+		dataType : "json",
+	});
+	layui.use([ 'element', 'layer' ],function() {
+		var element = layui.element, $ = layui.jquery, layer = layui.layer;
+		//触发事件
+		var active = {
+			notice : function() {
+				//示范一个公告层
+				layer
+						.open({
+							type : 1,
+							title : false //不显示标题栏
+							,
+							closeBtn : false,
+							area : '300px;',
+							shade : 0.8,
+							id : 'LAY_layuipro' //设定一个id，防止重复弹出
+							,
+							btn : [ '删除', '取消' ],
+							yes : function(index, layero) {
+								deleteStudent();
+								layer.closeAll();
+							},
+							btn2 : function(index, layero) {
+								//按钮【按钮二】的回调
+							},
+							btnAlign : 'c',
+							moveType : 1 //拖拽模式，0或者1
+							,
+							content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定移除该学生？</div>'
+						});
+			},
+			page : function() {
+				layer.open({
+					type : 1,
+					title : false,
+					closeBtn : 0,
+					area : '390px',
+					skin : 'layui-layer-lan', //没有背景色
+					shadeClose : true,
+					content : $('#target')
+				});
+			}
+
+		};
+
+		$('#layerDemo .myDelete').on(
+				'click',
+				function() {
+					var othis = $(this), method = othis
+							.data('method');
+					active[method] ? active[method].call(
+							this, othis) : '';
+				});
+
+		//监听导航点击
+		element.on('nav(demo)', function(elem) {
+			//console.log(elem)
+			layer.msg(elem.text());
+		});
+	});
+}
+//服务于删除学生
+var studentRoNoTem;
+function forDeleteStudent(studentRoNo) {
+	 studentRoNoTem = studentRoNo;
+}
+//删除某一学生
+function deleteStudent() {
+	$.ajax({
+        type: "GET",
+        data: {
+       	 "clazzId":clazzIdTem,
+       	 "studentRoNo":studentRoNoTem,
+         "courseId":${course.courseId}
+        },
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        url: "<%=request.getContextPath()%>/teacher/deleteStudent.do",
+		success : function(data) {
+			if(data.result == true){
+				var ccount = $('#studentCount').html();
+		        	$('#studentCount').html(ccount-1);
+				layui.use('layer', function(){
+	 	               var $ = layui.jquery, layer = layui.layer; 
+	   			      layer.open({
+	   			        type: 1
+	   			        ,offset: 'auto'
+	   			        ,id: 'layerDemo'+'auto'
+	   			        ,title: '成功'
+	   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "删除成功" +'</div>'
+	   			        ,btn: '关闭'
+	   			        ,btnAlign: 'c'
+	   			        ,skin: 'demo-class'
+	   			        ,shade: 0 
+	   			        ,yes: function(){
+	   			         //window.location.reload();
+	   			        layer.closeAll();
+	   			        }
+	   			      });
+	 	            });
+				$('#Tr' + studentRoNoTem).hide();
+			}else{
+				layui.use('layer', function() {
+					var $ = layui.jquery, layer = layui.layer;
+					layer.msg('出现问题，删除失败！');
+				});
+			}
 		},
 		error : function(data) {
 			alert("??");
@@ -455,12 +590,14 @@ function TocorrectExamination() {
 	 $('#addClassShow').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#clazzInfoShow1').hide();
+	 $('#homeWork').hide();  
 	 $('#clazzInfoShow').hide();
 	 $('#packScore').hide();
 	 $('#ShortAnswerScore').hide();
 	 $('#studentScoreList').hide();
 	 $('#studentScoreListH3').hide();
 	 $('#studentExam').show();
+	 $('#proclamationDiv').hide();
 	 $('#scoreFormList').hide();
 	 $('#PreExaminationList').show();
 	 
@@ -516,7 +653,7 @@ function getStudentExamList(id) {
 	            con += "<td style='text-align:center;'>" + item.singleSelectionValue + "</td>";
                 con += "<td style='text-align:center;'>" + item.moreSelectionValue + "</td>";
        	        con += "<td style='text-align:center;'>" + item.judgeValue + "</td>";
-       	        con += "<td style='text-align:center;'><a style='color:#FF5722;' id='P"+item.scoreId+"' onclick='getStudentPackList(this.id)' href='#'>" + item.packValue + "</a></td>";
+       	        con += "<td style='text-align:center;'><a style='color:#FF5722;' id='P"+item.scoreId+"' onclick='getStudentPackList(this.id)' href='#'>" + item.packValue + "&nbsp;<i class='layui-icon' style='font-size: 14px; color: #1E9FFF;'>&#xe62a;</i>  </a></td>";
        	        con += "<td style='text-align:center;'><a id='S"+item.scoreId+"'>" + item.shortAnswerValue + "</a></td>";
        	        con += "<td style='text-align:center;'>" + item.totalValue + "</td>";
        	        con += "<td style='text-align:center;'>" + item.scoreStatus + "</td>";
@@ -535,7 +672,7 @@ function getStudentExamList(id) {
 		dataType : "json",
 	});
 }
-//填空打分
+//填空/简答打分
 function getStudentPackList(id) {
 	window.location.reload;
 	$.ajax({
@@ -581,7 +718,22 @@ function getStudentPackList(id) {
 			 $('#ShortAnswerScore').show();
 		},
 		error : function(data) {
-			alert("??");
+			layui.use('layer', function(){
+	              var $ = layui.jquery, layer = layui.layer; 
+				      layer.open({
+				        type: 1
+				        ,offset: 'auto' 
+				        ,id: 'layerDemo'+'auto'
+				        ,title: '错误'
+				        ,content: '<div style="padding: 20px 100px; color:#FF5722;">'+ "该考生考试非正常结束." +'</div>'
+				        ,btn: '关闭'
+				        ,btnAlign: 'c' 
+				        ,shade: 0 
+				        ,yes: function(){
+				        	layer.closeAll();
+				        }
+				      });
+	           });
 		},
 		dataType : "json",
 	});
@@ -764,6 +916,8 @@ function scoreFormList() {
 	 $('#upLoadShow').hide();
 	 $('#studentExam').hide();
 	 $('#clazzInfoShow').hide();
+	 $('#proclamationDiv').hide();
+	 $('#homeWork').hide();  
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#addClassShow').hide();
 	 $('#addExaminationForm').hide();
@@ -853,6 +1007,8 @@ function addExamination() {
 	 $('#signModel').hide();
 	 $('#otherModel').hide();
 	 $('#upLoadShow').hide();
+	 $('#proclamationDiv').hide();
+	 $('#homeWork').hide();  
 	 $('#studentExam').hide();
 	 $('#clazzInfoShow').hide();
 	 $('#inClazzStudentInfoDiv').hide();
@@ -962,26 +1118,23 @@ function teacherAddExamination() {
 	        url: "<%=request.getContextPath()%>/exam/addExamination.do",
 			success : function(data) {
 				if(data.result == true){
-					layui.use('layer', function(){ //独立版的layer无需执行这一句
+					layui.use('layer', function(){
 		  	               var $ = layui.jquery, layer = layui.layer; 
-		  	             //触发事件
 		    			      layer.open({
 		    			        type: 1
-		    			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-		    			        ,id: 'layerDemo'+'auto' //防止重复弹出
+		    			        ,offset: 'auto'
+		    			        ,id: 'layerDemo'+'auto'
 		    			        ,title: '成功'
 		    			        ,content: '<div style="padding: 20px 100px;">'+ "添加试卷成功." +'</div>'
 		    			        ,btn: '关闭'
-		    			        ,btnAlign: 'c' //按钮居中
-		    			        ,shade: 0 //不显示遮罩
+		    			        ,btnAlign: 'c'
+		    			        ,shade: 0
 		    			        ,yes: function(){
 		    			        	setTimeout('FirstFunction()',500);
 		    			        	layer.closeAll();
 		    			        }
 		    			      });
 		  	            });
-					//$('#afterAddExamination').show();
-	                
 				}else {
 					layui.use('layer', function(){ //独立版的layer无需执行这一句
 		  	               var $ = layui.jquery, layer = layui.layer; 
@@ -1953,6 +2106,9 @@ function createQuestion(id) {
         async: false,
         url: "<%=request.getContextPath()%>/exam/selectExaminationByMyId.do",
 		success : function(data) {
+			layui.use(['form'], function(){
+				var form = layui.form;
+				});
 			if(data.result == true){
 				$('#examinationIddd').val(data.examination.examinationID);
 				$('#examinationTitle').html(data.examination.examinationName);
@@ -2195,7 +2351,42 @@ function teacherChangeExamination() {
 					});
 	}
 }
-
+//发布公告
+function proclamation() {
+	 $('#getHeadLine').html("发布公告(消息+邮箱)");
+	 $('#signModel').hide();
+	 $('#otherModel').hide();
+	 $('#upLoadShow').hide();
+	 $('#clazzInfoShow').hide();
+	 $('#addExaminationDiv').hide();
+	 $('#addQuestionsDiv').hide();
+	 $('#studentExam').hide();
+	 $('#inClazzStudentInfoDiv').hide();
+	 $('#scoreFormList').hide();
+	 $('#addClassShow').hide();
+	 $('#homeWork').hide();  
+	 $('#proclamationDiv').show();
+}
+//课后作业
+function afterClassHomeWork() {
+	 $('#getHeadLine').html("课后作业");
+	 $('#signModel').hide();
+	 $('#otherModel').hide();
+	 $('#upLoadShow').hide();
+	 $('#clazzInfoShow').hide();
+	 $('#addExaminationDiv').hide();
+	 $('#addQuestionsDiv').hide();
+	 $('#studentExam').hide();
+	 $('#inClazzStudentInfoDiv').hide();
+	 $('#scoreFormList').hide();
+	 $('#addClassShow').hide();
+	 $('#proclamationDiv').hide();
+	 $('#homeWork').show();      
+}
+//返回首页
+function returnTeacherIndex() {
+	$('#returnTeacherIndexForm').submit();
+}
 </script>
 </head>
 <body>
@@ -2203,8 +2394,8 @@ function teacherChangeExamination() {
 		<!-- 头部导航 -->
 		<div class="layui-header header header-demo">
 			<div class="layui-main">
-				<a class="CMSlogo" id="pageTitle"
-					href="<%=request.getContextPath()%>/teacher/teacherLogin.do?id=${teacher.teacherMobile}&&password=${teacher.teacherPassword}"><span
+				<a class="CMSlogo" id="pageTitle" onclick="returnTeacherIndex()"
+					href="#"><span
 					style="color: white; font-size: 25px;">CMS</span></a>
 				<ul class="layui-nav">
 					<li class="layui-nav-item"><a href="">签到Module</a></li>
@@ -2232,7 +2423,7 @@ function teacherChangeExamination() {
 								<a id="afterClass" onclick="afterClassHomeWork()" href="#">课后作业</a>
 							</dd>
 							<dd>
-								<a id="" href="#">发布公告（待定）</a>
+								<a id="proclamation" onclick=" proclamation()" href="#">发布公告</a>
 							</dd>
 						</dl></li>
 					<li class="layui-nav-item layui-nav-itemed"><a
@@ -2272,33 +2463,191 @@ function teacherChangeExamination() {
 
 		<!-- 内容 -->
 		<div class="layui-body site-demo">
+		  <!-- 反馈工具 -->
+			<script>
+			layui.cache.page = 'jie';
+			layui.cache.user = {
+			 
+			};
+			layui.config({
+			  version: "3.0.0"
+			  ,base: '<%=request.getContextPath()%>/layui/mods/'
+			}).extend({
+				fly : 'index'
+			}).use('fly');
+			</script>
 
 			<br><span
 				style="margin-left: 5%; color: #c2c2c2; font-style: oblique;">${course.courseName}：<span
 				id="getHeadLine">班级信息</span></span>
 			<hr class="layui-bg-cyan">
 			
-			<!-- 工具 -->
-			<ul class="layui-fixbar">
-			<li class="layui-icon" onclick="" lay-type="bar1" style=""><i class="layui-icon" style="font-size: 30px; color:white;background-color:#009688;">&#xe606;</i></li>
-			<li id="to_top" onclick="returnTitle()" class="layui-icon layui-fixbar-top" lay-type="top" style="display: list-item;"><i class="layui-icon" style="font-size: 30px; color:white;background-color:#009688;">&#xe604;</i></li>
-			</ul>
+			<!-- 教师首页 -->
+			<form id="returnTeacherIndexForm" action="<%=request.getContextPath()%>/teacher/teacherLogin.do" method="post" style="display: none;">
+			  <input type="text" name="id" value="${teacher.teacherMobile}"/>
+			  <input type="text" name="password" value="${teacher.teacherPassword}"/>
+			</form>
 			
-			<script type="text/javascript">
-			 layui.use('util', function(){
-				  var util = layui.util;
-				  //执行
-				  util.fixbar({
-				    bar1: true
-				    ,click: function(type){
-				      console.log(type);
-				      if(type === 'bar1'){
-				        alert('点击了bar1')
-				      }
-				    }
-				  });
-				}); 
-			</script>
+			<!-- 发布公告 -->
+			<div class="site-text site-block" id="proclamationDiv" style="display: none; height: 400px;">
+			<form class="layui-form">
+			  <div class="layui-form-item layui-form-text" style="margin-top: 50px;">
+                 <label class="layui-form-label" style="width: 100%;text-align: left;">公告：<span style="color: #FF5722;">@该课程下所有学生</span></label>
+                      <div class="layui-input-block" style="margin-left: 0;">
+                           <textarea id="proclamationNowContent" placeholder="请输入内容" class="layui-textarea" style="height: 150px;"></textarea>
+                       </div>
+                 </div>
+                 
+				<div style="height: 60px; width: 300px;">
+				    <input class="layui-btn" style="margin-left: 14%;"
+								onclick="proclamationNowX()" type="button" value="即刻发布" />
+						<button style=" margin-left: 14%; width: 100px"
+						type="reset" class="layui-btn layui-btn-primary">重置</button>
+					<br /> <br /> <br />
+					<script type="text/javascript">
+					function proclamationNowX() {
+						   if($('#proclamationNowContent').val() != ""){
+							   $.ajax({
+							         type: "GET",
+							         data: {
+							        	 "teacherMobile":${teacher.teacherMobile},
+							        	 "courseId":${course.courseId},
+							        	 "messageContent":$('#proclamationNowContent').val()
+							         },
+							         contentType: "application/json; charset=utf-8",
+							         async: true,
+							         url: "<%=request.getContextPath()%>/teacher/addProclamation.do",
+									success : function(data) {
+										if(data.result == true){
+											layui.use('layer', function(){
+									              var $ = layui.jquery, layer = layui.layer; 
+												      layer.open({
+												        type: 1
+												        ,offset: 'auto' 
+												        ,id: 'layerDemo'+'auto'
+												        ,title: '成功'
+												        ,content: '<div style="padding: 20px 100px; color:#FF5722;">'+ "广播成功" +'</div>'
+												        ,btn: '关闭'
+												        ,btnAlign: 'c' 
+												        ,shade: 0 
+												        ,yes: function(){
+												        	layer.closeAll();
+												        }
+												      });
+									           });
+											$('#proclamationNowContent').val("");
+										}else {
+											layer.msg('广播失败，暂无学生接收~');
+										}
+									},
+									error : function(data) {
+									},
+									dataType : "json",
+								});
+						   }else {
+							   layer.msg('内容不可为空哦~');
+						}
+							
+						 }
+					   
+					</script>
+				  </div>
+			    
+              </form>
+		</div>
+		
+		
+		<!-- 发布作业 -->
+			<div class="site-text site-block" id="homeWork" style="display: none; height: 400px;">
+			<form class="layui-form">
+			  <div class="layui-form-item layui-form-text" style="margin-top: 50px;">
+                 <label class="layui-form-label" style="width: 100%;text-align: left;">课后作业：<span style="color: #FF5722;">@该课程下所有学生</span></label>
+                 
+                 <div class="layui-form-item">
+				<label class="layui-form-label" for="datetime" style="text-align: left;">完成时间：</label>
+				<div class="layui-input-block">
+					<input id="homeWordDatetime" type="text" name="datetime" required style="width: 50%;"
+						lay-verify="required" autocomplete="off"
+						class="layui-input">
+				</div>
+			   </div>
+                      <div class="layui-input-block" style="margin-left: 0;">
+                           <textarea id="homeWorkContent" placeholder="请输入内容" class="layui-textarea" style="height: 150px;"></textarea>
+                       </div>
+                 </div>
+                 
+				<div style="height: 60px; width: 300px;">
+				    <input class="layui-btn" style="margin-left: 14%;"
+								onclick="proclamationNowHome()" type="button" value="布置作业" />
+						<button style=" margin-left: 14%; width: 100px"
+						type="reset" class="layui-btn layui-btn-primary">重置</button>
+					<br /> <br /> <br />
+					<script type="text/javascript">
+					function proclamationNowHome() {
+						   if($('#homeWorkContent').val() != ""){
+							   $.ajax({
+							         type: "GET",
+							         data: {
+							        	 "teacherMobile":${teacher.teacherMobile},
+							        	 "courseId":${course.courseId},
+							        	 "homeWorkContent":$('#homeWorkContent').val(),
+							        	 "homeWordDatetime":$('#homeWordDatetime').val()
+							         },
+							         contentType: "application/json; charset=utf-8",
+							         async: true,
+							         url: "<%=request.getContextPath()%>/teacher/pushHomeWork.do",
+									success : function(data) {
+										if(data.result == true){
+											layui.use('layer', function(){
+									              var $ = layui.jquery, layer = layui.layer; 
+												      layer.open({
+												        type: 1
+												        ,offset: 'auto' 
+												        ,id: 'layerDemo'+'auto'
+												        ,title: '成功'
+												        ,content: '<div style="padding: 20px 100px; color:#FF5722;">'+ "作业布置完成" +'</div>'
+												        ,btn: '关闭'
+												        ,btnAlign: 'c' 
+												        ,shade: 0 
+												        ,yes: function(){
+												        	layer.closeAll();
+												        }
+												      });
+									           });
+											$('#homeWorkContent').val("");
+											$('#homeWordDatetime').val("");
+										}else {
+											layer.msg('布置失败，暂无学生接收~');
+										}
+									},
+									error : function(data) {
+									},
+									dataType : "json",
+								});
+						   }else {
+							   layer.msg('内容不可为空哦~');
+						}
+							
+						 }
+					   
+					</script>
+				  </div>
+			    
+              </form>
+		</div>
+   <script>
+   layui.use(['form', 'layedit', 'laydate'], function(){
+  var form = layui.form,laydate = layui.laydate;
+   form.render();
+   laydate.render({
+		elem : '#homeWordDatetime'
+	});
+   layer = layui.layer
+  ,layedit = layui.layedit
+  ,laydate = layui.laydate;  
+   });
+  </script>
+  
 			
 			<!-- 迟到或者早退修改 -->
 			<div id="comeLateOrLeaveEarly" style="position: fixed; background-color: #e2e2e2; width: 30%;
@@ -2463,11 +2812,12 @@ function teacherChangeExamination() {
 			<br /> 班级人数：<span id="studentCount"></span>
 			<table class="layui-table" lay-even>
 				<colgroup>
-					<col width="200">
-					<col width="120">
+					<col width="150">
 					<col width="100">
-					<col width="200">
+					<col width="100">
+					<col width="150">
 					<col width="210">
+					<col width="80">
 				</colgroup>
 				<thead>
 					<tr>
@@ -2476,6 +2826,7 @@ function teacherChangeExamination() {
 						<th style="text-align: center;">性别</th>
 						<th style="text-align: center;">手机</th>
 						<th style="text-align: center;">照片</th>
+						<th style="text-align: center;">操作</th>
 					</tr>
 				</thead>
 				<tbody id="inClazzStudentInfoTable">
@@ -2622,6 +2973,8 @@ function teacherChangeExamination() {
 					$('#clazzInfoShow').hide();
 					$('#inClazzStudentInfoDiv').hide();
 					$('#addQuestionsDiv').hide();
+					$('#proclamationDiv').hide();
+					$('#homeWork').hide();  
 					$('#studentExam').hide();
 					$('#addExaminationDiv').hide();
 					$('#scoreFormList').hide();
@@ -2783,7 +3136,9 @@ function teacherChangeExamination() {
 					$('#signModel').hide();
 					$('#addExaminationDiv').hide();
 				    $('#studentExam').hide();
+				    $('#proclamationDiv').hide();
 					$('#inClazzStudentInfoDiv').hide();
+					$('#homeWork').hide();  
 					$('#addQuestionsDiv').hide();
 					$('#clazzInfoShow').hide();
 					$('#scoreFormList').hide();
@@ -2955,7 +3310,7 @@ function teacherChangeExamination() {
 
     
 			<!-- 试卷列表 -->
-			<table id="ExaminationList" class="layui-table" lay-even
+			<table id="ExaminationList" class="layui-table" lay-even lay-skin="line"
 				style="text-align: center; width: 100%; margin-left: 0;">
 				<colgroup>
 					<col width="120">
@@ -3029,7 +3384,7 @@ function teacherChangeExamination() {
 					</a>
 				</div>
 			</form>
-
+            
 			<!-- 单选部分 -->
 			<div id="SingleSelectionDetail" class="layui-form-item"
 				style="display: none; margin-left: 20px;">
@@ -3103,6 +3458,12 @@ function teacherChangeExamination() {
 							<option value="D">D</option>
 						</select>
 					</div>
+					<script>
+					layui.use('form', function() {
+					var form = layui.form;
+					form.render(); 
+					});
+					</script>
 					<!-- 本题备注 -->
 					<br /> <br /> <br /> <label class="layui-form-label"
 						style="background-color: #009688;">备注</label>
@@ -3123,9 +3484,17 @@ function teacherChangeExamination() {
 						type="reset" class="layui-btn layui-btn-primary">重置</button>
 				</form>
 			</div>
+			
+
+			<!-- 已出单选 -->
+			<ul id="SingleSelectionShowUl" class="layui-timeline"
+				style="margin-left: 5em;">
+
+			</ul>
 			<script type="text/javascript">
 			layui.use([ 'form', 'laydate' ], function() {
 				var form = layui.form, laydate = layui.laydate;
+					form.render(); 
 				form.verify({
 					idvalidate:[/(.+){1,20}$/,'试卷名称必须是1到20位字符'],
 					math:[/^[1-9]\d*/,'输入为大于零的正整数'],
@@ -3206,12 +3575,6 @@ function teacherChangeExamination() {
 					}
 				}
 				</script>
-
-			<!-- 已出单选 -->
-			<ul id="SingleSelectionShowUl" class="layui-timeline"
-				style="margin-left: 5em;">
-
-			</ul>
 
 			<!-- 多选 -->
 			<div id="mark1" class="layui-form-item">
@@ -3321,6 +3684,7 @@ function teacherChangeExamination() {
 			<script type="text/javascript">
 			layui.use([ 'form', 'laydate' ], function() {
 				var form = layui.form, laydate = layui.laydate;
+				form.render(); 	
 				form.verify({
 					math:[/^[1-9]\d*/,'输入为大于零的正整数'],
 				});
@@ -3476,6 +3840,7 @@ function teacherChangeExamination() {
 			<script type="text/javascript">
 			layui.use([ 'form', 'laydate' ], function() {
 				var form = layui.form, laydate = layui.laydate;
+				form.render(); 
 				form.verify({
 					math:[/^[1-9]\d*/,'输入为大于零的正整数'],
 				});
@@ -3884,7 +4249,7 @@ function teacherChangeExamination() {
 				        	"examinationId":$('#examinationIddd').val()
 				        },
 				        contentType: "application/json; charset=utf-8",
-				        async: false,
+				        async: true,
 				        url: "<%=request.getContextPath()%>/exam/updateEditStatus.do",
 						success : function(data) {
 							if(data.result == true){
@@ -3942,7 +4307,7 @@ function teacherChangeExamination() {
 		<div id="studentExam" class="site-text site-block"
 			style="display: none;margin-top: 0; padding-left: 0; padding-right: 0;"> 
            <!-- 试卷列表 -->
-			<table id="PreExaminationList" class="layui-table" lay-even
+			<table id="PreExaminationList" class="layui-table" lay-skin="line"  lay-even
 				style="text-align: center; width: 100%;">
 				<colgroup>
 					<col width="80">
@@ -4053,7 +4418,7 @@ function teacherChangeExamination() {
 		<!-- 显示成绩单 -->	   
 		<div id="scoreFormList" class="site-text site-block"
 			style="display: none;margin-top: 0; padding-left: 0; padding-right: 0;"> 
-	        <table id="scoreShowTableFirst" class="layui-table" lay-even
+	        <table id="scoreShowTableFirst" class="layui-table" lay-even lay-skin="line"
 				style="text-align: center; width: 100%;">
 				<colgroup>
 					<col width="80">
@@ -4296,34 +4661,12 @@ function teacherChangeExamination() {
 
 	</div>
 	
-	<ul class="layui-fixbar">
-		<li class="layui-icon" style="background-color:#393D49" lay-type="bar1">&#xe650;</li>
-		<li class="layui-icon" style="background-color:#393D49" lay-type="bar2">&#xe68e;</li>
-		<li class="layui-icon layui-fixbar-top" style="background-color:#393D49" lay-type="top">&#xe604;</li>
-	</ul>
-	
 	<script>
 		layui.use([ 'element', 'layer', 'table', 'util'], function() {
 			var element = layui.element
 			,$ = layui.jquery
 			,layer = layui.layer
 			,util = layui.util;
-			
-			//固定块
-			 util.fixbar({
-				bar1: true
-				,bar2: true
-			    ,bgcolor: '#393D49'	
-			    ,showHeight:0
-			    ,click: function(type){
-					if(type === 'bar1'){
-						layer.msg('icon是可以随便换的')
-			      	}else if(type === 'bar2') {
-			      		alert('icon是可以随便换的')
-			        }
-			    }
-			});
-
 			
 			//监听导航点击
 			element.on('nav(demo)', function(elem) {

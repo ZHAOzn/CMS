@@ -171,6 +171,11 @@
 		StudentInfo where CourseId = #{clazzId}
 	</delete>
 	
+	<delete id="deleteStudentInfoById" parameterType="int">
+		delete from
+		StudentInfo where StudentInfoId = #{studentInfoId}
+	</delete>
+	
 	<update id="updateStudentInfoAboutLateOrLeave" parameterType="HashMap">
 		update
 		StudentInfo set

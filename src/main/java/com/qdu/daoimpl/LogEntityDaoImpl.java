@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.qdu.dao.LogEntityDao;
 import com.qdu.pojo.Admin;
+import com.qdu.pojo.Feedback;
 import com.qdu.pojo.LogEntity;
 
 @Repository
@@ -67,6 +68,28 @@ public class LogEntityDaoImpl implements LogEntityDao{
 	public List<LogEntity> selectStudentLogEntity() {
 		String statement = "com.qdu.mapping.LogEntityMapping.selectStudentLogEntity";
 		return sessionFactory.openSession().selectList(statement);
+	}
+
+	@Override
+	public int insertFeedback(Feedback feedback) {
+		String statement = "com.qdu.mapping.FeedbackMapping.insertFeedback";
+		return sessionFactory.openSession().insert(statement,feedback);
+	}
+
+	@Override
+	public List<Feedback> selectFeedback() {
+		String statement = "com.qdu.mapping.FeedbackMapping.selectFeedback";
+		return sessionFactory.openSession().selectList(statement);
+	}
+
+	@Override
+	public int updateFeedbackOfReson(int feedbackId, String reson, String result) {
+		String statement = "com.qdu.mapping.FeedbackMapping.updateFeedbackOfReson";
+		Map<String, Object> map = new HashMap<>();
+		map.put("feedbackId", feedbackId);
+		map.put("reson", reson);
+		map.put("result", result);
+		return sessionFactory.openSession().update(statement,map);
 	}
 
 }

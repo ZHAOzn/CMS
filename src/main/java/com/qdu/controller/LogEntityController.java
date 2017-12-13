@@ -1,6 +1,8 @@
 package com.qdu.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +20,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.qdu.aop.SystemLog;
 import com.qdu.cache.RedisCache;
 import com.qdu.pojo.Admin;
+import com.qdu.pojo.Feedback;
 import com.qdu.pojo.LogEntity;
+import com.qdu.pojo.Message;
+import com.qdu.pojo.MyBlog;
 import com.qdu.pojo.Student;
 import com.qdu.pojo.Teacher;
 import com.qdu.service.LogEntityService;
+import com.qdu.service.MessageService;
+import com.qdu.service.MyBlogService;
 import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
 import com.qdu.util.Page;
@@ -30,9 +37,19 @@ import com.qdu.util.Page;
 @RequestMapping(value="/admin")
 public class LogEntityController {
 
-	@Autowired LogEntityService logEntityServiceImpl;
-	@Autowired StudentService studentServiceImpl;
-	@Autowired TeacherService teacherServiceImpl;
+	@Autowired 
+	LogEntityService logEntityServiceImpl;
+	@Autowired 
+	StudentService studentServiceImpl;
+	@Autowired 
+	TeacherService teacherServiceImpl;
+	@Autowired 
+	private MyBlogService myBlogServiceImpl;
+	@Autowired
+	private MessageService messageServiceImpl;
+	
+	
+	
 	//超管准备登录
 	@RequestMapping(value="/forAdminLogin.do")
 	public String forAdminLogin(ModelMap map) {
@@ -57,12 +74,15 @@ public class LogEntityController {
 	@RequestMapping(value = "/adminLogin.do",method = RequestMethod.POST)
 	public String adminLogin(ModelMap map,HttpServletRequest request){
 		List<LogEntity> logEntities = new ArrayList<LogEntity>();
-		 int totalCount = logEntityServiceImpl.selectLogEntityCount();
 		    List<Student> students = studentServiceImpl.selectStuList();
 		    List<Teacher> teachers = teacherServiceImpl.selectTeacher();
 		    List<LogEntity> teacherLogEntitys = logEntityServiceImpl.selectTeacherLogEntity();
 		    List<LogEntity> studentLogEntitys = logEntityServiceImpl.selectStudentLogEntity();
+		    List<MyBlog> myBlogs = myBlogServiceImpl.selectMyBlogByVerify();
+		    List<Feedback> feedbacks = logEntityServiceImpl.selectFeedback();
+		    map.put("feedbacks", feedbacks);
 			map.put("logEntities", logEntities);
+			map.put("myBlogs", myBlogs);
 			map.put("students", students);
 			map.put("teachers", teachers);
 			map.put("teacherLogEntitys", teacherLogEntitys);
@@ -94,5 +114,80 @@ public class LogEntityController {
 			map.put("result", true);
 			return map;
 		}
+		
+   //管理员通过审核的博文
+	@RequestMapping(value = "/updateBlogofVerify.do")
+	@ResponseBody
+	public Map<String, Object> updateBlogofVerify(int blogId){
+		Map<String, Object> map = new HashMap<>();
+		MyBlog myBlog = myBlogServiceImpl.selectMyBlogById(blogId);
+		myBlog.setVerify("审核通过");
+		int tem = myBlogServiceImpl.updateBlogofVerify(myBlog);
+		
+		Message message = new Message();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		message.setMessageSender("管理员");
+		message.setMessageAccepter(myBlog.getBlogAuthor());
+		message.setMessageTitle("博文审核");
+		message.setSendTime(sdf.format(new Date()));
+		message.setHaveRead("未读");
+		message.setMessageContent("<span style='color:#FF5722'>恭喜！</span><br/>博文标题为<<"+ myBlog.getBlogTitle() + ">>通过审核！");
+		message.setMessageType("admin");
+		messageServiceImpl.insertMessage(message);
+		if(tem > 0){
+			map.put("result", true);
+		}else {
+			map.put("result", false);
+		}
+		return map;
+	}
+	//管理员不通过审核的博文
+		@RequestMapping(value = "/updateBlogofVerifySecond.do")
+		@ResponseBody
+		public Map<String, Object> updateBlogofVerifySecond(int blogId){
+			Map<String, Object> map = new HashMap<>();
+			MyBlog myBlog = myBlogServiceImpl.selectMyBlogById(blogId);
+			myBlog.setVerify("审核未通过");
+			int tem = myBlogServiceImpl.updateBlogofVerify(myBlog);
+			
+			Message message = new Message();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			message.setMessageSender("管理员");
+			message.setMessageAccepter(myBlog.getBlogAuthor());
+			message.setMessageTitle("博文审核");
+			message.setSendTime(sdf.format(new Date()));
+			message.setHaveRead("未读");
+			message.setMessageContent("<span style='color:#FF5722'>抱歉！</span><br/>由于内容违反相关法律法规，博文标题为<<"+ myBlog.getBlogTitle() + ">>未通过审核！"
+					+ "请自觉维护网络环境");
+			message.setMessageType("admin");
+			 messageServiceImpl.insertMessage(message);
+			
+			if(tem > 0){
+				map.put("result", true);
+			}else {
+				map.put("result", false);
+			}
+			return map;
+		}
+		
+		//管理员解决反馈
+	@RequestMapping(value = "/resolveFeedback.do")
+	@ResponseBody
+	public Map<String, Object> beforResolveFeedback(int feedbackId,String reson){
+		Map<String, Object> map = new HashMap<>();
+		int tem =  logEntityServiceImpl.updateFeedbackOfReson(feedbackId, reson, "已解决");
+		if(tem > 0){
+			map.put("result", true);
+		}else {
+			map.put("result", false);
+		}
+		return map;
+	}	
+		
+		
+		
+		
+		
+		
 	
 }

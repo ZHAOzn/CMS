@@ -122,4 +122,10 @@ public class StudentInfoImpl implements StudentInfoDao{
 		return sessionFactory.openSession().selectOne(statement,studentInfoId);
 	}
 
+	@Override
+	public int deleteStudentInfoById(int studentInfoId) {
+		String statement = "com.qdu.mapping.StudentInfoMapping.deleteStudentInfoById";
+		return sessionFactory.openSession().delete(statement,studentInfoId);
+	}
+
 }

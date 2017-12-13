@@ -1838,6 +1838,9 @@ public class ExaminationController {
 		Map<String, Object> map = new HashMap<>();
 		Score score = examinationServiceImpl.selectScoreByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRono);
 		Examination examination = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationID));
+		System.out.println(studentRono);
+		System.out.println(examinationID);
+		System.out.println(score.getScoreStatus());
 		if(score.getScoreStatus().equals("批改完成")){
 			List<StudentAnswer> studentAnswers1 = new ArrayList<>();//单选答案List
 			List<StudentAnswer> studentAnswers2 = new ArrayList<>();//多选答案List

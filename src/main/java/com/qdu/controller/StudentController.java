@@ -30,9 +30,11 @@ import com.qdu.aop.SystemLog;
 import com.qdu.pojo.Clazz;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Course;
+import com.qdu.pojo.Feedback;
 import com.qdu.pojo.LeaveRecord;
 import com.qdu.pojo.LogEntity;
 import com.qdu.pojo.Message;
+import com.qdu.pojo.MyBlog;
 import com.qdu.pojo.QrTem;
 import com.qdu.pojo.Student;
 import com.qdu.pojo.StudentInfo;
@@ -43,6 +45,7 @@ import com.qdu.service.CourseService;
 import com.qdu.service.LeaveRecordService;
 import com.qdu.service.LogEntityService;
 import com.qdu.service.MessageService;
+import com.qdu.service.MyBlogService;
 import com.qdu.service.QrTemService;
 import com.qdu.service.StudentInfoService;
 import com.qdu.service.StudentService;
@@ -78,9 +81,12 @@ public class StudentController {
 	private ClazzStuService clazzStuServiceImpl;
 	@Autowired
 	private LeaveRecordService leaveRecordServiceImpl;
+	@Autowired 
+	private MyBlogService myBlogServiceImpl;
+	
 
 	// 学生登录
-	@RequestMapping(value = "/studentLogin.do")
+	@RequestMapping(value = "/studentLogin.do",method = RequestMethod.POST)
 	@SystemLog(module = "学生", methods = "日志管理-登录/刷新")
 	public String studentLogin(HttpServletRequest request, String pageNow, String studentRoNo, String password,
 			ModelMap map) {
@@ -99,7 +105,8 @@ public class StudentController {
 				}
 				List<LogEntity> logEntities = logEntityServiceImpl.selectStudentLog(studentRoNo);
 				map.put("logEntity", logEntities);
-				
+				List<MyBlog> myBlogs = myBlogServiceImpl.selectMyBlogByNoFilter(); 
+				map.put("myBlogs", myBlogs);
 				List<StudentInfo> studentInfos2 = studentInfoServiceImpl.selectStudentInfoList(studentRoNo);
 				map.put("studentInfos2", studentInfos2);
 				List<StudentInfo> studentInfos = studentInfoServiceImpl.selectCourseByStudentRono(studentRoNo);
@@ -722,6 +729,54 @@ public class StudentController {
 		}
 		return map;
 	}
+	//查看教师自己的博客
+		@RequestMapping(value = "/toPersonBlog.do",method = RequestMethod.POST)
+		public String toPersonBlog(String userRole,String userId,String userPassWord,ModelMap map,HttpServletRequest request,HttpServletResponse response){
+			if(userRole.equals("student")){
+				Student student = studentServiceImpl.selectStudentByNo(userId);
+				if(userPassWord != null && userPassWord.equals(student.getStudentPassword())){
+					map.put("student", student);
+					List<MyBlog> myBlogs = myBlogServiceImpl.selectMyBlogByUserId(userId);
+					map.put("myBlogs", myBlogs);
+					return "studentBlog";
+				}else {
+					return "failer";
+				}	
+			}else {
+				return "failer";
+			}
+				
+		}
+		
+		//反馈
+	@RequestMapping(value = "/insertFeedback.do")
+	@ResponseBody
+	public Map<String, Object> insertFeedback(String returnInfoToAdmin){
+		System.out.println(returnInfoToAdmin);
+		Map<String, Object> map = new HashMap<>();
+		Feedback feedback = new Feedback();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:mm");
+		feedback.setCurrentTime(sdf.format(new Date()));
+		feedback.setFeedbackContent(returnInfoToAdmin);
+		feedback.setResult("未解决");
+		int tem = logEntityServiceImpl.insertFeedback(feedback);
+		if(tem > 0){
+			map.put("result", true);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}		
+
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 }

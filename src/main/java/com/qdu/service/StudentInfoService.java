@@ -35,4 +35,6 @@ public interface StudentInfoService {
 	
 	public StudentInfo selectStudentInfoById(int studentInfoId);
 	
+	public int deleteStudentInfoById(int studentInfoId);
+	
 }

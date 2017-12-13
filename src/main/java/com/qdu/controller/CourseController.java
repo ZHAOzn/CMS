@@ -19,6 +19,7 @@ import com.qdu.aop.SystemLog;
 import com.qdu.pojo.Clazz;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Course;
+import com.qdu.pojo.Feedback;
 import com.qdu.pojo.StudentInfo;
 import com.qdu.pojo.Teacher;
 import com.qdu.qr.SignInQr;
@@ -26,6 +27,7 @@ import com.qdu.qr.testQR;
 import com.qdu.service.ClazzService;
 import com.qdu.service.ClazzStuService;
 import com.qdu.service.CourseService;
+import com.qdu.service.LogEntityService;
 import com.qdu.service.QrTemService;
 import com.qdu.service.StudentInfoService;
 import com.qdu.service.TeacherService;
@@ -46,6 +48,8 @@ public class CourseController {
 	private ClazzStuService clazzStuServiceImpl;
 	@Autowired
 	private QrTemService qrTemServiceImpl;
+	@Autowired 
+	LogEntityService logEntityServiceImpl;
 
 	// 教师添加课程
 	@SystemLog(module="教师",methods="日志管理-添加课程")
@@ -212,4 +216,41 @@ public class CourseController {
 		}
 		return map;
 	}
+	
+	//反馈
+			@RequestMapping(value = "/insertFeedback.do")
+			@ResponseBody
+			public Map<String, Object> insertFeedback(String returnInfoToAdmin){
+				System.out.println(returnInfoToAdmin);
+				Map<String, Object> map = new HashMap<>();
+				Feedback feedback = new Feedback();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:mm");
+				feedback.setCurrentTime(sdf.format(new Date()));
+				feedback.setFeedbackContent(returnInfoToAdmin);
+				feedback.setResult("未解决");
+				int tem = logEntityServiceImpl.insertFeedback(feedback);
+				if(tem > 0){
+					map.put("result", true);
+				}
+				else {
+					map.put("result", false); 
+				}
+				return map;
+			}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

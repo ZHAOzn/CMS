@@ -17,11 +17,19 @@
 <link type="text/css" rel="stylesheet"
 	href="<%=request.getContextPath()%>/layui/css/layui.css">
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
+	<script src="<%=request.getContextPath()%>/layui/mods/index.js"></script>
 <title>教师门户</title>
 
 <script type="text/javascript">
+layui.use(['form'], function(){
+	var form = layui.form;
+	form.render(); 
+	});
 	 $(document).ready(function () {
-		 
+		 layui.use(['form'], function(){
+			 var form = layui.form;
+			 form.render(); 
+			 });		 
 		 //首先检查学生个人信息是否完善
 		 if(${empty student.college} ||${empty student.special}||${empty student.intoSchoolYear}
 		 ||${empty student.schoolRecord}||${empty student.birthDay}||${empty student.freeStyle}){
@@ -404,7 +412,23 @@
              url: "<%=request.getContextPath()%>/studentInfo/insertStudentInfoByteacher.do",
 			success : function(data) {
 				if(data.result == true){
-					$('#handleMessageShow').show();
+					layui.use('layer', function(){
+		 	               var $ = layui.jquery, layer = layui.layer; 
+		   			      layer.open({
+		   			        type: 1
+		   			        ,offset: 'auto'
+		   			        ,id: 'layerDemo'+'auto'
+		   			        ,title: '成功'
+		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "处理成功！" +'</div>'
+		   			        ,btn: '关闭'
+		   			        ,btnAlign: 'c'
+		   			        ,skin: 'demo-class'
+		   			        ,shade: 0 
+		   			        ,yes: function(){
+		   			        	 layer.closeAll();
+		   			        }
+		   			      });
+		 	            });
 					setTimeout('myFunction()',1500);
 				}else{
 					layui.use('layer', function(){
@@ -781,14 +805,25 @@ function checkCourseShow2() {
 		<div class="layui-body site-demo"
 			style="padding-top: 3%; overflow: auto;">
 			<br /> <span id="messageList" style="margin-left: 5%;">课程信息</span>
-			<hr class="layui-bg-cyan">
+			<hr class="layui-bg-cyan" style="width: 100%;">
 			
-			
+	<script>
+	layui.cache.page = 'jie';
+	layui.cache.user = {
+	 
+	};
+	layui.config({
+	  version: "3.0.0"
+	  ,base: '<%=request.getContextPath()%>/layui/mods/'
+	}).extend({
+		fly : 'index'
+	}).use('fly');
+	</script>
 			<!-- 查看资料，搜寻各种格式的，自己的，或者他人 -->
-			<div id="lookData" class="site-text site-block" style="padding-top: 5px;margin-top: 0;display: none;">
+			<div id="lookData" class="site-text site-block" style="padding-top: 5px;margin-top: 0;display: none;padding-left: 0;padding-right: 0">
 				<form class="layui-form" action="">
 					<div class="layui-form-item" style="width: 100%; margin-left: 1%;">
-						 <div class="layui-form-item" style="height: 100%; width: 49%; float: left;">
+						 <div class="layui-form-item" style="height: 100%; width: 35%; float: left;">
 						    <label class="layui-form-label">类型</label>
 						    <div class="layui-input-block" style="width: 150px;">
 						      <select id="dataType" name="dataType" lay-verify="required" style="width: 100%;">
@@ -800,9 +835,9 @@ function checkCourseShow2() {
 						  </div>
 						
 						<div style="height: 100%; width: 49%; float: left;">
-							<label class="layui-form-label" style="">输入关键字</label>
-							<div class="layui-input-block" style="">
-								<input id="dataContent" type="text" lay-verify="CoreKey"
+							<label class="layui-form-label">输入关键字</label>
+							<div class="layui-input-block" >
+								<input id="dataContent" type="text" lay-verify="required" required
 									placeholder="如  'java'" autocomplete="off" class="layui-input"
 									style="width: 60%; float: left;"> <input
 									class="layui-btn" lay-submit type="button"
@@ -813,7 +848,49 @@ function checkCourseShow2() {
 					</div>
 				</form>
 				<hr class="layui-bg-cyan">
+				
+			    <table id="teacherGetFileList" class="layui-table" lay-even style="width: 100%; display: none; margin-left: 0;margin-right: 0; padding-left: 0;padding-right: 0;">
+					<colgroup>
+						<col width="250">
+						<col width="300">
+						<col width="440">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;">文件类型</th>
+							<th style="text-align: center;">上传时间</th>
+							<th style="text-align: center;">文件名称</th>
+						</tr>
+					</thead>
+					<tbody id="privateData">
 
+					</tbody>
+				</table>
+			
+			<table id="teacherGetBlogList" class="layui-table" style="width: 100%; display: none;">
+					 <colgroup>
+						<col width="150">
+						<col width="200">
+						<col width="200">
+						<col width="200">
+						<col width="200">
+						<col width="130">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;"></th>
+							<th style="text-align: center;">类别</th>
+							<th style="text-align: center;">标题</th>
+							<th style="text-align: center;">标签</th>
+							<th style="text-align: center;">创建时间</th>
+							<th style="text-align: center;">点击</th>
+						</tr>
+					</thead>
+					 <tbody id="blogThreafd">
+		                
+					 </tbody>
+					</table>
+			
 			</div>
 			
 		    <script>
@@ -828,12 +905,101 @@ function checkCourseShow2() {
 							logDate:[/\S/,'日期不可为空']
 						});
 					});
+					//点击查询
+					function searchData() {
+						if($('#dataType').val() != "" && $('#dataContent').val() != ""){
+							if($('#dataType').val() == '课件'){
+								$.ajax({
+							        type: "GET",
+							        data: {
+							        	"fileName" :$('#dataContent').val()
+							        },
+							        contentType: "application/json; charset=utf-8",
+							        async: false,
+							        url: "<%=request.getContextPath()%>/teacher/teacherGetFile.do",
+									success : function(data) {
+										if(data.result == true){
+											var dataObj = data.filePackages;
+											 con = "";
+											 $.each(dataObj, function (index, item) {
+												con += "<tr>";
+								       	        con += "<td style='text-align:center;'>" + item.fileType + "</td>";
+								       	        con += "<td style='text-align:center;'>" + item.createTime + "</td>";
+								       	        con += "<td style='text-align:center; color:#FF5722;'><a  target='_blank' style='color:#FF5722;' href=\'<%=request.getContextPath() %>/file/"+item.fileName+"\'>" + item.fileName + "</a></td>";
+								       	        con += "<tr/>";
+							      
+								       	    });
+											 $('#privateData').html(con);
+											 $('#teacherGetFileList').show();
+											 $('#teacherGetBlogList').hide();
+										}else {
+											layui.use('layer', function(){ //独立版的layer无需执行这一句
+									               var $ = layui.jquery, layer = layui.layer; 
+						            			      layer.open({
+						            			        type: 1
+						            			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+						            			        ,id: 'layerDemo'+'auto' //防止重复弹出
+						            			        ,title: '失败'
+						            			        ,content: '<div style="padding: 20px 100px;">'+"请求资源未找到"+'</div>'
+						            			        ,btn: '关闭'
+						            			        ,btnAlign: 'c' //按钮居中
+						            			        ,shade: 0 //不显示遮罩
+						            			        ,yes: function(){
+						            			          layer.closeAll();
+						            			        }
+						            			      });
+									               });
+										}
+									},
+									error : function(data) {
+										alert("??");
+									},
+									dataType : "json",
+								});
+							}else if ($('#dataType').val() == '博客') {
+								 $.ajax({
+						              type: "GET",
+						              data: {
+						            	  "fileName" :$('#dataContent').val()
+						              },
+						              contentType: "application/json; charset=utf-8",
+						              async: false,
+						              dataType: "json",
+						              url: "<%=request.getContextPath()%>/blog/teacherSearchBlog.do",
+						              success: function (data) {
+						            	 var dataObj = data.myBlogs;
+										 con = "";
+										 $.each(dataObj, function (index, item) {
+											    con += "<tr id='TD"+item.blogId+"'>";
+							        	        con += "<td style='text-align:center;'>" + index + "</td>";
+							        	        con += "<td style='text-align:center;'>" + item.belongTo + "</td>";
+							        	        con += "<td style='text-align:center;'><a style='color:#FF5722;' id='"+item.blogId+"' target='_blank' href='<%=request.getContextPath()%>/blog/getBlogTemValue.do?userId=${teacher.teacherMobile}&role=teacher&blogId="+item.blogId+"'>" + item.blogTitle + "</a></td>";
+							        	        con += "<td style='text-align:center;'>" + item.up + "</td>";
+							        	        con += "<td style='text-align:center;'>" + item.down + "</td>";
+							        	        con += "<td style='text-align:center;'>" + item.hotClick + "</td>";
+							        	        con += "<tr/>";
+							        	    });
+										 $('#blogThreafd').html(con);
+										 $('#teacherGetFileList').hide();
+										 $('#teacherGetBlogList').show();
+						              },
+						              error: function (data) {
+						            	  alert("服务器异常");
+						              }
+						          });
+							}
+						}else {
+							
+						}
+						
+					}
 			</script>
 			
 			<!-- 教师博客 -->
 			<form id="PersonBlogForm" action="<%=request.getContextPath()%>/teacher/toPersonBlog.do" method="post" style="display: none;">
 			  <input type="text" name="userId" value="${teacher.teacherMobile}"/>
 			  <input type="text" name="userPassWord" value="${teacher.teacherPassword}"/>
+			  <input type="text" name="userRole" value="teacher"/>
 			</form>
 
 			<!-- 教师操作日志表 -->
@@ -1076,6 +1242,7 @@ function checkCourseShow2() {
 					//Demo
 					layui.use([ 'form', 'laydate' ], function() {
 						var form = layui.form, laydate = layui.laydate;
+						form.render(); 
 						laydate.render({
 							elem : '#birthDay'
 						});
@@ -1090,9 +1257,9 @@ function checkCourseShow2() {
 				</script>
 
 			<!-- 显示消息 -->
-			<div id="messageShow"
+			<div id="messageShow" 
 				style="margin-left: 5%; margin-right: 5%; display: none;">
-				<table class="layui-table"
+				<table class="layui-table" lay-skin="line"
 					lay-data="{page:true,height:485,width:1070, url:'<%=request.getContextPath() %>/student/getSeperratePage.do',
 			 id:'test', where:{messageAcpter:'${teacher.teacherMobile}'}, limit:10}"
 					lay-filter="test">
@@ -1114,9 +1281,9 @@ function checkCourseShow2() {
         </script>
         <script type="text/html" id="status">
                   {{#  if(d.haveRead == '已读'){ }}
-                    <i class="layui-icon" style="font-size: 30px; color: #5FB878;">&#xe618;</i>
+                    <i class="layui-icon" style="font-size: 20px; color: #5FB878;">&#xe618;</i>
                      {{#  } else { }}
-                       <i class="layui-icon" style="font-size: 30px; color: #FF5722;">&#xe607;</i>
+                       <i class="layui-icon" style="font-size: 20px; color: #FF5722;">&#xe607;</i>
                          {{#  } }}
             </script>
 			<script type="text/html" id="barDemo">
@@ -1135,7 +1302,7 @@ function checkCourseShow2() {
         if(layEvent === 'detail'){ //查看
          getMessage(data.messageId);
         } else if(layEvent === 'del'){ //删除
-          layer.confirm('真的删除行么', function(index){
+          layer.confirm('真的删除该消息么？', function(index){
            
             //向服务端发送删除指令
    		 $.ajax({
@@ -1300,7 +1467,7 @@ function checkCourseShow2() {
 					//Demo
 					layui.use([ 'form', 'laydate' ], function() {
 						var form = layui.form, laydate = layui.laydate;
-
+						form.render(); 
 						//监听提交
 						form.on('submit(demo())', function(data) {
 							return false;
@@ -1324,14 +1491,16 @@ function checkCourseShow2() {
 
 			<!-- 课程信息 -->
 			<div class="layui-form sessiontable" id="courseInfo" style="">
-				<table class="layui-table" lay-even style="text-align: center;">
+				<table class="layui-table"  lay-even style="text-align: center;">
 					<colgroup>
+						<col width="130">
+						<col width="200">
+						<col width="150">
 						<col width="150">
 						<col width="200">
-						<col width="200">
+						<col width="170">
 						<col width="150">
 						<col width="150">
-						<col width="300">
 					</colgroup>
 					<thead>
 						<tr>
@@ -1340,7 +1509,8 @@ function checkCourseShow2() {
 							<th style="text-align: center;">二维码信息</th>
 							<th style="text-align: center;">学年</th>
 							<th style="text-align: center;">班级</th>
-							<th colspan="3" style="text-align: center;">操作</th>
+							<th style="text-align: center;">事务</th>
+							<th colspan="2" style="text-align: center;">操作</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -1366,7 +1536,7 @@ function checkCourseShow2() {
 															method="post">
 															<input name="clazzId" style="display: none;"
 																value="${c.clazzId}" /> <a class="aSign"
-																id="${c.clazzId}" onclick="aClick(this.id)" href="#">${c.clazzName}</a>
+																id="${c.clazzId}" onclick="" href="#">${c.clazzName}</a>
 														</form>
 														<br />
 													</c:forEach>
@@ -1376,7 +1546,7 @@ function checkCourseShow2() {
 												</c:otherwise>
 											</c:choose></td>
 										<td style="text-align: center;"><a class="aSign"
-											href="<%=request.getContextPath()%>/course/forsearchClazz.do?courseId=${r.courseId}&teacherMobile=${teacher.teacherMobile}">查看/签到</a></td>
+											href="<%=request.getContextPath()%>/course/forsearchClazz.do?courseId=${r.courseId}&teacherMobile=${teacher.teacherMobile}">查看/签到&nbsp;<i class="layui-icon" style="font-size: 15px; color: #FF5722;">&#xe62a;</i>  </a></td>
 										<td>
 											<!-- <a href="/course/forChangeCousrInfo.do?courseId=${r.courseId}">修改</a> -->
 											<div class="site-demo-button" id="layerDemo"
@@ -1515,7 +1685,7 @@ function checkCourseShow2() {
 					//Demo
 					layui.use([ 'form', 'laydate' ], function() {
 						var form = layui.form, laydate = layui.laydate;
-
+						form.render(); 
 						//监听提交
 						form.on('submit(formDemo)', function(data) {
 							layer.msg(JSON.stringify(data.field));
