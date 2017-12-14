@@ -31,9 +31,17 @@
 	<select id="selectUnreadMessage" parameterType="HashMap" resultMap="MessageResult">
 	select * from Message where MessageAccepter = #{messageAccepter} Order by MessageId desc limit #{startPos},#{count}
 	</select>
-	
+		
 	<select id="selectMessageTotalCount" parameterType="String" resultType="int"> 
 	select count(*) from Message where MessageAccepter = #{messageAccepter}
+	</select>
+	
+	<select id="selectSenderMessage" parameterType="HashMap" resultMap="MessageResult">
+	select * from Message where MessageSender = #{messageSender} Order by MessageId desc limit #{startPos},#{count}
+	</select>
+	
+	<select id="selectSendreMessageTotalCount" parameterType="String" resultType="int"> 
+	select count(*) from Message where MessageSender = #{messageSender}
 	</select>
 	
 	<update id="uodateMesageHaveread" parameterType="int">

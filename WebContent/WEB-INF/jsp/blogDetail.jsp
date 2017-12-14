@@ -35,7 +35,7 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="<%=request.getContextPath()%>/teacher/teacherLogin.do?id=${teacher.teacherMobile}&&password=${teacher.teacherPassword}">CMS</a>
+			<a class="navbar-brand" href="javascript:window.opener=null;window.open('','_self');window.close();">CMS</a>
 		</div>
 		<form class="navbar-form navbar-right"
 			style="margin-right: 5%; float: left;">

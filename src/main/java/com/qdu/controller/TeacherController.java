@@ -698,8 +698,59 @@ public class TeacherController {
 		}
 		return map;
 	}
+// 给学生发送消息
+	@RequestMapping(value = "/sendMessageToStudent.do")
+	@ResponseBody
+	public Map<String, Object> sendMessageToStudent(String teacherMobile,String studentRoNo,String messageToStudentContent){
+		Map<String, Object> map = new HashMap<>();
+		Message message = new Message();
+		Teacher teacher = teacherServiceImpl.selectTeacherByMobile(teacherMobile);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		message.setMessageSender(teacherMobile);
+		message.setMessageAccepter(studentRoNo);
+		message.setMessageTitle(teacher.getTeacherName() + "老师 给你发送了一条消息！");
+		message.setSendTime(sdf.format(new Date()));
+		message.setHaveRead("未读");
+		message.setMessageContent(teacher.getTeacherName()+ " 老师：<br/><br/><span style='color:#FF5722'>"+ messageToStudentContent +"</span><br/>");
+		message.setMessageType("nomal");
 		
+		int tem = messageServiceImpl.insertMessage(message);
+		if(tem > 0){
+			map.put("result", true);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}	
+//给学生回复消息
+	@RequestMapping(value = "/returnMessageToStudent.do")
+	@ResponseBody
+	public Map<String, Object> returnMessageToStudent(int messageId,String returnMessageToStudentContent){
+		Message message2 = messageServiceImpl.selectMessageById(messageId);
+		String teacherMobile = message2.getMessageAccepter();
+		String studentRoNo = message2.getMessageSender();
+		Teacher teacher = teacherServiceImpl.selectTeacherNameByMobile(teacherMobile);
+		Map<String, Object> map = new HashMap<>();
+		Message message = new Message();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		message.setMessageSender(teacherMobile);
+		message.setMessageAccepter(studentRoNo); 
+		message.setMessageTitle(teacher.getTeacherName() + "老师 回复了你！");
+		message.setSendTime(sdf.format(new Date()));
+		message.setHaveRead("未读");
+		message.setMessageContent(teacher.getTeacherName()+ " ：老师 <br/><br/><span style='color:#FF5722'>"+ returnMessageToStudentContent +"</span><br/>");
+		message.setMessageType("nomal");
 		
+		int tem = messageServiceImpl.insertMessage(message);
+		if(tem > 0){
+			map.put("result", true);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}		
 		
 		
 		

@@ -62,6 +62,22 @@ public class MessageDaoImpl implements MessageDao{
 		return sessionFactory.openSession().delete(statement, messageId);
 	}
 
+	@Override
+	public List<Message> selectSenderMessage(String messageSender, int startPos, int count) {
+		String statement = "com.qdu.mapping.MessageMapping.selectSenderMessage";
+		Map<String, Object> map = new HashMap<>();
+		map.put("messageSender", messageSender);
+		map.put("startPos", startPos);
+		map.put("count", count);
+		return sessionFactory.openSession().selectList(statement, map);
+	}
+
+	@Override
+	public int selectSendreMessageTotalCount(String messageSender) {
+		String statement = "com.qdu.mapping.MessageMapping.selectSendreMessageTotalCount";
+		return sessionFactory.openSession().selectOne(statement, messageSender);
+	}
+
 	
 
 }

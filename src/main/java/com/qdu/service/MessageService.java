@@ -19,4 +19,8 @@ public interface MessageService {
 	public int selectMessageTotalCount(String messageAccepter);
 	
 	public int deleteMessage(int messageId);
+	
+    public List<Message> selectSenderMessage(String messageSender,int startPos,int count);
+	
+	public int selectSendreMessageTotalCount(String messageSender);
 }

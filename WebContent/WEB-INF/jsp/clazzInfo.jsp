@@ -449,10 +449,11 @@ function aClick(clazzId) {
 			 $.each(dataObj, function (index, item) {
 				con += "<tr id='Tr"+ item.studentRoNo +"'>";
        	        con += "<td style='text-align:center;'>" + item.studentRoNo + "</td>";
-       	        con += "<td style='text-align:center;'>" + item.studentName + "</td>";
+       	        con += "<td id='NM" + item.studentRoNo +"' style='text-align:center;'>" + item.studentName + "</td>";
        	        con += "<td style='text-align:center;'>" + item.studentGender + "</td>";
        	        con += "<td style='text-align:center;'>" + item.studentMobile + "</td>";
        	        con += "<td style='text-align:center;'><img src=\'/ClassManageSys/studentPhoto/"+item.studentPhoto+"\'/></td>";
+       	        con += "<td id='ds' style='text-align:center;'><div class='site-demo-button'><a id='M"+ item.studentRoNo +"' onclick='forSendMessageToStudent(this.id)'  href='#' style='color:#5FB878'>" + "<i class='layui-icon' style='font-size: 24px; color: #1E9FFF;'>&#xe611;</i>  " + "</a></div></td>";
        	        con += "<td id='ds' style='text-align:center;'><div class='site-demo-button' id='layerDemo'><a class='myDelete' id='"+ item.studentRoNo +"' onclick='forDeleteStudent(this.id)' data-method='notice' href='#' style='color:#5FB878'>" + "<i class='layui-icon' style='font-size: 30px; color: #1E9FFF;'>&#xe640;</i>  " + "</a></div></td>";
        	        con += "<tr/>";
        	    });
@@ -523,6 +524,74 @@ function aClick(clazzId) {
 			layer.msg(elem.text());
 		});
 	});
+}
+//给学生发消息
+function forSendMessageToStudent(id) {
+	layui.use('layer', function(){ //独立版的layer无需执行这一句
+          var $ = layui.jquery, layer = layui.layer;
+	layer.open({
+        type: 1
+        ,title: false //不显示标题栏
+        ,closeBtn: true
+        ,area: '300px;'
+        ,shade: 0.8
+        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+        ,btn: ['立即发送', '想想再说']
+        ,btnAlign: 'c'
+        ,moveType: 0 //拖拽模式，0或者1
+        ,content: '<div style="background-color: #393D49; color: #fff;"><div  style="width:100%;"> <br/><label>给<'+ $('#N'+id).html() +'>发送消息</label><textarea style="color:#393D49" id="messageToStudentContent" class="layui-textarea"></textarea></div></div>'
+        ,yes: function(){
+        	if($('#messageToStudentContent').val() != "" && id != null){
+        		$.ajax({
+        	        type: "GET",
+        	        data: {
+        	         "messageToStudentContent":$('#messageToStudentContent').val(),
+        	         "teacherMobile":${teacher.teacherMobile},
+        	         "studentRoNo":id.substring(1)
+        	        },
+        	        contentType: "application/json; charset=utf-8",
+        	        async: false,
+        	        url: "<%=request.getContextPath()%>/teacher/sendMessageToStudent.do",
+        			success : function(data) {
+        				if(data.result == true){
+        					layui.use('layer', function(){
+     		 	               var $ = layui.jquery, layer = layui.layer; 
+     		   			      layer.open({
+     		   			        type: 1
+     		   			        ,offset: 'auto'
+     		   			        ,id: 'layerDemo'+'auto'
+     		   			        ,title: '成功'
+     		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "消息发送成功！" +'</div>'
+     		   			        ,btn: '关闭'
+     		   			        ,btnAlign: 'c'
+     		   			        ,skin: 'demo-class'
+     		   			        ,shade: 0 
+     		   			        ,yes: function(){
+     		   			        	 layer.closeAll();
+     		   			        }
+     		   			      });
+     		 	            });
+        				}else{
+        					layui.use('layer', function() {
+        						var $ = layui.jquery, layer = layui.layer;
+        						layer.msg('消息发送失败！');
+        					});
+        				}
+        			},
+        			error : function(data) {
+        				alert("服务器异常");
+        			},
+        			dataType : "json",
+        		});
+        	}else {
+        		layui.use('layer', function() {
+					var $ = layui.jquery, layer = layui.layer;
+					layer.msg('内容不能为空！');
+				});
+			}
+		  }
+	});
+  });
 }
 //服务于删除学生
 var studentRoNoTem;
@@ -2398,7 +2467,7 @@ function returnTeacherIndex() {
 					href="#"><span
 					style="color: white; font-size: 25px;">CMS</span></a>
 				<ul class="layui-nav">
-					<li class="layui-nav-item"><a href="">签到Module</a></li>
+					<li class="layui-nav-item"><a href="">课程Module</a></li>
 				</ul>
 			</div>
 		</div>
@@ -2727,7 +2796,7 @@ function returnTeacherIndex() {
 										<td>${c.currentYear}</td>
 										<td><input name="clazzId" style="display: none;"
 											value="${c.clazzId}" /> <a class="aSign" id="${c.clazzId}"
-											onclick="aClick(this.id)" href="#">查看</a></td>
+											onclick="aClick(this.id)" href="#">查看学生</a></td>
 										<td><a class="aSign" id="zxc${c.clazzId}"
 											onclick="changeWhenClick(this.id)" href="#">修改</a></td>
 										<td><a class="aSign" id="del${c.clazzId}"
@@ -2818,6 +2887,7 @@ function returnTeacherIndex() {
 					<col width="150">
 					<col width="210">
 					<col width="80">
+					<col width="80">
 				</colgroup>
 				<thead>
 					<tr>
@@ -2826,7 +2896,7 @@ function returnTeacherIndex() {
 						<th style="text-align: center;">性别</th>
 						<th style="text-align: center;">手机</th>
 						<th style="text-align: center;">照片</th>
-						<th style="text-align: center;">操作</th>
+						<th style="text-align: center;" colspan="2">操作</th>
 					</tr>
 				</thead>
 				<tbody id="inClazzStudentInfoTable">

@@ -112,6 +112,8 @@ public class StudentController {
 				List<StudentInfo> studentInfos = studentInfoServiceImpl.selectCourseByStudentRono(studentRoNo);
 				map.addAttribute("studentInfos", studentInfos);
 				map.addAttribute("student", student2);
+				int messageCount = messageServiceImpl.selectMessageCount(studentRoNo);
+				map.put("messageCount", messageCount);
 				// session的id存一下
 				request.getSession().setAttribute("UserId", null);
 				request.getSession().setAttribute("UserId", studentRoNo);
@@ -603,9 +605,9 @@ public class StudentController {
 			return map; 
 		} 
 		
-		//查询消息分页
+		//查询收件箱消息分页
 		@RequestMapping(value ="/getSeperratePage.do")
-		@SystemLog(module = "学生", methods = "日志管理-消息分页")
+		//@SystemLog(module = "学生", methods = "日志管理-消息分页")
 		public String getSeperratePage(
 				String messageAcpter,
 				 @RequestParam(value = "page", required = false) String page,
@@ -630,6 +632,35 @@ public class StudentController {
          ResponseUtil.write(response, result);
          return null;
 		}
+		//查看发件箱
+		@RequestMapping(value ="/getSenderSeperratePage.do")
+		//@SystemLog(module = "学生", methods = "日志管理-消息分页")
+		public String getSenderSeperratePage(
+				String messageSender,
+				 @RequestParam(value = "page", required = false) String page,
+		         @RequestParam(value = "limit", required = false) String limit,
+		         HttpServletResponse response) throws Exception{
+			int ppp = Integer.parseInt(page);
+			int lll = Integer.parseInt(limit);
+          List<Message> messages = messageServiceImpl.selectSenderMessage(messageSender, lll*(ppp-1), lll);
+         //使用阿里巴巴的fastJson创建JSONObject
+         JSONObject result = new JSONObject();
+         //通过fastJson序列化list为jsonArray
+         String jsonArray = JSON.toJSONString(messages);
+         JSONArray array = JSONArray.parseArray(jsonArray);
+		int totalCount = messageServiceImpl.selectSendreMessageTotalCount(messageSender);
+
+         //将序列化结果放入json对象中
+         result.put("data", array);
+         result.put("count", totalCount);
+         result.put("code", 0);
+
+         //使用自定义工具类向response中写入数据
+         ResponseUtil.write(response, result);
+         return null;
+		}
+		
+		
 		//删除message
 		@SystemLog(module = "学生", methods = "日志管理-删除消息")
 		@RequestMapping(value = "/deleteMessage.do")
@@ -769,8 +800,62 @@ public class StudentController {
 		return map;
 	}		
 
+	//回复教师消息
+	@RequestMapping(value = "/returnMessageToTeacher.do")
+	@ResponseBody
+	public Map<String, Object> returnMessageToTeacher(int messageId,String messageToTeacherContent){
+		Message message2 = messageServiceImpl.selectMessageById(messageId);
+		String teacherMobile = message2.getMessageSender();
+		String studentRoNo = message2.getMessageAccepter();
+		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+		Map<String, Object> map = new HashMap<>();
+		Message message = new Message();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		message.setMessageSender(studentRoNo);
+		message.setMessageAccepter(teacherMobile);
+		message.setMessageTitle(student.getStudentName() + "同学 回复了你！");
+		message.setSendTime(sdf.format(new Date()));
+		message.setHaveRead("未读");
+		message.setMessageContent(student.getStudentName()+ " ：<br/><br/><span style='color:#FF5722'>"+ messageToTeacherContent +"</span><br/>");
+		message.setMessageType("nomal");
 		
+		int tem = messageServiceImpl.insertMessage(message);
+		if(tem > 0){ 
+			map.put("result", true);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}		
+
+//给老师发消息
+	@RequestMapping(value = "/messageToTeacherNow.do")
+	@ResponseBody
+	public Map<String, Object> messageToTeacherNow(int courseId,String studentRoNo,String messageToStudentContentNow){
+		Course course = courseServiceImpl.selectCourseById(courseId);
+		String teacherMobile = course.getTeacher().getTeacherMobile();
+		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+		Map<String, Object> map = new HashMap<>();
+		Message message = new Message();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		message.setMessageSender(studentRoNo);
+		message.setMessageAccepter(teacherMobile);
+		message.setMessageTitle(student.getStudentName() + "同学 给你发送了一条消息！");
+		message.setSendTime(sdf.format(new Date()));
+		message.setHaveRead("未读");
+		message.setMessageContent(student.getStudentName()+ " ：<br/><br/><span style='color:#FF5722'>"+ messageToStudentContentNow +"</span><br/>");
+		message.setMessageType("nomal");
 		
+		int tem = messageServiceImpl.insertMessage(message);
+		if(tem > 0){
+			map.put("result", true);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}		
 		
 		
 		

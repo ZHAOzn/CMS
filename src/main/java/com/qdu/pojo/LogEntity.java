@@ -13,8 +13,22 @@ public class LogEntity implements Serializable{
 	private String dateTime;//具体到日
 	private String commite;//执行的描述,具体到错误信息
 	private String result;//具体到成功/失败
+	private String address;
+	private String interNetApply;
 	
 	
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getInterNetApply() {
+		return interNetApply;
+	}
+	public void setInterNetApply(String interNetApply) {
+		this.interNetApply = interNetApply;
+	}
 	public int getLogId() {
 		return logId;
 	}

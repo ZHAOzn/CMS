@@ -37,14 +37,13 @@ layui.use(['form'], function(){
 			 $('#signalNow').show();
 		 }
 		
-		
 		 //如果消息数量为0
-		 //if(${messageCount} == 0){
-			// var TmessageCount = document.getElementById("TmessageCount")
-			// TmessageCount.style.display="none";
-		 //}
+		 if(${messageCount} == 0){
+			 $('#TmessageCount').hide();
+		 }else {
+			 $('#TmessageCount').show();
+		}
 		 //每1秒执行一次消息数量的查询
-		 setInterval(gggetMessageCount,1000);
 		 function gggetMessageCount() {
 			 
 			 $.ajax({
@@ -59,6 +58,7 @@ layui.use(['form'], function(){
 				success : function(data) {
 					if(data.message > 0){
 						$('#TmessageCount').html(data.message);
+						$('#TmessageCount').show();
 					}else {
 						var TmessageCount = document.getElementById("TmessageCount")
 						 TmessageCount.style.display="none";
@@ -69,8 +69,7 @@ layui.use(['form'], function(){
 				},
 				dataType : "json",
 			});
-		}
-		
+		} 
 		 //添加课程
 		 $('#createCourse').click(function() {
 			 $('#messageList').html("添加课程");
@@ -114,7 +113,13 @@ layui.use(['form'], function(){
 			 $('#messageShow').show();
 			 layui.use('table', function(){
 				  var table = layui.table;
-				  table.reload('test', {});
+				  table.reload('test1', {});
+				  table.reload('test2', {});
+			 });
+			 
+			 layui.use('table', function(){
+				  var table = layui.table;
+				  table.reload('test2', {});
 			 });
 			});
 		 //点击二维码叉号
@@ -126,21 +131,6 @@ layui.use(['form'], function(){
 		 $('#false').click(function() {
 			$('#torf').hide();
 		});
-		/* //点击资料上传
-			$('#dataUpload').click(function q() {
-				 $('#seprateMessage').hide();
-				 $('#changeCourseinfo').hide();
-				 $('#doubleHandle').hide();
-				 $('#signal').hide();
-				 $('#courseShow').hide();
-				 $('#messageShow').hide();
-				 $('#fushuMessage').hide();
-				 $('#lookData').hide();
-				 $('#teacherInfoShow').hide();
-				 $('#courseInfo').hide();
-				 $('#fileInfo').hide();
-				 $('#upLoadShow').show();
-			}); */
 		//个人中心
 		 $('#teacherInfoCenter').click(function name1() {
 			 $('#messageList').html("个人中心");
@@ -265,10 +255,25 @@ layui.use(['form'], function(){
 		              url: "<%=request.getContextPath()%>/teacher/updateStudentInfoByAjax.do",
 		              success: function (data) {
 		            	  if(data.result == true){
-		            		 $('#updateTeacherInfoSuccess').show();
-		            		 setTimeout('yourFunction()',2000); 
+		            		  layer.open({
+				   			        type: 1
+				   			        ,offset: 'auto'
+				   			        ,id: 'layerDemo'+'auto'
+				   			        ,title: '成功'
+				   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "个人信息更新成功！" +'</div>'
+				   			        ,btn: '关闭'
+				   			        ,btnAlign: 'c'
+				   			        ,skin: 'demo-class'
+				   			        ,shade: 0 
+				   			        ,yes: function(){
+				   			        	yourFunction(); 
+				   			        }
+				   			      });		            		 
 		            	  }else{
-		            		  alert("更新信息失败！");
+		            		  layui.use('layer', function() {
+            						var $ = layui.jquery, layer = layui.layer;
+            						layer.msg('信息更新失败！');
+            					});
 		            	  }
 		              },
 		              error: function (data) {
@@ -345,7 +350,88 @@ layui.use(['form'], function(){
             url: "<%=request.getContextPath()%>/teacher/getMessageByAjax.do",
 			success : function(data) {
 				$('#handleMessageShow').hide();
-				if(data.mmm.messageType == 'insertCourse'){
+				if(data.mmm.messageType == 'nomal'){
+					layer.open({
+			            type: 1
+			            ,title: false
+			            ,closeBtn: true
+			            ,area: '300px;'
+			            ,shade: 0.8
+			            ,id: 'LAY_layuipro' 
+			            ,btn: ['回复', '忽略']
+			            ,btnAlign: 'c'
+			            ,moveType: 0 
+			            ,content: '<div style="background-color: #393D49; color: #fff;"><br/>' + data.mmm.messageContent +'<br/></div>'
+			            ,yes: function(){
+			            	layer.closeAll();
+			            	layui.use('layer', function(){ 
+			                    var $ = layui.jquery, layer = layui.layer;
+			          	layer.open({
+			                  type: 1
+			                  ,title: false
+			                  ,closeBtn: true
+			                  ,area: '300px;'
+			                  ,shade: 0.8
+			                  ,id: 'LAY_layuipwro'
+			                  ,btn: ['立即回复', '想想再说']
+			                  ,btnAlign: 'c'
+			                  ,moveType: 0 
+			                  ,content: '<div style="background-color: #393D49; color: #fff;"><div  style="width:100%;"> <br/><label>回复消息</label><textarea style="color:#393D49" id="returnMessageToStudentContent" class="layui-textarea"></textarea></div></div>'
+			                  ,yes: function(){
+			                  	if($('#returnMessageToStudentContent').val() != "" && messageId != null){
+			                  		$.ajax({
+			                  	        type: "GET",
+			                  	        data: {
+			                  	         "returnMessageToStudentContent":$('#returnMessageToStudentContent').val(),
+			                  	         "messageId":messageId
+			                  	        },
+			                  	        contentType: "application/json; charset=utf-8",
+			                  	        async: false,
+			                  	        url: "<%=request.getContextPath()%>/teacher/returnMessageToStudent.do",
+			                  			success : function(data) {
+			                  				if(data.result == true){
+			                  					layui.use('layer', function(){
+			               		 	               var $ = layui.jquery, layer = layui.layer; 
+			               		   			      layer.open({
+			               		   			        type: 1
+			               		   			        ,offset: 'auto'
+			               		   			        ,id: 'layerDemo'+'auto'
+			               		   			        ,title: '成功'
+			               		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "消息发送成功！" +'</div>'
+			               		   			        ,btn: '关闭'
+			               		   			        ,btnAlign: 'c'
+			               		   			        ,skin: 'demo-class'
+			               		   			        ,shade: 0 
+			               		   			        ,yes: function(){
+			               		   			        	 layer.closeAll();
+			               		   			        }
+			               		   			      });
+			               		 	            });
+			                  				}else{
+			                  					layui.use('layer', function() {
+			                  						var $ = layui.jquery, layer = layui.layer;
+			                  						layer.msg('消息发送失败！');
+			                  					});
+			                  				}
+			                  			},
+			                  			error : function(data) {
+			                  				alert("服务器异常");
+			                  			},
+			                  			dataType : "json",
+			                  		});
+			                  	}else {
+			                  		layui.use('layer', function() {
+			          					var $ = layui.jquery, layer = layui.layer;
+			          					layer.msg('内容不能为空！');
+			          				});
+			          			}
+			          		  }
+			          	});
+			            });
+						  }
+			           
+			          });
+				}else if(data.mmm.messageType == 'insertCourse'){
 					$('#handleMessageShow').hide();
 					$('#forMessageContent').hide();
 					$('#messageContent').hide();
@@ -356,8 +442,17 @@ layui.use(['form'], function(){
 					
 					$('#MstudentRoNo').val(data.mmm.messageSender);
 					$('#MCourseId').val(data.mmm.messageContent);
-				}
-				if(data.mmm.messageType == 'leaveRecord'){
+					$('#messageShow').hide();
+					$('#messageTitle').html('标题 <' + data.mmm.messageTitle + '>');
+					$('#messageSnder').html('发件人账号 <' + data.mmm.messageSender +'>');
+					if(data.student != null){
+					$('#messageSenderName').html('发件人姓名 <' + data.student.studentName +'><br/><br/><br/><br/>');
+					$('#messageSenderName').show();
+					  }
+					$('#sendTime').html('时间 <' + data.mmm.sendTime +'>');
+					$('#messageContent').html(data.mmm.messageContent);
+					$('#fushuMessage').show();
+				}else if(data.mmm.messageType == 'leaveRecord'){
 					$('#leaveRecordId').val(data.mmm.messageOther);
 					$('#forMessageContent').show();
 					$('#messageContent').show();
@@ -368,17 +463,18 @@ layui.use(['form'], function(){
 					$('#messageContent').html(data.mmm.messageContent);
 					$('#MstudentRoNo').val(data.mmm.messageSender);
 					$('#MCourseId').val(data.mmm.messageContent);
+					$('#messageShow').hide();
+					$('#messageTitle').html('标题 <' + data.mmm.messageTitle + '>');
+					$('#messageSnder').html('发件人账号 <' + data.mmm.messageSender +'>');
+					if(data.student != null){
+					$('#messageSenderName').html('发件人姓名 <' + data.student.studentName +'><br/><br/><br/><br/>');
+					$('#messageSenderName').show();
+					  }
+					$('#sendTime').html('时间 <' + data.mmm.sendTime +'>');
+					$('#messageContent').html(data.mmm.messageContent);
+					$('#fushuMessage').show();
 				}
-				$('#messageShow').hide();
-				$('#messageTitle').html('标题 <' + data.mmm.messageTitle + '>');
-				$('#messageSnder').html('发件人账号 <' + data.mmm.messageSender +'>');
-				if(data.student != null){
-				$('#messageSenderName').html('发件人姓名 <' + data.student.studentName +'><br/><br/><br/><br/>');
-				$('#messageSenderName').show();
-				  }
-				$('#sendTime').html('时间 <' + data.mmm.sendTime +'>');
-				$('#messageContent').html(data.mmm.messageContent);
-				$('#fushuMessage').show();
+				
 				
 			},
 			error : function(data) {
@@ -387,6 +483,45 @@ layui.use(['form'], function(){
 			dataType : "json",
 		});
 	}
+	//查看发件箱
+	function getSenderMessage(messageId) {
+		$.ajax({
+            type: "GET",
+            data: {
+		         "messageId": messageId
+            },
+            contentType: "application/json; charset=utf-8",
+            async: false,
+            //url不加空格！！！！！！！！！！！！！！！！！！！！！！！
+            url: "<%=request.getContextPath()%>/teacher/getMessageByAjax.do",
+			success : function(data) {
+				$('#handleMessageShow').hide();
+					layer.open({
+			            type: 1
+			            ,title: false
+			            ,closeBtn: true
+			            ,area: '300px;'
+			            ,shade: 0.8
+			            ,id: 'LAY_layuipro' 
+			            ,btn: ['完成']
+			            ,btnAlign: 'c'
+			            ,moveType: 0 
+			            ,content: '<div style="background-color: #393D49; color: #fff;"><br/>标题：' +data.mmm.messageTitle + '<br/>内容：' + data.mmm.messageContent +'<br/></div>'
+			            ,yes: function(){
+			            	layer.closeAll();
+						  }
+			           
+			          });				
+				
+			},
+			error : function(data) {
+				alert("服务器异常");
+			},
+			dataType : "json",
+		});
+	}
+	
+	
 	function myFunction() {
 		$('#handleMessageShow').hide();
 		 $('#changeCourseinfo').hide();
@@ -625,8 +760,25 @@ function agreeLeave() {
          url: "<%=request.getContextPath()%>/teacher/agreeLeave.do",
 		success : function(data) {
 			if(data.result == true){
-				$('#handleMessageShow').show();
-				setTimeout('dontCare()',1500);
+				layui.use('layer', function(){
+	 	               var $ = layui.jquery, layer = layui.layer; 
+	   			      layer.open({
+	   			        type: 1
+	   			        ,offset: 'auto'
+	   			        ,id: 'layerDemo'+'auto'
+	   			        ,title: '成功'
+	   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "处理成功！" +'</div>'
+	   			        ,btn: '关闭'
+	   			        ,btnAlign: 'c'
+	   			        ,skin: 'demo-class'
+	   			        ,shade: 0 
+	   			        ,yes: function(){
+	   			        	setTimeout('dontCare()',1500);
+	   			        	 layer.closeAll();
+	   			        }
+	   			      });
+	 	            });
+				
 			}else{
 				layui.use('layer', function(){
 	 	               var $ = layui.jquery, layer = layui.layer; 
@@ -741,7 +893,7 @@ function checkCourseShow2() {
 					<li class="layui-nav-item"><a id="messageButtton" href="#">
 							<i class="layui-icon bbbbb"
 							style="font-size: 20px; color: #d2d2d2">&#xe63a;</i><span
-							id="TmessageCount" class="layui-badge">${messageCount}</span>
+							id="TmessageCount" class="layui-badge" style="display: none;">${messageCount}</span>
 					</a></li>
 					<li class="layui-nav-item"><a id="teacherInfoCenter" href="#">
 							<i class="layui-icon bbbbb"
@@ -1256,13 +1408,19 @@ function checkCourseShow2() {
 					});
 				</script>
 
-			<!-- 显示消息 -->
-			<div id="messageShow" 
-				style="margin-left: 5%; margin-right: 5%; display: none;">
-				<table class="layui-table" lay-skin="line"
+	<!-- 显示消息 -->
+	<div class="layui-tab" id="messageShow" style="margin-left: 5%; margin-right: 5%; display: none;">
+	  <ul class="layui-tab-title">
+	    <li class="layui-this">收件箱</li>
+	    <li onclick="tableRender()">发件箱</li>
+	  </ul>
+	  <div class="layui-tab-content">
+	  <div class="layui-tab-item layui-show">
+	      <div>
+				<table id="theOne" class="layui-table" lay-skin="line"
 					lay-data="{page:true,height:485,width:1070, url:'<%=request.getContextPath() %>/student/getSeperratePage.do',
-			 id:'test', where:{messageAcpter:'${teacher.teacherMobile}'}, limit:10}"
-					lay-filter="test">
+			 id:'test1', where:{messageAcpter:'${teacher.teacherMobile}'}, limit:10}"
+					lay-filter="test1">
 					<thead>
 						<tr>
 							<th lay-data="{field:'messageSender', width:200, sort: true}">发送方</th>
@@ -1276,6 +1434,39 @@ function checkCourseShow2() {
 					</thead>
 				</table>
 			</div>
+			</div>
+	  <div class="layui-tab-item">
+	     <div>
+				<table class="layui-table" lay-skin="line"
+					lay-data="{page:true,height:485,width:1070, url:'<%=request.getContextPath() %>/student/getSenderSeperratePage.do',
+			 id:'test2', where:{messageSender:'${teacher.teacherMobile}'}, limit:1000}"
+					lay-filter="test1">
+					<thead>
+						<tr>
+							<th lay-data="{field:'messageAccepter', width:200, sort: true}">接收方</th>
+							<th
+								lay-data="{field:'messageTitle', width:500,templet: '#titleTpl'}">标题</th>
+							<th
+								lay-data="{field:'haveRead', width:200, sort: true, align:'center', templet: '#havaread'}">状态</th>
+							<th
+								lay-data="{fixed: 'right', width:160, align:'center', toolbar: '#barDemo2'}"></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+	  </div>
+	  </div>
+	</div>
+ 
+		<script>
+		//注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+		layui.use('element', function(){
+		  var element = layui.element();
+		  var table = layui.table;
+	        table.render();
+		});
+		</script>
+			
 			<script type="text/html" id="titleTpl">
         <a href="#" class="layui-table-link">{{d.messageTitle}}</a>
         </script>
@@ -1286,24 +1477,56 @@ function checkCourseShow2() {
                        <i class="layui-icon" style="font-size: 20px; color: #FF5722;">&#xe607;</i>
                          {{#  } }}
             </script>
+            
 			<script type="text/html" id="barDemo">
-     <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail">查看</a>
-      <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
- </script>
+               <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail">查看</a>
+                <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+           </script>
+           
+           <script type="text/html" id="barDemo2">
+               <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail2">查看</a>
+           </script>
+          
 			<script>
+			function tableRender() {
+				layui.use('table', function(){
+			        var table = layui.table;
+			        table.reload('test2', {});
+			        table.render();
+				});
+			   }
         layui.use('table', function(){
-        var table = layui.table;  
+        var table = layui.table;
+        table.render();
         //监听工具条
-        table.on('tool(test)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        table.on('tool(test1)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
         var data = obj.data; //获得当前行数据
         var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
         var tr = obj.tr; //获得当前行 tr 的DOM对象
        
         if(layEvent === 'detail'){ //查看
+        	if(data.haveRead === '未读'){
+        		if($('#TmessageCount').html()>1){
+               	 $('#TmessageCount').html($('#TmessageCount').html()-1);
+                }else {
+                	$('#TmessageCount').hide();
+				}	
+        	}
+         
          getMessage(data.messageId);
-        } else if(layEvent === 'del'){ //删除
+        } else if(layEvent === 'detail2'){ //查看
+        //发件箱查看消息	
+         getSenderMessage(data.messageId);
+        
+        }else if(layEvent === 'del'){ //删除
           layer.confirm('真的删除该消息么？', function(index){
-           
+        	  if(data.haveRead === '未读'){
+          		if($('#TmessageCount').html()>1){
+                 	 $('#TmessageCount').html($('#TmessageCount').html()-1);
+                  }else {
+                  	$('#TmessageCount').hide();
+  				}	
+          	}
             //向服务端发送删除指令
    		 $.ajax({
              type: "GET",
