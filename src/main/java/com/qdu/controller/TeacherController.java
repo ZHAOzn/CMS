@@ -576,7 +576,7 @@ public class TeacherController {
 				if(fileName != null && path != null){
 					Map<String, Object> map2 = new HashMap<>();
 					objData.put("code", 0);
-					map2.put("src", "http://localhost:8080/ClassManageSys/blog/"+fileName);
+					map2.put("src", "http://101.200.61.255:8080/ClassManageSys/blog/"+fileName);
 					map2.put("title", fileName);
 					objData.put("data", map2);
 				}else {

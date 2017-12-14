@@ -2972,7 +2972,7 @@ function returnTeacherIndex() {
 					<!-- 签到二维码 -->
 					<div
 						style="padding: 10px; width: auto; text-align: center; margin-top: 10px;">
-						<img style="border: solid; border-color: black;" id="qrImg" src="">
+						<img style="border: solid; border-color: black;" id="qrImg" >
 					</div>
 				</div>
 				<!-- 签到操作 -->

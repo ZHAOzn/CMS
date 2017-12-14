@@ -753,6 +753,7 @@
 	<script>
 	layui.use('form', function() {
 		var form = layui.form;
+		form.render();
 	form.verify({
 		requirevalidate: [/\S/,'必填项不可为空']
 	});

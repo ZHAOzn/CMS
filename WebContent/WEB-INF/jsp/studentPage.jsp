@@ -324,10 +324,28 @@ layui.use(['form'], function(){
 	              url: "<%=request.getContextPath()%>/student/updateStudentInfoByAjax.do",
 	              success: function (data) {
 	            	  if(data.result == true){
-	            		 $('#updateStudentInfoSuccess').show();
-	            		 setTimeout('yourFunction()',2000); 
+	            		  layui.use('layer', function(){
+			 	               var $ = layui.jquery, layer = layui.layer; 
+			   			      layer.open({
+			   			        type: 1
+			   			        ,offset: 'auto'
+			   			        ,id: 'layerDemo'+'auto'
+			   			        ,title: '成功'
+			   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "信息更新完成！" +'</div>'
+			   			        ,btn: '关闭'
+			   			        ,btnAlign: 'c'
+			   			        ,skin: 'demo-class'
+			   			        ,shade: 0 
+			   			        ,yes: function(){
+			   			        	 layer.closeAll();
+			   			        }
+			   			      });
+			 	            });
 	            	  }else{
-	            		  alert("更新信息失败！");
+	            		  layui.use('layer', function() {
+        						var $ = layui.jquery, layer = layui.layer;
+        						layer.msg('更新失败！');
+        					});
 	            	  }
 	              },
 	              error: function (data) {
@@ -799,7 +817,7 @@ layui.use(['form'], function(){
 						    con += "<tr>";
 		        	        con += "<td style='text-align:center;'>" + item.fileType + "</td>";
 		        	        con += "<td style='text-align:center;'>" + item.createTime + "</td>";
-		        	        con += "<td style='padding-left:5%;'><a style='color:green;' href=\'<%=request.getContextPath() %>/file/"+item.fileName+"\'>" + item.fileName + "</a></td>";
+		        	        con += "<td style='padding-left:5%;'><a target='_blank' style='color:green;' href=\'<%=request.getContextPath() %>/file/"+item.fileName+"\'>" + item.fileName + "</a></td>";
 		        	        con += "<tr/>";
 		        	    });
 					 $('#privateData').html(con);
@@ -1716,7 +1734,7 @@ function searchData() {
 							</c:when>
 							<c:otherwise>
 								<tr>
-									<td colspan="9">(暂无课程)</td>
+									<td colspan="10">(暂无课程)</td>
 								</tr>
 							</c:otherwise>
 						</c:choose>
@@ -1996,6 +2014,15 @@ function searchData() {
                        <i class="layui-icon" style="font-size: 20px; color: #FF5722;">&#xe607;</i>
                          {{#  } }}
             </script>
+            
+             <script type="text/html" id="havaread">
+                  {{#  if(d.haveRead == '已读'){ }}
+                    <i class="layui-icon" style="font-size: 10px; color: #5FB878;">对方已读</i>
+                     {{#  } else { }}
+                       <i class="layui-icon" style="font-size: 10px; color: #FF5722;">对方未读</i>
+                         {{#  } }}
+         </script>
+            
 			<script type="text/html" id="titleTpl">
      		<a href="#" class="layui-table-link">{{d.messageTitle}}</a>
    			</script>
@@ -2580,10 +2607,29 @@ function searchData() {
     	if(test()){
     		 $('#emailTypeError').hide();
     		 if(pushEmail()){
-    			 $('#changeMailShow').show();
-    			 setTimeout('yourFunction()',2000); 
+    			 layui.use('layer', function(){
+  	               var $ = layui.jquery, layer = layui.layer; 
+  			      layer.open({
+  			        type: 1
+  			        ,offset: 'auto'
+  			        ,id: 'layerDemo'+'auto'
+  			        ,title: '成功'
+  			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "邮箱重置成功" +'</div>'
+  			        ,btn: '关闭'
+  			        ,btnAlign: 'c'
+  			        ,skin: 'demo-class'
+  			        ,shade: 0 
+  			        ,yes: function(){
+  			          yourFunction(); 
+  			        }
+  			      });
+  	            });
+    			
     		 }else {
-				alert("抱歉，服务器拥挤请稍后再试..");
+    			 layui.use('layer', function() {
+						var $ = layui.jquery, layer = layui.layer;
+						layer.msg('抱歉，服务器拥挤请稍后再试..！');
+					});
 			}
     	}else {
     		$('#waitChangeMailShow').hide();

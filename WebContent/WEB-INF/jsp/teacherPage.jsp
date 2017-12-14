@@ -917,6 +917,11 @@ function checkCourseShow2() {
 
 			</div>
 		</div>
+		<script type="text/javascript">
+		layui.use([ 'form', 'laydate' ], function() {
+			var form = layui.form, laydate = layui.laydate;
+		});
+		</script>
 		<!-- 左侧垂直导航 -->
 		<div class="layui-side layui-bg-black">
 			<div class="layui-side-scroll">
@@ -1476,7 +1481,15 @@ function checkCourseShow2() {
                      {{#  } else { }}
                        <i class="layui-icon" style="font-size: 20px; color: #FF5722;">&#xe607;</i>
                          {{#  } }}
-            </script>
+         </script>
+         
+          <script type="text/html" id="havaread">
+                  {{#  if(d.haveRead == '已读'){ }}
+                    <i class="layui-icon" style="font-size: 10px; color: #5FB878;">对方已读</i>
+                     {{#  } else { }}
+                       <i class="layui-icon" style="font-size: 10px; color: #FF5722;">对方未读</i>
+                         {{#  } }}
+         </script>
             
 			<script type="text/html" id="barDemo">
                <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail">查看</a>
@@ -2096,8 +2109,22 @@ function checkCourseShow2() {
     	if(test()){
     		 $('#emailTypeError').hide();
     		 if(pushEmail()){
-    			 $('#changeMailShow').show();
-    			 setTimeout('yourFunction()',2000); 
+    			 layui.use('layer', function(){
+		              var $ = layui.jquery, layer = layui.layer; 
+					      layer.open({
+					        type: 1
+					        ,offset: 'auto' 
+					        ,id: 'layerDemo'+'auto'
+					        ,title: '成功'
+					        ,content: '<div style="padding: 20px 100px; color:#FF5722;">'+ "邮箱重置成功~" +'</div>'
+					        ,btn: '关闭'
+					        ,btnAlign: 'c' 
+					        ,shade: 0 
+					        ,yes: function(){
+					        	yourFunction();
+					        }
+					      });
+		           });
     		 }
     	}
 	});
