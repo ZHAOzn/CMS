@@ -22,5 +22,7 @@ public void insertTeacher(Teacher teacher);
 	
 	public Teacher selectTeacherNameByMobile(String teacherMobile);
 	
-	public List<Teacher> selectTeacher() ;
+	public List<Teacher> selectTeacher();
+	
+	public Teacher selectTeacherDetail(String teacherMobile);
 }

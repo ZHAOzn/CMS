@@ -315,6 +315,7 @@ layui.use(['form'], function(){
 	   			        ,skin: 'demo-class'
 	   			        ,shade: 0 
 	   			        ,yes: function(){
+	   			         window.location.reload();
 	   			        	 layer.closeAll();
 	   			        }
 	   			      });
@@ -350,7 +351,24 @@ layui.use(['form'], function(){
             url: "<%=request.getContextPath()%>/teacher/getMessageByAjax.do",
 			success : function(data) {
 				$('#handleMessageShow').hide();
-				if(data.mmm.messageType == 'nomal'){
+				if(data.mmm.messageType == 'admin'){
+					layer.open({
+			            type: 1
+			            ,title: false //不显示标题栏
+			            ,closeBtn: true
+			            ,area: '300px;'
+			            ,shade: 0.8
+			            ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+			            ,btn: ['知道了~']
+			            ,btnAlign: 'c'
+			            ,moveType: 0 //拖拽模式，0或者1
+			            ,content: '<div style="background-color: #393D49; color: #fff;"><br/>' + data.mmm.messageContent +'<br/></div>'
+			            ,yes: function(){
+			            	layer.closeAll();
+						  }
+			           
+			          });
+				}else if(data.mmm.messageType == 'nomal'){
 					layer.open({
 			            type: 1
 			            ,title: false
@@ -910,7 +928,7 @@ function checkCourseShow2() {
 							</dd>
 							<dd>
 								<a onclick="exitLogin()"
-									href="<%=request.getContextPath()%>/index.jsp">注销</a>
+									href="<%=request.getContextPath()%>/index.jsp">注销登录</a>
 							</dd>
 						</dl></li>
 				</ul>
@@ -1636,9 +1654,9 @@ function checkCourseShow2() {
 					<div class="layui-form-item">
 						<label class="layui-form-label">课程类型</label>
 						<div class="layui-input-block">
-							<input id="courseType" type="radio" name="courseType" 
+							<input type="radio" name="courseType" 
 							value="必修" style="color: #FF5722" title="必修" checked> 
-							<input id="courseType" type="radio" name="courseType" 
+							<input type="radio" name="courseType" 
 							value="选修" style="color: #FF5722" title="选修">
 						</div>
 					</div>
@@ -1976,7 +1994,7 @@ function checkCourseShow2() {
 							<td><label class="layui-form-label">手机号</label></td>
 							<td><input class="layui-input" type="text"
 								readonly="readonly" name="teacherMobile"
-								value="${teacher.teacherMobile}" id="teacherMobile"
+								value="${teacher.teacherMobile}" id="teacherMobile2"
 								style="width: 25em;" /></td>
 						</tr>
 						<tr>
@@ -2039,7 +2057,7 @@ function checkCourseShow2() {
 							<td><label class="layui-form-label">手机号</label></td>
 							<td><input class="layui-input" type="text"
 								readonly="readonly" name="teacherMobile"
-								value="${teacher.teacherMobile}" id="teacherMobile"
+								value="${teacher.teacherMobile}" id="teacherMobile3"
 								style="width: 25em;" /></td>
 						</tr>
 						<tr>

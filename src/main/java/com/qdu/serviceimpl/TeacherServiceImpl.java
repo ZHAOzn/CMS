@@ -70,4 +70,10 @@ public class TeacherServiceImpl implements TeacherService{
 		return teacherDaoImpl.selectTeacher();
 	}
 
+
+	@Override
+	public Teacher selectTeacherDetail(String teacherMobile) {
+		return teacherDaoImpl.selectTeacherDetail(teacherMobile);
+	}
+
 }

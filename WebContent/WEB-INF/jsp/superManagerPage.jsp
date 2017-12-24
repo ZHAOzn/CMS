@@ -221,11 +221,11 @@ function teacherDetailShow(id){
         	contentType: "application/json; charset=utf-8",
         	dataType: "json",
         	async: false,
-        	url: "<%=request.getContextPath()%>/teacher/confirmExitsTeacher.do",
+        	url: "<%=request.getContextPath()%>/teacher/selectTeacherDetail.do",
 			success : function(data) {
 				if(data.result == false){
 					$('#teacherNameInfo').html(data.teacher.teacherName);
-					$('#teacherMobileInfo').html(data.teacher.teacherMobile);
+					$('#teacherMobileInfo').html(id);
 					$('#teacherGenderInfo').html(data.teacher.teacherGender);
 					$('#teacherEmailInfo').html(data.teacher.teacherEmail);
 					$('#birthDayInfo').html(data.teacher.birthDay);
@@ -265,7 +265,7 @@ function feedbackDShow() {
 					style="color: white; font-size: 25px;">CMS</span></a>
 
 				<ul class="layui-nav">
-					<li class="layui-nav-item"><a id="checkCourseShow2" href="#">
+					<!-- <li class="layui-nav-item"><a id="checkCourseShow2" href="#">
 							<i class="layui-icon bbbbb"
 							style="font-size: 20px; color: #d2d2d2">&#xe68e;</i>
 					</a></li>
@@ -278,9 +278,9 @@ function feedbackDShow() {
 							<i class="layui-icon bbbbb"
 							style="font-size: 20px; color: #d2d2d2">&#xe612;</i><span
 							id="redSignal" style="display: none;" class="layui-badge-dot"></span>
-					</a></li>
+					</a></li> -->
 					<li class="layui-nav-item"><a href="#">超管</a>
-						<dl class="layui-nav-child">
+						<%-- <dl class="layui-nav-child">
 							<dd>
 								<a id="changeTeacherInfoh" href="#">修改信息</a>
 							</dd>
@@ -290,7 +290,7 @@ function feedbackDShow() {
 							<dd>
 								<a href="<%=request.getContextPath()%>/index.jsp">注销</a>
 							</dd>
-						</dl></li>
+						</dl></li> --%>
 				</ul>
 
 			</div>
@@ -322,18 +322,12 @@ function feedbackDShow() {
 					<li class="layui-nav-item"><a href="#">资料管理</a>
 						<dl class="layui-nav-child">
 							<dd>
-								<a id="crudShow" href="#">CRUD管理</a>
-							</dd>
-							<dd>
-								<a id="manageJurisdictionShow" href="#">权限管理</a>
-							</dd>
-							<dd>
 								<a onclick="clearRedis()" href="#">清理redis</a>
 							</dd>
 						</dl></li>
 					<li class="layui-nav-item"><a id="manageBlogShow" href="#">博文审核</a></li>
-					<li class="layui-nav-item"><a id="manageAnnouncementShow"
-						href="#">发布公告</a></li>
+					<!-- <li class="layui-nav-item"><a id="manageAnnouncementShow"
+						href="#">发布公告</a></li> -->
 					<li class="layui-nav-item"><a onclick="feedbackDShow()"
 						href="#">反馈处理</a></li>
 				</ul>
@@ -349,14 +343,19 @@ function feedbackDShow() {
 			
 			
 			<!-- 反馈 -->
-			<div id="feedbackDiv" class="site-text site-block" style="padding-left: 0;padding-right: 0;display: none;">
+			<div id="feedbackDiv" class="site-text site-block" style="padding-left: 0;padding-right: 0;display: none; padding-top: 0; margin-top: 0;">
 			<ul id="feedbackUl" style="width: 100%; margin-top: 10px; margin-left: 0;margin-right: 0;padding-left: 0;padding-right: 0;padding-top: 0;">
 		      <c:choose>
 		        <c:when test="${!empty feedbacks}">
 		          <c:forEach  items="${feedbacks}" var="s"  varStatus="status" begin="0">
 		            <li  class="site-block" style="background-color: #eeeeee;margin-top: 0;">
 		              (${status.index}).<a target='_blank' href="">${s.feedbackContent}</a>&nbsp;&nbsp;
-		             <a href="#" id="${s.feedbackId}" onclick="beforResolveFeedback(this.id)"><span id="F${s.feedbackId}" style="color: #FF5722">${s.result}</span></a>
+		             <c:if test="${s.result == '已解决'}">
+		                <a href="#" id="${s.feedbackId}" onclick="beforResolveFeedback(this.id)"><span id="F${s.feedbackId}" style="color: #009688">${s.result}</span></a>
+		             </c:if>
+		             <c:if test="${s.result  == '未解决'}">
+		                <a href="#" id="${s.feedbackId}" onclick="beforResolveFeedback(this.id)"><span id="F${s.feedbackId}" style="color: #FF5722">${s.result}</span></a>
+		             </c:if>
 		            </li>
 		            <input type="text" id="C${s.feedbackId}" value="${s.reson}" readonly="readonly" style="display: none;"/>
 		          </c:forEach>
@@ -443,6 +442,19 @@ function feedbackDShow() {
 			
 			<!-- 博客管理 -->
 			<div id="manageBlogDiv" class="site-text site-block" style="padding-left: 0;padding-right: 0;display: none;">
+				
+				<input type="checkbox" onchange="beforeListenBlog()" name="forCheckBlogId" title="全选"
+				style="margin-left: 4%;">全选
+				
+				<a id="forPassBlog" href="#" onclick="passBlogByCheck()"
+				style="color: #009688;display: none; margin-left: 1%;">
+				[<i class="layui-icon" style="font-size: 17px; color: #009688;">&#xe616;</i> 审核通过]
+				</a>
+				
+				<a id="forDontpassBlog" href="#" onclick="dontpassBlogByCheck()"
+				style="color: #FF5722;display: none; margin-left: 5%;">
+				[<i class="layui-icon" style="font-size: 17px; color: #FF5722;">&#x1007;</i> 审核不通过]
+				</a>
 				<table class="layui-table" lay-skin="line" lay-even style="text-align: center; width: 100%;">
 					<colgroup>
 						<col width="200">
@@ -471,7 +483,7 @@ function feedbackDShow() {
 							<c:when test="${! empty myBlogs}">
 								<c:forEach items="${myBlogs}" var="s">
 									<tr id="T${s.blogId}">
-										<td> <input type="checkbox" name="like[write]"></td>
+										<td> <input type="checkbox" onchange="listenBlog()" value="${s.blogId}" class="checkboxOfBlog" name="checkBlogId"></td>
 										<td>${s.blogAuthor}</td>
 										<td>${s.role}</td>
 										<td>${s.blogTitle}</td>
@@ -494,6 +506,137 @@ function feedbackDShow() {
 			</div>
 			
 			<script type="text/javascript">
+			//全选
+			function beforeListenBlog() {
+				if($("input[name='forCheckBlogId']:checked").is(':checked')){
+					$("input:checkbox[name='checkBlogId']").attr("checked","checked");
+					$('#forPassBlog').show();
+					$('#forDontpassBlog').show();
+				}else {
+					$("input:checkbox[name='checkBlogId']").removeAttr("checked","");
+					$('#forPassBlog').hide();
+					$('#forDontpassBlog').hide();
+				}
+			}
+			//复选框选中事件
+			function listenBlog() {
+				if($("input[name='checkBlogId']:checked").length > 0){
+					$('#forPassBlog').show();
+					$('#forDontpassBlog').show();
+				}else {
+					$('#forPassBlog').hide();
+					$('#forDontpassBlog').hide();
+				}
+			}
+			//删除复选框选中的博文
+			function passBlogByCheck() {
+				if($("input[name='checkBlogId']:checked").length > 0){
+					var blogIds = "";
+			        $("input:checkbox[name='checkBlogId']:checked").each(function() {
+			        	blogIds += $(this).val() + " ";
+			        });
+			        $.ajax({
+			              type: "GET",
+			              data: {
+			            	  "blogIds":blogIds
+			              },
+			              contentType: "application/json; charset=utf-8",
+			              async: false,
+			              dataType: "json",
+			              url: "<%=request.getContextPath()%>/admin/passBlogByCheck.do",
+			              success: function (data) {
+			            	  if(data.result == true){
+			            		  layer.open({
+								        type: 1
+								        ,offset: 'auto' 
+								        ,id: 'layerDemo'+'auto'
+								        ,title: '成功'
+								        ,content: '<div style="padding: 20px 100px; color:#FF5722;">'+ "审核成功~" +'</div>'
+								        ,btn: '关闭'
+								        ,btnAlign: 'c' 
+								        ,shade: 0 
+								        ,yes: function(){
+								        	$("input:checkbox[name='checkBlogId']:checked").each(function() {
+									        	$('#T'+$(this).val()).hide();
+									        });
+								        	$("input:checkbox[name='forCheckBlogId']").removeAttr("checked","");
+								        	layer.closeAll();
+								        }
+								      });
+			            	  }else {
+			            		  layui.use('layer', function() {
+			  	    				var $ = layui.jquery, layer = layui.layer;
+			  	    				layer.msg('发生错误，部分未审核!');
+			  	    			});
+							}
+			            	  
+			              },
+			              error: function (data) {
+			            	  alert("服务器异常");
+			              }
+			          });
+				}else {
+					layui.use('layer', function() {
+	    				var $ = layui.jquery, layer = layui.layer;
+	    				layer.msg('未选中!');
+	    			});
+				}
+				
+			}
+			//博文审核批量不通过
+			function dontpassBlogByCheck() {
+				if($("input[name='checkBlogId']:checked").length > 0){
+					var blogIds = "";
+			        $("input:checkbox[name='checkBlogId']:checked").each(function() {
+			        	blogIds += $(this).val() + " ";
+			        });
+			        $.ajax({
+			              type: "GET",
+			              data: {
+			            	  "blogIds":blogIds
+			              },
+			              contentType: "application/json; charset=utf-8",
+			              async: false,
+			              dataType: "json",
+			              url: "<%=request.getContextPath()%>/admin/dontpassBlogByCheck.do",
+			              success: function (data) {
+			            	  if(data.result == true){
+			            		  layer.open({
+								        type: 1
+								        ,offset: 'auto' 
+								        ,id: 'layerDemo'+'auto'
+								        ,title: '成功'
+								        ,content: '<div style="padding: 20px 100px; color:#FF5722;">'+ "选中博文均为通过审核~" +'</div>'
+								        ,btn: '关闭'
+								        ,btnAlign: 'c' 
+								        ,shade: 0 
+								        ,yes: function(){
+								        	$("input:checkbox[name='checkBlogId']:checked").each(function() {
+									        	$('#T'+$(this).val()).hide();
+									        });
+								        	$("input:checkbox[name='forCheckBlogId']").removeAttr("checked","");
+								        	layer.closeAll();
+								        }
+								      });
+			            	  }else {
+			            		  layui.use('layer', function() {
+			  	    				var $ = layui.jquery, layer = layui.layer;
+			  	    				layer.msg('发生错误，部分未审核!');
+			  	    			});
+							}
+			            	  
+			              },
+			              error: function (data) {
+			            	  alert("服务器异常");
+			              }
+			          });
+				}else {
+					layui.use('layer', function() {
+	    				var $ = layui.jquery, layer = layui.layer;
+	    				layer.msg('未选中!');
+	    			});
+				}
+			}
 			function getBlog(id) {
 				 $.ajax({
 		              type: "GET",

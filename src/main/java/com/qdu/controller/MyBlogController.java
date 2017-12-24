@@ -65,7 +65,6 @@ public class MyBlogController {
 		Map<String, Object> map = new HashMap<>();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		MyBlog myBlog = new MyBlog();
-		System.out.println(blogAuthor + blogContent);
 		myBlog.setBlogTitle(title);
 		myBlog.setBlogAuthor(blogAuthor);
 		myBlog.setRole(role);
@@ -309,8 +308,6 @@ public class MyBlogController {
 		}
 		return map;
 	}
-	
-	
 	
 	
 	

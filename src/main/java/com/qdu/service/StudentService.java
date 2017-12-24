@@ -29,6 +29,8 @@ public interface StudentService {
 	public int updateStudentextra(Student student);
 	
 	public List<Student> selectStuList();
+	
+	public int updateStudentPhoto(String studentRoNo, String studentPhoto);
 		
 
 }

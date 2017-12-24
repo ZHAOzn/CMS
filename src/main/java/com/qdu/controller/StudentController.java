@@ -216,8 +216,10 @@ public class StudentController {
 		String path = request.getSession().getServletContext().getRealPath("/") + "studentPhoto";
 		System.out.println(path);
 		String fileName = file.getOriginalFilename();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD-HH-mm-ss");
 		System.out.println(fileName);
-		File targetFile = new File(path, fileName);
+		String nameNow = sdf.format(new Date())+"/"+fileName;
+		File targetFile = new File(path, nameNow);
 		if (!targetFile.exists()) {
 			targetFile.mkdirs();
 		}
@@ -230,6 +232,7 @@ public class StudentController {
 		String password = request.getParameter("studentPassword");
 		System.out.println(MD5Util.md5(password, "juin"));
 		student.setStudentPassword(MD5Util.md5(password, "juin"));
+		student.setStudentPhoto(nameNow);
 		studentServiceImpl.insertStudentByNo(student);
 		System.out.println("学生注册成功");
 
@@ -857,7 +860,39 @@ public class StudentController {
 		return map;
 	}		
 		
+	//学生更换照片
+	@RequestMapping(value = "/updateStudentPhoto.do",method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> updateStudentPhoto(HttpServletRequest request, @RequestParam("file") MultipartFile file){
+		Map<String, Object> map = new HashMap<>();
+		String studentRoNo = request.getParameter("studentRoNoForPhoto");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD-HH-mm-ss");
+		String path = request.getSession().getServletContext().getRealPath("/") + "studentPhoto";
+		System.out.println(path);
+		String fileName = file.getOriginalFilename();
+		System.out.println(fileName);
+		String nameNow = sdf.format(new Date())+"/"+fileName;
+		File targetFile = new File(path, nameNow);
+		if (!targetFile.exists()) {
+			targetFile.mkdirs();
+		}
+		// 保存
+		try {
+			file.transferTo(targetFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
+		int tem = studentServiceImpl.updateStudentPhoto(studentRoNo, nameNow);
+		if(tem > 0){
+			map.put("result", true);
+			map.put("fileName", fileName);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}		
 		
 		
 		

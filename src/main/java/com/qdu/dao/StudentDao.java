@@ -29,5 +29,7 @@ public interface StudentDao {
 	
 	public List<Student> selectStuList();
 	
+	public int updateStudentPhoto(String studentRoNo,String studentPhoto);
+	
  
 }

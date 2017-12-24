@@ -108,6 +108,15 @@ public class StudentDaoImpl implements StudentDao{
 		return sessionFactory.openSession().selectList(statement);
 	}
 
+	@Override
+	public int updateStudentPhoto(String studentRoNo, String studentPhoto) {
+		HashMap<String, Object> map = new HashMap<>();
+		String statement = "com.qdu.mapping.StudentMapping.updateStudentPhoto";
+		map.put("studentRoNo", studentRoNo);
+		map.put("studentPhoto", studentPhoto);
+		return sessionFactory.openSession().update(statement, map);
+	}
+
 
 
 }

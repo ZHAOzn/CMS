@@ -71,6 +71,13 @@
 		SELECT * from Teacher 
 	</select>
 	
+	<select id="selectTeacherDetail" resultMap="TeacherResult">
+	  SELECT TeacherEmail,TeacherPassword,TeacherName,
+	  TeacherGender,TeacherSubject,College,Special,SchoolRecord,BirthDay,
+	  FreeStyle from Teacher 
+	  where TeacherMobile = #{teacherMobile}
+	</select>
+	
 	<select id="selectTeacherByMobile" parameterType="String" resultMap="TeacherResult">
 		SELECT * from
 		Teacher where TeacherMobile = #{teacherMobile}

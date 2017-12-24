@@ -1240,7 +1240,7 @@ function leaveRecord() {
 							</dd>
 							<dd>
 								<a onclick="exitLogin()"
-									href="<%=request.getContextPath()%>/index.jsp">注销</a>
+									href="<%=request.getContextPath()%>/index.jsp">注销登录</a>
 							</dd>
 						</dl></li>
 				</ul>
@@ -2341,7 +2341,17 @@ function searchData() {
 						src="/ClassManageSys/studentPhoto/${student.studentPhoto}"
 						style="width: 100px; heigh: 120px; margin-left: -100px;"
 						id="imgPre">
-					<p id="demoText"></p>
+						
+					<form id= "uploadForm" enctype="multipart/form-data" method="post"> 	
+					<input type="file" name="file" id="uploadFile"
+						style="display: none;" onchange="preImg(this.id, 'imgPre2','tct');" />
+					<input type="text" name="studentRoNoForPhoto" value="${student.studentRoNo}" style="display: none;" readonly="readonly"/>
+					</form>
+					
+					<a href="#" onclick="beforeUploadFile()" style="margin-left: 15%; color: #5FB878" id="demoText">更换照片</a>
+					<input id="tct" type="text" value="" lay-verify="photovalidate"
+						style="display: none" />
+					
 					<table style="margin-left: -110px; width: 70%"
 						class="layui-form layui-form-pane">
 						<tr id="forintoSchool" style="">
@@ -2415,6 +2425,93 @@ function searchData() {
 
 			</div>
 			<script>
+			function beforeUploadFile() {
+				layer.open({
+		            type: 1
+		            ,title: false
+		            ,area: '300px;'
+		            ,shade: 0.8
+		            ,id: 'LAY_layuiproJ' 
+		            ,btn: ['更换', '取消']
+		            ,btnAlign: 'c'
+		            ,moveType: 0 
+		            ,content: '<div style="background-color: #393D49; color: #fff;"><br/><button class="layui-btn" type="button" onclick="uploadFile.click()">选择照片</button><br/><br/><img class="layui-upload-img" style="width: 100px; heigh:120px;" id="imgPre2"><br/></div>'
+		            ,yes: function(){
+		            	if($('#tct').val() != ""){
+		            		var formData = new FormData($( "#uploadForm" )[0]); 
+		            		$.ajax({
+	                  	        type: "POST",
+	                  	        data:formData,
+	                  	        contentType: false,  
+	                            processData: false,
+	                  	        async: false,
+	                  	        url: "<%=request.getContextPath()%>/student/updateStudentPhoto.do",
+	                  			success : function(data) {
+	                  				if(data.result == true){
+	                  					layui.use('layer', function(){
+	               		 	               var $ = layui.jquery, layer = layui.layer; 
+	               		   			      layer.open({
+	               		   			        type: 1
+	               		   			        ,offset: 'auto'
+	               		   			        ,id: 'layerDemo'+'auto'
+	               		   			        ,title: '成功'
+	               		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "照片更换成功！" +'</div>'
+	               		   			        ,btn: '关闭'
+	               		   			        ,btnAlign: 'c'
+	               		   			        ,skin: 'demo-class'
+	               		   			        ,shade: 0 
+	               		   			        ,yes: function(){
+	               		   			        	setTimeout('layer.closeAll()','1500');
+	               		   			        	  
+	               		   			        }
+	               		   			      });
+	               		 	            });
+	                  					  var imgPre = document.getElementById("imgPre");
+                 					      imgPre.style.display = "block";
+                 					      imgPre.src = "/ClassManageSys/studentPhoto/" + data.fileName;
+	                  				}else{
+	                  					layui.use('layer', function() {
+	                  						var $ = layui.jquery, layer = layui.layer;
+	                  						layer.msg('照片更换失败！');
+	                  					});
+	                  				}
+	                  				layer.closeAll();
+	                  			},
+	                  			error : function(data) {
+	                  				alert("服务器异常");
+	                  			},
+	                  			dataType : "json",
+	                  		});
+		            	}else {
+		            		layui.use('layer', function() {
+		  	    				var $ = layui.jquery, layer = layui.layer;
+		  	    				layer.msg('请选择照片!');
+		  	    			});
+						}
+					  }
+		           
+		          });
+			}
+			/** 
+			 * 将本地图片 显示到浏览器上 
+			 */
+			function getFileUrl(sourceId) {
+				var url;
+				url = window.URL
+						.createObjectURL(document.getElementById(sourceId).files
+								.item(0));
+				return url;
+			}
+			function preImg(sourceId, targetId, tct) {
+				
+				var fileName = document.getElementById(sourceId).value;
+				var fileNamePlus = fileName.substr(12);
+				var url = getFileUrl(sourceId);
+				var imgPre = document.getElementById(targetId);
+				imgPre.style.display = "block";
+				imgPre.src = url;
+				document.getElementById(tct).value = fileNamePlus;
+			}
 					//Demo
 					layui.use([ 'form', 'laydate' ], function() {
 						var form = layui.form, laydate = layui.laydate;
@@ -2439,7 +2536,7 @@ function searchData() {
 
 			<!-- 安全/密码 -->
 			<div id="signal"
-				style="width: 95%; margin-left: 5%; padding-left: 5%; z-index: 1; background-color: #cccc00; height: 3%; display: none; font-family: 微软雅黑;">
+				style="width: 95%; margin-left: 5%; padding-left: 5%; z-index: 1; background-color: #009688; height: 4%; display: none; font-family: 微软雅黑;">
 				提示：修改邮箱后后请前往原邮箱确认..</div>
 			<!-- 更改邮箱成功提示信息 -->
 			<div id="changeMailShow" class="site-text site-block"
@@ -2448,7 +2545,7 @@ function searchData() {
 			</div>
 
 			<div class="site-text site-block" id="doubleHandle"
-				style="width: 70%; margin-left: 15%; margin-top: 4%; display: none;">
+				style="width: 70%; margin-left: 5%; margin-top: 4%; display: none;">
 				<a class="layui-btn layui-btn-primary" href="#" id="changeStuPass"
 					style="float: left; height: 20%; width: 49%; font-size: 1.5em">更改密码</a>
 				<a class="layui-btn layui-btn-primary" href="#" id="changeStuMail"

@@ -166,7 +166,7 @@
 			<!-- <button type="reset" class="layui-btn layui-btn-primary">重置</button> -->
 		</form>
 				<div class="layui-upload-list" style="width: 100px; heigh:120px; float: left; margin-left: 10px">
-				<img class="layui-upload-img" src="" style="width: 100px; heigh:120px;" id="imgPre">
+				<img class="layui-upload-img" style="width: 100px; heigh:120px;" id="imgPre">
 					<p id="demoText"></p>
 				</div>
 				

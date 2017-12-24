@@ -72,6 +72,11 @@ public class StudentServiceImpl implements StudentService{
 		return studentDaoImpl.selectStuList();
 	}
 
+	@Override
+	public int updateStudentPhoto(String studentRoNo, String studentPhoto) {
+		return studentDaoImpl.updateStudentPhoto(studentRoNo, studentPhoto);
+	}
+
 	
 
 

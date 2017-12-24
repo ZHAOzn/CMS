@@ -188,6 +188,21 @@ public class TeacherController {
 		}
 		return map;
 	}
+	
+	//管理员查询教师信息
+		@RequestMapping(value = "/selectTeacherDetail.do")
+		public @ResponseBody Map<String, Object> selectTeacherDetail(HttpServletRequest request, String teacherMobile) {
+			System.out.println(teacherMobile); 
+			Map<String, Object> map = new HashMap<>();
+			Teacher teacher = teacherServiceImpl.selectTeacherDetail(teacherMobile);
+			if (teacher == null) {
+				map.put("result", true);
+			} else {
+				map.put("teacher", teacher);
+				map.put("result", false);
+			}
+			return map;
+		}
 
 	// ajax验证密码
 	@SystemLog(module = "教师", methods = "日志管理-登录密码验证")
@@ -576,7 +591,7 @@ public class TeacherController {
 				if(fileName != null && path != null){
 					Map<String, Object> map2 = new HashMap<>();
 					objData.put("code", 0);
-					map2.put("src", "http://101.200.61.255:8080/ClassManageSys/blog/"+fileName);
+					map2.put("src", "http://localhost:8080/ClassManageSys/blog/"+fileName);
 					map2.put("title", fileName);
 					objData.put("data", map2);
 				}else {
