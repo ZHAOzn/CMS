@@ -801,7 +801,8 @@ function feedbackDShow() {
 			</div>
 			
 			<!-- 学生详细信息模块 -->
-			<div id="studentDetail" class="site-text site-block" style="display: none;text-align: center;padding-left: 0;padding-right: 0">
+			<div id="studentDetail" class="site-text site-block" style="display: none;padding-left: 0;padding-right: 0;">
+				<a onclick="returnUp01()" href="#" style="color: #009688;margin-left: 15px;"><i class="layui-icon" style="font-size: 15px; color: #009688;">&#xe65a;</i>&nbsp;返回上一层</a>
 				<table class="layui-table">
 					<tr>
 						<th style="color: #5FB878;text-align: center;">学号</th>
@@ -851,12 +852,22 @@ function feedbackDShow() {
 					  elem:'#studentDetail'
 				  }); 
 				});
-			
+			//返回学生信息上一层
+			function returnUp01() {
+				$('#messageList').html("学生信息");
+				$('#studentInfo').show();
+				$('#studentDetail').hide();
+			}
+			function returnUp02() {
+				$('#messageList').html("教师信息");
+				$('#teacherInfo').show();
+				$('#teacherDetail').hide();
+			}
 			</script>
 
 			<!-- 学生操作日志模块 -->
-			<div id="studentLog" class="site-text site-block" style="display: none; text-align: center;padding-left: 0;padding-right: 0">
-				<table class="layui-table" lay-even>
+			<div id="studentLog" class="site-text site-block" style="display: none;padding-left: 0;padding-right: 0">
+				<table class="layui-table">
 					<colgroup>
 						<col width="150">
 						<col width="300">
@@ -880,9 +891,9 @@ function feedbackDShow() {
 								<c:forEach items="${studentLogEntitys}" var="sl">
 									<tr>
 										<td>${sl.userId}</td>
-										<td style="text-align: left; padding-left: 10%;">${sl.method}</td>
-										<td>${sl.reponseTime}</td>
-										<td>${sl.ip}</td>
+										<td style="text-align: center;">${sl.method}</td>
+										<td style="text-align: center;">${sl.reponseTime}</td>
+										<td style="text-align: center;">${sl.ip}</td>
 										<td>${sl.date}</td>
 										<td>${sl.result}</td>
 										<!--  <td colspan="8"></td>-->
@@ -949,6 +960,7 @@ function feedbackDShow() {
 			</div>
 			<!-- 教师详细信息模块 -->
 			<div id="teacherDetail" class="site-text site-block" style="display: none;padding-left: 0;padding-right: 0">
+			<a onclick="returnUp02()" href="#" style="color: #009688;margin-left: 15px;"><i class="layui-icon" style="font-size: 15px; color: #009688;">&#xe65a;</i>&nbsp;返回上一层</a>
 				<table class="layui-table">
 					<tr>
 						<th style="color: #5FB878;text-align: center;">账号</th>

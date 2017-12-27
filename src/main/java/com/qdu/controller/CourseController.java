@@ -93,7 +93,7 @@ public class CourseController {
 		return userMap;
 	}
 	//二维码扫描后
-	@SystemLog(module="学生",methods="日志管理-扫描二维码")
+	@SystemLog(module="学生",methods="日志管理-扫码签到")
 	@RequestMapping(value = "/createQrNew.do")
 	public String createQrNew(ModelMap map, HttpServletRequest request) {
 		System.out.println("进入");

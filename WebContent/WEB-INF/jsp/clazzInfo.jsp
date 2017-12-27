@@ -20,7 +20,7 @@ response.sendRedirect(request.getContextPath() + "/index.jsp");
 	href="<%=request.getContextPath()%>/layui/css/layui.css">
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
 <script src="<%=request.getContextPath()%>/layui/mods/index.js"></script>
-<title>班级信息</title>
+<title>班级事务</title>
 
 
 
@@ -1015,6 +1015,7 @@ function scoreFormList() {
 	       	        con += "<td style='text-align:center;'>" + item.startTime + "</td>";
 	       	        con += "<td style='text-align:center;'>" + item.duration + "分钟</td>";
 	       	        con += "<td style='text-align:center;'><div class='site-demo-button' id='layerDemo'><a href='#' id='"+item.examinationID+"' onclick='scoreShowTableFirst(this.id)'><i class='layui-icon' style='font-size: 30px; color: #1E9FFF;'>&#xe63c;</i></a> </div></td>";
+	       	        con += "<td style='text-align:center;'><a href='<%=request.getContextPath()%>/teacher/exportScore.do?examinationID="+item.examinationID+"'><i class='layui-icon' style='font-size: 30px; color: #1E9FFF;'>&#xe61e;</i></a></td>";
 	       	        con += "<tr/>";
 	       	    });
 				 $('#scoreShowTable').html(con);
@@ -1025,7 +1026,26 @@ function scoreFormList() {
 			dataType : "json",
 		});
 }
-
+//导出成绩单
+function exportScore(id) {
+	alert(id);
+	$.ajax({
+        type: "GET",
+        data: {
+        	"examinationID":id.substring(1)
+        },
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        url: "<%=request.getContextPath()%>/teacher/exportScore.do",
+		success : function(data) {
+			
+		},
+		error : function(data) {
+			alert("??");
+		},
+		dataType : "json",
+	});
+}
 //看某试卷下面的学生成绩
 function scoreShowTableFirst(id) {
 	$.ajax({
@@ -3380,7 +3400,7 @@ function returnTeacherIndex() {
 
     
 			<!-- 试卷列表 -->
-			<table id="ExaminationList" class="layui-table" lay-even lay-skin="line"
+			<table id="ExaminationList" class="layui-table" lay-even lay-skin="row"
 				style="text-align: center; width: 100%; margin-left: 0;">
 				<colgroup>
 					<col width="120">
@@ -4488,7 +4508,7 @@ function returnTeacherIndex() {
 		<!-- 显示成绩单 -->	   
 		<div id="scoreFormList" class="site-text site-block"
 			style="display: none;margin-top: 0; padding-left: 0; padding-right: 0;"> 
-	        <table id="scoreShowTableFirst" class="layui-table" lay-even lay-skin="line"
+	        <table id="scoreShowTableFirst" class="layui-table" lay-even lay-skin="row"
 				style="text-align: center; width: 100%;">
 				<colgroup>
 					<col width="80">
@@ -4498,6 +4518,7 @@ function returnTeacherIndex() {
 					<col width="100">
 					<col width="80">
 					<col width="110">
+					<col width="130">
 				</colgroup>
 				<thead>
 					<tr id="title">
@@ -4508,6 +4529,7 @@ function returnTeacherIndex() {
 						<th style="text-align: center;">开始时间</th>
 						<th style="text-align: center;">考试时长</th>
 						<th style="text-align: center;">查看成绩</th>
+						<th style="text-align: center;">导出成绩单</th>
 					</tr>
 				</thead>
 				<tbody id="scoreShowTable">

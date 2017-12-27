@@ -26,6 +26,11 @@
 <title>${examination.examinationName}考试页面</title>
 </head>
 <script type="text/javascript">
+function   fresh(){  
+	if(location.href.indexOf("?reload=true")<0){
+	    location.href+="?reload=true";  
+	   }  
+	} 
 window.onbeforeunload = function(){
 return "您尚未保存！";
 }
@@ -118,7 +123,7 @@ window.onload=function(){
 		  var second=Math.floor(leftsecond-day1*24*60*60-hour*3600-minute*60); 
 		  $('#second').val(second);
 		  var cc = document.getElementById(divname); 
-		  cc.innerHTML = "剩余:"+hour+"小时"+minute+"分"+second+"秒"; 
+		  cc.innerHTML = "剩余:"+hour+"小时"+"<span style='color:#FF5722'>"+minute+"</span>"+"分"+"<span style='color:#FF5722'>"+second+"</span>"+"秒"; 
 		  timeEnd();
 	 } 
 		window.setInterval(function(){ShowCountDown(${year},${month},${day},${hour},${minute},${seconds},'time');}, interval); 
@@ -251,7 +256,7 @@ window.onload=function(){
 					<th>姓名</th>
 					<th>考试时间</th>
 					<th>考试时长</th>
-					<th>卷面总分</th>
+					<th>试卷满分</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -288,7 +293,7 @@ window.onload=function(){
 					</c:forEach>
 				</c:when>
 				<c:otherwise>
-					<li>不涉及该类型题目，请继续作答</li>
+					<li>该试卷不涉及该类型题目，请继续作答</li>
 				</c:otherwise>
 			</c:choose>
 		</ul>
@@ -371,7 +376,7 @@ window.onload=function(){
 					</c:forEach>
 				</c:when>
 				<c:otherwise>
-					<li>不涉及该类型题目，请继续作答</li>
+					<li>该试卷不涉及该类型题目，请继续作答</li>
 				</c:otherwise>
 			</c:choose>
 		</ul>
@@ -469,7 +474,7 @@ window.onload=function(){
 					</c:forEach>
 				</c:when>
 				<c:otherwise>
-					<li>不涉及该类型题目，请继续作答</li>
+					<li>该试卷不涉及该类型题目，请继续作答</li>
 				</c:otherwise>
 			</c:choose>
 		</ul>
@@ -558,7 +563,7 @@ window.onload=function(){
 					</c:forEach>
 				</c:when>
 				<c:otherwise>
-					<li>不涉及该类型题目，请继续作答</li>
+					<li>该试卷不涉及该类型题目，请继续作答</li>
 				</c:otherwise>
 			</c:choose>
 		</ul>
@@ -628,7 +633,7 @@ window.onload=function(){
 					</c:forEach>
 				</c:when>
 				<c:otherwise>
-					<li>不涉及该类型题目，请继续作答</li>
+					<li>该试卷不涉及该类型题目，请继续作答</li>
 				</c:otherwise>
 			</c:choose>
 		</ul>

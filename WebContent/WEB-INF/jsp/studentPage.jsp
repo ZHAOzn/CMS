@@ -17,8 +17,13 @@
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
 <script src="<%=request.getContextPath()%>/layui/mods/index.js"></script>
 
-<title>学生页面</title>
+<title>学生</title>
 <script type="text/javascript">
+function   fresh(){  
+	if(location.href.indexOf("?reload=true")<0){
+	    location.href+="?reload=true";  
+	   }  
+	}
 layui.use(['form'], function(){
 	var form = layui.form;
 	});
@@ -433,7 +438,14 @@ layui.use(['form'], function(){
 	            	  if(data.result == true){
 	            		  result = true;
 	            	  }else if(data.result == false){
-	            		  $('#listenClssExit').show();
+	            		  if(data.message == 'moreThan'){
+	            			  layui.use('layer', function() {
+									var $ = layui.jquery, layer = layui.layer;
+									layer.msg('该课程人数已超额！');
+								});
+	            		  }else {
+	            			  $('#listenClssExit').show();
+						}
 	            	  }
 	              },
 	              error: function (data) {
@@ -1197,21 +1209,6 @@ function leaveRecord() {
 </head>
 <body>
 
-	<!-- 更改邮箱成功提示信息 -->
-
-
-	<!-- 添加课程成功提示信息 -->
-	<div id="addCourseShow"
-		style="background-color: #393D49; height: 20%; width: 20%; z-index: 20; position: fixed; margin-top: 30%; text-align: center; margin-left: 35%; display: none;">
-		<h3 style="color: white; margin-top: 19%">请求已发送..</h3>
-	</div>
-
-	<!-- 完善个人信息成功提示信息 -->
-	<div id="updatePersonInfoShow"
-		style="background-color: #393D49; height: 20%; width: 20%; z-index: 20; position: fixed; margin-top: 30%; text-align: center; margin-left: 35%; display: none;">
-		<h3 style="color: white; margin-top: 19%">信息更新成功..</h3>
-	</div>
-
 	<div class="layui-layout layui-layout-admin" style="">
 		<!-- 头部导航 -->
 		<div class="layui-header header header-demo">
@@ -1225,24 +1222,20 @@ function leaveRecord() {
 					<li class="layui-nav-item"><a id="studentInfoCenter" href="#">
 					<i class="layui-icon bbbbb" style="font-size: 20px; color: #d2d2d2">&#xe612;</i><span
 							id="redSignal" style="display: none;" class="layui-badge-dot"></span></a></li>
-					<%-- <li class="layui-nav-item"
-						style="padding: 0; margin: 0; text-align: right;"><img
-						height="45em" width="40em"
-						src="/ClassManageSys/studentPhoto/${student.studentPhoto}"
-						class="layui-circle"></li> --%>
 					<li class="layui-nav-item"><a href="#">${student.studentName}</a>
-						<dl class="layui-nav-child">
-							<dd>
+						<ul class="layui-nav-child">
+							<li>
 								<a id="updateStudentInfoNow" href="#">修改信息</a>
-							</dd>
-							<dd>
+							</li>
+							<li>
 								<a id="safeManage" href="#">安全管理</a>
-							</dd>
-							<dd>
+							</li>
+							<li>
 								<a onclick="exitLogin()"
 									href="<%=request.getContextPath()%>/index.jsp">注销登录</a>
-							</dd>
-						</dl></li>
+							</li>
+						</ul>
+					</li>
 				</ul>
 
 			</div>
@@ -1277,7 +1270,7 @@ function leaveRecord() {
 								<a id="studentLog" href="#">操作日志</a>
 							</dd>
 						</dl></li>
-					<li class="layui-nav-item layui-nav-itemed""><a href="#">博客中心</a>
+					<li class="layui-nav-item layui-nav-itemed"><a href="#">博客中心</a>
 					<dl class="layui-nav-child">
 							<dd>
 								<a onclick="toPersonBlog()" href="#">个人博客</a>
@@ -1688,15 +1681,15 @@ function searchData() {
 				<table class="layui-table" >
 					<colgroup>
 						<col width="125">
-						<col width="125">
-						<col width="120">
+						<col width="185">
+						<col width="100">
 						<col width="150">
 						<col width="150">
+						<col width="100">
+						<col width="140">
 						<col width="120">
-						<col width="120">
-						<col width="120">
-						<col width="150">
-						<col width="120">			
+						<col width="140">
+						<col width="110">			
 					</colgroup>
 					<thead>
 						<tr>
@@ -2468,7 +2461,7 @@ function searchData() {
 	               		 	            });
 	                  					  var imgPre = document.getElementById("imgPre");
                  					      imgPre.style.display = "block";
-                 					      imgPre.src = "/ClassManageSys/studentPhoto/" + data.fileName;
+                 					      imgPre.src = "<%=request.getContextPath()%>/studentPhoto/" + data.fileName;
 	                  				}else{
 	                  					layui.use('layer', function() {
 	                  						var $ = layui.jquery, layer = layui.layer;

@@ -18,8 +18,9 @@
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
 
 <script type="text/javascript">
-function   fresh(){  
+function fresh(){  
 if(location.href.indexOf("?reload=true")<0){
+	$('#teacherMobile').val("");
     location.href+="?reload=true";  
    }  
 }  
@@ -130,7 +131,6 @@ setTimeout("fresh()",1)
 	              async: false,
 	              dataType: "json",
 	              url: "<%=request.getContextPath() %>/teacher/confirmExitsTeacher.do",
-//	              beforeSend:function(){$("#href").html("等待..");},
 	              success: function (data) {
 	            	  if(data.result == true){
 	            		  result = true;

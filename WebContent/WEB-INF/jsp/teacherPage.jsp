@@ -18,9 +18,14 @@
 	href="<%=request.getContextPath()%>/layui/css/layui.css">
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
 	<script src="<%=request.getContextPath()%>/layui/mods/index.js"></script>
-<title>教师门户</title>
+<title>教师</title>
 
 <script type="text/javascript">
+function   fresh(){  
+	if(location.href.indexOf("?reload=true")<0){
+	    location.href+="?reload=true";  
+	   }  
+	}
 layui.use(['form'], function(){
 	var form = layui.form;
 	form.render(); 
@@ -919,18 +924,19 @@ function checkCourseShow2() {
 							id="redSignal" style="display: none;" class="layui-badge-dot"></span>
 					</a></li>
 					<li class="layui-nav-item"><a href="#">${teacher.teacherName}老师</a>
-						<dl class="layui-nav-child">
-							<dd>
+						<ul class="layui-nav-child">
+							<li>
 								<a id="changeTeacherInfoh" href="#">修改信息</a>
-							</dd>
-							<dd>
+							</li>
+							<li>
 								<a href="#" id="safeManage">安全管理</a>
-							</dd>
-							<dd>
+							</li>
+							<li>
 								<a onclick="exitLogin()"
 									href="<%=request.getContextPath()%>/index.jsp">注销登录</a>
-							</dd>
-						</dl></li>
+							</li>
+						</ul>
+				</li>
 				</ul>
 
 			</div>
@@ -1700,10 +1706,10 @@ function checkCourseShow2() {
 						<label class="layui-form-label">当前学期</label>
 						<div class="layui-input-block">
 							<select id="schoolTem" name="schoolTem" lay-verify="required">
-								<option value="0">春季学期</option>
-								<option value="1">夏季学期</option>
-								<option value="2" selected>秋季学期</option>
-								<option value="3">冬季学期</option>
+								<option value="春季学期">春季学期</option>
+								<option value="夏季学期">夏季学期</option>
+								<option value="秋季学期" selected>秋季学期</option>
+								<option value="冬季学期">冬季学期</option>
 							</select>
 						</div>
 					</div>
@@ -1747,21 +1753,23 @@ function checkCourseShow2() {
 			<div class="layui-form sessiontable" id="courseInfo" style="">
 				<table class="layui-table"  lay-even style="text-align: center;">
 					<colgroup>
-						<col width="130">
-						<col width="200">
-						<col width="150">
-						<col width="150">
-						<col width="200">
+						<col width="160">
 						<col width="170">
+						<col width="130">
+						<col width="150">
+						<col width="140">
+						<col width="200">
+						<col width="180">
 						<col width="150">
 						<col width="150">
 					</colgroup>
 					<thead>
 						<tr>
 							<th style="text-align: center;">课程编码</th>
-							<th style="text-align: center;">课程名称</th>
-							<th style="text-align: center;">二维码信息</th>
+							<th style="text-align: center;">名称</th>
+							<th style="text-align: center;">二维码</th>
 							<th style="text-align: center;">学年</th>
+							<th style="text-align: center;">限制人数</th>
 							<th style="text-align: center;">班级</th>
 							<th style="text-align: center;">事务</th>
 							<th colspan="2" style="text-align: center;">操作</th>
@@ -1781,6 +1789,7 @@ function checkCourseShow2() {
 											</div>
 										</td>
 										<td style="text-align: center;">${r.currentYear}</td>
+										<td style="text-align: center;">${r.classCapacity}</td>
 										<td style="text-align: center;"><c:choose>
 												<c:when test="${! empty r.clazz}">
 													<c:forEach items="${r.clazz}" var="c">

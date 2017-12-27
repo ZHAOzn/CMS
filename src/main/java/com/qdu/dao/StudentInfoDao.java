@@ -36,5 +36,7 @@ public interface StudentInfoDao {
     public StudentInfo selectStudentInfoById(int studentInfoId);
     
     public int deleteStudentInfoById(int studentInfoId);
+    
+    public int selectCountOfStudentInThisCourse(int courseId);
 
 }

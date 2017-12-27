@@ -37,4 +37,6 @@ public interface StudentInfoService {
 	
 	public int deleteStudentInfoById(int studentInfoId);
 	
+	public int selectCountOfStudentInThisCourse(int courseId);
+	
 }

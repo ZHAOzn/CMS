@@ -91,6 +91,11 @@ public class StudentInfoServiceImpl implements StudentInfoService{
 	public int deleteStudentInfoById(int studentInfoId) {
 		return studentInfoDaoImpl.deleteStudentInfoById(studentInfoId);
 	}
+
+	@Override
+	public int selectCountOfStudentInThisCourse(int courseId) {
+		return studentInfoDaoImpl.selectCountOfStudentByStudentInfo(courseId);
+	}
 	
 
 }

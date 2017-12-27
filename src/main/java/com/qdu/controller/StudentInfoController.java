@@ -59,29 +59,33 @@ public class StudentInfoController {
 		String password = request.getParameter("studentPassword");
 		String courseId = request.getParameter("courseId");
 		Course course = courseServiceImpl.selectCourseById(Integer.parseInt(courseId));
+		int count = studentInfoServiceImpl.selectCountOfStudentByStudentInfo(Integer.parseInt(courseId));
 		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
-		if (student != null && MD5Util.md5(password, "juin").equals(student.getStudentPassword())) {
-			System.out.println("芝麻开门");
-			StudentInfo studentInfo2 = studentInfoServiceImpl.selectStudentInfoByMany(studentRoNo,
-					Integer.parseInt(courseId));
-			if (studentInfo2 == null) {
-				StudentInfo studentInfo3 = new StudentInfo();
-				studentInfo3.setStudent(student);
-				studentInfo3.setCourse(course);
-				studentInfo3.setSignIn(0);
-				studentInfo3.setAbsenteeism(0);
-				studentInfo3.setAskForLeave(0);
-				studentInfo3.setComeLate(0);
-				studentInfo3.setLeaveEarlier(0);
-				studentInfo3.setLeaveRecord(0);
-				studentInfoServiceImpl.insertStudentInfo(studentInfo3);
+		if(count < course.getClassCapacity()){
+			if (student != null && MD5Util.md5(password, "juin").equals(student.getStudentPassword())) {
+				StudentInfo studentInfo2 = studentInfoServiceImpl.selectStudentInfoByMany(studentRoNo,
+						Integer.parseInt(courseId));
+				if (studentInfo2 == null) {
+					StudentInfo studentInfo3 = new StudentInfo();
+					studentInfo3.setStudent(student);
+					studentInfo3.setCourse(course);
+					studentInfo3.setSignIn(0);
+					studentInfo3.setAbsenteeism(0);
+					studentInfo3.setAskForLeave(0);
+					studentInfo3.setComeLate(0);
+					studentInfo3.setLeaveEarlier(0);
+					studentInfo3.setLeaveRecord(0);
+					studentInfoServiceImpl.insertStudentInfo(studentInfo3);
+				}
+				int clazzId = Integer.parseInt(request.getParameter("clazzId"));
+				if (clazzId != 0) {
+					clazzStuServiceImpl.insertClazzStu(clazzId,studentRoNo);
+				}
+				return "success";
 			}
-			System.out.println(222);
-			int clazzId = Integer.parseInt(request.getParameter("clazzId"));
-			if (clazzId != 0) {
-				clazzStuServiceImpl.insertClazzStu(clazzId,studentRoNo);
+			else {
+				return "failer";
 			}
-			return "success";
 		} else {
 			return "failer";
 		}

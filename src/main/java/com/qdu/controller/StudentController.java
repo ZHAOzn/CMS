@@ -145,7 +145,7 @@ public class StudentController {
 		System.out.println("ajax探测用户学号是否存在" + studentRoNo);
 		Map<String, Object> map = new HashMap<>();
 		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
-		if (student == null) {
+		if (student == null && studentRoNo != null) {
 			map.put("result", true);
 		} else {
 			map.put("student", student);
@@ -516,13 +516,14 @@ public class StudentController {
 		Clazz clazz = clazzServiceImpl.selectClazzById(clazzId);
 		Student student = studentServiceImpl.selectStudentByNo(studentRono);
 		StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoByMany(studentRono, courseId);
+		int count = studentInfoServiceImpl.selectCountOfStudentByStudentInfo(courseId);
 		boolean tem = false;
 			if(clazzStuServiceImpl.selectClazzStuByDouble(clazzId, studentRono) == null){
 				tem = true;
 		}else {
 			tem = false;
 		}
-		if(tem == true && studentInfo == null){
+		if(tem == true && studentInfo == null && count+1 <= course.getClassCapacity()){
 		Message message = new Message();
 		message.setMessageSender(studentRono);
 		message.setMessageAccepter(teacher.getTeacherMobile());
@@ -536,6 +537,12 @@ public class StudentController {
 		map.put("result", true);
 		}else {
 			map.put("result", false);
+			if(count+1 > course.getClassCapacity()){
+				map.put("message", "moreThan");
+			}else {
+				map.put("message", null);
+			}
+			
 		}
 		return map;
 	}
@@ -690,15 +697,15 @@ public class StudentController {
 			Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
 			Course course = courseServiceImpl.selectCourseById(courseId);
 			StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoByMany(studentRoNo,courseId);
+			int count = studentInfoServiceImpl.selectCountOfStudentByStudentInfo(courseId);
 				if (student == null) {
 					map.put("message", "学号错误");
-					System.out.println("11111");
 				} else if (!MD5Util.md5(studentPassword, "juin").equals(student.getStudentPassword())){
 					map.put("message", "密码错误");
-					System.out.println("22222222");
 				} else if (studentInfo != null) {
 					map.put("message", "请勿重复加入");
-					System.out.println("333333333");
+				}else if (count+1 > course.getClassCapacity()) {
+					map.put("message", "班级人数超额");
 				}else{
 					StudentInfo studentInfo3 = new StudentInfo();
 					studentInfo3.setStudent(student);
@@ -712,7 +719,6 @@ public class StudentController {
 					studentInfoServiceImpl.insertStudentInfo(studentInfo3);
 					clazzStuServiceImpl.insertClazzStu(clazzId,studentRoNo);
 					map.put("result", true);
-					System.out.println("444444444");
 				}
 			return map;
 		}
@@ -871,7 +877,7 @@ public class StudentController {
 		System.out.println(path);
 		String fileName = file.getOriginalFilename();
 		System.out.println(fileName);
-		String nameNow = sdf.format(new Date())+"/"+fileName;
+		String nameNow = sdf.format(new Date())+"_"+fileName;
 		File targetFile = new File(path, nameNow);
 		if (!targetFile.exists()) {
 			targetFile.mkdirs();
@@ -886,7 +892,7 @@ public class StudentController {
 		int tem = studentServiceImpl.updateStudentPhoto(studentRoNo, nameNow);
 		if(tem > 0){
 			map.put("result", true);
-			map.put("fileName", fileName);
+			map.put("fileName", nameNow);
 		}
 		else {
 			map.put("result", false); 
