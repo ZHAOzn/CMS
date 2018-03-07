@@ -1,4 +1,4 @@
-package com.qdu.controller;
+ package com.qdu.controller;
 
 import java.io.File;
 import java.text.ParseException;
@@ -27,6 +27,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.qdu.aop.SystemLog;
+import com.qdu.daoimpl.StudentInfoImpl;
 import com.qdu.pojo.Clazz;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Course;
@@ -38,6 +39,7 @@ import com.qdu.pojo.MyBlog;
 import com.qdu.pojo.QrTem;
 import com.qdu.pojo.Student;
 import com.qdu.pojo.StudentInfo;
+import com.qdu.pojo.StudentInfoDetail;
 import com.qdu.pojo.Teacher;
 import com.qdu.service.ClazzService;
 import com.qdu.service.ClazzStuService;
@@ -312,7 +314,6 @@ public class StudentController {
 	@ResponseBody
 	public Map<String, Object> insertQrTem(HttpServletRequest request, String studentRoNo, String password,
 			int courseId, String qrTime, int validateCode) throws ParseException {
-		System.out.println("进入 ： insertQrTem.do");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
 		String currentTime = sdf.format(date);
@@ -358,26 +359,20 @@ public class StudentController {
 	@ResponseBody
 	public Map<String, Object> getTemStudent(int courseId) {
 		System.out.println("获取签到列表");
-		System.out.println(courseId);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
 		String currentTime = sdf.format(date);
 		Map<String, Object> map = new HashMap<>();
 		List<QrTem> qrTems = qrTemServiceImpl.selectQrTemByCourseIdAndTime(courseId, currentTime);
-		System.out.println(qrTems.size());
 		List<ClazzStu> clazzStus = new ArrayList<>();
 		if (qrTems != null && qrTems.size() != 0) {
 			for (QrTem qrTem : qrTems) { 
 				ClazzStu clazzStu = clazzStuServiceImpl.selectClazzStuByCourse(qrTem.getStudentRoNo(), courseId);
-				System.out.println(clazzStu.getStudent().getStudentName());
-				System.out.println(clazzStu.getClazz().getClazzName());
 				clazzStus.add(clazzStu);
 			} 
 		} else {
-			System.out.println("空");
-		}
+ 		}
 		map.put("clazzStuss", clazzStus);
-		System.out.println("333333");
 		return map;
 	}
 
@@ -387,11 +382,15 @@ public class StudentController {
 	@ResponseBody
 	public Map<String, Object> submitSignIn(int courseId) {
 		System.out.println("提交签到表");
+		//年月日
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		//判断周几
+		SimpleDateFormat week1 = new SimpleDateFormat("EEEE");
 		Date date = new Date();
 		String currentTime = sdf.format(date);
+		String week = week1.format(date);
 		int time = Integer.parseInt(currentTime.replaceAll("-", ""));
-		System.out.println(time);
 		Map<String, Object> map = new HashMap<>();
 		List<StudentInfo> studentInfos = studentInfoServiceImpl.selectInfoList(courseId);
 		Map<String, Integer> map2 = new HashMap<>();
@@ -403,12 +402,31 @@ public class StudentController {
 			map.put("message", "暂无学生签到");
 		} else {
 			for (QrTem qrTem : qrTems) {
+				System.out.println("qr中的学号"+qrTem.getStudentRoNo());  
 				StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoByMany(qrTem.getStudentRoNo(),
 						courseId);
 				//更改map记录
+				List<StudentInfoDetail> studentInfoDetails = studentInfoServiceImpl.selectStudentInfoDetailResult(qrTem.getStudentRoNo(), courseId, currentTime);
+				StudentInfoDetail sid = new StudentInfoDetail();
+				sid.setCourseId(courseId);
+				sid.setStudentRoNo(qrTem.getStudentRoNo());
+				sid.setCurrentTime(sdf2.format(new Date()));
+				sid.setCurrentWeek(week);
+				sid.setSignInStatus("签到");
+				if(studentInfoDetails.size() == 0){
+					sid.setCurrentCount(1);
+				}else{
+					int maxCount = studentInfoServiceImpl.selectMaxStudentInfoDetailResult(qrTem.getStudentRoNo(), courseId, currentTime);
+					sid.setCurrentCount(maxCount+1);
+				}
+				int stuinfoDetailTem = studentInfoServiceImpl.insertStudentInfoDetailResult(sid);
+				
+				
 				map2.put(qrTem.getStudentRoNo(), 1);
 				int tem = studentInfo.getSignIn();
+				System.out.println("tem :" + tem);
 				int x = tem + 1;
+				System.out.println("x: " + x);
 				// 核心：跟新info表，成功+1
 				studentInfoServiceImpl.updateStudentInfoAboutSignIn(studentInfo.getStudentInfoId(), x);
 				// 删除在QrTem表中的记录，等待下次签到
@@ -432,6 +450,21 @@ public class StudentController {
 				    			int tem = studentInfo.getAskForLeave();
 								int x = tem + 1;
 								studentInfoServiceImpl.updateStudentInfoAboutLeave(studentInfo.getStudentInfoId(), x);
+								//细节上也加一
+								List<StudentInfoDetail> studentInfoDetails = studentInfoServiceImpl.selectStudentInfoDetailResult(string, courseId, currentTime);
+								StudentInfoDetail sid = new StudentInfoDetail();
+								sid.setCourseId(courseId);
+								sid.setStudentRoNo(string);
+								sid.setCurrentTime(sdf2.format(new Date()));
+								sid.setCurrentWeek(week);
+								sid.setSignInStatus("请假");
+								if(studentInfoDetails.size() == 0){
+									sid.setCurrentCount(1);
+								}else{
+									int maxCount = studentInfoServiceImpl.selectMaxStudentInfoDetailResult(string, courseId, currentTime);
+								    sid.setCurrentCount(maxCount+1);
+								}
+								int stuinfoDetailTem2 = studentInfoServiceImpl.insertStudentInfoDetailResult(sid);
 								//更改map记录
 				    		    map2.put(string, 2);
 								break;
@@ -447,6 +480,21 @@ public class StudentController {
 					int tem = studentInfo.getAbsenteeism();
 					int x = tem + 1;
 					studentInfoServiceImpl.updateStudentInfoAboutAbs(studentInfo.getStudentInfoId(), x);
+					//自然，细节上旷课不来的也要加一
+					List<StudentInfoDetail> studentInfoDetails = studentInfoServiceImpl.selectStudentInfoDetailResult(string, courseId, currentTime);
+					StudentInfoDetail sid = new StudentInfoDetail();
+					sid.setCourseId(courseId);
+					sid.setStudentRoNo(string);
+					sid.setCurrentTime(sdf2.format(new Date()));
+					sid.setCurrentWeek(week);
+					sid.setSignInStatus("旷课");
+					if(studentInfoDetails.size() == 0){
+						sid.setCurrentCount(1);
+					}else{
+						int maxCount = studentInfoServiceImpl.selectMaxStudentInfoDetailResult(string, courseId, currentTime);
+					    sid.setCurrentCount(maxCount+1);
+					}
+					int stuinfoDetailTem3 = studentInfoServiceImpl.insertStudentInfoDetailResult(sid);
 				}
 			}
 			map.put("message", "成功");

@@ -18,9 +18,25 @@
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
 
 <script type="text/javascript">
+var result;
+var teaResult;
 function fresh(){  
-if(location.href.indexOf("?reload=true")<0){
+	var randomNum1 = Math.random()*10;
+	var randomNum2 = Math.random()*13;
+	var randomNum3 = Math.random()*20;
+	var randomNum4 = Math.random()*11;
+	var a = Math.ceil(randomNum1);
+	var b = Math.ceil(randomNum2);
+	var c = Math.ceil(randomNum3);
+	var d = Math.ceil(randomNum4);
+	result = a*b;
+	teaResult = c+d;
+	$('#a').html(a + "*");
+	$('#b').html(b + "=?");
+	$('#c').html(c + "+");
+	$('#d').html(d + "=?");
 	$('#teacherMobile').val("");
+if(location.href.indexOf("?reload=true")<0){
     location.href+="?reload=true";  
    }  
 }  
@@ -43,7 +59,7 @@ setTimeout("fresh()",1)
 			$('#teacherForm').show();
 		});
 		//改变studentRoNo时通过ajax去后台查询是否数据库中存在此学号，存在即开放密码
-		$('#studentRono').change(function whenChange() {
+		/* $('#studentRono').change(function whenChange() {
 			var studentRono = $('#studentRono').val();
 			if(trySubmit(studentRono)){
 				layui.use('layer', function(){
@@ -68,9 +84,9 @@ setTimeout("fresh()",1)
 				$('#stpw').removeAttr("disabled");
 				$('#stu').removeAttr("disabled");
 			}
-		});
+		}); */
 		
-		function trySubmit(studentRono) {
+		<%-- function trySubmit(studentRono) {
 			var result = false;
 			$.ajax({
 	              type: "GET",
@@ -91,9 +107,9 @@ setTimeout("fresh()",1)
 	              }
 	          });
 			  return result;
-		}
+		} --%>
 		
-		$('#teacherMobile').change(function whenChange() {
+		/* $('#teacherMobile').change(function whenChange() {
 			var teacherMobile = $('#teacherMobile').val();
 			if(tryLogin(teacherMobile)){
 				layui.use('layer', function(){
@@ -118,7 +134,7 @@ setTimeout("fresh()",1)
 				$('#tcpw').removeAttr("disabled");
 				$('#tea').removeAttr("disabled");
 			}
-		});
+		}); */
 		
 		function tryLogin(teacherMobile) {
 			  var result = false;
@@ -169,30 +185,82 @@ setTimeout("fresh()",1)
 		}
 		//点击教师登录触发密码验证
 		$('#tea').click(function wannaSubmit() {
-			var password = $('#tcpw').val();
-			var teacherMobile = $('#teacherMobile').val();
-			if(getAnwser(password,teacherMobile)){
-				$('#teacherForm').submit();
+			// 验证码验证
+			if($('#teacherValidate').val() == teaResult){
+			 // 账号验证	
+				var teacherMobile = $('#teacherMobile').val();
+				if(tryLogin(teacherMobile)){
+					layui.use('layer', function(){
+		  	               var $ = layui.jquery, layer = layui.layer; 
+		    			      layer.open({
+		    			        type: 1
+		    			        ,offset: 'auto' 
+		    			        ,id: 'layerDemo'+'auto' 
+		    			        ,title: '失败'
+		    			        ,content: '<div style="padding: 20px 100px;">'+ "账号不存在~" +'</div>'
+		    			        ,btn: '关闭'
+		    			        ,btnAlign: 'c' 
+		    			        ,shade: 0 
+		    			        ,yes: function(){
+		    			        	 layer.closeAll();
+		    			        }
+		    			      });
+		  	            });
+				}else {
+					var password = $('#tcpw').val();
+					var teacherMobile = $('#teacherMobile').val();
+					if(getAnwser(password,teacherMobile)){
+						$('#teacherForm').submit();
+					}else {
+						layui.use('layer', function(){
+			  	               var $ = layui.jquery, layer = layui.layer; 
+			    			      layer.open({
+			    			        type: 1
+			    			        ,offset: 'auto' 
+			    			        ,id: 'layerDemo'+'auto' 
+			    			        ,title: '失败'
+			    			        ,content: '<div style="padding: 20px 100px;">'+ "密码错误~" +'</div>'
+			    			        ,btn: '关闭'
+			    			        ,btnAlign: 'c' 
+			    			        ,shade: 0 
+			    			        ,yes: function(){
+			    			        	 layer.closeAll();
+			    			        }
+			    			      });
+			  	            });
+					}
+				}	
 			}else {
-				layui.use('layer', function(){
-	  	               var $ = layui.jquery, layer = layui.layer; 
-	    			      layer.open({
-	    			        type: 1
-	    			        ,offset: 'auto' 
-	    			        ,id: 'layerDemo'+'auto' 
-	    			        ,title: '失败'
-	    			        ,content: '<div style="padding: 20px 100px;">'+ "密码错误~" +'</div>'
-	    			        ,btn: '关闭'
-	    			        ,btnAlign: 'c' 
-	    			        ,shade: 0 
-	    			        ,yes: function(){
-	    			        	 layer.closeAll();
-	    			        }
-	    			      });
-	  	            });
+				layui.use('layer', function() {
+					var $ = layui.jquery, layer = layui.layer;
+					layer.msg('验证码计算已经是幼儿园水平..');
+				});
 			}
+			
 		});
-		
+		//学生学号验证
+		function trySubmit(studentRono) {
+			var result = false;
+			$.ajax({
+	              type: "GET",
+	              data: {
+	                  "studentRoNo": studentRono
+	              },
+	              contentType: "application/json; charset=utf-8",
+	              async: false,
+	              dataType: "json",
+	              url: "<%=request.getContextPath() %>/student/confirmExitsStudent.do",
+	              success: function (data) {
+	            	  if(data.result == true){
+	            		  result = true;
+	            	  }
+	              },
+	              error: function (data) {
+	            	  
+	              }
+	          });
+			  return result;
+		}
 		
 		//获取学生密码，进行后台比对
 		function getStuAnwser(password,studentRono) {
@@ -221,28 +289,58 @@ setTimeout("fresh()",1)
 		}
 		//点击学生登录触发密码验证
 		$('#stu').click(function wannaSubmit() {
-			var password = $('#stpw').val();
-			var studentRono = $('#studentRono').val();
-			if(getStuAnwser(password,studentRono)){
-				$('#studentForm').submit();
+			// 一 验证码
+			if($('#studentValidate').val() == result){
+				// 二 学号
+				var studentRono = $('#studentRono').val();
+				if(trySubmit(studentRono)){
+					layui.use('layer', function(){
+		  	               var $ = layui.jquery, layer = layui.layer; 
+		    			      layer.open({
+		    			        type: 1
+		    			        ,offset: 'auto' 
+		    			        ,id: 'layerDemo'+'auto' 
+		    			        ,title: '失败'
+		    			        ,content: '<div style="padding: 20px 100px;">'+ "学号不存在~" +'</div>'
+		    			        ,btn: '关闭'
+		    			        ,btnAlign: 'c' 
+		    			        ,shade: 0 
+		    			        ,yes: function(){
+		    			        	 layer.closeAll();
+		    			        }
+		    			      });
+		  	            });
+				}else {
+					var password = $('#stpw').val();
+					var studentRono = $('#studentRono').val();
+					if(getStuAnwser(password,studentRono)){
+						$('#studentForm').submit();
+					}else {
+						layui.use('layer', function(){
+			  	               var $ = layui.jquery, layer = layui.layer; 
+			    			      layer.open({
+			    			        type: 1
+			    			        ,offset: 'auto' 
+			    			        ,id: 'layerDemo'+'auto' 
+			    			        ,title: '失败'
+			    			        ,content: '<div style="padding: 20px 100px;">'+ "密码错误~" +'</div>'
+			    			        ,btn: '关闭'
+			    			        ,btnAlign: 'c' 
+			    			        ,shade: 0 
+			    			        ,yes: function(){
+			    			        	 layer.closeAll();
+			    			        }
+			    			      });
+			  	            });
+					}	
+			  }				
 			}else {
-				layui.use('layer', function(){
-	  	               var $ = layui.jquery, layer = layui.layer; 
-	    			      layer.open({
-	    			        type: 1
-	    			        ,offset: 'auto' 
-	    			        ,id: 'layerDemo'+'auto' 
-	    			        ,title: '失败'
-	    			        ,content: '<div style="padding: 20px 100px;">'+ "密码错误~" +'</div>'
-	    			        ,btn: '关闭'
-	    			        ,btnAlign: 'c' 
-	    			        ,shade: 0 
-	    			        ,yes: function(){
-	    			        	 layer.closeAll();
-	    			        }
-	    			      });
-	  	            });
+				layui.use('layer', function() {
+					var $ = layui.jquery, layer = layui.layer;
+					layer.msg('怀疑你是机器人QAQ');
+				});
 			}
+			
 		});
 	});
 	function studentClick() {
@@ -276,13 +374,21 @@ setTimeout("fresh()",1)
 					<a href="#" id="sss" class="alogin" style="float: left; text-decoration: none; color: white; font-size: 28px; 
 					background-color: rgba(0, 0, 0, 1); border-bottom: solid;border-color: #009688; border-bottom-width: 1px;" onclick="studentClick()">学生登录</a>
 					<a href="#" id="ttt" class="alogin" style="float: left; text-decoration: none; color: white; font-size: 28px;" onclick="teacherClick()">教师登录</a>
-					<form id="studentForm" action="<%=request.getContextPath()%>/student/studentLogin.do" method="post" style="text-align: center; font-size: 20px;">
-						<br> <br> <br> <br> <span style="color: white">学号:</span>><input 
+					<form id="studentForm" action="<%=request.getContextPath()%>/student/studentLogin.do" method="post" style="font-size: 20px;">
+						<br> <br> <br> <br> <span style="color: white;margin-left: 10%;">学号:</span>><input 
 							name="studentRoNo" id="studentRono" type="text"/><br /> <br /> <span
-							style="color: white">密码:</span>><input name="studentPassword" id="stpw" 
-							type="password" disabled="disabled" /><br /> <br />
+							style="color: white;margin-left: 10%;">密码:</span>><input name="studentPassword" id="stpw" 
+							type="password"/><br /> <br />
+							<div id="studentValidateDiv">
+							<span style="color: white; margin-left: 10%;">验证:</span>><input 
+							name="" id="studentValidate" type="text" style="width: 30%;"/>
+							<span id="a" style="color: #FF5722; margin-left: 10%;"></span>
+							<span id="b" style="color: #FF5722;"></span>
+							<br /> <br />  
+							</div>
+							
 							 <a href="<%=request.getContextPath()%>/student/getStudentPasswordBack.do"
-							    class="aChangePW" target="_blank">忘记密码>></a><br/><br/>
+							    class="aChangePW" target="_blank" style="color: #009688;font-size: 0.7em;margin-left: 65%;">忘记密码>></a><br/><br/>
 							<div style="text-align: center;">
 							 	<input id="stu" class="layui-btn" style="width: 120px;" type="button"
 								value="登录" /> 
@@ -295,15 +401,23 @@ setTimeout("fresh()",1)
 					<form id="teacherForm"
 						action="<%=request.getContextPath()%>/teacher/teacherLogin.do"
 						method="post"
-						style="text-align: center; font-size: 20px; display: none;">
+						style="font-size: 20px; display: none;">
 						<input type="text" name="repageNow" value="1" style="display: none;"/>
-						<br> <br> <br> <br> <span style="color: white">手机:</span>><input 
+						<br> <br> <br> <br> <span style="color: white;margin-left: 10%;">手机:</span>><input 
 							name="teacherId" id="teacherMobile" type="text" /><br /> <br /> <span
-							style="color: white">密码:</span>><input name="password" id="tcpw" 
+							style="color: white;margin-left: 10%;">密码:</span>><input name="password" id="tcpw" 
 							type="password" /><br /> <br />
+							
+							<div id="teacherValidateDiv">
+							<span style="color: white; margin-left: 10%;">验证:</span>><input 
+							name="" id="teacherValidate" type="text" style="width: 30%;"/>
+							<span id="c" style="color: #FF5722; margin-left: 10%;"></span>
+							<span id="d" style="color: #FF5722;"></span>
+							<br /> <br />  
+							</div>
 						
 							 <a href="<%=request.getContextPath()%>/teacher/getTeacherPasswordBack.do" class="aChangePW"
-							target="_blank">忘记密码>></a><br/><br/>
+							target="_blank" style="color: #009688;font-size: 0.7em;margin-left: 65%;">忘记密码>></a><br/><br/>
 							<div style="text-align: center;">
 							 	<input id="tea" class="layui-btn" style="width: 120px;" type="button"
 								value="登录" /> 

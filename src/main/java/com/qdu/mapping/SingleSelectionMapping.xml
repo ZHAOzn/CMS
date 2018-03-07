@@ -70,12 +70,12 @@
 	  where SingleSelectionId = #{singleSelectionId}
 	</update>
 	
-	<update id="updateSingleSelectionById" parameterType="HashMap">
+	<update id="updateSingleSelectionQuestionNumById" parameterType="HashMap">
 	  update SingleSelection set
-	  QuestionNumber = #{questionNumber}
+	  QuestionNumber = #{questionNumber} 
 	  where SingleSelectionId = #{singleSelectionId}
 	</update>
-	
+		
 	<delete id="deleteSingleBySingleSelectionId" parameterType="int">
 	  delete from SingleSelection where SingleSelectionId = #{singleSelectionId}
 	</delete>

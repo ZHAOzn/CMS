@@ -204,6 +204,7 @@
 		#{studentInfoId}
 	</update>
 	
+	
 	<update id="updateStudentInfoAboutLeave" parameterType="HashMap">
 		update
 		StudentInfo set

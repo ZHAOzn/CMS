@@ -33,6 +33,10 @@ var form = layui.form;
 var examinationId;
 //修改班级信息
 function changeWhenClick(clazzId) {
+	console.log(5%3);
+	
+	
+	
 	 $('#getHeadLine').html("修改班级信息");
 	 var clazzIdpre = clazzId.substring(3);
 	 document.getElementById("preclazzId").value = clazzIdpre;
@@ -237,16 +241,16 @@ function YesConfirm() {
 	        	    con =  '\
 	        	    		<caption>当前签到进度</caption>\
 	        				<tr>\
-	        					<th>学号</th>\
-	        					<th>姓名</th>\
-	        					<th>班级</th>\
+	        					<th style="text-align:center">学号</th>\
+	        					<th style="text-align:center">姓名</th>\
+	        					<th style="text-align:center">班级</th>\
 	        				</tr>\
 	        				';
 	        	    $.each(dataObj, function (index, item) {  
 	        	        con += "<tr>";
-	        	        con += "<td>" + item.student.studentRoNo + "</td>";
-	        	        con += "<td>" + item.student.studentName + "</td>";
-	        	        con += "<td>" + item.clazz.clazzName + "</td>";
+	        	        con += "<td style='text-align:center'>" + item.student.studentRoNo + "</td>";
+	        	        con += "<td style='text-align:center'>" + item.student.studentName + "</td>";
+	        	        con += "<td style='text-align:center'>" + item.clazz.clazzName + "</td>";
 	        	        con += "<tr/>";
 	        	    });
 	        	        //可以在控制台打印一下看看，这是拼起来的标签和数据
@@ -753,38 +757,46 @@ function getStudentPackList(id) {
         async: false,
         url: "<%=request.getContextPath()%>/exam/getStudentPackList.do",
 		success : function(data) {
-			$('#ssscoreId').val(id.substring(1));
-			var dataObj = data.packs;
-			 con = "";
-			 $.each(dataObj, function (index, item) {
-	            con += "<li style='font-size: 1.2em'>(" + item.questionNumber + ") " +item.packContent + " (" + item.value +"分)</li>";
-	            con += "<li>" + "&nbsp;" + "</li>";
-	            con += "<li><span style='color:#5FB878;'>参考答案：</span>" + item.answer + "</li>";
-	            con += "<li>" + "<input type='text' id='Y"+item.packId+"' value='"+item.value+"' style='display:none'/>" + "</li>";
-	            con += "<li><span style='color:#FF5722;'>学生答案：</span>" + item.studentAnswer + "</li>";
-	            con += "<li>" + "<input type='text' id='X"+item.packId+"' value='"+data.student.studentRoNo+"' style='display:none'/>" + "</li>";
-	            con += "<li>得分：" + "<input id='"+item.packId+"' onchange='setPackStuAnswer(this.id)' type='text'/>" + "</li>";
-       	    });
-			 
-			 var dataOs = data.shortAnswers;
-			 von = "";
-			 $.each(dataOs, function (index, item) {
-				 von += "<li style='font-size: 1.2em'>(" + item.questionNumber + ") " +item.shortAnswerContent + " (" + item.value +"分)</li>";
-				 von += "<li>" + "&nbsp;" + "</li>";
-				 von += "<li>" + "<input type='text' id='YTC"+item.shortAnswerId+"' value='"+item.value+"' style='display:none'/>" + "</li>";
-				 von += "<li><span style='color:#FF5722;'>学生答案：</span>" + item.studentAnswer + "</li>";
-				 von += "<li>" + "<input type='text' id='XTC"+item.shortAnswerId+"' value='"+data.student.studentRoNo+"' style='display:none'/>" + "</li>";
-				 von += "<li>得分：" + "<input id='TC"+item.shortAnswerId+"' onchange='setShortAnswerIdStuAnswer(this.id)' type='text'/>" + "</li>";
+			if(data.result == true){
+				$('#ssscoreId').val(id.substring(1));
+				var dataObj = data.packs;
+				 con = "";
+				 $.each(dataObj, function (index, item) {
+		            con += "<li style='font-size: 1.2em'>(" + item.questionNumber + ") " +item.packContent + " (" + item.value +"分)</li>";
+		            con += "<li>" + "&nbsp;" + "</li>";
+		            con += "<li><span style='color:#5FB878;'>参考答案：</span>" + item.answer + "</li>";
+		            con += "<li>" + "<input type='text' id='Y"+item.packId+"' value='"+item.value+"' style='display:none'/>" + "</li>";
+		            con += "<li><span style='color:#FF5722;'>学生答案：</span>" + item.studentAnswer + "</li>";
+		            con += "<li>" + "<input type='text' id='X"+item.packId+"' value='"+data.student.studentRoNo+"' style='display:none'/>" + "</li>";
+		            con += "<li>得分：" + "<input id='"+item.packId+"' onchange='setPackStuAnswer(this.id)' type='text'/>" + "</li>";
 	       	    });
-			 
-			 
-			 $('#PackLi').html(con);
-			 $('#ShortAnswerLi').html(von);
-			 $('#PreExaminationList').hide();
-			 $('#studentScoreList').hide();
-			 $('#studentScoreListH3').hide();
-			 $('#packScore').show();
-			 $('#ShortAnswerScore').show();
+				 
+				 var dataOs = data.shortAnswers;
+				 von = "";
+				 $.each(dataOs, function (index, item) {
+					 von += "<li style='font-size: 1.2em'>(" + item.questionNumber + ") " +item.shortAnswerContent + " (" + item.value +"分)</li>";
+					 von += "<li>" + "&nbsp;" + "</li>";
+					 von += "<li>" + "<input type='text' id='YTC"+item.shortAnswerId+"' value='"+item.value+"' style='display:none'/>" + "</li>";
+					 von += "<li><span style='color:#FF5722;'>学生答案：</span>" + item.studentAnswer + "</li>";
+					 von += "<li>" + "<input type='text' id='XTC"+item.shortAnswerId+"' value='"+data.student.studentRoNo+"' style='display:none'/>" + "</li>";
+					 von += "<li>得分：" + "<input id='TC"+item.shortAnswerId+"' onchange='setShortAnswerIdStuAnswer(this.id)' type='text'/>" + "</li>";
+		       	    });
+				 
+				 
+				 $('#PackLi').html(con);
+				 $('#ShortAnswerLi').html(von);
+				 $('#PreExaminationList').hide();
+				 $('#studentScoreList').hide();
+				 $('#studentScoreListH3').hide();
+				 $('#packScore').show();
+				 $('#ShortAnswerScore').show();
+			}else {
+				 layui.use('layer', function() {
+						var $ = layui.jquery, layer = layui.layer;
+						layer.msg('考生暂未交卷！');
+					});
+			}
+			
 		},
 		error : function(data) {
 			layui.use('layer', function(){
@@ -846,6 +858,7 @@ function setPackStuAnswer(id) {
 				        ,btnAlign: 'c' 
 				        ,shade: 0 
 				        ,yes: function(){
+				        	$('#'+id).val("");
 				        	layer.closeAll();
 				        }
 				      });
@@ -865,6 +878,7 @@ function setPackStuAnswer(id) {
 		        ,skin: 'demo-class'
 		        ,shade: 0 
 		        ,yes: function(){
+		        	$('#'+id).val("");
 		        	 layer.closeAll();
 		        }
 		      });
@@ -967,6 +981,8 @@ function changeExamEndXX() {
 				      });
 			     });
 				getStudentExamList($('#changeExamEndX').val());
+			}else {
+				
 			}
 		},
 		error : function(data) {
@@ -1048,6 +1064,7 @@ function exportScore(id) {
 }
 //看某试卷下面的学生成绩
 function scoreShowTableFirst(id) {
+	$('#studentScoreTem').val(id);
 	$.ajax({
         type: "GET",
         data: {
@@ -1551,7 +1568,9 @@ function saveTiMuChange() {
 		    			        ,shade: 0 //不显示遮罩
 		    			        ,yes: function(){
 		    			        	createQuestion($('#examinationIddd').val());
-		    			        	window.location.hash = "#SingleSelectionShowUl";   
+		    			        	window.location.hash = "#SingleSelectionShowUl";  
+		    			        	$('#SingleSelectionButton').show();
+		    			        	$('#ChangeSingleSelectionButton').hide();
 		    			        	layer.closeAll();
 		    			        }
 		    			      });
@@ -1648,7 +1667,9 @@ function saveTiMuChange() {
 			    			        ,shade: 0 //不显示遮罩
 			    			        ,yes: function(){
 			    			        	createQuestion($('#examinationIddd').val());
-			    			        	window.location.hash = "#MoreSelectionShowUl";   
+			    			        	window.location.hash = "#MoreSelectionShowUl"; 
+			    			        	$('#MoreSelectionButton').show();
+			    			        	$('#ChangeMoreSelectionButton').hide();
 			    			        	layer.closeAll();
 			    			        }
 			    			      });
@@ -1738,6 +1759,8 @@ function saveTiMuChange() {
 			    			        ,yes: function(){
 			    			        	createQuestion($('#examinationIddd').val());
 			    			        	window.location.hash = "#JudgeShowUl";   
+			    			        	$('#JudgeButton').show();
+			    			        	$('#ChangeJudgeButton').hide();
 			    			        	layer.closeAll();
 			    			        }
 			    			      });
@@ -1826,7 +1849,9 @@ function saveTiMuChange() {
 			    			        ,shade: 0 //不显示遮罩
 			    			        ,yes: function(){
 			    			        	createQuestion($('#examinationIddd').val());
-			    			        	window.location.hash = "#PackShowUl";   
+			    			        	window.location.hash = "#PackShowUl";  
+			    			        	$('#PackButton').show();
+			    			        	$('#ChangePackButton').hide();
 			    			        	layer.closeAll();
 			    			        }
 			    			      });
@@ -1913,7 +1938,9 @@ function saveTiMuChange() {
 			    			        ,shade: 0 //不显示遮罩
 			    			        ,yes: function(){
 			    			        	createQuestion($('#examinationIddd').val());
-			    			        	window.location.hash = "#ShortAnswerShowUl";   
+			    			        	window.location.hash = "#ShortAnswerShowUl";  
+			    			        	$('#ShortAnswerButton').show();
+			    			        	$('#ChangeShortAnswerButton').hide();
 			    			        	layer.closeAll();
 			    			        }
 			    			      });
@@ -2219,7 +2246,7 @@ function createQuestion(id) {
 	      	        con += "<li>&nbsp;</li>";
 				 });
 				 $('#SingleSelectionShowUl').html(con);                           					
-				 window.location.hash = "#examinationTotalValue";  
+				// window.location.hash = "#examinationTotalValue";  
 				 //多选题
 				 var dataObj2 = data.moreSelections;
 				 von = "";
@@ -2232,8 +2259,8 @@ function createQuestion(id) {
 	                    von += "<li>&nbsp;</li>";
 					 });
 					 $('#MoreSelectionShowUl').html(von);
-					 window.location.hash = "#mark2"; 
-					 
+					 //window.location.hash = "#mark2"; 
+					  
 			    //判断题
 					 var dataObj2 = data.judges;
 					 bon = "";
@@ -2244,7 +2271,7 @@ function createQuestion(id) {
 		                    bon += "<li>&nbsp;</li>";
 						 });
 						 $('#JudgeShowUl').html(bon);
-						 window.location.hash = "#mark3"; 
+						// window.location.hash = "#mark3"; 
 			       //填空
 						 var dataObj3 = data.packs;
 						 non = "";
@@ -2255,7 +2282,7 @@ function createQuestion(id) {
 			                    non += "<li>&nbsp;</li>";
 							 });
 							 $('#PackShowUl').html(non);
-							 window.location.hash = "#mark4"; 
+							// window.location.hash = "#mark4"; 
 							 
 							 
 				//简答shortAnswers
@@ -2267,7 +2294,7 @@ function createQuestion(id) {
 				                    mon += "<li>&nbsp;</li>";
 								 });
 								 $('#ShortAnswerShowUl').html(mon);
-								 window.location.hash = "#mark4";
+								// window.location.hash = "#mark4";
 								 
 								 $('#addExaminationDiv').hide();
 								 $('#addQuestionsDiv').show();
@@ -2782,7 +2809,7 @@ function returnTeacherIndex() {
 					<div class="layui-form-item">
 						<div class="layui-input-block">
 							<input id="subButton" class="layui-btn" style="width: 60%;"
-								onclick="closeThisStuInfo()" type="button" value="取消更改" />
+								onclick="closeThisStuInfo()" type="button" value="关闭" />
 						</div>
 					</div>
 				  </form>
@@ -3040,8 +3067,8 @@ function returnTeacherIndex() {
 										<td>${c.clazz.clazzName}</td>
 										<td>${c.student.studentName}</td>
 										<td>${c.student.studentInfo.signIn}</td>
-										<td>${c.student.studentInfo.comeLate}</td>
-										<td>${c.student.studentInfo.leaveEarlier}</td>
+										<td id="CL${c.student.studentInfo.studentInfoId}">${c.student.studentInfo.comeLate}</td>
+										<td id="LE${c.student.studentInfo.studentInfoId}">${c.student.studentInfo.leaveEarlier}</td>
 										<td>${c.student.studentInfo.absenteeism}</td>
 										<td>${c.student.studentInfo.askForLeave}</td>
 										<td><a id="Q${c.student.studentRoNo}" onclick="changeQiandao(this.id)" href="#"><i class="layui-icon" style="font-size: 24px; color: #1E9FFF;">&#xe642;</i></a></td>
@@ -3110,6 +3137,7 @@ function returnTeacherIndex() {
 			              url: "<%=request.getContextPath()%>/studentInfo/addComeLate.do",
 			              success: function (data) {
 			            	  if(data.result == true){
+			            		  $('#CL'+data.studentInfo.studentInfoId).html(data.studentInfo.comeLate);
 			            		  $('#QstudentComeLate').val(data.studentInfo.comeLate);
 			            		  layui.use('layer', function(){
 					 	               var $ = layui.jquery, layer = layui.layer; 
@@ -3149,6 +3177,7 @@ function returnTeacherIndex() {
 			              url: "<%=request.getContextPath()%>/studentInfo/addLeaveEarly.do",
 			              success: function (data) {
 			            	  if(data.result == true){
+			            		  $('#LE'+data.studentInfo.studentInfoId).html(data.studentInfo.leaveEarlier);
 			            		  $('#QstudentLeaveEarly').val(data.studentInfo.leaveEarlier);
 			            		  layui.use('layer', function(){
 					 	               var $ = layui.jquery, layer = layui.layer; 
@@ -3182,7 +3211,57 @@ function returnTeacherIndex() {
 
 		<!-- 签到记录模块 -->
 		<div id="otherModel" style="display: none; padding: 25px 4%;">
-			<table id="getAllInfo" style="width: 99%;" class="layui-table">
+		<a id="getStuInfoDatial1" onclick="getStuInfoDatial()" href="#" style="color: #5FB878;">按日期查看签到记录<i class="layui-icon" style="font-size: 20px; color: #FF5722;">&#xe61d;</i> </a>
+		<a id="getStuInfoDatial2" onclick="getStuInfoDatial2()" href="#" style="color: #5FB878;display: none;">按日期查看签到记录<i class="layui-icon" style="font-size: 20px; color: #FF5722;">&#xe61a;</i> </a>
+			
+			<div id="getInfoDetail" style="width: 100%; display: none;">
+			<table class="layui-table" style="float: left; width: 30%;">
+			<caption>---------历史签到记录---------</caption>
+			<colgroup>
+					<col width="120">
+					<col width="140">
+				</colgroup>
+				<thead>
+					<tr>
+						<th style="text-align: center;">签到日期</th>
+						<th style="text-align: center;">附加信息</th>
+					</tr>
+				</thead>
+				<tbody id="InfoDetailTable">
+					
+				</tbody>
+			</table>
+			 <!-- 垂直分界线 -->
+			<div style="float: left; width: 2%; height: 100%; text-align: center; margin-left: 3%;">
+				<hr style="width: 2px; height: 300px; background-color: #c2c2c2;"></hr>
+			</div>
+			
+			<table id="detailOfSign" class="layui-table" style="float: left; width: 50%; margin-left: 3%;margin-top: 3%;">
+			<caption id="caption" style="color:#FF5722;text-align:left"></caption>
+			<colgroup>
+					<col width="180">
+					<col width="140">
+					<col width="200">
+				</colgroup>
+				<thead>
+					<tr>
+						<th style="text-align: center;">学号</th>
+						<th style="text-align: center;">状态</th>
+						<th style="text-align: center;">操作</th>
+					</tr>
+				</thead>
+				<tbody id="detailOfSignTbody" style="font-family: 微软雅黑;">
+					
+				</tbody>
+			</table>
+			
+			
+			</div>
+			
+			
+			<div id="getAllInfo2">
+			  <table style="width: 99%;" class="layui-table">
+			<caption>---------签到汇总---------</caption>
 				<thead>
 					<tr>
 						<th>学号</th>
@@ -3214,10 +3293,475 @@ function returnTeacherIndex() {
 					</c:choose>
 				</tbody>
 			</table>
-
+            <a href="<%=request.getContextPath()%>/studentInfo/exportTotalSign.do?courseId=${course.courseId}" style="margin-left: 81%;color: #5FB878;">--导出签到总记录<i class="layui-icon" style="font-size: 20px; color: #FF5722;">&#xe61e;</i>--</a>
+			</div>
+			
 		</div>
 
 		<script>
+		        //查看签到细节
+		        function getStuInfoDatial() {
+		        	$('#getInfoDetail').show();
+		        	$('#getStuInfoDatial1').hide();
+		        	$('#getStuInfoDatial2').show();
+		        	$('#getAllInfo2').hide();
+		       	 $.ajax({
+		 	        type: "GET",
+		 	        data: {
+		 	        	"courseId":${course.courseId}
+		 	        },
+		 	        contentType: "application/json; charset=utf-8",
+		 	        async: false,
+		 	        url: "<%=request.getContextPath()%>/studentInfo/getStuInfoDetailList.do",
+		 			success : function(data) {
+		 				if(data.result == true){
+		 					var dataObj = data.stuInfoDetail;
+			 				 con = "";
+			 				 $.each(dataObj, function (index, item) {
+			 					con += "<tr id=N"+item.studentInfoDetailId+">";
+			 	       	        con += "<td style='text-align:center;'><a id="+item.studentInfoDetailId+" onclick='lookAtStuInfoCount(this.id)' href='#' style='color:#5FB878;'>" + item.currentTime + "</a></td>";
+			 	       	        con += "<td style='text-align:center;'><a href='#'>" + item.currentWeek + "</a></td>";
+			 	       	        con += "<tr/>";
+			 	       	    });
+			 				 $('#InfoDetailTable').html(con);
+		 				}else{
+		 					con = "";
+		 					con += "<tr style='text-align:center;'>";
+		 					con += "<td colspan='2'>" + "暂无签到信息" + "</td>";
+		 					con += "<tr/>";
+		 					 $('#InfoDetailTable').html(con);
+		 				}
+		 				
+		 			},
+		 			error : function(data) {
+		 				alert("??");
+		 			},
+		 			dataType : "json",
+		 		});
+				}
+		        // 查看选中的日期当天有几次签到记录
+		        function lookAtStuInfoCount(id) {
+		        	
+		        	 $.ajax({
+				 	        type: "GET",
+				 	        data: {
+				 	        	"studentInfoDetailId":id
+				 	        },
+				 	        contentType: "application/json; charset=utf-8",
+				 	        async: false,
+				 	        url: "<%=request.getContextPath()%>/studentInfo/selectCountOfCurrentDay.do",
+				 			success : function(data) {
+				 				var dataObj = data.studentInfoDetails; //返回的data为json格式的数据
+				        	    var con;
+				        	    $.each(dataObj, function (index, item) {
+				        	        con += "<tr>";
+				        	        con += "<td style='text-align:center;'>" + item.studentRoNo + "</td>";
+				        	        con += "<td style='text-align:center;' id=P"+item.studentInfoDetailId+">" + item.signInStatus + "</td>";
+				        	        con += "<td style='text-align:center;><div class='site-demo-button' id='layerDemo3'><a id="+item.studentInfoDetailId+" onclick='changeSignStatus(this.id)' href='#'><i id=S"+item.studentInfoDetailId+" class='layui-icon' style='font-size: 20px; color: #1E9FFF;'>&#xe642;</i></a><a id=I"+item.studentInfoDetailId+" href='#' style='font-size:10px;display:none;'><span class='layui-btn22' data-method='notice' id=Q"+item.studentInfoDetailId+" onclick='showThing(this.id)' style='color:white; background-color:#5FB878;'>签到</span>&nbsp;<span class='layui-btn3' id=W"+item.studentInfoDetailId+" data-method='notice2' onclick='showThing(this.id)' style='color:white; background-color:#FF5722;'>迟到</span>&nbsp;<span class='layui-btn4' id=E"+item.studentInfoDetailId+" data-method='notice' onclick='showThing(this.id)' style='color:white; background-color:#5FB878;'>早退</span>&nbsp;<span class='layui-btn5' id=R"+item.studentInfoDetailId+" data-method='notice' onclick='showThing(this.id)' style='color:white; background-color:#FF5722;'>请假</span>&nbsp;<span class='layui-btn6' data-method='notice' onclick='showThing(this.id)' id=T"+item.studentInfoDetailId+" style='color:white; background-color:#5FB878;'>旷课</span>&nbsp;<i id=L"+item.studentInfoDetailId+" onclick='reBack(this.id)' class='layui-icon' style='font-size: 20px; color: #1E9FFF;'>&#xe633;</i></a></div></td>";
+				        	        con += "<tr/>";
+				        	    });
+				        	    $('#caption').html(data.currentTime+'&nbsp;&nbsp;&nbsp;&nbsp;'+"<a href='<%=request.getContextPath()%>/studentInfo/exportSign.do?studentInfoDetailId="+id+"' style='color:#5FB878;'>--导出该次签到表--</a>");
+				        	    $('#detailOfSignTbody').html(con);
+				 			},
+				 			error : function(data) {
+				 				alert("??");
+				 			},
+				 			dataType : "json",
+				 		});
+		        	 
+		        	//改为签到确认窗
+		     		layui.use(['element', 'layer'], function() {
+		    			var element = layui.element, $ = layui.jquery, layer = layui.layer;
+		    			//触发事件
+		    			var active = {
+		    				notice : function() {
+		    					//示范一个公告层
+		    					layer.open({
+		    								type : 1,
+		    								title : false //不显示标题栏
+		    								,
+		    								closeBtn : false,
+		    								area : '300px;',
+		    								shade : 0.8,
+		    								id : 'LAY_layuipro22' //设定一个id，防止重复弹出
+		    								,
+		    								btn : [ '确认', '取消' ],
+		    								yes : function(index, layero) {
+		    									showThing1();
+		    								},
+		    								btn2 : function(index, layero) {
+		    									//按钮【按钮二】的回调
+		    								},
+		    								btnAlign : 'c',
+		    								moveType : 1 //拖拽模式，0或者1
+		    								,
+		    								content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定更改为签到？</div>'
+		    							});
+		    				}
+
+		    			};
+
+		    			$('#layerDemo3 .layui-btn22').on(
+		    					'click',
+		    					function() {
+		    						var othis = $(this), method = othis
+		    								.data('method');
+		    						active[method] ? active[method].call(
+		    								this, othis) : '';
+		    					});
+		                 });
+		     		//改为迟到确认窗
+		     		layui.use(['element', 'layer'], function() {
+		    			var element = layui.element, $ = layui.jquery, layer = layui.layer;
+		    			//触发事件
+		    			var active = {
+		    				notice2 : function() {
+		    					//示范一个公告层
+		    					layer.open({
+		    								type : 1,
+		    								title : false //不显示标题栏
+		    								,
+		    								closeBtn : false,
+		    								area : '300px;',
+		    								shade : 0.8,
+		    								id : 'LAY_layuipro33' //设定一个id，防止重复弹出
+		    								,
+		    								btn : [ '确认', '取消' ],
+		    								yes : function(index, layero) {
+		    									showThing2();
+		    									layer.closeAll();
+		    								},
+		    								btn2 : function(index, layero) {
+		    									//按钮【按钮二】的回调
+		    								},
+		    								btnAlign : 'c',
+		    								moveType : 1 //拖拽模式，0或者1
+		    								,
+		    								content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定更改为迟到？</div>'
+		    							});
+		    				}
+
+		    			};
+
+		    			$('#layerDemo3 .layui-btn3').on(
+		    					'click',
+		    					function() {
+		    						var othis = $(this), method = othis
+		    								.data('method');
+		    						active[method] ? active[method].call(
+		    								this, othis) : '';
+		    					});
+		                 });
+		     		
+		     		//改为早退确认窗
+		     		layui.use(['element', 'layer'], function() {
+		    			var element = layui.element, $ = layui.jquery, layer = layui.layer;
+		    			//触发事件
+		    			var active = {
+		    				notice : function() {
+		    					//示范一个公告层
+		    					layer.open({
+		    								type : 1,
+		    								title : false //不显示标题栏
+		    								,
+		    								closeBtn : false,
+		    								area : '300px;',
+		    								shade : 0.8,
+		    								id : 'LAY_layuipro44' //设定一个id，防止重复弹出
+		    								,
+		    								btn : [ '确认', '取消' ],
+		    								yes : function(index, layero) {
+		    									showThing3();
+		    									layer.closeAll();
+		    								},
+		    								btn2 : function(index, layero) {
+		    									//按钮【按钮二】的回调
+		    								},
+		    								btnAlign : 'c',
+		    								moveType : 1 //拖拽模式，0或者1
+		    								,
+		    								content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定更改为早退？</div>'
+		    							});
+		    				}
+
+		    			};
+
+		    			$('#layerDemo3 .layui-btn4').on(
+		    					'click',
+		    					function() {
+		    						var othis = $(this), method = othis
+		    								.data('method');
+		    						active[method] ? active[method].call(
+		    								this, othis) : '';
+		    					});
+		                 });
+		     		//改为请假确认窗
+		     		layui.use(['element', 'layer'], function() {
+		    			var element = layui.element, $ = layui.jquery, layer = layui.layer;
+		    			//触发事件
+		    			var active = {
+		    				notice : function() {
+		    					//示范一个公告层
+		    					layer.open({
+		    								type : 1,
+		    								title : false //不显示标题栏
+		    								,
+		    								closeBtn : false,
+		    								area : '300px;',
+		    								shade : 0.8,
+		    								id : 'LAY_layuipro55' //设定一个id，防止重复弹出
+		    								,
+		    								btn : [ '确认', '取消' ],
+		    								yes : function(index, layero) {
+		    									showThing4();
+		    									layer.closeAll();
+		    								},
+		    								btn2 : function(index, layero) {
+		    									//按钮【按钮二】的回调
+		    								},
+		    								btnAlign : 'c',
+		    								moveType : 1 //拖拽模式，0或者1
+		    								,
+		    								content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定更改为请假？</div>'
+		    							});
+		    				}
+
+		    			};
+
+		    			$('#layerDemo3 .layui-btn5').on(
+		    					'click',
+		    					function() {
+		    						var othis = $(this), method = othis
+		    								.data('method');
+		    						active[method] ? active[method].call(
+		    								this, othis) : '';
+		    					});
+		                 });
+		     		
+		     		//改为旷课确认窗
+		     		layui.use(['element', 'layer'], function() {
+		    			var element = layui.element, $ = layui.jquery, layer = layui.layer;
+		    			//触发事件
+		    			var active = {
+		    				notice : function() {
+		    					//示范一个公告层
+		    					layer.open({
+		    								type : 1,
+		    								title : false //不显示标题栏
+		    								,
+		    								closeBtn : false,
+		    								area : '300px;',
+		    								shade : 0.8,
+		    								id : 'LAY_layuipro466' //设定一个id，防止重复弹出
+		    								,
+		    								btn : [ '确认', '取消' ],
+		    								yes : function(index, layero) {
+		    									showThing5();
+		    									layer.closeAll();
+		    								},
+		    								btn2 : function(index, layero) {
+		    									//按钮【按钮二】的回调
+		    								},
+		    								btnAlign : 'c',
+		    								moveType : 1 //拖拽模式，0或者1
+		    								,
+		    								content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定更改为旷课？</div>'
+		    							});
+		    				}
+
+		    			};
+
+		    			$('#layerDemo3 .layui-btn6').on(
+		    					'click',
+		    					function() {
+		    						var othis = $(this), method = othis
+		    								.data('method');
+		    						active[method] ? active[method].call(
+		    								this, othis) : '';
+		    					});
+		                 });
+		     		
+				}
+		        var studentInfoDetailIIIId;
+		        function showThing(id) {
+		        	studentInfoDetailIIIId = id.substring(1);
+		        	//alert(studentInfoDetailIIIId);
+				}
+		        //更改状态为签到
+		        function showThing1() {
+					
+					$.ajax({
+			 	        type: "GET",
+			 	        data: {
+			 	        	"studentInfoDetailId":studentInfoDetailIIIId,
+					        "signInStatus":"签到"
+			 	        },
+			 	        contentType: "application/json; charset=utf-8",
+			 	        async: false,
+			 	        url: "<%=request.getContextPath()%>/studentInfo/changeThisStatus.do",
+			 			success : function(data) {
+			 				layer.closeAll();
+			 				if(data.result == true){
+			 					layui.use('layer', function() {
+	        						var $ = layui.jquery, layer = layui.layer;
+	        						layer.msg('更新成功！请刷新');
+	        						$('#P'+studentInfoDetailIIIId).html("签到");
+	        					});
+			 				}else{
+			 					layui.use('layer', function() {
+	        						var $ = layui.jquery, layer = layui.layer;
+	        						layer.msg('更新失败！');
+	        					});
+			 				}
+			 			},
+			 			error : function(data) {
+			 				alert("??");
+			 			},
+			 			dataType : "json",
+			 		});
+				}
+		      //更改状态为迟到
+		        function showThing2() {
+		    	  //alert("迟到");
+		        	$.ajax({
+			 	        type: "GET",
+			 	        data: {
+			 	        	"studentInfoDetailId":studentInfoDetailIIIId,
+					        "signInStatus":"迟到"
+			 	        },
+			 	        contentType: "application/json; charset=utf-8",
+			 	        async: false,
+			 	        url: "<%=request.getContextPath()%>/studentInfo/changeThisStatus.do",
+			 			success : function(data) {
+			 				if(data.result == true){
+			 					layui.use('layer', function() {
+	        						var $ = layui.jquery, layer = layui.layer;
+	        						layer.msg('更新成功！请刷新！');
+	        						$('#P'+studentInfoDetailIIIId).html("迟到");
+	        					});
+			 				}else{
+			 					layui.use('layer', function() {
+	        						var $ = layui.jquery, layer = layui.layer;
+	        						layer.msg('更新失败！');
+	        					});
+			 				}
+			 			},
+			 			error : function(data) {
+			 				alert("??");
+			 			},
+			 			dataType : "json",
+			 		});
+				}
+		      //更改状态为早退
+		        function showThing3() {		    	  
+		        	$.ajax({
+			 	        type: "GET",
+			 	        data: {
+			 	        	"studentInfoDetailId":studentInfoDetailIIIId,
+					        "signInStatus":"早退"
+			 	        },
+			 	        contentType: "application/json; charset=utf-8",
+			 	        async: false,
+			 	        url: "<%=request.getContextPath()%>/studentInfo/changeThisStatus.do",
+			 			success : function(data) {
+			 				if(data.result == true){
+			 					layui.use('layer', function() {
+	        						var $ = layui.jquery, layer = layui.layer;
+	        						layer.msg('更新成功！请刷新');
+	        						$('#P'+studentInfoDetailIIIId).html("早退");
+	        					});
+			 				}else{
+			 					layui.use('layer', function() {
+	        						var $ = layui.jquery, layer = layui.layer;
+	        						layer.msg('更新失败！');
+	        					});
+			 				}
+			 			},
+			 			error : function(data) {
+			 				alert("??");
+			 			},
+			 			dataType : "json",
+			 		});
+				}
+		      //更改状态为请假
+		        function showThing4() {
+		        	$.ajax({
+			 	        type: "GET",
+			 	        data: {
+			 	        	"studentInfoDetailId":studentInfoDetailIIIId,
+					        "signInStatus":"请假"
+			 	        },
+			 	        contentType: "application/json; charset=utf-8",
+			 	        async: false,
+			 	        url: "<%=request.getContextPath()%>/studentInfo/changeThisStatus.do",
+			 			success : function(data) {
+			 				if(data.result == true){
+			 					layui.use('layer', function() {
+	        						var $ = layui.jquery, layer = layui.layer;
+	        						layer.msg('更新成功！请刷新');
+	        						$('#P'+studentInfoDetailIIIId).html("请假");
+	        					});
+			 				}else{
+			 					layui.use('layer', function() {
+	        						var $ = layui.jquery, layer = layui.layer;
+	        						layer.msg('更新失败！');
+	        					});
+			 				}
+			 			},
+			 			error : function(data) {
+			 				alert("??");
+			 			},
+			 			dataType : "json",
+			 		});
+				}
+		      //更改状态为旷课
+		        function showThing5() {
+		        	$.ajax({
+			 	        type: "GET",
+			 	        data: {
+			 	        	"studentInfoDetailId":studentInfoDetailIIIId,
+					        "signInStatus":"旷课"
+			 	        },
+			 	        contentType: "application/json; charset=utf-8",
+			 	        async: false,
+			 	        url: "<%=request.getContextPath()%>/studentInfo/changeThisStatus.do",
+			 			success : function(data) {
+			 				if(data.result == true){
+			 					layui.use('layer', function() {
+	        						var $ = layui.jquery, layer = layui.layer;
+	        						layer.msg('更新成功！ 请刷新');
+	        						$('#P'+studentInfoDetailIIIId).html("旷课");
+	        					});
+			 				}else{
+			 					layui.use('layer', function() {
+	        						var $ = layui.jquery, layer = layui.layer;
+	        						layer.msg('更新失败！');
+	        					});
+			 				}
+			 			},
+			 			error : function(data) {
+			 				alert("??");
+			 			},
+			 			dataType : "json",
+			 		});
+				}
+		        
+		        function changeSignStatus(id) {
+					$('#S'+id).hide();
+					$('#I'+id).show();
+					
+				}
+		        
+		        function reBack(id) {
+		        	$('#S'+id.substring(1)).show();
+					$('#I'+id.substring(1)).hide();
+				}
+		        function getStuInfoDatial2() {
+		        	$('#getInfoDetail').hide();
+		        	$('#getStuInfoDatial1').show();
+		        	$('#getStuInfoDatial2').hide();
+		        	$('#getAllInfo2').show();
+				}
 				//其它模块显示
 				function otherShow() {
 					$('#getHeadLine').html("签到记录");
@@ -3478,7 +4022,7 @@ function returnTeacherIndex() {
 			<!-- 单选部分 -->
 			<div id="SingleSelectionDetail" class="layui-form-item"
 				style="display: none; margin-left: 20px;">
-				<form class="layui-form layui-form-pane">
+				<form id="singleWait" class="layui-form layui-form-pane">
 					<label class="layui-form-label" style="background-color: #009688;">*问题*</label>
 					<div class="layui-input-inline">
 						<input id="SingleSelectionQuestionContent" type="text"
@@ -3559,9 +4103,9 @@ function returnTeacherIndex() {
 						style="background-color: #009688;">备注</label>
 					<div class="layui-input-inline">
 						<input id="SingleSelectionNote" type="text"
-							name="SingleSelectionNote" required
+							name="SingleSelectionNote"
 							style="border-top: none; border-left: none; border-right: none; border-color: #009688;"
-							lay-verify="required" placeholder="如：考察学生逻辑思维" autocomplete="off"
+						   placeholder="如：考察学生逻辑思维" autocomplete="off"
 							class="layui-input">
 					</div>
 					<br /> <br /> <br /> <input id="SingleSelectionButton"
@@ -3614,7 +4158,12 @@ function returnTeacherIndex() {
 							success : function(data) {
 								if(data.result == true){
 									createQuestion($('#examinationIddd').val());
-									window.location.hash = "#mark1";   
+									//window.location.hash = "#mark1";   
+									layui.use('layer', function() {
+										var $ = layui.jquery, layer = layui.layer;
+										layer.msg('添加单选成功!');
+										//$('#singleWait')[0].reset();
+									});
 								}else {
 									if(data.result == "no"){
 										layui.use('layer', function(){ //独立版的layer无需执行这一句
@@ -3807,7 +4356,11 @@ function returnTeacherIndex() {
 							success : function(data) {
 								if(data.result == true){
 									createQuestion($('#examinationIddd').val());
-									window.location.hash = "#mark2";   
+									layui.use('layer', function() {
+										var $ = layui.jquery, layer = layui.layer;
+										layer.msg('添加多选成功!');
+									});
+									//window.location.hash = "#mark2";   
 								}else {
 									if(data.result == "no"){
 										layui.use('layer', function(){ //独立版的layer无需执行这一句
@@ -3956,7 +4509,11 @@ function returnTeacherIndex() {
 							success : function(data) {
 								if(data.result == true){
 									createQuestion($('#examinationIddd').val());
-									window.location.hash = "#mark3";   
+									layui.use('layer', function() {
+										var $ = layui.jquery, layer = layui.layer;
+										layer.msg('添加判断成功!');
+									});
+									//window.location.hash = "#mark3";   
 								}else {
 									if(data.result == "no"){
 										layui.use('layer', function(){ //独立版的layer无需执行这一句
@@ -4105,7 +4662,11 @@ function returnTeacherIndex() {
 							success : function(data) {
 								if(data.result == true){
 									createQuestion($('#examinationIddd').val());
-									window.location.hash = "#mark4";   
+									layui.use('layer', function() {
+										var $ = layui.jquery, layer = layui.layer;
+										layer.msg('添加填空成功!');
+									});
+									//window.location.hash = "#mark4";   
 								}else {
 									if(data.result == "no"){
 										layui.use('layer', function(){ //独立版的layer无需执行这一句
@@ -4239,7 +4800,11 @@ function returnTeacherIndex() {
 							success : function(data) {
 								if(data.result == true){
 									createQuestion($('#examinationIddd').val());
-									window.location.hash = "#mark4";   
+									layui.use('layer', function() {
+										var $ = layui.jquery, layer = layui.layer;
+										layer.msg('添加简答成功!');
+									});
+									//window.location.hash = "#mark4";   
 								}else {
 									if(data.result == "no"){
 										layui.use('layer', function(){ //独立版的layer无需执行这一句
@@ -4450,7 +5015,7 @@ function returnTeacherIndex() {
 						<th style="text-align: center;">判断</th>
 						<th style="text-align: center;">填空</th>
 						<th style="text-align: center;">简答</th>
-						<th style="text-align: center;">总分</th>
+						<th style="text-align: center;">得分</th>
 						<th style="text-align: center;">状态</th>
 					</tr>
 				</thead>
@@ -4465,6 +5030,9 @@ function returnTeacherIndex() {
 		<div id="packScore"
 		style="background-color: white; margin-left: 5%; padding-left0;
 		margin-right: 5%; padding-top: 10px; font-family: 微软雅黑;display: none;">
+		
+		<a onclick="returnUp01()" href="#" style="color: #009688;margin-left: 13px;"><i class="layui-icon" style="font-size: 15px; color: #009688;">&#xe65a;</i>&nbsp;返回上一层</a>
+		<br/><hr class="layui-bg-red">
 		<input id="ssscoreId" type="text" style="display: none;"/>
 		<h3 style="font-size: 1.4em;color: #5FB878;"><四>填空<span style="font-size: 0.8em"></span></h3>
 		<br />
@@ -4492,6 +5060,18 @@ function returnTeacherIndex() {
 	  </form>
 			
 			<script>
+			//返回批改试卷上一层
+			function returnUp01() {
+				$('#messageList').html("批改试卷");
+				getStudentExamList($('#changeExamEndX').val());
+				$('#packScore').hide();
+				$('#ShortAnswerScore').hide();
+			}
+			//查看成绩返回上一层
+			function returnUp02() {
+				scoreFormList();
+			}
+			
 			layui.use([ 'form', 'laydate' ], function() {
 				var form = layui.form, laydate = layui.laydate;
 				form.verify({
@@ -4508,6 +5088,8 @@ function returnTeacherIndex() {
 		<!-- 显示成绩单 -->	   
 		<div id="scoreFormList" class="site-text site-block"
 			style="display: none;margin-top: 0; padding-left: 0; padding-right: 0;"> 
+	        
+	        <input id="studentScoreTem" type="text" style="display: none;"/>
 	        <table id="scoreShowTableFirst" class="layui-table" lay-even lay-skin="row"
 				style="text-align: center; width: 100%;">
 				<colgroup>
@@ -4537,8 +5119,12 @@ function returnTeacherIndex() {
 				</tbody>
 			</table>
 			
-			<table id="scoreShowTableSecond" class="layui-table" lay-even
-				style="text-align: center; width: 100%; display: none;">
+			<div id="scoreShowTableSecond" style=" display: none;">
+			<a onclick="returnUp02()" href="#" style="color: #009688;margin-left: 13px;"><i class="layui-icon" style="font-size: 15px; color: #009688;">&#xe65a;</i>&nbsp;返回上一层</a>
+		    <br/><hr class="layui-bg-red">
+			  
+			  <table class="layui-table" lay-even
+				style="text-align: center; width: 100%;">
 				<caption>
 				班级人数：<span id="classCount"></span>&nbsp;&nbsp;&nbsp;&nbsp;
 				考试人数：<span id="classExamCount"></span>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -4574,6 +5160,8 @@ function returnTeacherIndex() {
 
 				</tbody>
 			</table>
+			</div>
+			
 		</div>
 		
 		

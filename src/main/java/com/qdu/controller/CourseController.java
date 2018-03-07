@@ -79,12 +79,12 @@ public class CourseController {
 		Course course2 = courseServiceImpl.selectIdFromCourse(courseName, teacherMobile);
 		int courseId = course2.getCourseId();
 		System.out.println("courseId: " + courseId);
-		String text = "http://101.200.61.255:8080/ClassManageSys/qr.jsp?teacherMobile=" + teacherMobile + "&courseId="
+		String text = "http://192.168.1.100:8080/ClassManageSys/qr.jsp?teacherMobile=" + teacherMobile + "&courseId="
 				+ courseId + "&courseName=" + courseName.replaceAll("\\+", "%2B") + "&teacherName=" + teacherName
 				+ "&currentTime=" + current + "&tem=" + tem;
 		testQR tQr = new testQR(text, courseName, teacherName);
 		// 获取二维码图片名称
-		String qrImg = tQr.createQR(request);
+		String qrImg = tQr.createQR(request); 
 		// 以更新的方式插入二维码图片信息回数据库
 		courseServiceImpl.updateQrImg(course2.getCourseId(), qrImg);
 		System.out.println(qrImg);
@@ -142,7 +142,7 @@ public class CourseController {
 			Teacher teacher = teacherServiceImpl.selectTeacherByEmail(teacherMobile);
 			String teacherName = teacher.getTeacherName();
 			String current = currentYear +"";
-			String text = "http://101.200.61.255:8080/ClassManageSys/qr.jsp?teacherMobile=" + teacherMobile + "&courseId="
+			String text = "http://192.168.1.100:8080/ClassManageSys/qr.jsp?teacherMobile=" + teacherMobile + "&courseId="
 					+ courseId + "&courseName=" + courseName.replaceAll("\\+", "%2B") + "&teacherName=" + teacherName
 					+ "&currentTime=" + current + "&tem=" + schoolTem;
 			testQR tQr = new testQR(text, courseName, teacherName);
@@ -181,7 +181,7 @@ public class CourseController {
 		Date date = new Date();
 		String currentTime = sdf.format(date);
 		System.out.println(currentTime);
-		String text = "http://101.200.61.255:8080/ClassManageSys/newSignIn.jsp?teacherName=" + teacherName + "&courseId="
+		String text = "http://192.168.1.100:8080/ClassManageSys/newSignIn.jsp?teacherName=" + teacherName + "&courseId="
 				+ courseId + "&courseName=" + course.getCourseName().replaceAll("\\+", "%2B") 
 				+ "&currentTime=" + currentTime;
 		 String time = new SimpleDateFormat("YYYY-MM-dd-HH-mm-ss").format(new Date());

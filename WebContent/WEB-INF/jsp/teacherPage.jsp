@@ -1831,7 +1831,7 @@ function checkCourseShow2() {
 							</c:when>
 							<c:otherwise>
 								<tr>
-									<td colspan="7">（空）</td>
+									<td colspan="9">（空）</td>
 								</tr>
 							</c:otherwise>
 						</c:choose>
