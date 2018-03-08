@@ -53,4 +53,9 @@
 	  values(#{studentRoNo},#{courseId},#{currentTime},#{currentWeek},#{currentCount},#{signInStatus})
 	</insert>
 	
+	<delete id="deleteStudentInfoDetail" parameterType="HashMap">
+	  delete from StudentInfoDetail where StudentRoNo = #{studentRoNo} 
+	  And CourseId = #{courseId} 
+	</delete>
+	
 </mapper>
