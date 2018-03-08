@@ -257,7 +257,120 @@ public class StudentInfoController {
         System.out.println("当前签到状态: " + currentStatus);
         if(signInStatus.equals(currentStatus)){
         	
-        }else if(currentStatus.equals("签到")){
+        }else
+        	switch (currentStatus) {
+			case "签到":
+				System.out.println("签到");
+				studentInfoServiceImpl.updateStudentInfoAboutSignIn(studentInfo.getStudentInfoId(), studentInfo.getSignIn()-1);
+				System.out.println("签到 -1 完成");
+				switch (signInStatus) {
+				case "迟到":
+					studentInfoServiceImpl.updateStudentInfoAboutLateOrLeave(studentInfo.getComeLate()+1, studentInfo.getLeaveEarlier(), studentInfo.getStudentInfoId());
+					break;
+                case "早退":
+                studentInfoServiceImpl.updateStudentInfoAboutLateOrLeave(studentInfo.getComeLate(), studentInfo.getLeaveEarlier()+1, studentInfo.getStudentInfoId());
+                    break;
+                case "请假":
+                	studentInfoServiceImpl.updateStudentInfoAboutLeave(studentInfo.getStudentInfoId(), studentInfo.getAskForLeave()+1);
+                break;
+                case "旷课":
+                	studentInfoServiceImpl.updateStudentInfoAboutAbs(studentInfo.getStudentInfoId(), studentInfo.getAbsenteeism()+1);
+                break;
+				default:
+					break;
+				}
+				break;
+			case "迟到":
+				studentInfoServiceImpl.updateStudentInfoAboutLateOrLeave(studentInfo.getComeLate()-1, studentInfo.getLeaveEarlier(), studentInfo.getStudentInfoId());
+                switch (signInStatus) {
+				case "签到":
+					 studentInfoServiceImpl.updateStudentInfoAboutSignIn(studentInfo.getStudentInfoId(), studentInfo.getSignIn()+1);
+					break;
+                case "早退":
+    				studentInfoServiceImpl.updateStudentInfoAboutLateOrLeave(studentInfo.getComeLate(), studentInfo.getLeaveEarlier()+1, studentInfo.getStudentInfoId());
+					break;
+                case "请假":
+    				studentInfoServiceImpl.updateStudentInfoAboutLeave(studentInfo.getStudentInfoId(), studentInfo.getAskForLeave()+1);
+	                break;
+                case "旷课":
+    				studentInfoServiceImpl.updateStudentInfoAboutAbs(studentInfo.getStudentInfoId(), studentInfo.getAbsenteeism()+1);
+	                break;
+
+				default:
+					break;
+				}
+				break;
+			case "早退":
+				studentInfoServiceImpl.updateStudentInfoAboutSignIn(studentInfo.getStudentInfoId(), studentInfo.getLeaveEarlier()-1);
+				switch (signInStatus) {
+                case "签到":
+   				 studentInfoServiceImpl.updateStudentInfoAboutSignIn(studentInfo.getStudentInfoId(), studentInfo.getSignIn()+1);
+					break;
+               case "迟到":
+   				studentInfoServiceImpl.updateStudentInfoAboutLateOrLeave(studentInfo.getComeLate()+1, studentInfo.getLeaveEarlier(), studentInfo.getStudentInfoId());	
+					break;
+               case "请假":
+   				studentInfoServiceImpl.updateStudentInfoAboutLeave(studentInfo.getStudentInfoId(), studentInfo.getAskForLeave()+1);
+	                break;
+               case "旷课":
+   				studentInfoServiceImpl.updateStudentInfoAboutAbs(studentInfo.getStudentInfoId(), studentInfo.getAbsenteeism()+1);
+	                break;
+
+				default:
+					break;
+				}
+				break;
+				
+			case "请假":
+				studentInfoServiceImpl.updateStudentInfoAboutSignIn(studentInfo.getStudentInfoId(), studentInfo.getAskForLeave()-1);
+				switch (signInStatus) {
+                 case "签到":
+					 studentInfoServiceImpl.updateStudentInfoAboutSignIn(studentInfo.getStudentInfoId(), studentInfo.getSignIn()+1);
+					break;
+                case "迟到":
+					studentInfoServiceImpl.updateStudentInfoAboutLateOrLeave(studentInfo.getComeLate()+1, studentInfo.getLeaveEarlier(), studentInfo.getStudentInfoId());
+					break;
+                case "早退":
+					studentInfoServiceImpl.updateStudentInfoAboutLateOrLeave(studentInfo.getComeLate(), studentInfo.getLeaveEarlier()+1, studentInfo.getStudentInfoId());
+	                break;
+                case "旷课":
+					studentInfoServiceImpl.updateStudentInfoAboutAbs(studentInfo.getStudentInfoId(), studentInfo.getAbsenteeism()+1);
+	                break;
+
+				default:
+					break;
+				}
+	            break;
+	            
+			case "旷课":
+	            studentInfoServiceImpl.updateStudentInfoAboutAbs(studentInfo.getStudentInfoId(), studentInfo.getAbsenteeism()-1);
+
+				switch (signInStatus) { 
+               case "签到":
+					 studentInfoServiceImpl.updateStudentInfoAboutSignIn(studentInfo.getStudentInfoId(), studentInfo.getSignIn()+1);
+					break;
+                case "迟到":
+					studentInfoServiceImpl.updateStudentInfoAboutLateOrLeave(studentInfo.getComeLate()+1, studentInfo.getLeaveEarlier(), studentInfo.getStudentInfoId());
+					break;
+                case "早退":
+					studentInfoServiceImpl.updateStudentInfoAboutLateOrLeave(studentInfo.getComeLate(), studentInfo.getLeaveEarlier()+1, studentInfo.getStudentInfoId());
+	                break;
+                case "请假":
+					studentInfoServiceImpl.updateStudentInfoAboutLeave(studentInfo.getStudentInfoId(), studentInfo.getAskForLeave()+1);
+	                break;
+
+				default:
+					break;
+				}
+	            break;
+			default:
+				break;
+			}
+        	
+        	
+        	
+        	
+        	/*if(currentStatus.equals("签到")){
 			System.out.println("签到");
 			studentInfoServiceImpl.updateStudentInfoAboutSignIn(studentInfo.getStudentInfoId(), studentInfo.getSignIn()-1);
 			System.out.println("签到 -1 完成");
@@ -314,7 +427,7 @@ public class StudentInfoController {
 			}else if (signInStatus.equals("请假")) {
 				studentInfoServiceImpl.updateStudentInfoAboutLeave(studentInfo.getStudentInfoId(), studentInfo.getAskForLeave()+1);
 			}
-		}
+		}*/
 		int tem = studentInfoServiceImpl.updateStudentInfoDetail(signInStatus, studentInfoDetailId);
 		if(tem > 0){
 			map.put("result", true);

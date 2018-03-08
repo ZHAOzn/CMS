@@ -57,4 +57,6 @@ public interface StudentInfoDao {
     
     public int updateStudentInfoDetail(String signInStatus,int studentinfodetailId);
     
+    public int deleteStudentInfoDetail(String studentRoNo,int courseId);
+    
 }

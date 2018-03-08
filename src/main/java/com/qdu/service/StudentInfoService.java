@@ -56,5 +56,7 @@ public interface StudentInfoService {
     public StudentInfoDetail selectStudentInfoDetailId(int studentInfoDetailId);
    
     public int updateStudentInfoDetail(String signInStatus, int studentinfodetailId);
+    
+    public int deleteStudentInfoDetail(String studentRoNo, int courseId);
 
 }

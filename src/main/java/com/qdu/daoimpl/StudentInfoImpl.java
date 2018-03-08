@@ -201,4 +201,13 @@ public class StudentInfoImpl implements StudentInfoDao{
 		return sessionFactory.openSession().update(statement, map);
 	}
 
+	@Override
+	public int deleteStudentInfoDetail(String studentRoNo, int courseId) {
+		String statement = "com.qdu.mapping.StudentInfoDetailMapping.deleteStudentInfoDetail";
+		Map<String, Object> map = new HashMap<>();
+		map.put("studentRoNo", studentRoNo);
+		map.put("courseId", courseId);
+		return sessionFactory.openSession().delete(statement, map);
+	}
+
 }

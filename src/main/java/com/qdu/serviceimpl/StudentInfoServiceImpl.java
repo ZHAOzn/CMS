@@ -137,6 +137,11 @@ public class StudentInfoServiceImpl implements StudentInfoService{
 	public int updateStudentInfoDetail(String signInStatus, int studentinfodetailId) {
 		return studentInfoDaoImpl.updateStudentInfoDetail(signInStatus, studentinfodetailId);
 	}
+
+	@Override
+	public int deleteStudentInfoDetail(String studentRoNo, int courseId) {
+		return studentInfoDaoImpl.deleteStudentInfoDetail(studentRoNo, courseId);
+	}
 	
 
 }

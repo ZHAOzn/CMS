@@ -688,7 +688,9 @@ public class TeacherController {
 		ClazzStu clazzStu = clazzStuServiceImpl.selectClazzStuByCourse(studentRoNo, courseId);
 		int tem = clazzStuServiceImpl.deleteClazzStuById(clazzStu.getClazzStuId());
 		int tem2 = studentInfoServiceImpl.deleteStudentInfoById(studentInfo.getStudentInfoId());
-		if((tem+tem2) > 1){
+		int tem3 = studentInfoServiceImpl.deleteStudentInfoDetail(studentRoNo, courseId);
+		System.out.println(tem + ":" +tem2+ ":" +tem3); 
+		if((tem+tem2+tem3) > 1){
 			map.put("result", true);
 		}
 		else {

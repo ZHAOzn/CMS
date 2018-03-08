@@ -33,10 +33,7 @@ var form = layui.form;
 var examinationId;
 //修改班级信息
 function changeWhenClick(clazzId) {
-	console.log(5%3);
-	
-	
-	
+
 	 $('#getHeadLine').html("修改班级信息");
 	 var clazzIdpre = clazzId.substring(3);
 	 document.getElementById("preclazzId").value = clazzIdpre;
@@ -496,7 +493,7 @@ function aClick(clazzId) {
 							btnAlign : 'c',
 							moveType : 1 //拖拽模式，0或者1
 							,
-							content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定移除该学生？</div>'
+							content : '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定移除该学生？<br/>(同时删除签到记录)</div>'
 						});
 			},
 			page : function() {
