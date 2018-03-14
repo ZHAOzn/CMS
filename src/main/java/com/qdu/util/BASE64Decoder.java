@@ -252,7 +252,7 @@ public class BASE64Decoder {
                 e.printStackTrace();  
             }  
         }  
-    }  
-   
+    }
+
 
 }

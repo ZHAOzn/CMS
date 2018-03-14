@@ -16,14 +16,18 @@
 		<result property="totalValue" column="TotalValue" />
 		<result property="examEnd" column="ExamEnd" />
 		<result property="scoreStatus" column="ScoreStatus" />
+		<result property="beforeExamPhoto" column="BeforeExamPhoto" />
+		<result property="examingPhotoOne" column="ExamingPhotoOne" />
+		<result property="examingPhotoTwo" column="ExamingPhotoTwo" />
+		<result property="examingPhotoThree" column="ExamingPhotoThree" />
 	</resultMap>
 
    <insert id="insertScore" parameterType="com.qdu.pojo.Score">
       insert into 
       Score(StudentRoNo,StudentName,StudentClass,ExaminationID,SingleSelectionValue,MoreSelectionValue,
-      JudgeValue,PackValue,ShortAnswerValue,TotalValue,ExamEnd,ScoreStatus) 
+      JudgeValue,PackValue,ShortAnswerValue,TotalValue,ExamEnd,ScoreStatus,BeforeExamPhoto) 
       values(#{studentRoNo},#{studentName},#{studentClass},#{examinationID},#{singleSelectionValue},#{moreSelectionValue},
-      #{judgeValue},#{packValue},#{shortAnswerValue},#{totalValue},#{examEnd},#{scoreStatus})
+      #{judgeValue},#{packValue},#{shortAnswerValue},#{totalValue},#{examEnd},#{scoreStatus},#{beforeExamPhoto})
     </insert>
     
     <select id="selectScoreByExIdAndStuRoNo" resultMap="ScoreResult" parameterType="HashMap">

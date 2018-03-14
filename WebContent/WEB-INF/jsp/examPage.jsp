@@ -36,7 +36,26 @@ return "您尚未保存！";
 }
 </script>
 <script language="javascript" type="text/javascript"> 
-window.onload=function(){ 
+window.onload=function(){
+	
+	  var video = document.getElementById('video'),
+	  vendorUrl = window.URL || window.webkitURL;
+	  navigator.getMedia = navigator.getUserMedia ||
+	                       navagator.webkitGetUserMedia ||
+	                       navigator.mozGetUserMedia ||
+	                       navigator.msGetUserMedia;
+	  navigator.getMedia({
+	      video: true, //使用摄像头对象
+	      audio: false  //不适用音频
+	  }, function(strem){
+	      console.log(strem);
+	      video.src = vendorUrl.createObjectURL(strem);
+	      video.play();
+	  }, function(error) {
+	      console.log(error);
+	  });
+	
+	
 	document.onkeydown=function (e){
         var currKey=0,evt=e||window.event;
         currKey=evt.keyCode||evt.which||evt.charCode;
@@ -209,12 +228,16 @@ window.onload=function(){
 		</div>
 		<form class="navbar-form navbar-right"
 			style="margin-right: 5%; float: left;">
-			<a id="lllww" style="width: 100px; color: white; font-size: 1.7em;">${examination.examinationName}</a>
+			<a href="#" id="lllww" style="width: 100px; color: white; font-size: 1.7em;">${examination.examinationName}</a>
+		    <a href="#" onclick="toggleVideo()" style="right: 10px; position: fixed; top: 15px; text-decoration: none;"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe660;</i> </a>
 		</form>
 	</div>
 	</nav>
         <script>
-//刷新页面函数
+        function toggleVideo() {
+			$('#videoDiv').toggle();
+		}
+     //刷新页面函数
 	 function yourFunction() {
 		 window.location.reload();
 	}
@@ -240,6 +263,10 @@ window.onload=function(){
 	</div>
 
 	<!-- 正文之考试信息 -->
+	<div id="videoDiv" style="margin:0; position: fixed; right: 0">
+		    <video id="video" width="200px" height="200px;" style="margin:0;"></video>
+	</div>
+	
 	<div style="background-color: white; margin-left: 5%; margin-right: 5%">
 		<table class="layui-table">
 			<colgroup>

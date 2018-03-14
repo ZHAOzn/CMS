@@ -35,6 +35,5 @@
 
 组员：  刘子琪   201440703470    <https://github.com/liuziqi647>        No
 
-组员：  伍翔     201440703229    <https://github.com/wuxiangwuxiang>     No
+组员：  綦悦彤     201440703219    <https://github.com/暂无>     No
 
-组员：  赵梓男   201440703290   <https://github.com/ZHAOzn>            No
