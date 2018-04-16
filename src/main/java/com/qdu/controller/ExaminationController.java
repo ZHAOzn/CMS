@@ -1,13 +1,29 @@
 package com.qdu.controller;
 
+import sun.misc.BASE64Decoder;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Base64.Decoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import org.apache.tomcat.util.descriptor.web.WebXml;
@@ -16,9 +32,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.qdu.aop.SystemLog;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Examination;
@@ -42,8 +62,9 @@ import com.qdu.service.MessageService;
 import com.qdu.service.StudentInfoService;
 import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
-import com.qdu.util.BASE64Decoder;
 import com.qdu.util.MD5Util;
+
+import net.sf.json.JSONArray;
 
 @Controller
 @RequestMapping(value = "exam")
@@ -774,6 +795,7 @@ public class ExaminationController {
 
 	// 删除单选题
 	@RequestMapping(value = "/deleteSingleSelection.do")
+	@SystemLog(module = "试卷", methods = "删除单选")
 	@ResponseBody
 	public Map<String, Object> deleteSingleSelection(String examinationId, int singleSelectionId) {
 		Map<String, Object> map = new HashMap<>();
@@ -792,8 +814,8 @@ public class ExaminationController {
 		if (singleSelections.size() > 0) {
 			for (int i = 0; i < singleSelections.size(); i++) {
 				if (singleSelections.get(i).getQuestionNumber() > a1) {
-					examinationServiceImpl.updateSingleSelectionById(singleSelectionId,
-							singleSelections.get(i).getQuestionNumber() - 1);
+					int questionNum = singleSelections.get(i).getQuestionNumber() - 1;
+					examinationServiceImpl.updateSingleSelectionById(singleSelections.get(i).getSingleSelectionId(),questionNum);
 				}
 			}
 		}
@@ -1116,45 +1138,127 @@ public class ExaminationController {
 			if (student.getStudentPassword().equals(MD5Util.md5(studentPassword, "juin"))) {
 				map.put("examination", examination);
 				map.put("student", student);
-				return "waitForExam";
+				return "takePhoto";
 			}
 		}
 		map.put("examination", examination);
 		return "forExam";
 	}
+	//考前验证照片
+	@RequestMapping(value = "/confirmPhoto.do",method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> confirmPhoto(@RequestBody String data,HttpServletRequest request) throws IOException{
+		Map<String, Object> map = new HashMap<>();
+		String[] re = data.split("&");
+        String studentRoNo = re[0].substring(12);
+        String examinationID = re[1].substring(14);
+        String imageData = re[2].substring(10).toString();
+        if(imageData != null || !imageData.equals("")){
+        	Score score1 = examinationServiceImpl.selectScoreByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRoNo);
+    	    Examination examination = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationID));
+    		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+    		String ext = "data:image/png;base64,";
+    		imageData = ext+imageData;
+            System.out.println(imageData.length());
+            
+            
+            File targetFile = new File(request.getSession().getServletContext().getRealPath("/") + "Exam" + "/" + studentRoNo+"_"+examinationID);
+    		System.out.println(targetFile.getAbsolutePath());
+    		if (!targetFile.exists()) {
+    			targetFile.mkdirs();
+    		}
+            FileWriter writer;
+            try {
+              writer = new FileWriter(request.getSession().getServletContext().getRealPath("/") + "Exam" + "/" + studentRoNo+"_"+examinationID+"/"+"beforeExamPhoto.txt");
+              writer.write(imageData);
+              writer.flush();
+              writer.close();
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+    		System.out.println(imageData.length());
+            ClazzStu clazzStu = clazzStuServiceImpl.selectClazzStuByCourse(studentRoNo, examination.getCourseID());
+    		// 新建一个成绩单并初始化
+    		if (score1 == null) {
+    			Score score = new Score();
+    			score.setExaminationID(Integer.parseInt(examinationID));
+    			score.setStudentRoNo(studentRoNo);
+    			score.setStudentName(student.getStudentName());
+    			score.setStudentClass(clazzStu.getClazz().getClazzName());
+    			score.setSingleSelectionValue(0);
+    			score.setMoreSelectionValue(0);
+    			score.setJudgeValue(0);
+    			score.setPackValue(0);
+    			score.setShortAnswerValue(0);
+    			score.setTotalValue(0);
+    			score.setExamEnd(0);
+    			score.setScoreStatus("待批改");
+    			score.setBeforeExamPhoto("beforeExamPhoto");
+    			examinationServiceImpl.insertScore(score);
+    			map.put("result", "success");
+    			 System.out.println("success1");
+    		} else if(score1 != null){
+    			//想记录答案的话可以注释掉下面
+    		if(score1.getExamEnd() == 0){
+    			//删除答案记录
+    			examinationServiceImpl.updateStudentAnswerBeforeLoad(studentRoNo, Integer.parseInt(examinationID));
+    			//删除成绩记录
+    			examinationServiceImpl.updateScorebeforLoad(studentRoNo, Integer.parseInt(examinationID));
+    			 }
+                map.put("result", "success");
+                System.out.println("success2");
+    	   }
+        }
+        
+        
+      return map;
+  }
+	
+   // 跳转到考试须知
+	@RequestMapping(value = "/lastExamConfirm.do", method = RequestMethod.POST)
+	public String lastExamConfirm(ModelMap map, String studentRoNo,String examinationID,HttpServletRequest request) {
+		
+		Examination examination = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationID));
+		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+		map.put("student", student);
+		map.put("examination", examination);
+		return "waitForExam"; 
+	}
+	
 	//考前最后一次验证
 	@RequestMapping(value = "/beforExamFormSubmit.do")
 	@ResponseBody
-	public Map<String, Object> beforExamFormSubmit(String studentRoNo,String examinationID){
+	public Map<String, Object> beforExamFormSubmit(String studentRoNo,String examinationID,HttpServletRequest request) throws IOException{
 		Map<String, Object> map = new HashMap<>();
-		Examination examination = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationID));
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
-		String bs1 = examination.getStartTime().substring(0, 10).replace("-", "");
-		String bs2 = examination.getStartTime().substring(11).replace(":", "");
-		String bs3 = bs1 + bs2;
-		long t11 = Long.parseLong(bs3);
-		String aString = sdf.format(new Date());
-		String cs1 = aString.substring(0, 10).replace("-", "");
-		String cs2 = aString.substring(11, 19).replace(":", "");
-		String cs3 = cs1 + cs2;
-		long t22 = Long.parseLong(cs3);
-		long endTime = t11 + (examination.getDuration() / 60) * 10000 + (examination.getDuration() % 60) * 100;
-	     if (t22 < endTime) {
-	    	 System.out.println(true);
-	    	 map.put("result", true);
-	     }else {
-	    	 map.put("result", false);
-		}
-			
-		return map;
+			Examination examination = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationID));
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+			String bs1 = examination.getStartTime().substring(0, 10).replace("-", "");
+			String bs2 = examination.getStartTime().substring(11).replace(":", "");
+			String bs3 = bs1 + bs2;
+			long t11 = Long.parseLong(bs3);
+			String aString = sdf.format(new Date());
+			String cs1 = aString.substring(0, 10).replace("-", "");
+			String cs2 = aString.substring(11, 19).replace(":", "");
+			String cs3 = cs1 + cs2;
+			long t22 = Long.parseLong(cs3);
+			long endTime = t11 + (examination.getDuration() / 60) * 10000 + (examination.getDuration() % 60) * 100;
+		     if (t22 < endTime) {
+		    	 System.out.println(true);
+		    	 map.put("result", true);
+		     }else {
+		    	 map.put("result", false);
+			}		
+	   return map;
 	}
+	
+	
 
 	// 转到考试页面
 	@RequestMapping(value = "/reallyToJoinExam.do", method = RequestMethod.POST)
 	public String reallyToJoinExam(ModelMap map, HttpServletRequest re) {
 		String examinationID = re.getParameter("examinationID");
 		String studentRoNo = re.getParameter("studentRoNo");
-		Score score1 = examinationServiceImpl.selectScoreByExIdAndStuRoNo(Integer.parseInt(examinationID), studentRoNo);
+		
 		//考试前对于时间的最后一次
 		Examination examination = examinationServiceImpl
 				.selectExaminationByExaminationId(Integer.parseInt(examinationID));
@@ -1198,35 +1302,33 @@ public class ExaminationController {
 		List<Pack> packs = examinationServiceImpl.selectPackByExaminationIDX(Integer.parseInt(examinationID));
 		List<ShortAnswer> shortAnswers = examinationServiceImpl
 				.selectShortAnswerByExaminationIDX(Integer.parseInt(examinationID));
-		Student student2 = studentServiceImpl.selectStudentByNo(studentRoNo);
-		ClazzStu clazzStu = clazzStuServiceImpl.selectClazzStuByCourse(studentRoNo, examination.getCourseID());
-		// 新建一个成绩单并初始化
-		if (score1 == null) {
-			Score score = new Score();
-			score.setExaminationID(Integer.parseInt(examinationID));
-			score.setStudentRoNo(studentRoNo);
-			score.setStudentName(student2.getStudentName());
-			score.setStudentClass(clazzStu.getClazz().getClazzName());
-			score.setSingleSelectionValue(0);
-			score.setMoreSelectionValue(0);
-			score.setJudgeValue(0);
-			score.setPackValue(0);
-			score.setShortAnswerValue(0);
-			score.setTotalValue(0);
-			score.setExamEnd(0);
-			score.setScoreStatus("待批改");
-			examinationServiceImpl.insertScore(score);
-		} else {
-
-		}
-		if(score1 != null){
-		if(score1.getExamEnd() == 0){
-			//删除答案记录
-			examinationServiceImpl.updateStudentAnswerBeforeLoad(studentRoNo, Integer.parseInt(examinationID));
-			//删除成绩记录
-			examinationServiceImpl.updateScorebeforLoad(studentRoNo, Integer.parseInt(examinationID));
-			 }
-		}
+//		Student student2 = studentServiceImpl.selectStudentByNo(studentRoNo);
+//		ClazzStu clazzStu = clazzStuServiceImpl.selectClazzStuByCourse(studentRoNo, examination.getCourseID());
+//		// 新建一个成绩单并初始化
+//		if (score1 == null) {
+//			Score score = new Score();
+//			score.setExaminationID(Integer.parseInt(examinationID));
+//			score.setStudentRoNo(studentRoNo);
+//			score.setStudentName(student2.getStudentName());
+//			score.setStudentClass(clazzStu.getClazz().getClazzName());
+//			score.setSingleSelectionValue(0);
+//			score.setMoreSelectionValue(0);
+//			score.setJudgeValue(0);
+//			score.setPackValue(0);
+//			score.setShortAnswerValue(0);
+//			score.setTotalValue(0);
+//			score.setExamEnd(0);
+//			score.setScoreStatus("待批改");
+//			examinationServiceImpl.insertScore(score);
+//		} else if(score1 != null){
+//			//想记录答案的话可以注释掉下面
+//		if(score1.getExamEnd() == 0){
+//			//删除答案记录
+//			examinationServiceImpl.updateStudentAnswerBeforeLoad(studentRoNo, Integer.parseInt(examinationID));
+//			//删除成绩记录
+//			examinationServiceImpl.updateScorebeforLoad(studentRoNo, Integer.parseInt(examinationID));
+//			 }
+//		}
 		map.put("year", year);
 		map.put("month", month);
 		map.put("day", day);
@@ -1735,25 +1837,31 @@ public class ExaminationController {
 		Map<String, Object> map = new HashMap<>();
 		System.out.println(scoreId);
 		Score score = examinationServiceImpl.selectScoreById(scoreId);
-		Examination examination = examinationServiceImpl.selectExaminationByExaminationId(score.getExaminationID());
-		Student student = studentServiceImpl.selectStudentByNo(score.getStudentRoNo());
-		List<Pack> packs = examinationServiceImpl.selectPackByExaminationIDX(score.getExaminationID());
-		for(Pack pack:packs){
-			StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(score.getExaminationID(), score.getStudentRoNo(), pack.getQuestionNumber());
-			examinationServiceImpl.updatePackStudentAnswer(score.getExaminationID(), pack.getQuestionNumber(),
-					studentAnswer.getStuAnswer());
+		if(score.getExamEnd() == 1){
+			Examination examination = examinationServiceImpl.selectExaminationByExaminationId(score.getExaminationID());
+			Student student = studentServiceImpl.selectStudentByNo(score.getStudentRoNo());
+			List<Pack> packs = examinationServiceImpl.selectPackByExaminationIDX(score.getExaminationID());
+			for(Pack pack:packs){
+				StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(score.getExaminationID(), score.getStudentRoNo(), pack.getQuestionNumber());
+				examinationServiceImpl.updatePackStudentAnswer(score.getExaminationID(), pack.getQuestionNumber(),
+						studentAnswer.getStuAnswer());
+			}
+			List<ShortAnswer> shortAnswers = examinationServiceImpl.selectShortAnswerByExaminationIDX(score.getExaminationID());
+			for(ShortAnswer shortAnswer:shortAnswers){
+				StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(score.getExaminationID(), score.getStudentRoNo(), shortAnswer.getQuestionNumber());
+				examinationServiceImpl.updateShortAnswerStudentAnswer(score.getExaminationID(), shortAnswer.getQuestionNumber(),
+						studentAnswer.getStuAnswer());
+			}
+			map.put("result", true);
+			map.put("shortAnswers", shortAnswers);
+			map.put("examination", examination);
+			map.put("packs", packs);
+			map.put("student", student);
+			map.put("score", score);
+		}else {
+			map.put("result", false);
 		}
-		List<ShortAnswer> shortAnswers = examinationServiceImpl.selectShortAnswerByExaminationIDX(score.getExaminationID());
-		for(ShortAnswer shortAnswer:shortAnswers){
-			StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(score.getExaminationID(), score.getStudentRoNo(), shortAnswer.getQuestionNumber());
-			examinationServiceImpl.updateShortAnswerStudentAnswer(score.getExaminationID(), shortAnswer.getQuestionNumber(),
-					studentAnswer.getStuAnswer());
-		}
-		map.put("shortAnswers", shortAnswers);
-		map.put("examination", examination);
-		map.put("packs", packs);
-		map.put("student", student);
-		map.put("score", score);
+		
 		return map;
 	}
 	
@@ -1765,11 +1873,15 @@ public class ExaminationController {
 	  Pack pack = examinationServiceImpl.selectPackByPackId(packId);
 	  Score score = examinationServiceImpl.selectScoreByExIdAndStuRoNo(pack.getExamination().getExaminationID(), studentRoNo);
 	  StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(pack.getExamination().getExaminationID(), studentRoNo, pack.getQuestionNumber());
-	  int tem = examinationServiceImpl.updateScore(studentRoNo, pack.getExamination().getExaminationID(), 
-			   score.getSingleSelectionValue(), score.getMoreSelectionValue(), score.getJudgeValue(), 
-			   score.getPackValue() - studentAnswer.getGetValue() + value, score.getShortAnswerValue(), score.getSingleSelectionValue()+score.getMoreSelectionValue()+
-			   score.getJudgeValue()+value+score.getShortAnswerValue()-studentAnswer.getGetValue());
-	  examinationServiceImpl.updateStudentAnswer(studentRoNo, pack.getExamination().getExaminationID(), pack.getQuestionNumber(), studentAnswer.getStuAnswer(), value);
+	  int tem = 0;
+	  if(value <= pack.getValue()){
+		  tem = examinationServiceImpl.updateScore(studentRoNo, pack.getExamination().getExaminationID(), 
+				   score.getSingleSelectionValue(), score.getMoreSelectionValue(), score.getJudgeValue(), 
+				   score.getPackValue() - studentAnswer.getGetValue() + value, score.getShortAnswerValue(), score.getSingleSelectionValue()+score.getMoreSelectionValue()+
+				   score.getJudgeValue()+value+score.getShortAnswerValue()-studentAnswer.getGetValue());
+		  examinationServiceImpl.updateStudentAnswer(studentRoNo, pack.getExamination().getExaminationID(), pack.getQuestionNumber(), studentAnswer.getStuAnswer(), value);
+	  }
+	 
 	  if(tem > 0){
 			map.put("result", true);
 		}else {
@@ -1786,11 +1898,15 @@ public class ExaminationController {
 		ShortAnswer shortAnswer = examinationServiceImpl.selectShortAnswerByShortAnswerId(shortAnswerId);
 		 Score score = examinationServiceImpl.selectScoreByExIdAndStuRoNo(shortAnswer.getExamination().getExaminationID(), studentRoNo);
 		 StudentAnswer studentAnswer = examinationServiceImpl.selectStudentAnswerByExIdAndStuRoNo(shortAnswer.getExamination().getExaminationID(), studentRoNo, shortAnswer.getQuestionNumber());
-		 int tem = examinationServiceImpl.updateScore(studentRoNo, shortAnswer.getExamination().getExaminationID(), 
-				   score.getSingleSelectionValue(), score.getMoreSelectionValue(), score.getJudgeValue(), 
-				   score.getPackValue(), score.getShortAnswerValue()-studentAnswer.getGetValue() + value, score.getSingleSelectionValue()+score.getMoreSelectionValue()+
-				   score.getJudgeValue()+value+ score.getPackValue() - studentAnswer.getGetValue());
-		 examinationServiceImpl.updateStudentAnswer(studentRoNo, shortAnswer.getExamination().getExaminationID(), shortAnswer.getQuestionNumber(),studentAnswer.getStuAnswer(), value);  
+		 int tem = 0;
+		 if(value <= shortAnswer.getValue()){
+			tem = examinationServiceImpl.updateScore(studentRoNo, shortAnswer.getExamination().getExaminationID(), 
+					   score.getSingleSelectionValue(), score.getMoreSelectionValue(), score.getJudgeValue(), 
+					   score.getPackValue(), score.getShortAnswerValue()-studentAnswer.getGetValue() + value, score.getSingleSelectionValue()+score.getMoreSelectionValue()+
+					   score.getJudgeValue()+value+ score.getPackValue() - studentAnswer.getGetValue());
+			 examinationServiceImpl.updateStudentAnswer(studentRoNo, shortAnswer.getExamination().getExaminationID(), shortAnswer.getQuestionNumber(),studentAnswer.getStuAnswer(), value);  
+		 }
+		
 		 if(tem > 0){
 				map.put("result", true);
 			}else {

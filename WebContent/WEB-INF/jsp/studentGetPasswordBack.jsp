@@ -105,13 +105,7 @@
 			<br /><br /><br />
 			
 		</form>
-		<div class="layui-upload-list"
-			style="width: 100px; heigh: 120px; float: left; margin-left: 10px">
-			<img class="layui-upload-img" src=""
-				style="width: 100px; heigh: 120px;" id="imgPre">
-			<p id="demoText"></p>
-		</div>
-
+		
 
 		<div id="divShow"
 			style="background-color: #393D49; height: 30%; width: 30%; z-index: 3;

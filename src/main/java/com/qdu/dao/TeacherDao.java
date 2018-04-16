@@ -24,5 +24,7 @@ public interface TeacherDao {
 	public Teacher selectTeacherNameByMobile(String teacherMobile);
 	
 	public List<Teacher> selectTeacher();
+	
+	public Teacher selectTeacherDetail(String teacherMobile);
  
 }

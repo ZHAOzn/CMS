@@ -17,6 +17,37 @@ public class Score implements Serializable{
 	 private int totalValue;
 	 private int examEnd;
 	 private String scoreStatus;
+	 private String BeforeExamPhoto;
+	 private String ExamingPhotoOne;
+	 private String ExamingPhotoTwo;
+	 private String ExamingPhotoThree;
+	 
+	 
+	 
+	public String getBeforeExamPhoto() {
+		return BeforeExamPhoto;
+	}
+	public void setBeforeExamPhoto(String beforeExamPhoto) {
+		BeforeExamPhoto = beforeExamPhoto;
+	}
+	public String getExamingPhotoOne() {
+		return ExamingPhotoOne;
+	}
+	public void setExamingPhotoOne(String examingPhotoOne) {
+		ExamingPhotoOne = examingPhotoOne;
+	}
+	public String getExamingPhotoTwo() {
+		return ExamingPhotoTwo;
+	}
+	public void setExamingPhotoTwo(String examingPhotoTwo) {
+		ExamingPhotoTwo = examingPhotoTwo;
+	}
+	public String getExamingPhotoThree() {
+		return ExamingPhotoThree;
+	}
+	public void setExamingPhotoThree(String examingPhotoThree) {
+		ExamingPhotoThree = examingPhotoThree;
+	}
 	public int getScoreId() {
 		return scoreId;
 	}

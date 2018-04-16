@@ -126,9 +126,9 @@ public class LogEntityController {
 		
 		Message message = new Message();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		message.setMessageSender("管理员");
+		message.setMessageSender("系统消息");
 		message.setMessageAccepter(myBlog.getBlogAuthor());
-		message.setMessageTitle("博文审核");
+		message.setMessageTitle("博文审核通过！");
 		message.setSendTime(sdf.format(new Date()));
 		message.setHaveRead("未读");
 		message.setMessageContent("<span style='color:#FF5722'>恭喜！</span><br/>博文标题为<<"+ myBlog.getBlogTitle() + ">>通过审核！");
@@ -141,6 +141,39 @@ public class LogEntityController {
 		}
 		return map;
 	}
+	//管理员批量审核博文
+		@RequestMapping(value = "/passBlogByCheck.do")
+		@ResponseBody
+		public Map<String, Object> passBlogByCheck(String blogIds){
+			Map<String, Object> map = new HashMap<>();
+			System.out.println(blogIds);
+			String[] divideBlogId = blogIds.split(" ");
+			int tem = 0;
+			for(int i = 0; i < divideBlogId.length; i ++){
+				MyBlog myBlog = myBlogServiceImpl.selectMyBlogById(Integer.parseInt(divideBlogId[i]));
+				if(myBlog != null){
+				myBlog.setVerify("审核通过！");
+				tem += myBlogServiceImpl.updateBlogofVerify(myBlog);
+				Message message = new Message();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				message.setMessageSender("系统消息");
+				message.setMessageAccepter(myBlog.getBlogAuthor());
+				message.setMessageTitle("博文审核通过");
+				message.setSendTime(sdf.format(new Date()));
+				message.setHaveRead("未读");
+				message.setMessageContent("<span style='color:#FF5722'>恭喜！</span><br/>博文标题为<<"+ myBlog.getBlogTitle() + ">>通过审核！");
+				message.setMessageType("admin");
+				messageServiceImpl.insertMessage(message);
+				}
+			}
+			if(tem == divideBlogId.length){
+				map.put("result", true);
+			}else {
+				map.put("result", false);
+			}
+			return map;
+		}
+	
 	//管理员不通过审核的博文
 		@RequestMapping(value = "/updateBlogofVerifySecond.do")
 		@ResponseBody
@@ -152,9 +185,9 @@ public class LogEntityController {
 			
 			Message message = new Message();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			message.setMessageSender("管理员");
+			message.setMessageSender("系统消息");
 			message.setMessageAccepter(myBlog.getBlogAuthor());
-			message.setMessageTitle("博文审核");
+			message.setMessageTitle("博文审核未通过！");
 			message.setSendTime(sdf.format(new Date()));
 			message.setHaveRead("未读");
 			message.setMessageContent("<span style='color:#FF5722'>抱歉！</span><br/>由于内容违反相关法律法规，博文标题为<<"+ myBlog.getBlogTitle() + ">>未通过审核！"
@@ -169,6 +202,40 @@ public class LogEntityController {
 			}
 			return map;
 		}
+		
+	//管理员批量不通过博文
+	@RequestMapping(value = "/dontpassBlogByCheck.do")
+	@ResponseBody
+	public Map<String, Object> dontpassBlogByCheck(String blogIds){
+		Map<String, Object> map = new HashMap<>();
+		System.out.println(blogIds);
+		String[] divideBlogId = blogIds.split(" ");
+		int tem = 0;
+		for(int i = 0; i < divideBlogId.length; i ++){
+			MyBlog myBlog = myBlogServiceImpl.selectMyBlogById(Integer.parseInt(divideBlogId[i]));
+			if(myBlog != null){
+				myBlog.setVerify("审核未通过");
+				tem += myBlogServiceImpl.updateBlogofVerify(myBlog);
+				Message message = new Message();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				message.setMessageSender("系统消息");
+				message.setMessageAccepter(myBlog.getBlogAuthor());
+				message.setMessageTitle("博文审核未通过!");
+				message.setSendTime(sdf.format(new Date()));
+				message.setHaveRead("未读");
+				message.setMessageContent("<span style='color:#FF5722'>抱歉！</span><br/>由于内容违反相关法律法规，博文标题为<<"+ myBlog.getBlogTitle() + ">>未通过审核！"
+						+ "请自觉维护网络环境");
+				message.setMessageType("admin");
+				 messageServiceImpl.insertMessage(message);
+			}
+		}
+		if(tem == divideBlogId.length){
+			map.put("result", true);
+		}else {
+			map.put("result", false);
+		}
+		return map;
+	}		
 		
 		//管理员解决反馈
 	@RequestMapping(value = "/resolveFeedback.do")

@@ -35,18 +35,21 @@ import com.alibaba.fastjson.JSONObject;
 import com.qdu.aop.SystemLog;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Course;
+import com.qdu.pojo.Examination;
 import com.qdu.pojo.Feedback;
 import com.qdu.pojo.FilePackage;
 import com.qdu.pojo.LeaveRecord;
 import com.qdu.pojo.LogEntity;
 import com.qdu.pojo.Message;
 import com.qdu.pojo.MyBlog;
+import com.qdu.pojo.Score;
 import com.qdu.pojo.Student;
 import com.qdu.pojo.StudentInfo;
 import com.qdu.pojo.Teacher;
 import com.qdu.service.ClazzService;
 import com.qdu.service.ClazzStuService;
 import com.qdu.service.CourseService;
+import com.qdu.service.ExaminationService;
 import com.qdu.service.FilePackageService;
 import com.qdu.service.LeaveRecordService;
 import com.qdu.service.LogEntityService;
@@ -60,6 +63,14 @@ import com.qdu.util.JavaEmailSender;
 import com.qdu.util.MD5Util;
 import com.qdu.util.Page;
 import com.qdu.util.ResponseUtil;
+
+import jxl.SheetSettings;
+import jxl.Workbook;
+import jxl.write.Alignment;
+import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
 
 @Controller
 @RequestMapping(value = "/teacher")
@@ -87,6 +98,8 @@ public class TeacherController {
 	private MyBlogService myBlogServiceImpl;
 	@Autowired 
 	private ClazzStuService clazzStuServiceImpl;
+	@Autowired
+	ExaminationService examinationServiceImpl;
 
 	// 教师登录准备
 	@RequestMapping(value = "/forTeacherLogin.do")
@@ -179,7 +192,7 @@ public class TeacherController {
 		request.getSession().setAttribute("UserId", teacherMobile);
 		Map<String, Object> map = new HashMap<>();
 		Teacher teacher = teacherServiceImpl.selectTeacherByEmail(teacherMobile);
-		if (teacher == null) {
+		if (teacher == null && teacherMobile != null) {
 			System.out.println("老师不存在");
 			map.put("result", true);
 		} else {
@@ -188,6 +201,21 @@ public class TeacherController {
 		}
 		return map;
 	}
+	
+	//管理员查询教师信息
+		@RequestMapping(value = "/selectTeacherDetail.do")
+		public @ResponseBody Map<String, Object> selectTeacherDetail(HttpServletRequest request, String teacherMobile) {
+			System.out.println(teacherMobile); 
+			Map<String, Object> map = new HashMap<>();
+			Teacher teacher = teacherServiceImpl.selectTeacherDetail(teacherMobile);
+			if (teacher == null && teacherMobile != null) {
+				map.put("result", true);
+			} else {
+				map.put("teacher", teacher);
+				map.put("result", false);
+			}
+			return map;
+		}
 
 	// ajax验证密码
 	@SystemLog(module = "教师", methods = "日志管理-登录密码验证")
@@ -660,7 +688,9 @@ public class TeacherController {
 		ClazzStu clazzStu = clazzStuServiceImpl.selectClazzStuByCourse(studentRoNo, courseId);
 		int tem = clazzStuServiceImpl.deleteClazzStuById(clazzStu.getClazzStuId());
 		int tem2 = studentInfoServiceImpl.deleteStudentInfoById(studentInfo.getStudentInfoId());
-		if((tem+tem2) > 1){
+		int tem3 = studentInfoServiceImpl.deleteStudentInfoDetail(studentRoNo, courseId);
+		System.out.println(tem + ":" +tem2+ ":" +tem3); 
+		if((tem+tem2+tem3) > 1){
 			map.put("result", true);
 		}
 		else {
@@ -698,9 +728,132 @@ public class TeacherController {
 		}
 		return map;
 	}
+// 给学生发送消息
+	@RequestMapping(value = "/sendMessageToStudent.do")
+	@ResponseBody
+	public Map<String, Object> sendMessageToStudent(String teacherMobile,String studentRoNo,String messageToStudentContent){
+		Map<String, Object> map = new HashMap<>();
+		Message message = new Message();
+		Teacher teacher = teacherServiceImpl.selectTeacherByMobile(teacherMobile);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		message.setMessageSender(teacherMobile);
+		message.setMessageAccepter(studentRoNo);
+		message.setMessageTitle(teacher.getTeacherName() + "老师 给你发送了一条消息！");
+		message.setSendTime(sdf.format(new Date()));
+		message.setHaveRead("未读");
+		message.setMessageContent(teacher.getTeacherName()+ " 老师：<br/><br/><span style='color:#FF5722'>"+ messageToStudentContent +"</span><br/>");
+		message.setMessageType("nomal");
 		
+		int tem = messageServiceImpl.insertMessage(message);
+		if(tem > 0){
+			map.put("result", true);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}	
+//给学生回复消息
+	@RequestMapping(value = "/returnMessageToStudent.do")
+	@ResponseBody
+	public Map<String, Object> returnMessageToStudent(int messageId,String returnMessageToStudentContent){
+		Message message2 = messageServiceImpl.selectMessageById(messageId);
+		String teacherMobile = message2.getMessageAccepter();
+		String studentRoNo = message2.getMessageSender();
+		Teacher teacher = teacherServiceImpl.selectTeacherNameByMobile(teacherMobile);
+		Map<String, Object> map = new HashMap<>();
+		Message message = new Message();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		message.setMessageSender(teacherMobile);
+		message.setMessageAccepter(studentRoNo); 
+		message.setMessageTitle(teacher.getTeacherName() + "老师 回复了你！");
+		message.setSendTime(sdf.format(new Date()));
+		message.setHaveRead("未读");
+		message.setMessageContent(teacher.getTeacherName()+ " ：老师 <br/><br/><span style='color:#FF5722'>"+ returnMessageToStudentContent +"</span><br/>");
+		message.setMessageType("nomal");
 		
-		
+		int tem = messageServiceImpl.insertMessage(message);
+		if(tem > 0){
+			map.put("result", true);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}		
+//导出成绩单
+	 /**
+     * 导出EXCEL文件,主要做的就是查询一堆列表，然后创建多个工作表，每个工作表下面有很多标题及列表数据
+     *
+     * @param response
+     */
+    @RequestMapping(value = "/exportScore.do")
+    public void exportScore(HttpServletResponse response,String examinationID) {
+        
+    	Examination examination = examinationServiceImpl.selectExaminationByExaminationId(Integer.parseInt(examinationID));
+		//int count = studentInfoServiceImpl.selectCountOfStudentByStudentInfo(examination.getCourseID());
+		//int count2 = examinationServiceImpl.selectCountScoreById(Integer.parseInt(examinationID));
+		//double avg = examinationServiceImpl.selectAvgScoreById(Integer.parseInt(examinationID));
+		//double max = examinationServiceImpl.selectMaxScoreById(Integer.parseInt(examinationID));
+		//double min = examinationServiceImpl.selectMinScoreById(Integer.parseInt(examinationID));
+    	System.out.println(examinationID);
+        // 文件名  
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String fileName = sdf.format(new Date()) + "_" + examination.getExaminationName() +  ".xls";
+
+        response.setContentType("application/x-excel");
+        response.setCharacterEncoding("UTF-8");
+        response.addHeader("Content-Disposition", "attachment;filename="
+                + fileName);// excel文件名  
+
+        // 业务数据
+        List<Score> scores = examinationServiceImpl.selectScoreByExId(Integer.parseInt(examinationID));
+        try {
+            // 1.创建excel文件  
+            WritableWorkbook book = Workbook.createWorkbook(response
+                    .getOutputStream());
+            // 居中  
+            WritableCellFormat wf = new WritableCellFormat();
+            wf.setAlignment(Alignment.CENTRE);
+
+            WritableSheet sheet = null;
+            SheetSettings settings = null;
+
+            // 2.创建sheet并设置冻结前一行  
+            sheet = book.createSheet("1", 0);
+            settings = sheet.getSettings();
+            settings.setVerticalFreeze(1);
+
+            // 3.添加第一行及第二行标题数据  
+            sheet.addCell(new Label(0, 0, "学号", wf));
+            sheet.addCell(new Label(1, 0, "姓名", wf));
+            sheet.addCell(new Label(2, 0, "班级", wf));
+            sheet.addCell(new Label(3, 0, "单选", wf));
+            sheet.addCell(new Label(4, 0, "多选", wf));
+            sheet.addCell(new Label(5, 0, "判断", wf));
+            sheet.addCell(new Label(6, 0, "简答", wf));
+            sheet.addCell(new Label(7, 0, "总分", wf));
+
+            // 4.业务数据
+            for (int i = 0; i < scores.size(); i++) {
+                sheet.addCell(new Label(0, i + 1, scores.get(i).getStudentRoNo(), wf));
+                sheet.addCell(new Label(1, i + 1, scores.get(i).getStudentName(), wf));
+                sheet.addCell(new Label(2, i + 1, scores.get(i).getStudentClass(), wf));
+                sheet.addCell(new Label(3, i + 1, scores.get(i).getSingleSelectionValue() + "", wf));
+                sheet.addCell(new Label(4, i + 1, scores.get(i).getMoreSelectionValue() + "", wf));
+                sheet.addCell(new Label(5, i + 1, scores.get(i).getJudgeValue() + "", wf));
+                sheet.addCell(new Label(6, i + 1, scores.get(i).getPackValue() + "", wf));
+                sheet.addCell(new Label(7, i + 1, scores.get(i).getTotalValue() + "", wf));
+            }
+
+            // 5.写入excel并关闭  
+            book.write();
+            book.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 		
 		
 		

@@ -26,12 +26,36 @@
 <title>${examination.examinationName}考试页面</title>
 </head>
 <script type="text/javascript">
+function   fresh(){  
+	if(location.href.indexOf("?reload=true")<0){
+	    location.href+="?reload=true";  
+	   }  
+	} 
 window.onbeforeunload = function(){
 return "您尚未保存！";
 }
 </script>
 <script language="javascript" type="text/javascript"> 
-window.onload=function(){ 
+window.onload=function(){
+	
+	  var video = document.getElementById('video'),
+	  vendorUrl = window.URL || window.webkitURL;
+	  navigator.getMedia = navigator.getUserMedia ||
+	                       navagator.webkitGetUserMedia ||
+	                       navigator.mozGetUserMedia ||
+	                       navigator.msGetUserMedia;
+	  navigator.getMedia({
+	      video: true, //使用摄像头对象
+	      audio: false  //不适用音频
+	  }, function(strem){
+	      console.log(strem);
+	      video.src = vendorUrl.createObjectURL(strem);
+	      video.play();
+	  }, function(error) {
+	      console.log(error);
+	  });
+	
+	
 	document.onkeydown=function (e){
         var currKey=0,evt=e||window.event;
         currKey=evt.keyCode||evt.which||evt.charCode;
@@ -118,7 +142,7 @@ window.onload=function(){
 		  var second=Math.floor(leftsecond-day1*24*60*60-hour*3600-minute*60); 
 		  $('#second').val(second);
 		  var cc = document.getElementById(divname); 
-		  cc.innerHTML = "剩余:"+hour+"小时"+minute+"分"+second+"秒"; 
+		  cc.innerHTML = "剩余:"+hour+"小时"+"<span style='color:#FF5722'>"+minute+"</span>"+"分"+"<span style='color:#FF5722'>"+second+"</span>"+"秒"; 
 		  timeEnd();
 	 } 
 		window.setInterval(function(){ShowCountDown(${year},${month},${day},${hour},${minute},${seconds},'time');}, interval); 
@@ -204,12 +228,16 @@ window.onload=function(){
 		</div>
 		<form class="navbar-form navbar-right"
 			style="margin-right: 5%; float: left;">
-			<a id="lllww" style="width: 100px; color: white; font-size: 1.7em;">${examination.examinationName}</a>
+			<a href="#" id="lllww" style="width: 100px; color: white; font-size: 1.7em;">${examination.examinationName}</a>
+		    <a href="#" onclick="toggleVideo()" style="right: 10px; position: fixed; top: 15px; text-decoration: none;"><i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe660;</i> </a>
 		</form>
 	</div>
 	</nav>
         <script>
-//刷新页面函数
+        function toggleVideo() {
+			$('#videoDiv').toggle();
+		}
+     //刷新页面函数
 	 function yourFunction() {
 		 window.location.reload();
 	}
@@ -235,6 +263,10 @@ window.onload=function(){
 	</div>
 
 	<!-- 正文之考试信息 -->
+	<div id="videoDiv" style="margin:0; position: fixed; right: 0">
+		    <video id="video" width="200px" height="200px;" style="margin:0;"></video>
+	</div>
+	
 	<div style="background-color: white; margin-left: 5%; margin-right: 5%">
 		<table class="layui-table">
 			<colgroup>
@@ -251,7 +283,7 @@ window.onload=function(){
 					<th>姓名</th>
 					<th>考试时间</th>
 					<th>考试时长</th>
-					<th>卷面总分</th>
+					<th>试卷满分</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -288,7 +320,7 @@ window.onload=function(){
 					</c:forEach>
 				</c:when>
 				<c:otherwise>
-					<li>不涉及该类型题目，请继续作答</li>
+					<li>该试卷不涉及该类型题目，请继续作答</li>
 				</c:otherwise>
 			</c:choose>
 		</ul>
@@ -371,7 +403,7 @@ window.onload=function(){
 					</c:forEach>
 				</c:when>
 				<c:otherwise>
-					<li>不涉及该类型题目，请继续作答</li>
+					<li>该试卷不涉及该类型题目，请继续作答</li>
 				</c:otherwise>
 			</c:choose>
 		</ul>
@@ -469,7 +501,7 @@ window.onload=function(){
 					</c:forEach>
 				</c:when>
 				<c:otherwise>
-					<li>不涉及该类型题目，请继续作答</li>
+					<li>该试卷不涉及该类型题目，请继续作答</li>
 				</c:otherwise>
 			</c:choose>
 		</ul>
@@ -558,7 +590,7 @@ window.onload=function(){
 					</c:forEach>
 				</c:when>
 				<c:otherwise>
-					<li>不涉及该类型题目，请继续作答</li>
+					<li>该试卷不涉及该类型题目，请继续作答</li>
 				</c:otherwise>
 			</c:choose>
 		</ul>
@@ -628,7 +660,7 @@ window.onload=function(){
 					</c:forEach>
 				</c:when>
 				<c:otherwise>
-					<li>不涉及该类型题目，请继续作答</li>
+					<li>该试卷不涉及该类型题目，请继续作答</li>
 				</c:otherwise>
 			</c:choose>
 		</ul>

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.qdu.dao.StudentInfoDao;
 import com.qdu.pojo.Student;
 import com.qdu.pojo.StudentInfo;
+import com.qdu.pojo.StudentInfoDetail;
 
 @Repository
 public class StudentInfoImpl implements StudentInfoDao{
@@ -126,6 +127,87 @@ public class StudentInfoImpl implements StudentInfoDao{
 	public int deleteStudentInfoById(int studentInfoId) {
 		String statement = "com.qdu.mapping.StudentInfoMapping.deleteStudentInfoById";
 		return sessionFactory.openSession().delete(statement,studentInfoId);
+	}
+
+	@Override
+	public int selectCountOfStudentInThisCourse(int courseId) {
+		String statement = "com.qdu.mapping.StudentInfoMapping.selectCountOfStudentInThisCourse";
+		return sessionFactory.openSession().selectOne(statement,courseId);
+	}
+
+	@Override
+	public int insertStudentInfoDetailResult(StudentInfoDetail studentInfoDetail) {
+		String statement = "com.qdu.mapping.StudentInfoDetailMapping.insertStudentInfoDetailResult";
+		return sessionFactory.openSession().insert(statement, studentInfoDetail);
+	}
+
+	@Override
+	public List<StudentInfoDetail> selectStudentInfoDetailResult(String studentRoNo, int courseId, String currentTime) {
+		String statement = "com.qdu.mapping.StudentInfoDetailMapping.selectStudentInfoDetailResult";
+		Map<String, Object> map = new HashMap<>();
+		map.put("studentRoNo", studentRoNo);
+		map.put("courseId", courseId);
+		map.put("currentTime", currentTime);
+		return sessionFactory.openSession().selectList(statement, map);
+	}
+
+	@Override
+	public int selectMaxStudentInfoDetailResult(String studentRoNo, int courseId, String currentTime) {
+		String statement = "com.qdu.mapping.StudentInfoDetailMapping.selectMaxStudentInfoDetailResult";
+		Map<String, Object> map = new HashMap<>();
+		map.put("studentRoNo", studentRoNo);
+		map.put("courseId", courseId);
+		map.put("currentTime", currentTime);
+		return sessionFactory.openSession().selectOne(statement, map);
+	}
+
+	@Override
+	public List<StudentInfoDetail> selectStuInfoDetailList(int courseId) {
+		String statement = "com.qdu.mapping.StudentInfoDetailMapping.selectStuInfoDetailList";
+		return sessionFactory.openSession().selectList(statement, courseId);
+	}
+
+	@Override
+	public int selectCountOfCurrentDay(int courseId, String currentTime) {
+		String statement = "com.qdu.mapping.StudentInfoDetailMapping.selectCountOfCurrentDay";
+		Map<String, Object> map = new HashMap<>();
+		map.put("courseId", courseId);
+		map.put("currentTime", currentTime);
+		return sessionFactory.openSession().selectOne(statement, map);
+	}
+
+	@Override
+	public List<StudentInfoDetail> selectEveryTimeSign(int courseId, String currentTime, int currentCount) {
+		String statement = "com.qdu.mapping.StudentInfoDetailMapping.selectEveryTimeSign";
+		Map<String, Object> map = new HashMap<>();
+		map.put("courseId", courseId);
+		map.put("currentTime", currentTime);
+		map.put("currentCount", currentCount);
+		return sessionFactory.openSession().selectList(statement, map);
+	}
+
+	@Override
+	public StudentInfoDetail selectStudentInfoDetailId(int studentInfoDetailId) {
+		String statement = "com.qdu.mapping.StudentInfoDetailMapping.selectStudentInfoDetailId";
+		return sessionFactory.openSession().selectOne(statement, studentInfoDetailId);
+	}
+
+	@Override
+	public int updateStudentInfoDetail(String signInStatus, int studentinfodetailId) {
+		String statement = "com.qdu.mapping.StudentInfoDetailMapping.updateStudentInfoDetail";
+		Map<String, Object> map = new HashMap<>();
+		map.put("signInStatus", signInStatus);
+		map.put("studentinfodetailId", studentinfodetailId);
+		return sessionFactory.openSession().update(statement, map);
+	}
+
+	@Override
+	public int deleteStudentInfoDetail(String studentRoNo, int courseId) {
+		String statement = "com.qdu.mapping.StudentInfoDetailMapping.deleteStudentInfoDetail";
+		Map<String, Object> map = new HashMap<>();
+		map.put("studentRoNo", studentRoNo);
+		map.put("courseId", courseId);
+		return sessionFactory.openSession().delete(statement, map);
 	}
 
 }

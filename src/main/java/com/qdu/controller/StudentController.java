@@ -1,4 +1,4 @@
-package com.qdu.controller;
+ package com.qdu.controller;
 
 import java.io.File;
 import java.text.ParseException;
@@ -27,6 +27,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.qdu.aop.SystemLog;
+import com.qdu.daoimpl.StudentInfoImpl;
 import com.qdu.pojo.Clazz;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Course;
@@ -38,6 +39,7 @@ import com.qdu.pojo.MyBlog;
 import com.qdu.pojo.QrTem;
 import com.qdu.pojo.Student;
 import com.qdu.pojo.StudentInfo;
+import com.qdu.pojo.StudentInfoDetail;
 import com.qdu.pojo.Teacher;
 import com.qdu.service.ClazzService;
 import com.qdu.service.ClazzStuService;
@@ -112,6 +114,8 @@ public class StudentController {
 				List<StudentInfo> studentInfos = studentInfoServiceImpl.selectCourseByStudentRono(studentRoNo);
 				map.addAttribute("studentInfos", studentInfos);
 				map.addAttribute("student", student2);
+				int messageCount = messageServiceImpl.selectMessageCount(studentRoNo);
+				map.put("messageCount", messageCount);
 				// session的id存一下
 				request.getSession().setAttribute("UserId", null);
 				request.getSession().setAttribute("UserId", studentRoNo);
@@ -143,7 +147,7 @@ public class StudentController {
 		System.out.println("ajax探测用户学号是否存在" + studentRoNo);
 		Map<String, Object> map = new HashMap<>();
 		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
-		if (student == null) {
+		if (student == null && studentRoNo != null) {
 			map.put("result", true);
 		} else {
 			map.put("student", student);
@@ -214,8 +218,10 @@ public class StudentController {
 		String path = request.getSession().getServletContext().getRealPath("/") + "studentPhoto";
 		System.out.println(path);
 		String fileName = file.getOriginalFilename();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD-HH-mm-ss");
 		System.out.println(fileName);
-		File targetFile = new File(path, fileName);
+		String nameNow = sdf.format(new Date())+"/"+fileName;
+		File targetFile = new File(path, nameNow);
 		if (!targetFile.exists()) {
 			targetFile.mkdirs();
 		}
@@ -228,6 +234,7 @@ public class StudentController {
 		String password = request.getParameter("studentPassword");
 		System.out.println(MD5Util.md5(password, "juin"));
 		student.setStudentPassword(MD5Util.md5(password, "juin"));
+		student.setStudentPhoto(nameNow);
 		studentServiceImpl.insertStudentByNo(student);
 		System.out.println("学生注册成功");
 
@@ -307,7 +314,6 @@ public class StudentController {
 	@ResponseBody
 	public Map<String, Object> insertQrTem(HttpServletRequest request, String studentRoNo, String password,
 			int courseId, String qrTime, int validateCode) throws ParseException {
-		System.out.println("进入 ： insertQrTem.do");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
 		String currentTime = sdf.format(date);
@@ -353,26 +359,20 @@ public class StudentController {
 	@ResponseBody
 	public Map<String, Object> getTemStudent(int courseId) {
 		System.out.println("获取签到列表");
-		System.out.println(courseId);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
 		String currentTime = sdf.format(date);
 		Map<String, Object> map = new HashMap<>();
 		List<QrTem> qrTems = qrTemServiceImpl.selectQrTemByCourseIdAndTime(courseId, currentTime);
-		System.out.println(qrTems.size());
 		List<ClazzStu> clazzStus = new ArrayList<>();
 		if (qrTems != null && qrTems.size() != 0) {
 			for (QrTem qrTem : qrTems) { 
 				ClazzStu clazzStu = clazzStuServiceImpl.selectClazzStuByCourse(qrTem.getStudentRoNo(), courseId);
-				System.out.println(clazzStu.getStudent().getStudentName());
-				System.out.println(clazzStu.getClazz().getClazzName());
 				clazzStus.add(clazzStu);
 			} 
 		} else {
-			System.out.println("空");
-		}
+ 		}
 		map.put("clazzStuss", clazzStus);
-		System.out.println("333333");
 		return map;
 	}
 
@@ -382,11 +382,15 @@ public class StudentController {
 	@ResponseBody
 	public Map<String, Object> submitSignIn(int courseId) {
 		System.out.println("提交签到表");
+		//年月日
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		//判断周几
+		SimpleDateFormat week1 = new SimpleDateFormat("EEEE");
 		Date date = new Date();
 		String currentTime = sdf.format(date);
+		String week = week1.format(date);
 		int time = Integer.parseInt(currentTime.replaceAll("-", ""));
-		System.out.println(time);
 		Map<String, Object> map = new HashMap<>();
 		List<StudentInfo> studentInfos = studentInfoServiceImpl.selectInfoList(courseId);
 		Map<String, Integer> map2 = new HashMap<>();
@@ -398,12 +402,31 @@ public class StudentController {
 			map.put("message", "暂无学生签到");
 		} else {
 			for (QrTem qrTem : qrTems) {
+				System.out.println("qr中的学号"+qrTem.getStudentRoNo());  
 				StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoByMany(qrTem.getStudentRoNo(),
 						courseId);
 				//更改map记录
+				List<StudentInfoDetail> studentInfoDetails = studentInfoServiceImpl.selectStudentInfoDetailResult(qrTem.getStudentRoNo(), courseId, currentTime);
+				StudentInfoDetail sid = new StudentInfoDetail();
+				sid.setCourseId(courseId);
+				sid.setStudentRoNo(qrTem.getStudentRoNo());
+				sid.setCurrentTime(sdf2.format(new Date()));
+				sid.setCurrentWeek(week);
+				sid.setSignInStatus("签到");
+				if(studentInfoDetails.size() == 0){
+					sid.setCurrentCount(1);
+				}else{
+					int maxCount = studentInfoServiceImpl.selectMaxStudentInfoDetailResult(qrTem.getStudentRoNo(), courseId, currentTime);
+					sid.setCurrentCount(maxCount+1);
+				}
+				int stuinfoDetailTem = studentInfoServiceImpl.insertStudentInfoDetailResult(sid);
+				
+				
 				map2.put(qrTem.getStudentRoNo(), 1);
 				int tem = studentInfo.getSignIn();
+				System.out.println("tem :" + tem);
 				int x = tem + 1;
+				System.out.println("x: " + x);
 				// 核心：跟新info表，成功+1
 				studentInfoServiceImpl.updateStudentInfoAboutSignIn(studentInfo.getStudentInfoId(), x);
 				// 删除在QrTem表中的记录，等待下次签到
@@ -427,6 +450,21 @@ public class StudentController {
 				    			int tem = studentInfo.getAskForLeave();
 								int x = tem + 1;
 								studentInfoServiceImpl.updateStudentInfoAboutLeave(studentInfo.getStudentInfoId(), x);
+								//细节上也加一
+								List<StudentInfoDetail> studentInfoDetails = studentInfoServiceImpl.selectStudentInfoDetailResult(string, courseId, currentTime);
+								StudentInfoDetail sid = new StudentInfoDetail();
+								sid.setCourseId(courseId);
+								sid.setStudentRoNo(string);
+								sid.setCurrentTime(sdf2.format(new Date()));
+								sid.setCurrentWeek(week);
+								sid.setSignInStatus("请假");
+								if(studentInfoDetails.size() == 0){
+									sid.setCurrentCount(1);
+								}else{
+									int maxCount = studentInfoServiceImpl.selectMaxStudentInfoDetailResult(string, courseId, currentTime);
+								    sid.setCurrentCount(maxCount+1);
+								}
+								int stuinfoDetailTem2 = studentInfoServiceImpl.insertStudentInfoDetailResult(sid);
 								//更改map记录
 				    		    map2.put(string, 2);
 								break;
@@ -442,6 +480,21 @@ public class StudentController {
 					int tem = studentInfo.getAbsenteeism();
 					int x = tem + 1;
 					studentInfoServiceImpl.updateStudentInfoAboutAbs(studentInfo.getStudentInfoId(), x);
+					//自然，细节上旷课不来的也要加一
+					List<StudentInfoDetail> studentInfoDetails = studentInfoServiceImpl.selectStudentInfoDetailResult(string, courseId, currentTime);
+					StudentInfoDetail sid = new StudentInfoDetail();
+					sid.setCourseId(courseId);
+					sid.setStudentRoNo(string);
+					sid.setCurrentTime(sdf2.format(new Date()));
+					sid.setCurrentWeek(week);
+					sid.setSignInStatus("旷课");
+					if(studentInfoDetails.size() == 0){
+						sid.setCurrentCount(1);
+					}else{
+						int maxCount = studentInfoServiceImpl.selectMaxStudentInfoDetailResult(string, courseId, currentTime);
+					    sid.setCurrentCount(maxCount+1);
+					}
+					int stuinfoDetailTem3 = studentInfoServiceImpl.insertStudentInfoDetailResult(sid);
 				}
 			}
 			map.put("message", "成功");
@@ -511,13 +564,14 @@ public class StudentController {
 		Clazz clazz = clazzServiceImpl.selectClazzById(clazzId);
 		Student student = studentServiceImpl.selectStudentByNo(studentRono);
 		StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoByMany(studentRono, courseId);
+		int count = studentInfoServiceImpl.selectCountOfStudentByStudentInfo(courseId);
 		boolean tem = false;
 			if(clazzStuServiceImpl.selectClazzStuByDouble(clazzId, studentRono) == null){
 				tem = true;
 		}else {
 			tem = false;
 		}
-		if(tem == true && studentInfo == null){
+		if(tem == true && studentInfo == null && count+1 <= course.getClassCapacity()){
 		Message message = new Message();
 		message.setMessageSender(studentRono);
 		message.setMessageAccepter(teacher.getTeacherMobile());
@@ -531,6 +585,12 @@ public class StudentController {
 		map.put("result", true);
 		}else {
 			map.put("result", false);
+			if(count+1 > course.getClassCapacity()){
+				map.put("message", "moreThan");
+			}else {
+				map.put("message", null);
+			}
+			
 		}
 		return map;
 	}
@@ -603,9 +663,9 @@ public class StudentController {
 			return map; 
 		} 
 		
-		//查询消息分页
+		//查询收件箱消息分页
 		@RequestMapping(value ="/getSeperratePage.do")
-		@SystemLog(module = "学生", methods = "日志管理-消息分页")
+		//@SystemLog(module = "学生", methods = "日志管理-消息分页")
 		public String getSeperratePage(
 				String messageAcpter,
 				 @RequestParam(value = "page", required = false) String page,
@@ -630,6 +690,35 @@ public class StudentController {
          ResponseUtil.write(response, result);
          return null;
 		}
+		//查看发件箱
+		@RequestMapping(value ="/getSenderSeperratePage.do")
+		//@SystemLog(module = "学生", methods = "日志管理-消息分页")
+		public String getSenderSeperratePage(
+				String messageSender,
+				 @RequestParam(value = "page", required = false) String page,
+		         @RequestParam(value = "limit", required = false) String limit,
+		         HttpServletResponse response) throws Exception{
+			int ppp = Integer.parseInt(page);
+			int lll = Integer.parseInt(limit);
+          List<Message> messages = messageServiceImpl.selectSenderMessage(messageSender, lll*(ppp-1), lll);
+         //使用阿里巴巴的fastJson创建JSONObject
+         JSONObject result = new JSONObject();
+         //通过fastJson序列化list为jsonArray
+         String jsonArray = JSON.toJSONString(messages);
+         JSONArray array = JSONArray.parseArray(jsonArray);
+		int totalCount = messageServiceImpl.selectSendreMessageTotalCount(messageSender);
+
+         //将序列化结果放入json对象中
+         result.put("data", array);
+         result.put("count", totalCount);
+         result.put("code", 0);
+
+         //使用自定义工具类向response中写入数据
+         ResponseUtil.write(response, result);
+         return null;
+		}
+		
+		
 		//删除message
 		@SystemLog(module = "学生", methods = "日志管理-删除消息")
 		@RequestMapping(value = "/deleteMessage.do")
@@ -656,15 +745,15 @@ public class StudentController {
 			Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
 			Course course = courseServiceImpl.selectCourseById(courseId);
 			StudentInfo studentInfo = studentInfoServiceImpl.selectStudentInfoByMany(studentRoNo,courseId);
+			int count = studentInfoServiceImpl.selectCountOfStudentByStudentInfo(courseId);
 				if (student == null) {
 					map.put("message", "学号错误");
-					System.out.println("11111");
 				} else if (!MD5Util.md5(studentPassword, "juin").equals(student.getStudentPassword())){
 					map.put("message", "密码错误");
-					System.out.println("22222222");
 				} else if (studentInfo != null) {
 					map.put("message", "请勿重复加入");
-					System.out.println("333333333");
+				}else if (count+1 > course.getClassCapacity()) {
+					map.put("message", "班级人数超额");
 				}else{
 					StudentInfo studentInfo3 = new StudentInfo();
 					studentInfo3.setStudent(student);
@@ -678,7 +767,6 @@ public class StudentController {
 					studentInfoServiceImpl.insertStudentInfo(studentInfo3);
 					clazzStuServiceImpl.insertClazzStu(clazzId,studentRoNo);
 					map.put("result", true);
-					System.out.println("444444444");
 				}
 			return map;
 		}
@@ -769,10 +857,96 @@ public class StudentController {
 		return map;
 	}		
 
+	//回复教师消息
+	@RequestMapping(value = "/returnMessageToTeacher.do")
+	@ResponseBody
+	public Map<String, Object> returnMessageToTeacher(int messageId,String messageToTeacherContent){
+		Message message2 = messageServiceImpl.selectMessageById(messageId);
+		String teacherMobile = message2.getMessageSender();
+		String studentRoNo = message2.getMessageAccepter();
+		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+		Map<String, Object> map = new HashMap<>();
+		Message message = new Message();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		message.setMessageSender(studentRoNo);
+		message.setMessageAccepter(teacherMobile);
+		message.setMessageTitle(student.getStudentName() + "同学 回复了你！");
+		message.setSendTime(sdf.format(new Date()));
+		message.setHaveRead("未读");
+		message.setMessageContent(student.getStudentName()+ " ：<br/><br/><span style='color:#FF5722'>"+ messageToTeacherContent +"</span><br/>");
+		message.setMessageType("nomal");
 		
+		int tem = messageServiceImpl.insertMessage(message);
+		if(tem > 0){ 
+			map.put("result", true);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}		
+
+//给老师发消息
+	@RequestMapping(value = "/messageToTeacherNow.do")
+	@ResponseBody
+	public Map<String, Object> messageToTeacherNow(int courseId,String studentRoNo,String messageToStudentContentNow){
+		Course course = courseServiceImpl.selectCourseById(courseId);
+		String teacherMobile = course.getTeacher().getTeacherMobile();
+		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+		Map<String, Object> map = new HashMap<>();
+		Message message = new Message();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		message.setMessageSender(studentRoNo);
+		message.setMessageAccepter(teacherMobile);
+		message.setMessageTitle(student.getStudentName() + "同学 给你发送了一条消息！");
+		message.setSendTime(sdf.format(new Date()));
+		message.setHaveRead("未读");
+		message.setMessageContent(student.getStudentName()+ " ：<br/><br/><span style='color:#FF5722'>"+ messageToStudentContentNow +"</span><br/>");
+		message.setMessageType("nomal");
 		
+		int tem = messageServiceImpl.insertMessage(message);
+		if(tem > 0){
+			map.put("result", true);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}		
 		
+	//学生更换照片
+	@RequestMapping(value = "/updateStudentPhoto.do",method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> updateStudentPhoto(HttpServletRequest request, @RequestParam("file") MultipartFile file){
+		Map<String, Object> map = new HashMap<>();
+		String studentRoNo = request.getParameter("studentRoNoForPhoto");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD-HH-mm-ss");
+		String path = request.getSession().getServletContext().getRealPath("/") + "studentPhoto";
+		System.out.println(path);
+		String fileName = file.getOriginalFilename();
+		System.out.println(fileName);
+		String nameNow = sdf.format(new Date())+"_"+fileName;
+		File targetFile = new File(path, nameNow);
+		if (!targetFile.exists()) {
+			targetFile.mkdirs();
+		}
+		// 保存
+		try {
+			file.transferTo(targetFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
+		int tem = studentServiceImpl.updateStudentPhoto(studentRoNo, nameNow);
+		if(tem > 0){
+			map.put("result", true);
+			map.put("fileName", nameNow);
+		}
+		else {
+			map.put("result", false); 
+		}
+		return map;
+	}		
 		
 		
 		

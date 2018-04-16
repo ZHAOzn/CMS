@@ -166,7 +166,7 @@
 			<!-- <button type="reset" class="layui-btn layui-btn-primary">重置</button> -->
 		</form>
 				<div class="layui-upload-list" style="width: 100px; heigh:120px; float: left; margin-left: 10px">
-				<img class="layui-upload-img" src="" style="width: 100px; heigh:120px;" id="imgPre">
+				<img class="layui-upload-img" style="width: 100px; heigh:120px;" id="imgPre">
 					<p id="demoText"></p>
 				</div>
 				
@@ -229,8 +229,8 @@
 			}
 
 			form.verify({
-				idvalidate:[/^[\d]{10,20}$/,'学号必须是10到20位数字'],
-				pass : [/^[\w]{6,16}$/, '密码必须6到16位的数字,字母或下划线'],
+				idvalidate:[/^[\d]{12,20}$/,'学号必须是12-20位数字'],
+				pass : [/^[\w]{6,16}$/, '密码必须6-16位的数字,字母或下划线'],
 				photovalidate: [/\S/,'请上传照片'],
 			});
 		});

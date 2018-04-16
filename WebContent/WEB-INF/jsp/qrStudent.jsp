@@ -165,6 +165,11 @@
 										var $ = layui.jquery, layer = layui.layer;
 										layer.msg('您已在该课程内！');
 									});
+								}else if (data.message == '班级人数超额') {
+									layui.use('layer', function() {
+										var $ = layui.jquery, layer = layui.layer;
+										layer.msg('课程人数已超额！');
+									});
 								}
 							},
 							error : function(data) {

@@ -19,7 +19,7 @@
 	</insert>
 	
 	<select id="selectFeedback" resultMap="FeedbackResult">
-	  select * from Feedback order by FeedbackId desc
+	  select * from Feedback order by  Result = '已解决', FeedbackId desc
 	</select>
 	
 	<update id="updateFeedbackOfReson" parameterType="HashMap">

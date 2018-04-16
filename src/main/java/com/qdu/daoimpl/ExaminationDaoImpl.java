@@ -271,7 +271,7 @@ public class ExaminationDaoImpl implements ExaminationDao{
 
 	@Override
 	public int updateSingleSelectionById(int singleSelectionId, int questionNumber) {
-		String statement = "com.qdu.mapping.SingleSelectionMapping.updateSingleSelectionById";
+		String statement = "com.qdu.mapping.SingleSelectionMapping.updateSingleSelectionQuestionNumById";
 		Map<String, Object> map = new HashMap<>();
 		map.put("singleSelectionId", singleSelectionId);
 		map.put("questionNumber", questionNumber);

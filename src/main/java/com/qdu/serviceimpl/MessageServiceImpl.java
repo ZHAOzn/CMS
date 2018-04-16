@@ -53,4 +53,14 @@ public class MessageServiceImpl implements MessageService{
 		return messageDaoImpl.deleteMessage(messageId);
 	}
 
+	@Override
+	public List<Message> selectSenderMessage(String messageSender, int startPos, int count) {
+		return messageDaoImpl.selectSenderMessage(messageSender, startPos, count);
+	}
+
+	@Override
+	public int selectSendreMessageTotalCount(String messageSender) {
+		return messageDaoImpl.selectSendreMessageTotalCount(messageSender);
+	}
+
 }

@@ -98,6 +98,10 @@
 			</collection>
 		</association>
 	</resultMap>
+	
+	<select id="selectCountOfStudentInThisCourse" parameterType="int" resultType="int">
+      SELECT COUNT(*) FROM Studentinfo WHERE CourseId = #{courseId}
+    </select>
 
 	<select id="selectStudentInfoByCourse" resultMap="StudentInfoResult">
 		select * from
@@ -199,6 +203,7 @@
 		where StudentInfoId =
 		#{studentInfoId}
 	</update>
+	
 	
 	<update id="updateStudentInfoAboutLeave" parameterType="HashMap">
 		update

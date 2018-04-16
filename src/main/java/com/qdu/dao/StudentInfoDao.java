@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.qdu.pojo.Student;
 import com.qdu.pojo.StudentInfo;
+import com.qdu.pojo.StudentInfoDetail;
 
 public interface StudentInfoDao {
 	
@@ -36,5 +37,26 @@ public interface StudentInfoDao {
     public StudentInfo selectStudentInfoById(int studentInfoId);
     
     public int deleteStudentInfoById(int studentInfoId);
-
+    
+    public int selectCountOfStudentInThisCourse(int courseId);
+    
+    // 哈哈哈哈下面是那个每次签到的细节
+    public int insertStudentInfoDetailResult(StudentInfoDetail studentInfoDetail);
+    
+    public List<StudentInfoDetail> selectStudentInfoDetailResult(String studentRoNo,int courseId,String currentTime);
+    
+    public int selectMaxStudentInfoDetailResult(String studentRoNo,int courseId,String currentTime);
+    
+    public List<StudentInfoDetail> selectStuInfoDetailList(int courseId);
+    
+    public int selectCountOfCurrentDay(int courseId,String currentTime);
+    
+    public List<StudentInfoDetail> selectEveryTimeSign(int courseId,String currentTime,int currentCount);
+    
+    public StudentInfoDetail selectStudentInfoDetailId(int studentInfoDetailId);
+    
+    public int updateStudentInfoDetail(String signInStatus,int studentinfodetailId);
+    
+    public int deleteStudentInfoDetail(String studentRoNo,int courseId);
+    
 }

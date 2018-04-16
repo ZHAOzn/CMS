@@ -13,6 +13,8 @@
 		<result property="dateTime" column="DateTime" />
 		<result property="commite" column="Commite" />
 		<result property="result" column="Result" />
+		<result property="address" column="Address" />
+		<result property="interNetApply" column="InterNetApply" />
 	</resultMap>
   
 	<select id="selectLogByUserId" resultMap="LogEntityResult">
@@ -45,8 +47,9 @@
 
     <insert id="insertLogEntity" parameterType="com.qdu.pojo.LogEntity">
      insert into 
-     LogEntity(UserId,Module,Method,ReponseTime,Ip,Date,DateTime,Commite,Result) 
-        values(#{userId},#{module},#{method},#{reponseTime},#{ip},#{date},#{dateTime},#{commite},#{result})
+     LogEntity(UserId,Module,Method,ReponseTime,Ip,Date,DateTime,Commite,Result,Address,InterNetApply) 
+        values(#{userId},#{module},#{method},#{reponseTime},#{ip},#{date},#{dateTime},#{commite},#{result},
+        #{address},#{interNetApply})
     </insert>
 	
 </mapper>

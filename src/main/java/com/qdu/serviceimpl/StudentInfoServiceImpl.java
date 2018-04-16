@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.qdu.dao.StudentInfoDao;
 import com.qdu.pojo.Student;
 import com.qdu.pojo.StudentInfo;
+import com.qdu.pojo.StudentInfoDetail;
 import com.qdu.service.StudentInfoService;
 
 @Transactional
@@ -90,6 +91,56 @@ public class StudentInfoServiceImpl implements StudentInfoService{
 	@Override
 	public int deleteStudentInfoById(int studentInfoId) {
 		return studentInfoDaoImpl.deleteStudentInfoById(studentInfoId);
+	}
+
+	@Override
+	public int selectCountOfStudentInThisCourse(int courseId) {
+		return studentInfoDaoImpl.selectCountOfStudentByStudentInfo(courseId);
+	}
+
+	@Override
+	public int insertStudentInfoDetailResult(StudentInfoDetail studentInfoDetail) {
+		return studentInfoDaoImpl.insertStudentInfoDetailResult(studentInfoDetail);
+	}
+
+	@Override
+	public List<StudentInfoDetail> selectStudentInfoDetailResult(String studentRoNo, int courseId, String currentTime) {
+		return studentInfoDaoImpl.selectStudentInfoDetailResult(studentRoNo, courseId, currentTime);
+	}
+
+	@Override
+	public int selectMaxStudentInfoDetailResult(String studentRoNo, int courseId, String currentTime) {
+		return studentInfoDaoImpl.selectMaxStudentInfoDetailResult(studentRoNo, courseId, currentTime);
+	}
+
+	@Override
+	public List<StudentInfoDetail> selectStuInfoDetailList(int courseId) {
+		return studentInfoDaoImpl.selectStuInfoDetailList(courseId);
+	}
+
+	@Override
+	public int selectCountOfCurrentDay(int courseId, String currentTime) {
+		return studentInfoDaoImpl.selectCountOfCurrentDay(courseId, currentTime);
+	}
+
+	@Override
+	public List<StudentInfoDetail> selectEveryTimeSign(int courseId, String currentTime, int currentCount) {
+		return studentInfoDaoImpl.selectEveryTimeSign(courseId, currentTime, currentCount);
+	}
+
+	@Override
+	public StudentInfoDetail selectStudentInfoDetailId(int studentInfoDetailId) {
+		return studentInfoDaoImpl.selectStudentInfoDetailId(studentInfoDetailId);
+	}
+
+	@Override
+	public int updateStudentInfoDetail(String signInStatus, int studentinfodetailId) {
+		return studentInfoDaoImpl.updateStudentInfoDetail(signInStatus, studentinfodetailId);
+	}
+
+	@Override
+	public int deleteStudentInfoDetail(String studentRoNo, int courseId) {
+		return studentInfoDaoImpl.deleteStudentInfoDetail(studentRoNo, courseId);
 	}
 	
 

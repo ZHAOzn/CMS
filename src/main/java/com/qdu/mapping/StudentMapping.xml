@@ -145,6 +145,12 @@
 		ClazzId = #{clazzId}
 		where StudentRoNo = #{studentRoNo}
 	</update>
+	
+	<update id="updateStudentPhoto" parameterType="HashMap">
+		update Student set
+		StudentPhoto = #{studentPhoto}
+		where StudentRoNo = #{studentRoNo}
+	</update>
 
 	<update id="changeStuMail" parameterType="HashMap">
 		update Student set

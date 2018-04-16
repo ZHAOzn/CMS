@@ -17,8 +17,13 @@
 <script src="<%=request.getContextPath()%>/layui/layui.js "></script>
 <script src="<%=request.getContextPath()%>/layui/mods/index.js"></script>
 
-<title>学生页面</title>
+<title>学生</title>
 <script type="text/javascript">
+function   fresh(){  
+	if(location.href.indexOf("?reload=true")<0){
+	    location.href+="?reload=true";  
+	   }  
+	}
 layui.use(['form'], function(){
 	var form = layui.form;
 	});
@@ -31,6 +36,7 @@ layui.use(['form'], function(){
 		 if(${student.intoSchoolYear} == '0'){
 			 $('#innerTime').html("");
 		 }
+		
 	 
 		 //首先检查学生个人信息是否完善
 		 if(${empty student.college} || ${empty student.special}||${empty student.intoSchoolYear}
@@ -38,11 +44,15 @@ layui.use(['form'], function(){
 			 $('#redSignal').show();
 			 $('#signalNow').show();
 		 }
-	 		 
+		 //如果消息数量为0
+		 if(${messageCount} == 0){
+			 $('#TmessageCount').hide();
+		 }else {
+			 $('#TmessageCount').show();
+		}
 		 //每1秒执行一次消息数量的查询
-		 setInterval(gggetMessageCount,1000);
+	    /* setInterval(gggetMessageCount,1000); */
 		 function gggetMessageCount() {
-			 
 			 $.ajax({
 	             type: "GET",
 	             data: {
@@ -50,7 +60,6 @@ layui.use(['form'], function(){
 	             },
 	             contentType: "application/json; charset=utf-8",
 	             async: true,
-	             //url不加空格！！！！！！！！！！！！！！！！！！！！！！！
 	             url: "<%=request.getContextPath()%>/student/gggetMessageCount.do",
 				success : function(data) {
 					if(data.message > 0){
@@ -275,29 +284,7 @@ layui.use(['form'], function(){
 				$('#savefectButton').show();
 			});
 			
-			//点击请假
-			$('#leaveRecord').click(function wq() {
-				getLeaveRecord();
-				$('#messageList').html("请假记录");
-				$('#courseInfo').hide();
-				$('#upLoadShow').hide();
-				$('#studentAddCourse').hide();
-				$('#doubleHandle').hide();
-				$('#seprateMessage').hide();
-				$('#fushuMessage').hide();
-				$('#messageShow').hide();
-				$('#studentInfoShow').hide();
-				$('#insertCourseDiv').hide();
-				$("#studentLogOfTime").hide();
-				$('#forStudentLogInfo').hide();
-			    $('#studentLogInfo').hide();
-			    $('#examList').hide();
-				$('#signal').hide();
-				$('#lookData').hide();
-				$('#studentWork').hide();
-				$('#beforeLeaveMoudle').show();
-				 $('#afterLeaveMoudle').show();
-			});
+			
 	 
 	//获取学生密码，进行后台比对
 		function getStuAnwser(password,studentRono) {
@@ -342,10 +329,28 @@ layui.use(['form'], function(){
 	              url: "<%=request.getContextPath()%>/student/updateStudentInfoByAjax.do",
 	              success: function (data) {
 	            	  if(data.result == true){
-	            		 $('#updateStudentInfoSuccess').show();
-	            		 setTimeout('yourFunction()',2000); 
+	            		  layui.use('layer', function(){
+			 	               var $ = layui.jquery, layer = layui.layer; 
+			   			      layer.open({
+			   			        type: 1
+			   			        ,offset: 'auto'
+			   			        ,id: 'layerDemo'+'auto'
+			   			        ,title: '成功'
+			   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "信息更新完成！" +'</div>'
+			   			        ,btn: '关闭'
+			   			        ,btnAlign: 'c'
+			   			        ,skin: 'demo-class'
+			   			        ,shade: 0 
+			   			        ,yes: function(){
+			   			        	 layer.closeAll();
+			   			        }
+			   			      });
+			 	            });
 	            	  }else{
-	            		  alert("更新信息失败！");
+	            		  layui.use('layer', function() {
+        						var $ = layui.jquery, layer = layui.layer;
+        						layer.msg('更新失败！');
+        					});
 	            	  }
 	              },
 	              error: function (data) {
@@ -433,7 +438,14 @@ layui.use(['form'], function(){
 	            	  if(data.result == true){
 	            		  result = true;
 	            	  }else if(data.result == false){
-	            		  $('#listenClssExit').show();
+	            		  if(data.message == 'moreThan'){
+	            			  layui.use('layer', function() {
+									var $ = layui.jquery, layer = layui.layer;
+									layer.msg('该课程人数已超额！');
+								});
+	            		  }else {
+	            			  $('#listenClssExit').show();
+						}
 	            	  }
 	              },
 	              error: function (data) {
@@ -488,7 +500,88 @@ layui.use(['form'], function(){
 	            async: false,
 	            url: "<%=request.getContextPath()%>/student/getMessageByAjax.do",
 				success : function(data) {
-					if(data.mmm.messageType == 'admin'){
+					if(data.mmm.messageType == 'nomal'){
+						layer.open({
+				            type: 1
+				            ,title: false
+				            ,closeBtn: true
+				            ,area: '300px;'
+				            ,shade: 0.8
+				            ,id: 'LAY_layuipro' 
+				            ,btn: ['回复', '忽略']
+				            ,btnAlign: 'c'
+				            ,moveType: 0 
+				            ,content: '<div style="background-color: #393D49; color: #fff;"><br/>' + data.mmm.messageContent +'<br/></div>'
+				            ,yes: function(){
+				            	layer.closeAll();
+				            	layui.use('layer', function(){ 
+				                    var $ = layui.jquery, layer = layui.layer;
+				          	layer.open({
+				                  type: 1
+				                  ,title: false
+				                  ,closeBtn: true
+				                  ,area: '300px;'
+				                  ,shade: 0.8
+				                  ,id: 'LAY_layuipwro'
+				                  ,btn: ['立即回复', '想想再说']
+				                  ,btnAlign: 'c'
+				                  ,moveType: 0 
+				                  ,content: '<div style="background-color: #393D49; color: #fff;"><div  style="width:100%;"> <br/><label>回复消息</label><textarea style="color:#393D49" id="messageToTeacherContent" class="layui-textarea"></textarea></div></div>'
+				                  ,yes: function(){
+				                  	if($('#messageToTeacherContent').val() != "" && messageId != null){
+				                  		$.ajax({
+				                  	        type: "GET",
+				                  	        data: {
+				                  	         "messageToTeacherContent":$('#messageToTeacherContent').val(),
+				                  	         "messageId":messageId
+				                  	        },
+				                  	        contentType: "application/json; charset=utf-8",
+				                  	        async: false,
+				                  	        url: "<%=request.getContextPath()%>/student/returnMessageToTeacher.do",
+				                  			success : function(data) {
+				                  				if(data.result == true){
+				                  					layui.use('layer', function(){
+				               		 	               var $ = layui.jquery, layer = layui.layer; 
+				               		   			      layer.open({
+				               		   			        type: 1
+				               		   			        ,offset: 'auto'
+				               		   			        ,id: 'layerDemo'+'auto'
+				               		   			        ,title: '成功'
+				               		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "消息发送成功！" +'</div>'
+				               		   			        ,btn: '关闭'
+				               		   			        ,btnAlign: 'c'
+				               		   			        ,skin: 'demo-class'
+				               		   			        ,shade: 0 
+				               		   			        ,yes: function(){
+				               		   			        	 layer.closeAll();
+				               		   			        }
+				               		   			      });
+				               		 	            });
+				                  				}else{
+				                  					layui.use('layer', function() {
+				                  						var $ = layui.jquery, layer = layui.layer;
+				                  						layer.msg('消息发送失败！');
+				                  					});
+				                  				}
+				                  			},
+				                  			error : function(data) {
+				                  				alert("服务器异常");
+				                  			},
+				                  			dataType : "json",
+				                  		});
+				                  	}else {
+				                  		layui.use('layer', function() {
+				          					var $ = layui.jquery, layer = layui.layer;
+				          					layer.msg('内容不能为空！');
+				          				});
+				          			}
+				          		  }
+				          	});
+				            });
+							  }
+				           
+				          });
+					}else if(data.mmm.messageType == 'admin'){
 						layer.open({
 				            type: 1
 				            ,title: false //不显示标题栏
@@ -556,8 +649,7 @@ layui.use(['form'], function(){
 						  }
 						$('#sendTime').html('<span style="color:#5FB878">时间  :&nbsp</span><' + data.mmm.sendTime +'>');
 						$('#fushuMessage').show();
-					}
-					if(data.mmm.messageType == 'leaveRecord'){
+					}else if(data.mmm.messageType == 'leaveRecord'){
 						$('#messageContent').html(data.mmm.messageContent);
 						$('#forMessageContent').show();
 						$('#messageContent').show();
@@ -737,7 +829,7 @@ layui.use(['form'], function(){
 						    con += "<tr>";
 		        	        con += "<td style='text-align:center;'>" + item.fileType + "</td>";
 		        	        con += "<td style='text-align:center;'>" + item.createTime + "</td>";
-		        	        con += "<td style='padding-left:5%;'><a style='color:green;' href=\'<%=request.getContextPath() %>/file/"+item.fileName+"\'>" + item.fileName + "</a></td>";
+		        	        con += "<td style='padding-left:5%;'><a target='_blank' style='color:green;' href=\'<%=request.getContextPath() %>/file/"+item.fileName+"\'>" + item.fileName + "</a></td>";
 		        	        con += "<tr/>";
 		        	    });
 					 $('#privateData').html(con);
@@ -809,10 +901,29 @@ function studentAddLeave() {
 	         url: "<%=request.getContextPath()%>/student/studentAddLeave.do",
 			success : function(data) {
 				if(data.result == true){
-					$('#afterLeaveSuccess').show();
-					 setTimeout('fuckFunction()',2000); 
+					layui.use('layer', function(){
+		 	               var $ = layui.jquery, layer = layui.layer; 
+		   			      layer.open({
+		   			        type: 1
+		   			        ,offset: 'auto'
+		   			        ,id: 'layerDemo'+'auto'
+		   			        ,title: '成功'
+		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "请求已发送" +'</div>'
+		   			        ,btn: '关闭'
+		   			        ,btnAlign: 'c'
+		   			        ,skin: 'demo-class'
+		   			        ,shade: 0 
+		   			        ,yes: function(){
+		   			        	leaveRecord();
+		   			        	 layer.closeAll();
+		   			        }
+		   			      });
+		 	            });
 				}else {
-					alert("创建假条失败...");
+					layui.use('layer', function() {
+						var $ = layui.jquery, layer = layui.layer;
+						layer.msg('创建假条失败！');
+					});
 				}
 			},
 			error : function(data) {
@@ -1070,25 +1181,33 @@ function lookData() {
 	 $('#courseInfo').hide();
 	 $('#lookData').show();
 }
+//点击请假
+function leaveRecord() {
+	getLeaveRecord();
+	$('#messageList').html("请假记录");
+	$('#courseInfo').hide();
+	$('#upLoadShow').hide();
+	$('#studentAddCourse').hide();
+	$('#doubleHandle').hide();
+	$('#seprateMessage').hide();
+	$('#fushuMessage').hide();
+	$('#messageShow').hide();
+	$('#studentInfoShow').hide();
+	$('#insertCourseDiv').hide();
+	$("#studentLogOfTime").hide();
+	$('#forStudentLogInfo').hide();
+    $('#studentLogInfo').hide();
+    $('#examList').hide();
+	$('#signal').hide();
+	$('#lookData').hide();
+	$('#studentWork').hide();
+	$('#beforeLeaveMoudle').show();
+	 $('#afterLeaveMoudle').show();
+}
 </script>
 
 </head>
 <body>
-
-	<!-- 更改邮箱成功提示信息 -->
-
-
-	<!-- 添加课程成功提示信息 -->
-	<div id="addCourseShow"
-		style="background-color: #393D49; height: 20%; width: 20%; z-index: 20; position: fixed; margin-top: 30%; text-align: center; margin-left: 35%; display: none;">
-		<h3 style="color: white; margin-top: 19%">请求已发送..</h3>
-	</div>
-
-	<!-- 完善个人信息成功提示信息 -->
-	<div id="updatePersonInfoShow"
-		style="background-color: #393D49; height: 20%; width: 20%; z-index: 20; position: fixed; margin-top: 30%; text-align: center; margin-left: 35%; display: none;">
-		<h3 style="color: white; margin-top: 19%">信息更新成功..</h3>
-	</div>
 
 	<div class="layui-layout layui-layout-admin" style="">
 		<!-- 头部导航 -->
@@ -1099,28 +1218,24 @@ function lookData() {
 				<ul class="layui-nav">
 					<li class="layui-nav-item"><a id="messageButtton" href="#">
 					<i class="layui-icon bbbbb" style="font-size: 20px; color: #d2d2d2">&#xe63a;</i> <span
-							id="TmessageCount" class="layui-badge" style="margin-left: 15%;">${messageCount}</span></a></li>
+							id="TmessageCount" class="layui-badge" style="margin-left: 15%;display: none;">${messageCount}</span></a></li>
 					<li class="layui-nav-item"><a id="studentInfoCenter" href="#">
 					<i class="layui-icon bbbbb" style="font-size: 20px; color: #d2d2d2">&#xe612;</i><span
 							id="redSignal" style="display: none;" class="layui-badge-dot"></span></a></li>
-					<%-- <li class="layui-nav-item"
-						style="padding: 0; margin: 0; text-align: right;"><img
-						height="45em" width="40em"
-						src="/ClassManageSys/studentPhoto/${student.studentPhoto}"
-						class="layui-circle"></li> --%>
 					<li class="layui-nav-item"><a href="#">${student.studentName}</a>
-						<dl class="layui-nav-child">
-							<dd>
+						<ul class="layui-nav-child">
+							<li>
 								<a id="updateStudentInfoNow" href="#">修改信息</a>
-							</dd>
-							<dd>
+							</li>
+							<li>
 								<a id="safeManage" href="#">安全管理</a>
-							</dd>
-							<dd>
+							</li>
+							<li>
 								<a onclick="exitLogin()"
-									href="<%=request.getContextPath()%>/index.jsp">注销</a>
-							</dd>
-						</dl></li>
+									href="<%=request.getContextPath()%>/index.jsp">注销登录</a>
+							</li>
+						</ul>
+					</li>
 				</ul>
 
 			</div>
@@ -1149,13 +1264,13 @@ function lookData() {
 								<a id="studentWordRecord" href="#">签到记录</a>
 							</dd>
 							<dd>
-								<a id="leaveRecord" href="#">请假记录</a>
+								<a id="leaveRecord" onclick="leaveRecord()" href="#">请假记录</a>
 							</dd>
 							<dd>
 								<a id="studentLog" href="#">操作日志</a>
 							</dd>
 						</dl></li>
-					<li class="layui-nav-item layui-nav-itemed""><a href="#">博客中心</a>
+					<li class="layui-nav-item layui-nav-itemed"><a href="#">博客中心</a>
 					<dl class="layui-nav-child">
 							<dd>
 								<a onclick="toPersonBlog()" href="#">个人博客</a>
@@ -1566,15 +1681,15 @@ function searchData() {
 				<table class="layui-table" >
 					<colgroup>
 						<col width="125">
-						<col width="125">
-						<col width="120">
+						<col width="185">
+						<col width="100">
 						<col width="150">
 						<col width="150">
+						<col width="100">
+						<col width="140">
 						<col width="120">
-						<col width="120">
-						<col width="120">
-						<col width="150">
-						<col width="120">			
+						<col width="140">
+						<col width="110">			
 					</colgroup>
 					<thead>
 						<tr>
@@ -1603,7 +1718,7 @@ function searchData() {
 										<td>${s.course.endTime}</td>
 										<td>${s.course.currentYear}</td>
 										<td>${s.course.schoolTem}</td>
-										<td>${s.course.teacher.teacherName}</td>
+										<td><a id="${s.course.courseId}" onclick="messageToTeacherNow(this.id)" style="color: #5FB878" href="#">${s.course.teacher.teacherName}&nbsp;<i class="layui-icon" style="font-size: 15px; color: #1E9FFF;">&#xe611;</i></a></td>
 										<td>${s.course.teacher.teacherMobile}</td>
 										<td><a onclick="wantToExitCourse()" href="#" class="aSign">退出</a></td>
 										<!--  <td colspan="8"></td>-->
@@ -1612,7 +1727,7 @@ function searchData() {
 							</c:when>
 							<c:otherwise>
 								<tr>
-									<td colspan="9">(暂无课程)</td>
+									<td colspan="10">(暂无课程)</td>
 								</tr>
 							</c:otherwise>
 						</c:choose>
@@ -1620,6 +1735,76 @@ function searchData() {
 				</table>
 			</div>
 			<script>
+			//给老师发消息
+			function messageToTeacherNow(courseId) {
+				layui.use('layer', function(){ //独立版的layer无需执行这一句
+			          var $ = layui.jquery, layer = layui.layer;
+				layer.open({
+			        type: 1
+			        ,title: false //不显示标题栏
+			        ,closeBtn: true
+			        ,area: '300px;'
+			        ,shade: 0.8
+			        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+			        ,btn: ['立即发送', '想想再说']
+			        ,btnAlign: 'c'
+			        ,moveType: 0 //拖拽模式，0或者1
+			        ,content: '<div style="background-color: #393D49; color: #fff;"><div  style="width:100%;"> <br/><label>发送消息</label><textarea style="color:#393D49" id="messageToStudentContentNow" class="layui-textarea"></textarea></div></div>'
+			        ,yes: function(){
+			        	if($('#messageToStudentContentNow').val() != "" && courseId != null){
+			        		$.ajax({
+			        	        type: "GET",
+			        	        data: {
+			        	         "messageToStudentContentNow":$('#messageToStudentContentNow').val(),
+			        	         "studentRoNo":${student.studentRoNo},
+			        	         "courseId":courseId
+			        	        },
+			        	        contentType: "application/json; charset=utf-8",
+			        	        async: false,
+			        	        url: "<%=request.getContextPath()%>/student/messageToTeacherNow.do",
+			        			success : function(data) {
+			        				if(data.result == true){
+			        					layui.use('layer', function(){
+			     		 	               var $ = layui.jquery, layer = layui.layer; 
+			     		   			      layer.open({
+			     		   			        type: 1
+			     		   			        ,offset: 'auto'
+			     		   			        ,id: 'layerDemo'+'auto'
+			     		   			        ,title: '成功'
+			     		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "消息发送成功！" +'</div>'
+			     		   			        ,btn: '关闭'
+			     		   			        ,btnAlign: 'c'
+			     		   			        ,skin: 'demo-class'
+			     		   			        ,shade: 0 
+			     		   			        ,yes: function(){
+			     		   			        	 layer.closeAll();
+			     		   			        }
+			     		   			      });
+			     		 	            });
+			        				}else{
+			        					layui.use('layer', function() {
+			        						var $ = layui.jquery, layer = layui.layer;
+			        						layer.msg('消息发送失败！');
+			        					});
+			        				}
+			        			},
+			        			error : function(data) {
+			        				alert("服务器异常");
+			        			},
+			        			dataType : "json",
+			        		});
+			        	}else {
+			        		layui.use('layer', function() {
+								var $ = layui.jquery, layer = layui.layer;
+								layer.msg('内容不能为空！');
+							});
+						}
+					  }
+				});
+			  });
+			}
+			
+			
 			layui.use([ 'element', 'layer' ,'table'], function() {
 				var element = layui.element, $ = layui.jquery,table = layui.table;
 				//转换静态表格
@@ -1760,8 +1945,14 @@ function searchData() {
 			</div>
 
 			<!-- 显示消息 -->
-			<div id="messageShow"
-				style="margin-left: 5%; margin-right: 5%; display: none;">
+			<div class="layui-tab" id="messageShow" style="margin-left: 5%; margin-right: 5%; display: none;">
+			<ul class="layui-tab-title">
+		    <li class="layui-this">收件箱</li>
+		    <li onclick="tableRender()">发件箱</li>
+		  </ul>
+		  <div class="layui-tab-content">
+		  <div class="layui-tab-item layui-show">
+			<div>
 				<table class="layui-table" lay-skin="line"
 					lay-data="{page:true,height:485,width:1070, url:'<%=request.getContextPath() %>/student/getSeperratePage.do',
 			 id:'test', where:{messageAcpter:'${student.studentRoNo}'}, limit:10}"
@@ -1779,21 +1970,90 @@ function searchData() {
 					</thead>
 				</table>
 			</div>
+			</div>
+		<div class="layui-tab-item">
+	     <div>
+				<table class="layui-table" lay-skin="line"
+					lay-data="{page:true,height:485,width:1070, url:'<%=request.getContextPath() %>/student/getSenderSeperratePage.do',
+			 id:'test2', where:{messageSender:'${student.studentRoNo}'}, limit:1000}"
+					lay-filter="test">
+					<thead>
+						<tr>
+							<th lay-data="{field:'messageAccepter', width:200, sort: true}">接收方</th>
+							<th
+								lay-data="{field:'messageTitle', width:500,templet: '#titleTpl'}">标题</th>
+							<th
+								lay-data="{field:'haveRead', width:200, sort: true, align:'center', templet: '#havaread'}">状态</th>
+							<th
+								lay-data="{fixed: 'right', width:160, align:'center', toolbar: '#barDemo2'}"></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+	  </div>
+	  </div>
+	</div>	
 			<script type="text/html" id="barDemo">
   			<a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail">查看</a>
   			<a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 			</script>
+			 <script type="text/html" id="barDemo2">
+               <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail2">查看</a>
+           </script>
 			<script type="text/html" id="status">
                   {{#  if(d.haveRead == '已读'){ }}
-                    <i class="layui-icon" style="font-size: 30px; color: #5FB878;">&#xe618;</i>
+                    <i class="layui-icon" style="font-size: 20px; color: #5FB878;">&#xe618;</i>
                      {{#  } else { }}
-                       <i class="layui-icon" style="font-size: 30px; color: #FF5722;">&#xe607;</i>
+                       <i class="layui-icon" style="font-size: 20px; color: #FF5722;">&#xe607;</i>
                          {{#  } }}
             </script>
+            
+             <script type="text/html" id="havaread">
+                  {{#  if(d.haveRead == '已读'){ }}
+                    <i class="layui-icon" style="font-size: 10px; color: #5FB878;">对方已读</i>
+                     {{#  } else { }}
+                       <i class="layui-icon" style="font-size: 10px; color: #FF5722;">对方未读</i>
+                         {{#  } }}
+         </script>
+            
 			<script type="text/html" id="titleTpl">
      		<a href="#" class="layui-table-link">{{d.messageTitle}}</a>
    			</script>
 			<script>
+			//查看发件箱
+			function getSenderMessage(messageId) {
+				$.ajax({
+		            type: "GET",
+		            data: {
+				         "messageId": messageId
+		            },
+		            contentType: "application/json; charset=utf-8",
+		            async: false,
+		            url: "<%=request.getContextPath()%>/teacher/getMessageByAjax.do",
+					success : function(data) {
+						$('#handleMessageShow').hide();
+							layer.open({
+					            type: 1
+					            ,title: false
+					            ,closeBtn: true
+					            ,area: '300px;'
+					            ,shade: 0.8
+					            ,id: 'LAY_layuipro' 
+					            ,btn: ['完成']
+					            ,btnAlign: 'c'
+					            ,moveType: 0 
+					            ,content: '<div style="background-color: #393D49; color: #fff;"><br/>标题：' +data.mmm.messageTitle + '<br/>内容：' + data.mmm.messageContent +'<br/></div>'
+					            ,yes: function(){
+					            	layer.closeAll();
+								  }
+					          });				
+					},
+					error : function(data) {
+						alert("服务器异常");
+					},
+					dataType : "json",
+				});
+			}
         	layui.use('table', function(){
         		var table = layui.table;
         		table.on('tool(test)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
@@ -1801,9 +2061,27 @@ function searchData() {
             		var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             		var tr = obj.tr; //获得当前行 tr 的DOM对象      
             		if(layEvent === 'detail'){ //查看
+            			if(data.haveRead === '未读'){
+                    		if($('#TmessageCount').html()>1){
+                           	 $('#TmessageCount').html($('#TmessageCount').html()-1);
+                            }else {
+                            	$('#TmessageCount').hide();
+            				}	
+                    	}
              			getMessage(data.messageId);
-           			} else if(layEvent === 'del'){ //删除
+           			}else if(layEvent === 'detail2'){ //查看
+           		        //发件箱查看消息	
+           	         getSenderMessage(data.messageId);
+           	        
+           	        }else if(layEvent === 'del'){ //删除
               			layer.confirm('真的删除该消息么？', function(index){
+              				if(data.haveRead === '未读'){
+              	        		if($('#TmessageCount').html()>1){
+              	               	 $('#TmessageCount').html($('#TmessageCount').html()-1);
+              	                }else {
+              	                	$('#TmessageCount').hide();
+              					}	
+              	        	}
                				//向服务端发送删除指令
           					$.ajax({
                      			type: "GET",
@@ -2056,7 +2334,17 @@ function searchData() {
 						src="/ClassManageSys/studentPhoto/${student.studentPhoto}"
 						style="width: 100px; heigh: 120px; margin-left: -100px;"
 						id="imgPre">
-					<p id="demoText"></p>
+						
+					<form id= "uploadForm" enctype="multipart/form-data" method="post"> 	
+					<input type="file" name="file" id="uploadFile"
+						style="display: none;" onchange="preImg(this.id, 'imgPre2','tct');" />
+					<input type="text" name="studentRoNoForPhoto" value="${student.studentRoNo}" style="display: none;" readonly="readonly"/>
+					</form>
+					
+					<a href="#" onclick="beforeUploadFile()" style="margin-left: 15%; color: #5FB878" id="demoText">更换照片</a>
+					<input id="tct" type="text" value="" lay-verify="photovalidate"
+						style="display: none" />
+					
 					<table style="margin-left: -110px; width: 70%"
 						class="layui-form layui-form-pane">
 						<tr id="forintoSchool" style="">
@@ -2130,6 +2418,93 @@ function searchData() {
 
 			</div>
 			<script>
+			function beforeUploadFile() {
+				layer.open({
+		            type: 1
+		            ,title: false
+		            ,area: '300px;'
+		            ,shade: 0.8
+		            ,id: 'LAY_layuiproJ' 
+		            ,btn: ['更换', '取消']
+		            ,btnAlign: 'c'
+		            ,moveType: 0 
+		            ,content: '<div style="background-color: #393D49; color: #fff;"><br/><button class="layui-btn" type="button" onclick="uploadFile.click()">选择照片</button><br/><br/><img class="layui-upload-img" style="width: 100px; heigh:120px;" id="imgPre2"><br/></div>'
+		            ,yes: function(){
+		            	if($('#tct').val() != ""){
+		            		var formData = new FormData($( "#uploadForm" )[0]); 
+		            		$.ajax({
+	                  	        type: "POST",
+	                  	        data:formData,
+	                  	        contentType: false,  
+	                            processData: false,
+	                  	        async: false,
+	                  	        url: "<%=request.getContextPath()%>/student/updateStudentPhoto.do",
+	                  			success : function(data) {
+	                  				if(data.result == true){
+	                  					layui.use('layer', function(){
+	               		 	               var $ = layui.jquery, layer = layui.layer; 
+	               		   			      layer.open({
+	               		   			        type: 1
+	               		   			        ,offset: 'auto'
+	               		   			        ,id: 'layerDemo'+'auto'
+	               		   			        ,title: '成功'
+	               		   			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "照片更换成功！" +'</div>'
+	               		   			        ,btn: '关闭'
+	               		   			        ,btnAlign: 'c'
+	               		   			        ,skin: 'demo-class'
+	               		   			        ,shade: 0 
+	               		   			        ,yes: function(){
+	               		   			        	setTimeout('layer.closeAll()','1500');
+	               		   			        	  
+	               		   			        }
+	               		   			      });
+	               		 	            });
+	                  					  var imgPre = document.getElementById("imgPre");
+                 					      imgPre.style.display = "block";
+                 					      imgPre.src = "<%=request.getContextPath()%>/studentPhoto/" + data.fileName;
+	                  				}else{
+	                  					layui.use('layer', function() {
+	                  						var $ = layui.jquery, layer = layui.layer;
+	                  						layer.msg('照片更换失败！');
+	                  					});
+	                  				}
+	                  				layer.closeAll();
+	                  			},
+	                  			error : function(data) {
+	                  				alert("服务器异常");
+	                  			},
+	                  			dataType : "json",
+	                  		});
+		            	}else {
+		            		layui.use('layer', function() {
+		  	    				var $ = layui.jquery, layer = layui.layer;
+		  	    				layer.msg('请选择照片!');
+		  	    			});
+						}
+					  }
+		           
+		          });
+			}
+			/** 
+			 * 将本地图片 显示到浏览器上 
+			 */
+			function getFileUrl(sourceId) {
+				var url;
+				url = window.URL
+						.createObjectURL(document.getElementById(sourceId).files
+								.item(0));
+				return url;
+			}
+			function preImg(sourceId, targetId, tct) {
+				
+				var fileName = document.getElementById(sourceId).value;
+				var fileNamePlus = fileName.substr(12);
+				var url = getFileUrl(sourceId);
+				var imgPre = document.getElementById(targetId);
+				imgPre.style.display = "block";
+				imgPre.src = url;
+				document.getElementById(tct).value = fileNamePlus;
+			}
 					//Demo
 					layui.use([ 'form', 'laydate' ], function() {
 						var form = layui.form, laydate = layui.laydate;
@@ -2154,7 +2529,7 @@ function searchData() {
 
 			<!-- 安全/密码 -->
 			<div id="signal"
-				style="width: 95%; margin-left: 5%; padding-left: 5%; z-index: 1; background-color: #cccc00; height: 3%; display: none; font-family: 微软雅黑;">
+				style="width: 95%; margin-left: 5%; padding-left: 5%; z-index: 1; background-color: #009688; height: 4%; display: none; font-family: 微软雅黑;">
 				提示：修改邮箱后后请前往原邮箱确认..</div>
 			<!-- 更改邮箱成功提示信息 -->
 			<div id="changeMailShow" class="site-text site-block"
@@ -2163,7 +2538,7 @@ function searchData() {
 			</div>
 
 			<div class="site-text site-block" id="doubleHandle"
-				style="width: 70%; margin-left: 15%; margin-top: 4%; display: none;">
+				style="width: 70%; margin-left: 5%; margin-top: 4%; display: none;">
 				<a class="layui-btn layui-btn-primary" href="#" id="changeStuPass"
 					style="float: left; height: 20%; width: 49%; font-size: 1.5em">更改密码</a>
 				<a class="layui-btn layui-btn-primary" href="#" id="changeStuMail"
@@ -2322,10 +2697,29 @@ function searchData() {
     	if(test()){
     		 $('#emailTypeError').hide();
     		 if(pushEmail()){
-    			 $('#changeMailShow').show();
-    			 setTimeout('yourFunction()',2000); 
+    			 layui.use('layer', function(){
+  	               var $ = layui.jquery, layer = layui.layer; 
+  			      layer.open({
+  			        type: 1
+  			        ,offset: 'auto'
+  			        ,id: 'layerDemo'+'auto'
+  			        ,title: '成功'
+  			        ,content: '<div style="padding: 20px 100px; color:#FF5722">'+ "邮箱重置成功" +'</div>'
+  			        ,btn: '关闭'
+  			        ,btnAlign: 'c'
+  			        ,skin: 'demo-class'
+  			        ,shade: 0 
+  			        ,yes: function(){
+  			          yourFunction(); 
+  			        }
+  			      });
+  	            });
+    			
     		 }else {
-				alert("抱歉，服务器拥挤请稍后再试..");
+    			 layui.use('layer', function() {
+						var $ = layui.jquery, layer = layui.layer;
+						layer.msg('抱歉，服务器拥挤请稍后再试..！');
+					});
 			}
     	}else {
     		$('#waitChangeMailShow').hide();

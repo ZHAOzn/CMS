@@ -78,9 +78,7 @@
 			<result property="clazzName" column="ClazzName" />
 			<result property="currentYear" column="CurrentYear" />
 		</collection>
-	</resultMap>
-
-
+	</resultMap>    
 
 	<select id="selectCourseByTeacher" resultMap="CourseResult">
 		select * from
